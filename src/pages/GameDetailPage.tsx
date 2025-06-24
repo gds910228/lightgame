@@ -12,6 +12,8 @@ const GameDetailPage = () => {
   const [isFullScreen, setIsFullScreen] = useState(false)
   
   const fullscreenContainerRef = useRef<HTMLDivElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const exitButtonRef = useRef<HTMLButtonElement>(null)
   
   // Fetch game details
   useEffect(() => {
@@ -113,6 +115,51 @@ const GameDetailPage = () => {
       document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
     }
   }, [])
+
+  // Handle keyboard events for the iframe
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isFullScreen && iframeRef.current) {
+        // 将键盘事件传递给iframe
+        const iframe = iframeRef.current;
+        const iframeWindow = iframe.contentWindow;
+        if (iframeWindow) {
+          iframeWindow.focus();
+        }
+      }
+      
+      // 处理ESC键退出全屏
+      if (e.key === 'Escape' && isFullScreen) {
+        exitFullScreen();
+      }
+    };
+
+    if (isFullScreen) {
+      window.addEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isFullScreen]);
+  
+  // 确保退出按钮始终在最上层并可点击
+  useEffect(() => {
+    if (isFullScreen && exitButtonRef.current) {
+      // 确保按钮在iframe之上
+      exitButtonRef.current.style.pointerEvents = 'auto';
+      
+      // 添加点击事件监听器
+      const handleExitClick = () => exitFullScreen();
+      exitButtonRef.current.addEventListener('click', handleExitClick);
+      
+      return () => {
+        if (exitButtonRef.current) {
+          exitButtonRef.current.removeEventListener('click', handleExitClick);
+        }
+      };
+    }
+  }, [isFullScreen]);
   
   if (loading) {
     return (
@@ -223,27 +270,29 @@ const GameDetailPage = () => {
         {/* Game iframe */}
         {isFullScreen && (
           <>
-            {/* Loading indicator (fixed duration) */}
-            <div className="absolute inset-0 flex items-center justify-center z-10 animate-fade-out">
-              <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
-              <p className="text-white ml-4 text-lg">Loading game...</p>
-            </div>
-            
             <iframe
+              ref={iframeRef}
               src={game.path}
               className="w-full h-full border-0"
               title={game.title}
-              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
-              allow="fullscreen"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms allow-modals allow-top-navigation allow-downloads"
+              allow="fullscreen; gamepad; keyboard; accelerometer; autoplay; clipboard-read; clipboard-write"
               loading="eager"
+              referrerPolicy="no-referrer"
             ></iframe>
             
-            {/* Exit button */}
+            {/* Exit button - 使用绝对定位确保始终在最上层 */}
             <button
+              ref={exitButtonRef}
               onClick={exitFullScreen}
-              className="absolute top-4 right-4 bg-black/50 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+              className="absolute top-4 right-4 bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors z-[9999]"
+              style={{ 
+                cursor: 'pointer',
+                pointerEvents: 'auto',
+                boxShadow: '0 0 10px rgba(0,0,0,0.5)'
+              }}
             >
-              <i className="fas fa-times"></i>
+              <i className="fas fa-times text-xl"></i>
             </button>
           </>
         )}

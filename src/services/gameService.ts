@@ -4,9 +4,14 @@ import { Game, GamesData } from '../types';
 let gamesCache: Game[] | null = null;
 
 // Get base URL for assets
-const getBaseUrl = () => {
-  // 在开发环境中使用相对路径，在生产环境中使用绝对路径
-  return import.meta.env.DEV ? '' : import.meta.env.BASE_URL || '';
+const getBaseUrl = (): string => {
+  // 本地开发环境
+  if (import.meta.env.DEV) {
+    return '';
+  }
+  
+  // 生产环境 - 使用相对路径
+  return '';
 };
 
 /**
@@ -28,7 +33,7 @@ export async function getAllGames(): Promise<Game[]> {
     const data: GamesData = await response.json();
     
     // 处理游戏路径，确保它们包含正确的基础URL
-    const processedGames = data.games.map(game => ({
+    const processedGames = data.games.map((game: Game) => ({
       ...game,
       path: `${baseUrl}${game.path}`,
       image: `${baseUrl}${game.image}`
@@ -38,16 +43,21 @@ export async function getAllGames(): Promise<Game[]> {
     return processedGames;
   } catch (error) {
     console.error('Error fetching games:', error);
-    return [];
+    throw error;
   }
 }
 
 /**
  * Get a specific game by ID
  */
-export async function getGameById(id: string): Promise<Game | undefined> {
-  const games = await getAllGames();
-  return games.find(game => game.id === id);
+export async function getGameById(gameId: string): Promise<Game | null> {
+  try {
+    const games = await getAllGames();
+    return games.find(game => game.id === gameId) || null;
+  } catch (error) {
+    console.error(`Error fetching game with ID ${gameId}:`, error);
+    throw error;
+  }
 }
 
 /**
