@@ -10,6 +10,8 @@ const GameDetailPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isFullScreen, setIsFullScreen] = useState(false)
+  const [iframeLoading, setIframeLoading] = useState(false)
+  const [iframeError, setIframeError] = useState<string | null>(null)
   
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const fullscreenContainerRef = useRef<HTMLDivElement>(null)
@@ -29,6 +31,7 @@ const GameDetailPage = () => {
         if (!gameData) {
           setError('Game not found')
         } else {
+          console.log('Game data loaded:', gameData)
           setGame(gameData)
         }
       } catch (err) {
@@ -47,6 +50,8 @@ const GameDetailPage = () => {
     if (!game) return
     
     setIsFullScreen(true)
+    setIframeLoading(true)
+    console.log('Loading game from path:', game.path)
     
     // Request fullscreen on the container
     const container = fullscreenContainerRef.current
@@ -86,6 +91,8 @@ const GameDetailPage = () => {
   // Exit fullscreen mode
   const exitFullScreen = () => {
     setIsFullScreen(false)
+    setIframeLoading(false)
+    setIframeError(null)
     
     // Remove event listeners
     document.removeEventListener('fullscreenchange', handleFullscreenChange)
@@ -104,6 +111,37 @@ const GameDetailPage = () => {
       (document as any).msExitFullscreen()
     }
   }
+  
+  // Monitor iframe loading status
+  useEffect(() => {
+    if (!isFullScreen || !game) return;
+    
+    // Automatically hide loading indicator after a short delay
+    const loadingTimeoutId = setTimeout(() => {
+      setIframeLoading(false);
+    }, 2000);
+    
+    // Set a timeout to check if the iframe has loaded
+    const errorTimeoutId = setTimeout(() => {
+      try {
+        // Try to access the iframe content to check if it's loaded properly
+        if (iframeRef.current && iframeRef.current.contentWindow) {
+          const iframeDoc = iframeRef.current.contentWindow.document;
+          if (!iframeDoc || !iframeDoc.body || iframeDoc.body.innerHTML === '') {
+            setIframeError('Game content appears to be empty. Please try again later.');
+          }
+        }
+      } catch (err) {
+        console.error('Error checking iframe content:', err);
+        // If we can't access the iframe content due to CORS, we assume it's loaded
+      }
+    }, 5000); // 5 seconds timeout
+    
+    return () => {
+      clearTimeout(loadingTimeoutId);
+      clearTimeout(errorTimeoutId);
+    };
+  }, [isFullScreen, game]);
   
   // Clean up event listeners on unmount
   useEffect(() => {
@@ -160,6 +198,7 @@ const GameDetailPage = () => {
                 alt={game.title}
                 className="absolute inset-0 w-full h-full object-cover z-10"
                 onError={(e) => {
+                  console.log('Image failed to load:', game.image)
                   // Hide the image on error, showing the fallback
                   (e.target as HTMLImageElement).style.display = 'none'
                 }}
@@ -197,6 +236,12 @@ const GameDetailPage = () => {
                 </p>
               </div>
               
+              {/* Debug info */}
+              <div className="mb-4 p-2 bg-gray-100 rounded text-xs font-mono">
+                <p>Game path: {game.path}</p>
+                <p>Image path: {game.image}</p>
+              </div>
+              
               {/* Play button */}
               <button
                 onClick={enterFullScreen}
@@ -220,6 +265,30 @@ const GameDetailPage = () => {
         {/* Game iframe */}
         {isFullScreen && (
           <>
+            {/* Loading indicator */}
+            {iframeLoading && (
+              <div className="absolute inset-0 flex items-center justify-center z-10">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-white"></div>
+                <p className="text-white ml-4 text-lg">Loading game...</p>
+              </div>
+            )}
+            
+            {/* Error message */}
+            {iframeError && (
+              <div className="absolute inset-0 flex items-center justify-center z-10 bg-red-900/20">
+                <div className="bg-red-50 border border-red-200 text-red-700 px-6 py-4 rounded-lg max-w-md">
+                  <h3 className="text-lg font-bold mb-2">Error</h3>
+                  <p>{iframeError}</p>
+                  <button 
+                    className="mt-4 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+                    onClick={exitFullScreen}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            )}
+            
             <iframe
               ref={iframeRef}
               src={game.path}

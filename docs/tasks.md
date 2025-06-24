@@ -26,6 +26,36 @@
     - [x] 实现退出全屏的逻辑
 - [x] **部署**
     - [x] 配置GitHub Actions，实现CI/CD自动化部署到GitHub Pages
+    - [x] 修复Vercel部署问题
+        - [x] 添加baseUrl处理，解决游戏资源路径问题
+        - [x] 创建vercel.json配置文件，添加路由重写和安全头信息
+        - [x] 优化游戏iframe的安全设置
+- [x] **修复Vercel部署后的问题**
+    - [x] 解决游戏黑屏问题
+        - [x] 修改GameDetailPage.tsx，添加调试信息和错误处理
+        - [x] 优化iframe加载逻辑
+        - [x] 重新创建游戏HTML文件，确保在Vercel上正常运行
+    - [x] 修复缩略图无法显示的问题
+        - [x] 创建新的缩略图目录结构
+        - [x] 更新games.json中的图片路径
 - [x] **收尾工作**
     - [x] 根据"卡通插画风"主题，优化全局样式与动画
-    - [x] 添加网站图标（favicon）和元信息（meta tags） 
+    - [x] 添加网站图标（favicon）和元信息（meta tags）
+
+## 进行中
+- [ ] **修复Vercel部署后的问题**
+    - [ ] 解决游戏黑屏问题
+    - [ ] 修复缩略图无法显示的问题
+
+## 设计资源
+### 字体资源
+- [Inter](https://fonts.google.com/specimen/Inter) - 用于主要文本内容
+- [Montserrat](https://fonts.google.com/specimen/Montserrat) - 用于标题和强调文本
+- [Fira Code](https://fonts.google.com/specimen/Fira+Code) - 用于代码和控制说明
+
+### 图标资源
+- [FontAwesome](https://fontawesome.com/) - 用于界面图标
+
+### 图片资源
+- [Unsplash](https://unsplash.com/) - 高质量免费图片
+- [Pexels](https://www.pexels.com/) - 免费图片和视频资源 
