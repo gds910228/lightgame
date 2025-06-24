@@ -10,6 +10,7 @@ const GameDetailPage = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isFullScreen, setIsFullScreen] = useState(false)
+  const [iframeLoaded, setIframeLoaded] = useState(false)
   
   const fullscreenContainerRef = useRef<HTMLDivElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -48,6 +49,7 @@ const GameDetailPage = () => {
     if (!game) return;
     
     setIsFullScreen(true);
+    setIframeLoaded(false);
     
     // Request fullscreen on the container
     const container = fullscreenContainerRef.current;
@@ -87,6 +89,7 @@ const GameDetailPage = () => {
   // Exit fullscreen mode
   const exitFullScreen = () => {
     setIsFullScreen(false)
+    setIframeLoaded(false)
     
     // Remove event listeners
     document.removeEventListener('fullscreenchange', handleFullscreenChange)
@@ -169,7 +172,8 @@ const GameDetailPage = () => {
     try {
       const iframe = iframeRef.current;
       if (iframe && iframe.contentWindow) {
-        // 仅记录加载成功
+        // 设置iframe为已加载状态
+        setIframeLoaded(true);
         console.log('iframe content window accessible');
       }
     } catch (err) {
@@ -292,8 +296,8 @@ const GameDetailPage = () => {
         {/* Game iframe */}
         {isFullScreen && (
           <>
-            {/* 添加一个预加载指示器 */}
-            <div className="absolute inset-0 flex items-center justify-center bg-black">
+            {/* 添加一个预加载指示器 - 修改为在iframe加载完成后隐藏 */}
+            <div className={`absolute inset-0 flex items-center justify-center bg-black transition-opacity duration-300 ${iframeLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
               <div className="text-white text-lg">游戏加载中...</div>
             </div>
             
@@ -324,14 +328,6 @@ const GameDetailPage = () => {
             >
               <i className="fas fa-times text-xl"></i>
             </button>
-            
-            {/* 调试信息 */}
-            <div className="absolute bottom-4 left-4 bg-black/70 text-white text-xs p-2 rounded z-[9998] max-w-xs">
-              游戏路径: {game.path}<br/>
-              环境: {typeof window !== 'undefined' ? window.location.hostname : 'unknown'}<br/>
-              协议: {typeof window !== 'undefined' ? window.location.protocol : 'unknown'}<br/>
-              游戏ID: {gameId}
-            </div>
           </>
         )}
       </div>

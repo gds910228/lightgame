@@ -4,7 +4,7 @@
       "id": "snake",
       "title": "Snake Game",
       "category": "Puzzle",
-      "image": "/images/thumbnails/snake.svg",
+      "image": "/games/snake/thumbnail.png",
       "description": "The classic Snake game where you control a snake to eat food and grow longer. Be careful not to hit the walls or yourself!",
       "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
       "path": "/games/snake/index.html"
@@ -13,7 +13,7 @@
       "id": "space-shooter",
       "title": "Space Shooter",
       "category": "Action",
-      "image": "/images/thumbnails/space-shooter.svg",
+      "image": "/games/space-shooter/thumbnail.png",
       "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
       "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles.",
       "path": "/games/space-shooter/index.html"
@@ -22,7 +22,7 @@
       "id": "tetris",
       "title": "Tetris",
       "category": "Puzzle",
-      "image": "/images/thumbnails/tetris.svg",
+      "image": "/games/tetris/thumbnail.png",
       "description": "The classic block-stacking puzzle game. Arrange falling blocks to create complete lines and prevent the blocks from stacking up to the top.",
       "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop.",
       "path": "/games/tetris/index.html"
