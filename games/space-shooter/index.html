@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Space Shooter</title>
   <style>
+    /* 内联字体定义，避免外部依赖 */
+    @font-face {
+      font-family: 'LocalGameFont';
+      src: local('Arial');
+      font-weight: normal;
+      font-style: normal;
+    }
+    
     body {
       margin: 0;
       padding: 0;
@@ -13,7 +21,7 @@
       align-items: center;
       height: 100vh;
       background-color: #000;
-      font-family: Arial, sans-serif;
+      font-family: 'LocalGameFont', Arial, sans-serif;
       overflow: hidden;
     }
     
@@ -133,6 +141,13 @@
     
     // 记录环境信息
     updateDebugInfo(`环境: ${window.location.hostname}, 路径: ${window.location.pathname}, 协议: ${window.location.protocol}`);
+    
+    // 监听所有资源加载错误
+    window.addEventListener('error', function(e) {
+      if (e.target && (e.target.tagName === 'LINK' || e.target.tagName === 'SCRIPT' || e.target.tagName === 'IMG')) {
+        updateDebugInfo(`资源加载失败: ${e.target.src || e.target.href}`);
+      }
+    }, true);
     
     // 检查CSP问题
     try {
