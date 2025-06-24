@@ -1,0 +1,8 @@
+{
+  "id": "tetris",
+  "title": "Tetris",
+  "category": "Puzzle",
+  "image": "./thumbnail.png",
+  "description": "The classic block-stacking puzzle game. Arrange falling blocks to create complete lines and prevent the blocks from stacking up to the top.",
+  "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop."
+} 
