@@ -225,7 +225,9 @@ const GameDetailPage = () => {
               src={game.path}
               className="w-full h-full border-0"
               title={game.title}
-              sandbox="allow-scripts allow-same-origin"
+              sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
+              allow="fullscreen"
+              loading="eager"
             ></iframe>
             
             {/* Exit button */}

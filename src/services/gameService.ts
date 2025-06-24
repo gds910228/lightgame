@@ -3,6 +3,12 @@ import { Game, GamesData } from '../types';
 // Cache the games data to avoid repeated fetches
 let gamesCache: Game[] | null = null;
 
+// Get base URL for assets
+const getBaseUrl = () => {
+  // 在开发环境中使用相对路径，在生产环境中使用绝对路径
+  return import.meta.env.DEV ? '' : import.meta.env.BASE_URL || '';
+};
+
 /**
  * Fetch all games from the games.json file
  */
@@ -13,14 +19,23 @@ export async function getAllGames(): Promise<Game[]> {
   }
   
   try {
-    const response = await fetch('/games.json');
+    const baseUrl = getBaseUrl();
+    const response = await fetch(`${baseUrl}/games.json`);
     if (!response.ok) {
       throw new Error(`Failed to fetch games: ${response.status} ${response.statusText}`);
     }
     
     const data: GamesData = await response.json();
-    gamesCache = data.games;
-    return data.games;
+    
+    // 处理游戏路径，确保它们包含正确的基础URL
+    const processedGames = data.games.map(game => ({
+      ...game,
+      path: `${baseUrl}${game.path}`,
+      image: `${baseUrl}${game.image}`
+    }));
+    
+    gamesCache = processedGames;
+    return processedGames;
   } catch (error) {
     console.error('Error fetching games:', error);
     return [];
