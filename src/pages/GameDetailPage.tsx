@@ -45,12 +45,12 @@ const GameDetailPage = () => {
   
   // Handle fullscreen mode
   const enterFullScreen = () => {
-    if (!game) return
+    if (!game) return;
     
-    setIsFullScreen(true)
+    setIsFullScreen(true);
     
     // Request fullscreen on the container
-    const container = fullscreenContainerRef.current
+    const container = fullscreenContainerRef.current;
     if (container) {
       if (container.requestFullscreen) {
         container.requestFullscreen();
@@ -64,11 +64,11 @@ const GameDetailPage = () => {
     }
     
     // Listen for fullscreen change events
-    document.addEventListener('fullscreenchange', handleFullscreenChange)
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange)
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange)
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange)
-  }
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+  };
   
   // Handle fullscreen change events
   const handleFullscreenChange = () => {
@@ -160,6 +160,28 @@ const GameDetailPage = () => {
       };
     }
   }, [isFullScreen]);
+  
+  // 添加iframe加载事件处理
+  const handleIframeLoad = () => {
+    console.log('iframe loaded:', game?.path);
+    
+    // 尝试访问iframe内容以检查是否成功加载
+    try {
+      const iframe = iframeRef.current;
+      if (iframe && iframe.contentWindow) {
+        // 仅记录加载成功
+        console.log('iframe content window accessible');
+      }
+    } catch (err) {
+      console.error('Error accessing iframe content:', err);
+    }
+  };
+
+  // 添加iframe错误处理
+  const handleIframeError = () => {
+    console.error('iframe failed to load:', game?.path);
+    setError('游戏加载失败，请刷新页面重试');
+  };
   
   if (loading) {
     return (
@@ -279,6 +301,8 @@ const GameDetailPage = () => {
               allow="fullscreen; gamepad; keyboard; accelerometer; autoplay; clipboard-read; clipboard-write"
               loading="eager"
               referrerPolicy="no-referrer"
+              onLoad={handleIframeLoad}
+              onError={handleIframeError}
             ></iframe>
             
             {/* Exit button - 使用绝对定位确保始终在最上层 */}
@@ -294,6 +318,11 @@ const GameDetailPage = () => {
             >
               <i className="fas fa-times text-xl"></i>
             </button>
+            
+            {/* 调试信息 */}
+            <div className="absolute bottom-4 left-4 bg-black/70 text-white text-xs p-2 rounded z-[9998] max-w-xs">
+              游戏路径: {game.path}
+            </div>
           </>
         )}
       </div>

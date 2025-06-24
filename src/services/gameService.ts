@@ -10,7 +10,13 @@ const getBaseUrl = (): string => {
     return '';
   }
   
-  // 生产环境 - 使用相对路径
+  // 检查是否在Vercel环境中
+  if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
+    // 使用完整的基础URL，确保游戏资源能正确加载
+    return window.location.origin;
+  }
+  
+  // 其他生产环境 - 使用相对路径
   return '';
 };
 

@@ -89,6 +89,20 @@
       text-align: center;
       z-index: 100;
     }
+    
+    #debug-info {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      color: #fff;
+      font-size: 12px;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 5px;
+      border-radius: 3px;
+      max-width: 460px;
+      word-wrap: break-word;
+      z-index: 100;
+    }
   </style>
 </head>
 <body>
@@ -102,18 +116,35 @@
       <button id="restart-btn">Restart</button>
     </div>
     <div id="error-message"></div>
+    <div id="debug-info">初始化中...</div>
   </div>
 
   <script>
+    // 添加调试信息
+    const debugInfo = document.getElementById('debug-info');
+    function updateDebugInfo(message) {
+      if (debugInfo) {
+        debugInfo.textContent = message;
+      }
+      console.log(message);
+    }
+    
+    updateDebugInfo("游戏开始加载...");
+    
+    // 记录环境信息
+    updateDebugInfo(`环境: ${window.location.hostname}, 路径: ${window.location.pathname}`);
+
     // Error handling function
     function handleError(message) {
       const errorElement = document.getElementById('error-message');
       errorElement.textContent = `Error: ${message}. Please try refreshing the page.`;
       errorElement.style.display = 'block';
+      updateDebugInfo(`错误: ${message}`);
       console.error(message);
     }
 
     try {
+      updateDebugInfo("获取Canvas元素...");
       // Get canvas and context
       const canvas = document.getElementById('game-canvas');
       if (!canvas) throw new Error('Canvas element not found');
@@ -121,6 +152,7 @@
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('Could not get canvas context');
       
+      updateDebugInfo("初始化游戏元素...");
       // Game elements
       const scoreElement = document.getElementById('score');
       const livesElement = document.getElementById('lives');
