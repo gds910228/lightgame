@@ -303,6 +303,7 @@ const GameDetailPage = () => {
               referrerPolicy="no-referrer"
               onLoad={handleIframeLoad}
               onError={handleIframeError}
+              style={{ backgroundColor: '#000' }}
             ></iframe>
             
             {/* Exit button - 使用绝对定位确保始终在最上层 */}
@@ -321,7 +322,9 @@ const GameDetailPage = () => {
             
             {/* 调试信息 */}
             <div className="absolute bottom-4 left-4 bg-black/70 text-white text-xs p-2 rounded z-[9998] max-w-xs">
-              游戏路径: {game.path}
+              游戏路径: {game.path}<br/>
+              环境: {typeof window !== 'undefined' ? window.location.hostname : 'unknown'}<br/>
+              协议: {typeof window !== 'undefined' ? window.location.protocol : 'unknown'}
             </div>
           </>
         )}

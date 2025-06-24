@@ -103,7 +103,17 @@
     updateDebugInfo("游戏开始加载...");
     
     // 记录环境信息
-    updateDebugInfo(`环境: ${window.location.hostname}, 路径: ${window.location.pathname}`);
+    updateDebugInfo(`环境: ${window.location.hostname}, 路径: ${window.location.pathname}, 协议: ${window.location.protocol}`);
+    
+    // 检查CSP问题
+    try {
+      const testStyle = document.createElement('style');
+      testStyle.textContent = '.test { color: red; }';
+      document.head.appendChild(testStyle);
+      updateDebugInfo("样式测试成功");
+    } catch (err) {
+      updateDebugInfo(`样式测试失败: ${err.message}`);
+    }
     
     // Error handling function
     function handleError(message) {
