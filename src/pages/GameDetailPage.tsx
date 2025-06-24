@@ -1,11 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { getGameById } from '../services/gameService'
 import { Game } from '../types'
 
 const GameDetailPage = () => {
   const { gameId } = useParams<{ gameId: string }>()
-  const navigate = useNavigate()
   
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
