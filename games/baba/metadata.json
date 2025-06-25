@@ -1,7 +1,7 @@
 {
   "id": "baba",
   "title": "Baba Game",
-  "category": "Casual",
+  "category": ["Casual", "Geography", "Collection"],
   "description": "A fun casual game where you mark places you've visited. Explore different locations and collect achievements!",
   "controls": "Use mouse or touch to interact with the game interface. Click on locations to mark them as visited.",
   "image": "/images/thumbnails/baba.svg",

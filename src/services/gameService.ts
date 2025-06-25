@@ -71,9 +71,19 @@ export async function getGameById(gameId: string): Promise<Game | null> {
  */
 export async function getGamesByCategory(category: string): Promise<Game[]> {
   const games = await getAllGames();
-  return category === 'All' 
-    ? games 
-    : games.filter(game => game.category === category);
+  
+  if (category === 'All') {
+    return games;
+  }
+  
+  return games.filter(game => {
+    if (Array.isArray(game.category)) {
+      // 如果游戏有多个分类，检查是否包含所选分类
+      return game.category.includes(category);
+    }
+    // 向后兼容单个分类的情况
+    return game.category === category;
+  });
 }
 
 /**

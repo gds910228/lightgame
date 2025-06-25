@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 
-const CATEGORIES = ['All', 'Puzzle', 'Action', 'Strategy']
+const CATEGORIES = ['All', 'Puzzle', 'Action', 'Strategy', 'Casual']
 
 const CategoryFilter = () => {
   const navigate = useNavigate()
