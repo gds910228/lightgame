@@ -30,7 +30,6 @@
       "controls": "Click on the cat to beat it before it escapes. The faster your reaction, the higher your score!",
       "author": "LightGame Team",
       "version": "1.0.0",
-      "image": "/images/thumbnails/bdsjm.svg",
       "features": [
         "Simple and easy to play gameplay",
         "Fun animation effects",
@@ -46,7 +45,6 @@
       "controls": "Click on the buns to eat them. Try to eat as many as possible within the time limit to get a high score.",
       "author": "LightGame Team",
       "version": "1.0.0",
-      "image": "/images/thumbnails/baozi.svg",
       "features": [
         "Simple and fun clicking gameplay",
         "Timed challenge mode",
@@ -80,7 +78,6 @@
       "controls": "Click on the blocks to move them. Try to solve the puzzle with as few steps as possible. Careful thinking and planning is required for each move.",
       "author": "LightGame Team",
       "version": "1.0.0",
-      "image": "/images/thumbnails/bbjx.svg",
       "features": [
         "Carefully designed puzzle levels",
         "Step counting system",

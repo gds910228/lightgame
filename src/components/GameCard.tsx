@@ -1,11 +1,17 @@
 import { Link } from 'react-router-dom'
 import { Game } from '../types'
+import { useEffect } from 'react'
 
 interface GameCardProps {
   game: Game;
 }
 
 const GameCard = ({ game }: GameCardProps) => {
+  useEffect(() => {
+    // 在组件挂载时打印图片URL，帮助调试
+    console.log(`Game ${game.id} image URL:`, game.image);
+  }, [game]);
+
   return (
     <Link to={`/game/${game.id}`} className="card group">
       {/* Game Image */}
@@ -21,6 +27,8 @@ const GameCard = ({ game }: GameCardProps) => {
           alt={game.title}
           className="absolute inset-0 w-full h-full object-cover z-10 transition-transform duration-500 group-hover:scale-110"
           onError={(e) => {
+            // 打印错误信息
+            console.error(`Failed to load image for game ${game.id}:`, game.image);
             // Hide the image on error, showing the fallback
             (e.target as HTMLImageElement).style.display = 'none'
           }}
