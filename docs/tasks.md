@@ -52,6 +52,30 @@
     - [x] 添加塔防策略游戏
     - [x] 为所有游戏创建统一风格的SVG缩略图
     - [x] 优化游戏资源管理，创建专门的图片目录
+- [x] **新增游戏源代码**
+    - [x] 新增bdsjm游戏源代码到games目录
+    - [x] 新增baozi游戏源代码到games目录
+    - [x] 新增bbjx游戏源代码到games目录
+- [x] **整合新游戏到网站**
+    - [x] 运行构建脚本，将新游戏整合到public目录
+    - [x] 为新游戏创建缩略图和封面图
+    - [x] 测试新游戏在网站中的展示和运行情况
+- [x] **修复游戏问题**
+    - [x] 修复Steps of Wonder (bbjx)游戏黑屏问题
+        - [x] 创建cocos2d-html5-v3.0-rc1-core.min.js框架文件
+        - [x] 添加错误处理和备用游戏界面
+    - [x] 添加游戏缩略图路径到games.json
+    - [x] 修改游戏文案为英文
+    - [x] 修复Bun Eating Contest (baozi)游戏按钮问题
+        - [x] 修改"More Games"按钮点击后跳转到网站首页
+        - [x] 更新CSS文件中的SVG图片路径
+    - [x] 移除Bun Eating Contest游戏水印
+        - [x] 替换c4.svg中的"富扇酷网 营销好帮手"水印
+        - [x] 更新HTML文件中的版权信息
+        - [x] 移除HTML注释中的广告信息
+        - [x] 替换cgi.waiting.css.html文件
+
+## 进行中
 
 ## 设计资源
 ### 字体资源

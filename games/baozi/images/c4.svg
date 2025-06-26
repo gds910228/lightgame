@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="640" height="480" viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
+  <!-- 背景 -->
+  <rect width="640" height="480" fill="#fff8e1" />
+  
+  <!-- 标题 -->
+  <text x="320" y="80" font-family="Arial, sans-serif" font-size="36" font-weight="bold" 
+        text-anchor="middle" fill="#8b4513">Bun Eating Contest</text>
+  
+  <!-- 副标题 - 替换为游戏说明 -->
+  <text x="320" y="120" font-family="Arial, sans-serif" font-size="24" 
+        text-anchor="middle" fill="#8b4513">How many buns can you eat?</text>
+  
+  <!-- 包子图案 -->
+  <g transform="translate(320, 250)">
+    <ellipse cx="0" cy="0" rx="100" ry="60" fill="#f5deb3" />
+    <ellipse cx="0" cy="-10" rx="100" ry="50" fill="#f5deb3" />
+    <path d="M -100,-10 C -100,-40 -70,-60 0,-60 C 70,-60 100,-40 100,-10" fill="none" stroke="#e6ccb3" stroke-width="4" />
+    <path d="M -50,-10 C -50,-25 -25,-35 0,-35 C 25,-35 50,-25 50,-10" fill="none" stroke="#e6ccb3" stroke-width="2" />
+  </g>
+  
+  <g transform="translate(150, 350)">
+    <ellipse cx="0" cy="0" rx="70" ry="40" fill="#f5deb3" />
+    <ellipse cx="0" cy="-7" rx="70" ry="35" fill="#f5deb3" />
+    <path d="M -70,-7 C -70,-30 -50,-45 0,-45 C 50,-45 70,-30 70,-7" fill="none" stroke="#e6ccb3" stroke-width="3" />
+    <path d="M -35,-7 C -35,-20 -18,-25 0,-25 C 18,-25 35,-20 35,-7" fill="none" stroke="#e6ccb3" stroke-width="2" />
+  </g>
+  
+  <g transform="translate(490, 350)">
+    <ellipse cx="0" cy="0" rx="70" ry="40" fill="#f5deb3" />
+    <ellipse cx="0" cy="-7" rx="70" ry="35" fill="#f5deb3" />
+    <path d="M -70,-7 C -70,-30 -50,-45 0,-45 C 50,-45 70,-30 70,-7" fill="none" stroke="#e6ccb3" stroke-width="3" />
+    <path d="M -35,-7 C -35,-20 -18,-25 0,-25 C 18,-25 35,-20 35,-7" fill="none" stroke="#e6ccb3" stroke-width="2" />
+  </g>
+  
+  <!-- 说明文字 -->
+  <text x="320" y="430" font-family="Arial, sans-serif" font-size="20" 
+        text-anchor="middle" fill="#8b4513">Click to Start</text>
+</svg> 
