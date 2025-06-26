@@ -1,7 +1,16 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import Modal from './Modal'
+import FeedbackForm from './FeedbackForm'
+import { useAllGames } from '../hooks/useGames'
 
 const Footer = () => {
   const currentYear = new Date().getFullYear()
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const { games } = useAllGames()
+  
+  const openFeedbackModal = () => setIsModalOpen(true)
+  const closeFeedbackModal = () => setIsModalOpen(false)
   
   return (
     <footer className="bg-gray-100 py-8 border-t border-gray-200">
@@ -30,6 +39,14 @@ const Footer = () => {
               <a href="#" className="text-gray-500 hover:text-primary-600 transition-colors">
                 <i className="fab fa-linkedin text-xl"></i>
               </a>
+              <button 
+                onClick={openFeedbackModal}
+                className="text-gray-500 hover:text-primary-600 transition-colors flex items-center"
+                aria-label="提交反馈"
+              >
+                <i className="fas fa-comment-dots text-xl mr-1"></i>
+                <span className="text-sm">反馈</span>
+              </button>
             </div>
             <p className="text-gray-500 text-sm">
               &copy; {currentYear} LightGame. All rights reserved.
@@ -37,6 +54,11 @@ const Footer = () => {
           </div>
         </div>
       </div>
+      
+      {/* 反馈模态窗口 */}
+      <Modal isOpen={isModalOpen} onClose={closeFeedbackModal}>
+        <FeedbackForm games={games || []} onClose={closeFeedbackModal} />
+      </Modal>
     </footer>
   )
 }
