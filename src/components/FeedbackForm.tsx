@@ -11,6 +11,7 @@ interface FeedbackFormData {
   gameId: string;
   feedbackType: 'bug' | 'suggestion' | 'other';
   message: string;
+  rating: string;
 }
 
 interface FeedbackFormProps {
@@ -20,14 +21,16 @@ interface FeedbackFormProps {
 
 // 反馈类型选项
 const feedbackTypeOptions = [
-  { value: 'bug', label: '问题报告' },
-  { value: 'suggestion', label: '建议' },
-  { value: 'other', label: '其他' }
+  { value: 'bug', label: 'Bug Report' },
+  { value: 'suggestion', label: 'Suggestion' },
+  { value: 'other', label: 'Other' }
 ];
 
 const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [rating, setRating] = useState<number>(5); // 默认5星评分
   
   const { 
     register, 
@@ -39,35 +42,49 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
 
   // 将游戏列表转换为Select组件需要的格式
   const gameOptions = [
-    { value: 'website', label: '网站整体' },
+    { value: 'website', label: 'Entire Website' },
     ...games.map(game => ({
       value: game.id,
       label: game.title
     }))
   ];
 
+  // 处理星级评分变化
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating);
+  };
+
   const onSubmit = async (data: FeedbackFormData) => {
     setIsSubmitting(true);
     setSubmitStatus('idle');
+    setErrorMessage('');
     
     try {
       // 找到选择的游戏名称
       const selectedGame = games.find(game => game.id === data.gameId);
-      const gameTitle = selectedGame ? selectedGame.title : '网站整体';
+      const gameTitle = selectedGame ? selectedGame.title : 'Entire Website';
       
-      // 准备要发送的数据
+      // 准备要发送的数据 - 修改为与EmailJS模板完全匹配的参数名
       const templateParams = {
-        from_name: data.name || '匿名用户',
+        from_name: data.name || 'Anonymous User',
         from_email: data.email,
         game: gameTitle,
-        feedback_type: data.feedbackType === 'bug' ? '问题报告' : 
-                     data.feedbackType === 'suggestion' ? '建议' : '其他',
+        feedback_type: data.feedbackType === 'bug' ? 'Bug Report' : 
+                     data.feedbackType === 'suggestion' ? 'Suggestion' : 'Other',
         message: data.message,
-        to_email: '1479333689@qq.com'
+        email: '1479333689@qq.com',
+        company_name: 'LightGame',
+        company_email: '1479333689@qq.com',
+        company_phone: 'N/A',
+        rating: rating.toString() // 使用用户选择的评分
       };
+      
+      console.log('Sending feedback email, params:', templateParams);
       
       // 发送邮件
       const result = await sendFeedbackEmail(templateParams);
+      
+      console.log('Email sending result:', result);
       
       if (result.success) {
         setSubmitStatus('success');
@@ -79,15 +96,19 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
         }, 3000);
       } else {
         setSubmitStatus('error');
+        setErrorMessage(result.error instanceof Error ? result.error.message : 'Unknown error');
+        console.error('Feedback submission failed details:', result.error);
       }
     } catch (error) {
-      console.error('发送反馈失败:', error);
+      console.error('Feedback submission failed:', error);
       setSubmitStatus('error');
+      setErrorMessage(error instanceof Error ? error.message : 'Unknown error');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // 自定义Select样式
   const customSelectStyles = {
     control: (provided: any) => ({
       ...provided,
@@ -114,11 +135,11 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
   return (
     <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-auto">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">游戏反馈</h2>
+        <h2 className="text-2xl font-bold text-gray-800">Game Feedback</h2>
         <button 
           onClick={onClose}
           className="text-gray-500 hover:text-gray-700"
-          aria-label="关闭"
+          aria-label="Close"
         >
           <i className="fas fa-times text-xl"></i>
         </button>
@@ -129,13 +150,13 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
           <div className="text-green-500 text-5xl mb-4">
             <i className="fas fa-check-circle"></i>
           </div>
-          <h3 className="text-xl font-bold mb-2">反馈已提交</h3>
-          <p className="text-gray-600 mb-4">感谢您的反馈！我们会尽快处理。</p>
+          <h3 className="text-xl font-bold mb-2">Feedback Submitted</h3>
+          <p className="text-gray-600 mb-4">Thank you for your feedback! We will process it as soon as possible.</p>
           <button
             onClick={onClose}
             className="bg-primary-500 text-white px-6 py-2 rounded-full hover:bg-primary-600 transition-colors"
           >
-            关闭
+            Close
           </button>
         </div>
       ) : (
@@ -143,13 +164,13 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
           {/* 姓名字段 */}
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-              姓名 (可选)
+              Name (Optional)
             </label>
             <input
               id="name"
               type="text"
               className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-primary-500 focus:border-primary-500"
-              placeholder="您的姓名"
+              placeholder="Your name"
               {...register('name')}
             />
           </div>
@@ -157,18 +178,18 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
           {/* 邮箱字段 */}
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-              邮箱 <span className="text-red-500">*</span>
+              Email <span className="text-red-500">*</span>
             </label>
             <input
               id="email"
               type="email"
               className={`w-full px-4 py-2 border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-primary-500 focus:border-primary-500`}
-              placeholder="您的邮箱地址"
+              placeholder="Your email address"
               {...register('email', { 
-                required: '请输入邮箱地址',
+                required: 'Please enter your email address',
                 pattern: {
                   value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                  message: '请输入有效的邮箱地址'
+                  message: 'Please enter a valid email address'
                 }
               })}
             />
@@ -180,23 +201,23 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
           {/* 游戏选择 - 使用react-select */}
           <div>
             <label htmlFor="gameId" className="block text-sm font-medium text-gray-700 mb-1">
-              选择游戏 <span className="text-red-500">*</span>
+              Select Game <span className="text-red-500">*</span>
             </label>
             <Controller
               name="gameId"
               control={control}
-              rules={{ required: '请选择一个游戏' }}
+              rules={{ required: 'Please select a game' }}
               render={({ field }) => (
                 <Select
                   inputId="gameId"
                   options={gameOptions}
-                  placeholder="-- 请选择游戏 --"
+                  placeholder="-- Select a game --"
                   isClearable={false}
                   isSearchable={true}
                   styles={customSelectStyles}
                   value={gameOptions.find(option => option.value === field.value)}
                   onChange={(option) => field.onChange(option?.value)}
-                  noOptionsMessage={() => "没有匹配的游戏"}
+                  noOptionsMessage={() => "No matching games"}
                   classNamePrefix="select"
                 />
               )}
@@ -209,23 +230,23 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
           {/* 反馈类型 - 使用react-select */}
           <div>
             <label htmlFor="feedbackType" className="block text-sm font-medium text-gray-700 mb-1">
-              反馈类型 <span className="text-red-500">*</span>
+              Feedback Type <span className="text-red-500">*</span>
             </label>
             <Controller
               name="feedbackType"
               control={control}
-              rules={{ required: '请选择反馈类型' }}
+              rules={{ required: 'Please select a feedback type' }}
               render={({ field }) => (
                 <Select
                   inputId="feedbackType"
                   options={feedbackTypeOptions}
-                  placeholder="-- 请选择反馈类型 --"
+                  placeholder="-- Select feedback type --"
                   isClearable={false}
                   isSearchable={true}
                   styles={customSelectStyles}
                   value={feedbackTypeOptions.find(option => option.value === field.value)}
                   onChange={(option) => field.onChange(option?.value)}
-                  noOptionsMessage={() => "没有匹配的类型"}
+                  noOptionsMessage={() => "No matching types"}
                   classNamePrefix="select"
                 />
               )}
@@ -235,21 +256,46 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
             )}
           </div>
           
+          {/* 评分系统 */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Rating
+            </label>
+            <div className="flex items-center">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => handleRatingChange(star)}
+                  className="text-2xl focus:outline-none mr-1"
+                  aria-label={`${star} stars`}
+                >
+                  <i 
+                    className={`${star <= rating ? 'fas' : 'far'} fa-star text-yellow-400`}
+                  ></i>
+                </button>
+              ))}
+              <span className="ml-2 text-sm text-gray-500">
+                {rating}/5
+              </span>
+            </div>
+          </div>
+          
           {/* 反馈内容 */}
           <div>
             <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
-              反馈内容 <span className="text-red-500">*</span>
+              Feedback Content <span className="text-red-500">*</span>
             </label>
             <textarea
               id="message"
               rows={4}
               className={`w-full px-4 py-2 border ${errors.message ? 'border-red-500' : 'border-gray-300'} rounded-md focus:ring-primary-500 focus:border-primary-500`}
-              placeholder="请详细描述您的反馈内容..."
+              placeholder="Please describe your feedback in detail..."
               {...register('message', { 
-                required: '请输入反馈内容',
+                required: 'Please enter your feedback',
                 minLength: {
                   value: 10,
-                  message: '反馈内容至少需要10个字符'
+                  message: 'Feedback must be at least 10 characters'
                 }
               })}
             ></textarea>
@@ -258,39 +304,42 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
             )}
           </div>
           
+          {/* 错误信息显示 */}
+          {submitStatus === 'error' && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+              <div className="flex">
+                <i className="fas fa-exclamation-circle mr-2 mt-1"></i>
+                <div>
+                  <p className="font-medium">Submission Failed</p>
+                  <p className="text-sm">{errorMessage || 'Please try again later or send an email directly to 1479333689@qq.com'}</p>
+                </div>
+              </div>
+            </div>
+          )}
+          
           {/* 提交按钮 */}
-          <div className="flex justify-end">
+          <div className="flex justify-end gap-3 pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="mr-4 px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-100 transition-colors"
+              className="px-6 py-2 border border-gray-300 rounded-full text-gray-700 hover:bg-gray-50 transition-colors"
               disabled={isSubmitting}
             >
-              取消
+              Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2 bg-primary-500 text-white rounded-full hover:bg-primary-600 transition-colors flex items-center"
+              className="px-6 py-2 bg-primary-500 rounded-full text-white hover:bg-primary-600 transition-colors flex items-center justify-center"
               disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <>
-                  <i className="fas fa-circle-notch fa-spin mr-2"></i>
-                  提交中...
+                  <i className="fas fa-spinner fa-spin mr-2"></i>
+                  Submitting...
                 </>
-              ) : '提交反馈'}
+              ) : 'Submit Feedback'}
             </button>
           </div>
-          
-          {/* 错误提示 */}
-          {submitStatus === 'error' && (
-            <div className="mt-4 p-3 bg-red-100 text-red-700 rounded-md">
-              <p className="flex items-center">
-                <i className="fas fa-exclamation-circle mr-2"></i>
-                提交失败，请稍后再试或直接发送邮件至1479333689@qq.com
-              </p>
-            </div>
-          )}
         </form>
       )}
     </div>

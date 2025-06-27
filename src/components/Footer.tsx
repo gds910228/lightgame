@@ -42,10 +42,10 @@ const Footer = () => {
               <button 
                 onClick={openFeedbackModal}
                 className="text-gray-500 hover:text-primary-600 transition-colors flex items-center"
-                aria-label="提交反馈"
+                aria-label="Submit Feedback"
               >
                 <i className="fas fa-comment-dots text-xl mr-1"></i>
-                <span className="text-sm">反馈</span>
+                <span className="text-sm">Feedback</span>
               </button>
             </div>
             <p className="text-gray-500 text-sm">

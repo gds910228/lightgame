@@ -1,36 +1,55 @@
 import emailjs from '@emailjs/browser';
 
+// 获取环境变量，如果不存在则使用备用值
+const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'BvwywpSzR4WiypEws';
+const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_0awyadg';
+const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_vn7scif';
+
 // 初始化Email.js
-// 注意：在实际使用时，您需要替换为您的Email.js公共密钥
 export const initEmailService = () => {
-  // 在生产环境中使用您的实际公共密钥
-  // 您可以在 https://dashboard.emailjs.com/admin/account 找到您的公共密钥
-  // emailjs.init('YOUR_PUBLIC_KEY');
+  // 使用环境变量初始化EmailJS
+  emailjs.init(PUBLIC_KEY);
+  console.log('EmailJS已初始化');
   
-  // 由于我们直接在组件中使用emailjs.send，不需要在这里初始化
-  // 这样可以避免"Public Key is invalid"错误
+  // 调试环境变量
+  console.log('环境变量检查:');
+  console.log('- PUBLIC_KEY:', PUBLIC_KEY);
+  console.log('- SERVICE_ID:', SERVICE_ID);
+  console.log('- TEMPLATE_ID:', TEMPLATE_ID);
 };
 
 // 发送反馈邮件
 export const sendFeedbackEmail = async (templateParams: any) => {
   try {
-    // 在实际使用时，您需要替换为您的Email.js服务ID和模板ID
+    console.log('准备发送邮件:');
+    console.log('- 使用服务:', SERVICE_ID);
+    console.log('- 使用模板:', TEMPLATE_ID);
+    console.log('- 发送参数:', templateParams);
+    
+    // 使用环境变量发送邮件
     const response = await emailjs.send(
-      'YOUR_SERVICE_ID',  // 替换为您的服务ID
-      'YOUR_TEMPLATE_ID', // 替换为您的模板ID
+      SERVICE_ID,
+      TEMPLATE_ID,
       templateParams,
-      'YOUR_PUBLIC_KEY'   // 替换为您的公共密钥
+      PUBLIC_KEY
     );
     
+    console.log('邮件发送成功:', response);
     return {
       success: true,
       data: response
     };
   } catch (error) {
     console.error('发送邮件失败:', error);
+    // 提供更详细的错误信息
+    let errorMessage = '未知错误';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     return {
       success: false,
-      error
+      error,
+      errorMessage
     };
   }
 };
@@ -46,10 +65,9 @@ export const sendFeedbackEmail = async (templateParams: any) => {
    - {{game}} - 游戏名称
    - {{feedback_type}} - 反馈类型
    - {{message}} - 反馈内容
-   - {{to_email}} - 接收邮件的邮箱
-4. 获取您的公共密钥、服务ID和模板ID
-   - 公共密钥: https://dashboard.emailjs.com/admin/account
-   - 服务ID: https://dashboard.emailjs.com/admin
-   - 模板ID: https://dashboard.emailjs.com/admin/templates
-5. 替换此文件中的对应值
+   - {{email}} - 接收邮件的邮箱
+4. 获取您的公共密钥、服务ID和模板ID，并添加到.env文件中:
+   - VITE_EMAILJS_PUBLIC_KEY=您的公共密钥
+   - VITE_EMAILJS_SERVICE_ID=您的服务ID
+   - VITE_EMAILJS_TEMPLATE_ID=您的模板ID
 */ 
