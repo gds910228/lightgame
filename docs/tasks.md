@@ -74,6 +74,10 @@
         - [x] 更新HTML文件中的版权信息
         - [x] 移除HTML注释中的广告信息
         - [x] 替换cgi.waiting.css.html文件
+- [x] **广告集成**
+    - [x] 添加Google AdSense代码到网站
+        - [x] 在主HTML文件的head标签中添加AdSense代码
+        - [x] 确保代码在所有页面中生效
 
 ## 进行中
 - [ ] **用户反馈系统**
