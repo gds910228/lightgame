@@ -105,42 +105,64 @@
 
       });
             var mask = function () {
+              // Calculate result first
+              var totalScore = 0;
+              var selectedOptions = document.querySelectorAll('.options li.selected');
+              selectedOptions.forEach(function(option) {
+                totalScore += parseInt(option.getAttribute('data-score') || 0);
+              });
+              
+              var finalResult = Math.max(0, Math.min(50, totalScore + Math.floor(Math.random() * 10)));
+              var resultMessage = getResultMessage(finalResult);
+              
               // Try to use Web Share API first
               if (navigator.share) {
-                var shareText = "I just took a cheating rate test! Want to know your result?";
+                var shareText = "I just took a cheating rate test! My result: " + finalResult + "% cheating probability. Want to test yours?";
                 navigator.share({
-                  title: "Cheating Rate Test",
+                  title: "Cheating Rate Test Result",
                   text: shareText,
                   url: window.location.origin + "/game/ccgl"
                 }).then(() => {
                   console.log('Share successful');
-                  // Show result after sharing
-                  showResult();
+                  showResult(finalResult);
                 }).catch((error) => {
                   console.log('Share failed:', error);
-                  fallbackShare();
+                  fallbackShare(finalResult, resultMessage);
                 });
               } else {
-                fallbackShare();
+                fallbackShare(finalResult, resultMessage);
               }
               
-              function fallbackShare() {
-                navigator.clipboard.writeText(window.location.origin + "/game/ccgl").then(() => {
-                  alert("Test link copied to clipboard! Share it with your friends!");
-                  showResult();
+              function fallbackShare(result, message) {
+                var shareText = "I scored " + result + "% on the cheating rate test! " + window.location.origin + "/game/ccgl";
+                navigator.clipboard.writeText(shareText).then(() => {
+                  alert("Result and test link copied to clipboard! Share it with your friends!");
+                  showResult(result);
                 }).catch(() => {
                   // Show share overlay as last resort
                   document.getElementById('sharediv').style.display = '';
                   setTimeout(function() {
                     document.getElementById('sharediv').style.display = 'none';
-                    showResult();
+                    showResult(result);
                   }, 2000);
                 });
               }
               
-              function showResult() {
-                var randomResult = Math.floor(Math.random() * 51);
-                window.location.href = window.location.href.split('?')[0] + '?result=' + randomResult;
+              function showResult(result) {
+                window.location.href = window.location.href.split('?')[0] + '?result=' + result;
+              }
+              
+              function getResultMessage(result) {
+                if(result >= 0 && result <= 13) return "You're extremely loyal!";
+                if(result >= 14 && result <= 17) return "You're too lazy to cheat!";
+                if(result >= 18 && result <= 20) return "You're like a train on tracks!";
+                if(result >= 21 && result <= 25) return "You think about it but lack courage!";
+                if(result >= 26 && result <= 30) return "You're emotional and disciplined!";
+                if(result >= 31 && result <= 35) return "You just fantasize about it!";
+                if(result >= 36 && result <= 40) return "Too many temptations around you!";
+                if(result >= 41 && result <= 45) return "You might have multiple relationships!";
+                if(result >= 46 && result <= 50) return "You're quite the player!";
+                return "Interesting result!";
               }
             }
 //resultPath='http://game.9g.com/cscg/game.html?result='+resrand;
