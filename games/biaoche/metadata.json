@@ -1,0 +1,16 @@
+{
+  "id": "biaoche",
+  "title": "Racing Chase",
+  "category": ["Action", "Racing"],
+  "description": "An exciting racing game where you drive luxury cars and chase targets. Navigate through traffic, avoid obstacles, and achieve high scores in this fast-paced driving adventure.",
+  "controls": "Use touch controls to steer your car. Avoid obstacles and collect targets. The more targets you collect, the higher your score!",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Fast-paced racing action",
+    "Luxury car driving experience",
+    "Score-based gameplay",
+    "Smooth touch controls"
+  ],
+  "path": "/games/biaoche/index.html"
+}

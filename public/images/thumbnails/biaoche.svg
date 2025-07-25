@@ -1,0 +1,37 @@
+<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff6b6b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#ee5a24;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="300" height="200" fill="url(#bg-gradient)"/>
+  
+  <!-- Road -->
+  <rect x="0" y="120" width="300" height="60" fill="#2d3436"/>
+  <rect x="0" y="145" width="300" height="10" fill="#fdcb6e" opacity="0.8"/>
+  
+  <!-- Car -->
+  <rect x="120" y="130" width="60" height="30" rx="5" fill="#0984e3"/>
+  <rect x="125" y="135" width="50" height="20" rx="3" fill="#74b9ff"/>
+  
+  <!-- Wheels -->
+  <circle cx="135" cy="165" r="8" fill="#2d3436"/>
+  <circle cx="165" cy="165" r="8" fill="#2d3436"/>
+  <circle cx="135" cy="165" r="5" fill="#636e72"/>
+  <circle cx="165" cy="165" r="5" fill="#636e72"/>
+  
+  <!-- Speed lines -->
+  <line x1="80" y1="140" x2="110" y2="140" stroke="white" stroke-width="3" opacity="0.7"/>
+  <line x1="85" y1="150" x2="115" y2="150" stroke="white" stroke-width="2" opacity="0.5"/>
+  <line x1="90" y1="160" x2="115" y2="160" stroke="white" stroke-width="2" opacity="0.5"/>
+  
+  <!-- Hearts (targets) -->
+  <path d="M220 80 C215 75, 205 75, 200 85 C195 75, 185 75, 180 80 C180 90, 200 105, 200 105 C200 105, 220 90, 220 80 Z" fill="#e84393"/>
+  <path d="M260 100 C257 97, 252 97, 250 102 C248 97, 243 97, 240 100 C240 106, 250 115, 250 115 C250 115, 260 106, 260 100 Z" fill="#fd79a8"/>
+  
+  <!-- Title -->
+  <text x="150" y="30" text-anchor="middle" fill="white" font-size="20" font-weight="bold">Racing Chase</text>
+</svg>

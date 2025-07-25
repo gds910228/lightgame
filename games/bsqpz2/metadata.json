@@ -1,0 +1,16 @@
+{
+  "id": "bsqpz2",
+  "title": "OCD Challenge 2",
+  "category": ["Puzzle", "Casual"],
+  "description": "A challenging puzzle game that tests your patience and precision. Clear all the notification badges to satisfy your OCD tendencies. Perfect for those who love organizing and completing tasks.",
+  "controls": "Tap on notification badges to clear them. Clear all badges to complete each level. Be careful not to miss any!",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Multiple challenging levels",
+    "OCD-satisfying gameplay",
+    "Clean and minimalist design",
+    "Progressive difficulty"
+  ],
+  "path": "/games/bsqpz2/index.html"
+}

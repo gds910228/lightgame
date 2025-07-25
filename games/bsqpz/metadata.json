@@ -1,0 +1,16 @@
+{
+  "id": "bsqpz",
+  "title": "Avatar Maker",
+  "category": ["Casual", "Creative"],
+  "description": "Create custom avatars with notification badges! Upload your photo or choose from preset images, then add notification numbers to create fun profile pictures that will drive perfectionists crazy.",
+  "controls": "Tap 'Add Image' to upload your photo or select from preset images below. Choose a notification number from the dropdown menu, then tap 'Generate Avatar' to create your custom profile picture.",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Photo upload functionality",
+    "Preset avatar images",
+    "Customizable notification badges",
+    "Save and share created avatars"
+  ],
+  "path": "/games/bsqpz/index.html"
+}

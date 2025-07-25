@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <title>OCD Challenge 2</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        #gameContainer {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #gameTitle {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        #gameBoard {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+        }
+        
+        #notificationGrid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .notification-item {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            background: #2d3748;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid #4a5568;
+        }
+        
+        .notification-item:hover {
+            transform: scale(1.05);
+            border-color: #74b9ff;
+        }
+        
+        .notification-item.cleared {
+            background: #00b894;
+            border-color: #00a085;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #e17055;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .notification-badge.cleared {
+            opacity: 0;
+            transform: scale(0);
+        }
+        
+        #gameStats {
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+        
+        #gameComplete {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+        
+        button {
+            background: #74b9ff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        button:hover {
+            background: #0984e3;
+        }
+        
+        #instructions {
+            color: white;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .level-indicator {
+            color: white;
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="gameTitle">OCD Challenge 2</div>
+        
+        <div id="instructions">
+            Clear all notification badges to satisfy your OCD!<br>
+            Click on each notification to clear it.
+        </div>
+        
+        <div id="gameBoard">
+            <div class="level-indicator">Level <span id="currentLevel">1</span></div>
+            
+            <div id="gameStats">
+                <div>Cleared: <span id="clearedCount">0</span>/<span id="totalCount">16</span></div>
+                <div>Level: <span id="levelDisplay">1</span></div>
+            </div>
+            
+            <div id="notificationGrid"></div>
+            
+            <button onclick="resetLevel()">Reset Level</button>
+            <button onclick="nextLevel()">Next Level</button>
+        </div>
+        
+        <div id="gameComplete">
+            <h2>Level Complete!</h2>
+            <p>All notifications cleared!</p>
+            <p>Your OCD is satisfied... for now.</p>
+            <button onclick="nextLevel()">Next Level</button>
+            <button onclick="resetGame()">Restart Game</button>
+        </div>
+    </div>
+
+    <script>
+        let currentLevel = 1;
+        let clearedCount = 0;
+        let totalNotifications = 16;
+        let notifications = [];
+        
+        function initializeGame() {
+            generateNotifications();
+            updateStats();
+        }
+        
+        function generateNotifications() {
+            const grid = document.getElementById('notificationGrid');
+            grid.innerHTML = '';
+            notifications = [];
+            clearedCount = 0;
+            
+            // Generate random notification numbers for this level
+            const maxBadgeNumber = Math.min(99, currentLevel * 10);
+            
+            for (let i = 0; i < totalNotifications; i++) {
+                const notificationDiv = document.createElement('div');
+                notificationDiv.className = 'notification-item';
+                notificationDiv.onclick = () => clearNotification(i);
+                
+                const badge = document.createElement('div');
+                badge.className = 'notification-badge';
+                badge.textContent = Math.floor(Math.random() * maxBadgeNumber) + 1;
+                
+                notificationDiv.appendChild(badge);
+                grid.appendChild(notificationDiv);
+                
+                notifications.push({
+                    element: notificationDiv,
+                    badge: badge,
+                    cleared: false
+                });
+            }
+        }
+        
+        function clearNotification(index) {
+            if (notifications[index].cleared) return;
+            
+            const notification = notifications[index];
+            notification.cleared = true;
+            notification.element.classList.add('cleared');
+            notification.badge.classList.add('cleared');
+            
+            clearedCount++;
+            updateStats();
+            
+            // Add satisfying sound effect (visual feedback)
+            notification.element.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                notification.element.style.transform = 'scale(1)';
+            }, 150);
+            
+            if (clearedCount === totalNotifications) {
+                setTimeout(showLevelComplete, 500);
+            }
+        }
+        
+        function updateStats() {
+            document.getElementById('clearedCount').textContent = clearedCount;
+            document.getElementById('totalCount').textContent = totalNotifications;
+            document.getElementById('currentLevel').textContent = currentLevel;
+            document.getElementById('levelDisplay').textContent = currentLevel;
+        }
+        
+        function showLevelComplete() {
+            document.getElementById('gameComplete').style.display = 'block';
+        }
+        
+        function hideLevelComplete() {
+            document.getElementById('gameComplete').style.display = 'none';
+        }
+        
+        function nextLevel() {
+            currentLevel++;
+            hideLevelComplete();
+            
+            // Increase difficulty
+            if (currentLevel % 3 === 0) {
+                totalNotifications = Math.min(20, totalNotifications + 4);
+                updateGridLayout();
+            }
+            
+            generateNotifications();
+            updateStats();
+        }
+        
+        function resetLevel() {
+            generateNotifications();
+            updateStats();
+            hideLevelComplete();
+        }
+        
+        function resetGame() {
+            currentLevel = 1;
+            totalNotifications = 16;
+            updateGridLayout();
+            generateNotifications();
+            updateStats();
+            hideLevelComplete();
+        }
+        
+        function updateGridLayout() {
+            const grid = document.getElementById('notificationGrid');
+            const columns = Math.ceil(Math.sqrt(totalNotifications));
+            grid.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+        }
+        
+        // Initialize the game
+        initializeGame();
+        
+        // Add some visual flair
+        setInterval(() => {
+            const uncleared = notifications.filter(n => !n.cleared);
+            if (uncleared.length > 0) {
+                const randomNotification = uncleared[Math.floor(Math.random() * uncleared.length)];
+                randomNotification.badge.style.animation = 'pulse 0.5s ease-in-out';
+                setTimeout(() => {
+                    randomNotification.badge.style.animation = '';
+                }, 500);
+            }
+        }, 2000);
+        
+        // Add CSS animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.2); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

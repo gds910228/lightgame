@@ -1,0 +1,16 @@
+{
+  "id": "blglez",
+  "title": "Rescue Mission",
+  "category": ["Action", "Casual"],
+  "description": "An exciting rescue mission game where you help save people in need. Navigate through challenges and obstacles to complete your heroic mission successfully.",
+  "controls": "Tap and drag to move characters. Avoid obstacles and collect items to help with the rescue mission. Complete objectives to progress through levels.",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Heroic rescue gameplay",
+    "Multiple challenging levels",
+    "Intuitive touch controls",
+    "Engaging storyline"
+  ],
+  "path": "/games/blglez/index.html"
+}

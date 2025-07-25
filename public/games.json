@@ -1,6 +1,26 @@
 {
   "games": [
     {
+      "id": "bsqpz",
+      "title": "Avatar Maker",
+      "category": [
+        "Casual",
+        "Creative"
+      ],
+      "description": "Create custom avatars with notification badges! Upload your photo or choose from preset images, then add notification numbers to create fun profile pictures that will drive perfectionists crazy.",
+      "controls": "Tap 'Add Image' to upload your photo or select from preset images below. Choose a notification number from the dropdown menu, then tap 'Generate Avatar' to create your custom profile picture.",
+      "image": "/images/thumbnails/bsqpz.svg",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Photo upload functionality",
+        "Preset avatar images",
+        "Customizable notification badges",
+        "Save and share created avatars"
+      ],
+      "path": "/games/bsqpz/index.html"
+    },
+    {
       "id": "baba",
       "title": "Baba Game",
       "category": [
@@ -51,6 +71,66 @@
         "Score ranking system"
       ],
       "path": "/games/baozi/index.html"
+    },
+    {
+      "id": "bsqpz2",
+      "title": "OCD Challenge 2",
+      "category": [
+        "Puzzle",
+        "Casual"
+      ],
+      "description": "A challenging puzzle game that tests your patience and precision. Clear all the notification badges to satisfy your OCD tendencies. Perfect for those who love organizing and completing tasks.",
+      "controls": "Tap on notification badges to clear them. Clear all badges to complete each level. Be careful not to miss any!",
+      "image": "/images/thumbnails/bsqpz2.svg",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Multiple challenging levels",
+        "OCD-satisfying gameplay",
+        "Clean and minimalist design",
+        "Progressive difficulty"
+      ],
+      "path": "/games/bsqpz2/index.html"
+    },
+    {
+      "id": "biaoche",
+      "title": "Racing Chase",
+      "category": [
+        "Action",
+        "Racing"
+      ],
+      "description": "An exciting racing game where you drive luxury cars and chase targets. Navigate through traffic, avoid obstacles, and achieve high scores in this fast-paced driving adventure.",
+      "controls": "Use touch controls to steer your car. Avoid obstacles and collect targets. The more targets you collect, the higher your score!",
+      "image": "/images/thumbnails/biaoche.svg",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Fast-paced racing action",
+        "Luxury car driving experience",
+        "Score-based gameplay",
+        "Smooth touch controls"
+      ],
+      "path": "/games/biaoche/index.html"
+    },
+    {
+      "id": "blglez",
+      "title": "Medicine Rescue",
+      "category": [
+        "Puzzle",
+        "Casual"
+      ],
+      "description": "A puzzle game where you need to collect and use medicine pills to complete the rescue mission. Fill all the containers with the correct medicine to save the day!",
+      "controls": "Click and drag to move medicine pills into the correct containers. Fill all containers to complete the level and achieve victory!",
+      "image": "/images/thumbnails/blglez.svg",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Medicine collection gameplay",
+        "Puzzle-solving mechanics",
+        "Simple drag and drop controls",
+        "Victory celebration when completed"
+      ],
+      "path": "/games/blglez/index.html"
     },
     {
       "id": "snake",
