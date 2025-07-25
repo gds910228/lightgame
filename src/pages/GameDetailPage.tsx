@@ -3,9 +3,11 @@ import { useParams, Link } from 'react-router-dom'
 import { getGameById } from '../services/gameService'
 import { Game } from '../types'
 import GameLoader from '../components/GameLoader'
+import { useFavorites } from '../contexts/FavoritesContext'
 
 const GameDetailPage = () => {
   const { gameId } = useParams<{ gameId: string }>()
+  const { isFavorite, toggleFavorite } = useFavorites()
   
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
@@ -46,6 +48,13 @@ const GameDetailPage = () => {
 
   const handleCloseGame = () => {
     setShowGameLoader(false);
+  };
+
+  const handleFavoriteClick = () => {
+    if (game) {
+      console.log('Favorite button clicked in GameDetailPage for game:', game.id);
+      toggleFavorite(game.id);
+    }
   };
   
   if (loading) {
@@ -109,8 +118,16 @@ const GameDetailPage = () => {
               <div className="flex items-center mb-4">
                 <h1 className="text-3xl font-bold text-gray-900">{game.title}</h1>
                 <div className="ml-auto flex gap-2">
-                  <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
-                    <i className="fas fa-heart text-gray-500"></i>
+                  <button 
+                    onClick={handleFavoriteClick}
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 transform hover:scale-110 ${
+                      isFavorite(game.id)
+                        ? 'bg-red-500 text-white shadow-lg' 
+                        : 'bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-red-500'
+                    }`}
+                    title={isFavorite(game.id) ? '取消收藏' : '添加到收藏'}
+                  >
+                    <i className={`fas fa-heart ${isFavorite(game.id) ? 'animate-pulse' : ''}`}></i>
                   </button>
                   <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
                     <i className="fas fa-share text-gray-500"></i>

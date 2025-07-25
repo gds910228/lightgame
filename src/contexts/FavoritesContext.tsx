@@ -20,14 +20,20 @@ interface FavoritesProviderProps {
 export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }) => {
   const [favorites, setFavorites] = useState<string[]>([]);
 
+  console.log('FavoritesProvider initialized');
+
   // 从localStorage加载收藏数据
   useEffect(() => {
+    console.log('FavoritesProvider useEffect running');
     try {
       const savedFavorites = localStorage.getItem(FAVORITES_STORAGE_KEY);
+      console.log('Saved favorites from localStorage:', savedFavorites);
       if (savedFavorites) {
         const parsedFavorites = JSON.parse(savedFavorites);
+        console.log('Parsed favorites:', parsedFavorites);
         if (Array.isArray(parsedFavorites)) {
           setFavorites(parsedFavorites);
+          console.log('Favorites set to:', parsedFavorites);
         }
       }
     } catch (error) {
@@ -141,8 +147,11 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
 };
 
 export const useFavorites = () => {
+  console.log('useFavorites hook called');
   const context = useContext(FavoritesContext);
+  console.log('FavoritesContext value:', context);
   if (context === undefined) {
+    console.error('useFavorites called outside of FavoritesProvider!');
     throw new Error('useFavorites must be used within a FavoritesProvider');
   }
   return context;

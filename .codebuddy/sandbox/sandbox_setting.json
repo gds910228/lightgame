@@ -1,0 +1,20 @@
+{
+  "path": "d:\\WorkProjects\\Cursor\\lightgame\\dist",
+  "desc": "This is a comprehensive game platform featuring 12 HTML5 games with advanced features including dynamic game loading, scalable architecture, game favorites system, and performance optimization. The platform includes puzzle games, action games, racing games, and casual games with a modern Material Design interface.",
+  "id": "d4127aeef1d04d72ae7e7cfa3df11e7d",
+  "data": {
+    "spaceKey": "d4127aeef1d04d72ae7e7cfa3df11e7d",
+    "connections": {
+      "webIDE": "https://d4127aeef1d04d72ae7e7cfa3df11e7d.ap-singapore.cloudstudio.club",
+      "preview": "https://d4127aeef1d04d72ae7e7cfa3df11e7d--{port}.ap-singapore.cloudstudio.club",
+      "api": "https://d4127aeef1d04d72ae7e7cfa3df11e7d--api.ap-singapore.cloudstudio.club",
+      "pty": "https://d4127aeef1d04d72ae7e7cfa3df11e7d--pty.ap-singapore.cloudstudio.club"
+    }
+  },
+  "config": {
+    "api": "https://d4127aeef1d04d72ae7e7cfa3df11e7d--api.ap-singapore.cloudstudio.club",
+    "pty": "https://d4127aeef1d04d72ae7e7cfa3df11e7d--pty.ap-singapore.cloudstudio.club",
+    "region": "ap-shanghai",
+    "spaceKey": "d4127aeef1d04d72ae7e7cfa3df11e7d"
+  }
+}
