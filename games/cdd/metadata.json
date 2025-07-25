@@ -1,0 +1,16 @@
+{
+  "id": "cdd",
+  "title": "Pac-Dots",
+  "description": "A classic Pac-Man style game where you collect dots while avoiding enemies. Navigate through the maze and try to achieve the highest score possible!",
+  "category": ["Arcade", "Classic"],
+  "image": "/games/cdd/icon.png",
+  "controls": "Use arrow keys or swipe gestures to move your character. Collect all dots while avoiding enemies. Get power-ups to turn the tables!",
+  "features": [
+    "Classic arcade gameplay",
+    "Maze navigation",
+    "Score tracking",
+    "Power-up system"
+  ],
+  "author": "Arcade Studio",
+  "version": "1.0"
+}

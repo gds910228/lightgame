@@ -1,0 +1,16 @@
+{
+  "id": "bttz",
+  "title": "Ice Bucket Challenge",
+  "description": "Take on the viral Ice Bucket Challenge! See how many buckets you can pour in 10 seconds. Test your speed and reflexes in this fun arcade game.",
+  "category": ["Arcade", "Casual"],
+  "image": "/games/bttz/img/01.jpg",
+  "controls": "Hold down mouse button or touch and hold to pour water. Release to stop pouring. Try to pour as many buckets as possible within the time limit.",
+  "features": [
+    "10-second time challenge",
+    "Simple tap-and-hold controls",
+    "Score tracking and best records",
+    "Fun sound effects"
+  ],
+  "author": "Game Studio",
+  "version": "1.0"
+}

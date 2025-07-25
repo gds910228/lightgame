@@ -1,0 +1,16 @@
+{
+  "id": "bunengsi",
+  "title": "None Can Die",
+  "description": "A challenging puzzle game where you must keep everyone alive. Test your reflexes and strategic thinking in this addictive game that's hard to put down!",
+  "category": ["Puzzle", "Casual"],
+  "image": "/games/bunengsi/460.jpg",
+  "controls": "Use mouse or touch to control the game. Follow on-screen instructions to keep all characters alive.",
+  "features": [
+    "Challenging puzzle gameplay",
+    "Addictive mechanics",
+    "Test your reflexes",
+    "Strategic thinking required"
+  ],
+  "author": "Game Studio",
+  "version": "1.0"
+}

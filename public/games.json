@@ -9,7 +9,6 @@
       ],
       "description": "Create custom avatars with notification badges! Upload your photo or choose from preset images, then add notification numbers to create fun profile pictures that will drive perfectionists crazy.",
       "controls": "Tap 'Add Image' to upload your photo or select from preset images below. Choose a notification number from the dropdown menu, then tap 'Generate Avatar' to create your custom profile picture.",
-      "image": "/images/thumbnails/bsqpz.svg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -73,6 +72,66 @@
       "path": "/games/baozi/index.html"
     },
     {
+      "id": "ccgl",
+      "title": "Cheating Rate Test",
+      "description": "Take this psychological test to discover your cheating probability! Answer 10 questions honestly and find out how likely you are to be unfaithful in relationships.",
+      "category": [
+        "Quiz",
+        "Casual"
+      ],
+      "image": "/games/ccgl/cggl.jpg",
+      "controls": "Click or tap to select answers for each question. Navigate through the quiz using the provided buttons.",
+      "features": [
+        "10 psychological questions",
+        "Personality analysis",
+        "Share your results",
+        "Fun relationship insights"
+      ],
+      "author": "Quiz Studio",
+      "version": "1.0",
+      "path": "/games/ccgl/index.html"
+    },
+    {
+      "id": "bttz",
+      "title": "Ice Bucket Challenge",
+      "description": "Take on the viral Ice Bucket Challenge! See how many buckets you can pour in 10 seconds. Test your speed and reflexes in this fun arcade game.",
+      "category": [
+        "Arcade",
+        "Casual"
+      ],
+      "image": "/games/bttz/img/01.jpg",
+      "controls": "Hold down mouse button or touch and hold to pour water. Release to stop pouring. Try to pour as many buckets as possible within the time limit.",
+      "features": [
+        "10-second time challenge",
+        "Simple tap-and-hold controls",
+        "Score tracking and best records",
+        "Fun sound effects"
+      ],
+      "author": "Game Studio",
+      "version": "1.0",
+      "path": "/games/bttz/index.html"
+    },
+    {
+      "id": "bunengsi",
+      "title": "None Can Die",
+      "description": "A challenging puzzle game where you must keep everyone alive. Test your reflexes and strategic thinking in this addictive game that's hard to put down!",
+      "category": [
+        "Puzzle",
+        "Casual"
+      ],
+      "image": "/games/bunengsi/460.jpg",
+      "controls": "Use mouse or touch to control the game. Follow on-screen instructions to keep all characters alive.",
+      "features": [
+        "Challenging puzzle gameplay",
+        "Addictive mechanics",
+        "Test your reflexes",
+        "Strategic thinking required"
+      ],
+      "author": "Game Studio",
+      "version": "1.0",
+      "path": "/games/bunengsi/index.html"
+    },
+    {
       "id": "bsqpz2",
       "title": "OCD Challenge 2",
       "category": [
@@ -81,7 +140,6 @@
       ],
       "description": "A challenging puzzle game that tests your patience and precision. Clear all the notification badges to satisfy your OCD tendencies. Perfect for those who love organizing and completing tasks.",
       "controls": "Tap on notification badges to clear them. Clear all badges to complete each level. Be careful not to miss any!",
-      "image": "/images/thumbnails/bsqpz2.svg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -93,6 +151,26 @@
       "path": "/games/bsqpz2/index.html"
     },
     {
+      "id": "cdd",
+      "title": "Pac-Dots",
+      "description": "A classic Pac-Man style game where you collect dots while avoiding enemies. Navigate through the maze and try to achieve the highest score possible!",
+      "category": [
+        "Arcade",
+        "Classic"
+      ],
+      "image": "/games/cdd/icon.png",
+      "controls": "Use arrow keys or swipe gestures to move your character. Collect all dots while avoiding enemies. Get power-ups to turn the tables!",
+      "features": [
+        "Classic arcade gameplay",
+        "Maze navigation",
+        "Score tracking",
+        "Power-up system"
+      ],
+      "author": "Arcade Studio",
+      "version": "1.0",
+      "path": "/games/cdd/index.html"
+    },
+    {
       "id": "biaoche",
       "title": "Racing Chase",
       "category": [
@@ -101,7 +179,6 @@
       ],
       "description": "An exciting racing game where you drive luxury cars and chase targets. Navigate through traffic, avoid obstacles, and achieve high scores in this fast-paced driving adventure.",
       "controls": "Use touch controls to steer your car. Avoid obstacles and collect targets. The more targets you collect, the higher your score!",
-      "image": "/images/thumbnails/biaoche.svg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -114,21 +191,20 @@
     },
     {
       "id": "blglez",
-      "title": "Medicine Rescue",
+      "title": "Rescue Mission",
       "category": [
-        "Puzzle",
+        "Action",
         "Casual"
       ],
-      "description": "A puzzle game where you need to collect and use medicine pills to complete the rescue mission. Fill all the containers with the correct medicine to save the day!",
-      "controls": "Click and drag to move medicine pills into the correct containers. Fill all containers to complete the level and achieve victory!",
-      "image": "/images/thumbnails/blglez.svg",
+      "description": "An exciting rescue mission game where you help save people in need. Navigate through challenges and obstacles to complete your heroic mission successfully.",
+      "controls": "Tap and drag to move characters. Avoid obstacles and collect items to help with the rescue mission. Complete objectives to progress through levels.",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
-        "Medicine collection gameplay",
-        "Puzzle-solving mechanics",
-        "Simple drag and drop controls",
-        "Victory celebration when completed"
+        "Heroic rescue gameplay",
+        "Multiple challenging levels",
+        "Intuitive touch controls",
+        "Engaging storyline"
       ],
       "path": "/games/blglez/index.html"
     },

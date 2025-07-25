@@ -1,0 +1,16 @@
+{
+  "id": "ccgl",
+  "title": "Cheating Rate Test",
+  "description": "Take this psychological test to discover your cheating probability! Answer 10 questions honestly and find out how likely you are to be unfaithful in relationships.",
+  "category": ["Quiz", "Casual"],
+  "image": "/games/ccgl/cggl.jpg",
+  "controls": "Click or tap to select answers for each question. Navigate through the quiz using the provided buttons.",
+  "features": [
+    "10 psychological questions",
+    "Personality analysis",
+    "Share your results",
+    "Fun relationship insights"
+  ],
+  "author": "Quiz Studio",
+  "version": "1.0"
+}
