@@ -56,6 +56,69 @@ const GameDetailPage = () => {
       toggleFavorite(game.id);
     }
   };
+
+  const handleShareClick = async () => {
+    if (!game) return;
+
+    const gameUrl = `${window.location.origin}/game/${game.id}`;
+    const shareData = {
+      title: `${game.title} - LightGame`,
+      text: `Check out this awesome game: ${game.title}`,
+      url: gameUrl
+    };
+
+    // Try to use Web Share API first (mobile devices)
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        showNotification('Game shared successfully!', 'success');
+        return;
+      } catch (error) {
+        console.log('Web Share API failed:', error);
+      }
+    }
+
+    // Fallback: Copy to clipboard
+    try {
+      await navigator.clipboard.writeText(gameUrl);
+      showNotification('Game link copied to clipboard!', 'success');
+    } catch (error) {
+      console.error('Failed to copy to clipboard:', error);
+      showNotification('Failed to share game', 'error');
+    }
+  };
+
+  // Simple notification function
+  const showNotification = (message: string, type: 'success' | 'info' | 'error') => {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-4 py-2 rounded-lg text-white font-medium transition-all duration-300 transform translate-x-full`;
+    
+    switch (type) {
+      case 'success':
+        notification.className += ' bg-green-500';
+        break;
+      case 'info':
+        notification.className += ' bg-blue-500';
+        break;
+      case 'error':
+        notification.className += ' bg-red-500';
+        break;
+    }
+    
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+      notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    setTimeout(() => {
+      notification.classList.add('translate-x-full');
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 300);
+    }, 3000);
+  };
   
   if (loading) {
     return (
@@ -129,7 +192,11 @@ const GameDetailPage = () => {
                   >
                     <i className={`fas fa-heart ${isFavorite(game.id) ? 'animate-pulse' : ''}`}></i>
                   </button>
-                  <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
+                  <button 
+                    onClick={handleShareClick}
+                    className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors"
+                    title="Share this game"
+                  >
                     <i className="fas fa-share text-gray-500"></i>
                   </button>
                 </div>
