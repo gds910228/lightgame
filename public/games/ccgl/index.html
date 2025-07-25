@@ -105,15 +105,43 @@
 
       });
             var mask = function () {
-              // Show share overlay first
-              document.getElementById('sharediv').style.display = '';
-              // After 2 seconds, hide share overlay and show result
-              setTimeout(function() {
-                document.getElementById('sharediv').style.display = 'none';
-                // Generate random result and show it
+              // Try to use Web Share API first
+              if (navigator.share) {
+                var shareText = "I just took a cheating rate test! Want to know your result?";
+                navigator.share({
+                  title: "Cheating Rate Test",
+                  text: shareText,
+                  url: window.location.origin + "/game/ccgl"
+                }).then(() => {
+                  console.log('Share successful');
+                  // Show result after sharing
+                  showResult();
+                }).catch((error) => {
+                  console.log('Share failed:', error);
+                  fallbackShare();
+                });
+              } else {
+                fallbackShare();
+              }
+              
+              function fallbackShare() {
+                navigator.clipboard.writeText(window.location.origin + "/game/ccgl").then(() => {
+                  alert("Test link copied to clipboard! Share it with your friends!");
+                  showResult();
+                }).catch(() => {
+                  // Show share overlay as last resort
+                  document.getElementById('sharediv').style.display = '';
+                  setTimeout(function() {
+                    document.getElementById('sharediv').style.display = 'none';
+                    showResult();
+                  }, 2000);
+                });
+              }
+              
+              function showResult() {
                 var randomResult = Math.floor(Math.random() * 51);
                 window.location.href = window.location.href.split('?')[0] + '?result=' + randomResult;
-              }, 2000);
+              }
             }
 //resultPath='http://game.9g.com/cscg/game.html?result='+resrand;
 resultPath='http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&idx=1&sn=1de5daeaae94c66a3c46a13e20e8011e#rd'+resrand;
@@ -129,6 +157,10 @@ window.shareData = {
 		}
 		function clickMore(){
 			window.location = window.location.origin + "/?category=Quiz";
+		}
+		
+		function goToHome(){
+			window.location = window.location.origin;
 		}
     document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
         
@@ -388,9 +420,9 @@ text-align:left;
      <a href="#" onclick="clickMore();" style="text-decoration:none;font-size: 25px;color: #f00;font-weight: bold;display: block;margin-top:10px;">More Tests</a>
 
 
-    <a href="#" onclick="clickMore();" style="display: block;margin-top:80px;text-decoration:none"><img src="images/more.jpg" width="100%"></a>
+    <a href="#" onclick="goToHome();" style="display: block;margin-top:80px;text-decoration:none"><img src="images/more.jpg" width="100%"></a>
 
-    <a style="font-size: 30px;color: #f00;font-weight: bold;display: block;margin-top:35px;text-decoration:none" href="#" onclick="clickMore();">猛戳我，奥巴马和金正恩都惊呆了！！！</a>
+    <a style="font-size: 30px;color: #f00;font-weight: bold;display: block;margin-top:35px;text-decoration:none" href="#" onclick="goToHome();">Back to Home</a>
 </div>
 <div class="question " id="firstQ">
   <div class="question-title">

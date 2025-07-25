@@ -27,18 +27,38 @@
 		}
 		
 		function dp_share(t){
-			document.title = t/1000+"秒！不行了，我都快变双重人格了！这游戏实在太虐心了！";
-			document.getElementById("share").style.display="";
+			document.title = "I survived "+(t/1000)+" seconds in None Can Die! This game is incredibly challenging!";
+			// Try to use Web Share API first
+			if (navigator.share) {
+				navigator.share({
+					title: document.title,
+					text: "Check out this challenging puzzle game!",
+					url: window.location.href
+				}).then(() => {
+					console.log('Share successful');
+				}).catch((error) => {
+					console.log('Share failed:', error);
+					fallbackShare();
+				});
+			} else {
+				fallbackShare();
+			}
+			
+			function fallbackShare() {
+				navigator.clipboard.writeText(window.location.href).then(() => {
+					alert("Game link copied to clipboard! Challenge your friends!");
+				}).catch(() => {
+					document.getElementById("share").style.display="";
+				});
+			}
 			window.shareData.tTitle = document.title;
 		}
 
 		function dp_share2(t){
-			document.title = t/1000+"秒！不行了，我都快变双重人格了！这游戏实在太虐心了！";
-			document.getElementById("share").style.display="";
-			window.shareData.tTitle = document.title;
+			dp_share(t);
 		}
 		function dp_Ranking(){
-			window.location=mebtnopenurl;
+			window.location = window.location.origin + "/?category=Puzzle";
 		}
 
 		function showAd(){

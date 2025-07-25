@@ -90,8 +90,33 @@
 			window.location = window.location.origin;
 		}
 		function dp_share(){
-			document.title ="原来我这么吊，吃了"+myData.score+"分的豆豆，吊炸天是形容我的？";
-			document.getElementById("share").style.display="";
+			document.title ="I scored "+myData.score+" points in Pac-Dots! Can you beat my score?";
+			// Try to use Web Share API first
+			if (navigator.share) {
+				navigator.share({
+					title: document.title,
+					text: "Check out this awesome game!",
+					url: window.location.href
+				}).then(() => {
+					console.log('Share successful');
+				}).catch((error) => {
+					console.log('Share failed:', error);
+					// Fallback to clipboard
+					fallbackShare();
+				});
+			} else {
+				fallbackShare();
+			}
+			
+			function fallbackShare() {
+				// Copy link to clipboard and show notification
+				navigator.clipboard.writeText(window.location.href).then(() => {
+					alert("Game link copied to clipboard! Share it with your friends!");
+				}).catch(() => {
+					// Show share overlay as last resort
+					document.getElementById("share").style.display="";
+				});
+			}
 			window.shareData.tTitle = document.title;
 		}
 		function dp_Ranking(){
