@@ -10,35 +10,104 @@
 <link rel="stylesheet" href="./static/83a3be90ad264dab/game.css">
 <script>var gConfig={wxDesc:"\u6211\u8981\u9a7e\u8c6a\u8f66\u8ffd\u4e0a210\u4e2a\u59b9\u5b50\uff0c\u6253\u7834\u6700\u9ad8\u8bb0\u5f55\uff0c\u6c42\u56f4\u89c2\uff01",wxData:{appId:"",imgUrl:"http://g.lanrenmb.com/t017bbde5550e655af3.png",link:'http://g.lanrenmb.com/games/biaoche/index.html',desc:"",title:"\u98d9\u8f66\u8ffd\u59b9\u5b50"},activeId:"ac174b",sApi:"http://sehd.360.cn/turntable/base/draw"}<script>
 // Add keyboard controls for Racing Chase
-document.addEventListener('keydown', function(event) {
-    // Prevent default behavior for game keys
-    if ([37, 38, 39, 40, 65, 87, 68, 83].includes(event.keyCode)) {
-        event.preventDefault();
-    }
-    
-    // Simulate touch/click events for keyboard controls
-    switch(event.keyCode) {
-        case 37: // Left arrow
-        case 65:  // A key
-            // Trigger left movement
-            if (typeof moveLeft === 'function') moveLeft();
-            break;
-        case 39: // Right arrow  
-        case 68:  // D key
-            // Trigger right movement
-            if (typeof moveRight === 'function') moveRight();
-            break;
-        case 38: // Up arrow
-        case 87:  // W key
-            // Trigger acceleration
-            if (typeof accelerate === 'function') accelerate();
-            break;
-        case 40: // Down arrow
-        case 83:  // S key
-            // Trigger brake
-            if (typeof brake === 'function') brake();
-            break;
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for game to load
+    setTimeout(function() {
+        document.addEventListener('keydown', function(event) {
+            // Prevent default behavior for game keys
+            if ([37, 38, 39, 40, 65, 87, 68, 83].includes(event.keyCode)) {
+                event.preventDefault();
+            }
+            
+            // Simulate touch events for keyboard controls
+            var touchEvent = new TouchEvent('touchstart', {
+                bubbles: true,
+                cancelable: true,
+                touches: [{
+                    clientX: 100,
+                    clientY: 100
+                }]
+            });
+            
+            switch(event.keyCode) {
+                case 37: // Left arrow
+                case 65:  // A key
+                    // Simulate left touch area
+                    var leftArea = document.elementFromPoint(100, window.innerHeight / 2);
+                    if (leftArea) leftArea.dispatchEvent(touchEvent);
+                    break;
+                case 39: // Right arrow  
+                case 68:  // D key
+                    // Simulate right touch area
+                    var rightArea = document.elementFromPoint(window.innerWidth - 100, window.innerHeight / 2);
+                    if (rightArea) rightArea.dispatchEvent(touchEvent);
+                    break;
+                case 38: // Up arrow
+                case 87:  // W key
+                    // Simulate up touch area
+                    var upArea = document.elementFromPoint(window.innerWidth / 2, 100);
+                    if (upArea) upArea.dispatchEvent(touchEvent);
+                    break;
+                case 40: // Down arrow
+                case 83:  // S key
+                    // Simulate down touch area
+                    var downArea = document.elementFromPoint(window.innerWidth / 2, window.innerHeight - 100);
+                    if (downArea) downArea.dispatchEvent(touchEvent);
+                    break;
+            }
+        });
+    }, 2000); // Wait 2 seconds for game to fully load
+});
+</script>
+<script>
+// Add keyboard controls for Racing Chase
+document.addEventListener('DOMContentLoaded', function() {
+    // Wait for game to load
+    setTimeout(function() {
+        document.addEventListener('keydown', function(event) {
+            // Prevent default behavior for game keys
+            if ([37, 38, 39, 40, 65, 87, 68, 83].includes(event.keyCode)) {
+                event.preventDefault();
+            }
+            
+            // Simulate touch events for keyboard controls
+            var touchEvent = new TouchEvent('touchstart', {
+                bubbles: true,
+                cancelable: true,
+                touches: [{
+                    clientX: 100,
+                    clientY: 100
+                }]
+            });
+            
+            switch(event.keyCode) {
+                case 37: // Left arrow
+                case 65:  // A key
+                    // Simulate left touch area
+                    var leftArea = document.elementFromPoint(100, window.innerHeight / 2);
+                    if (leftArea) leftArea.dispatchEvent(touchEvent);
+                    break;
+                case 39: // Right arrow  
+                case 68:  // D key
+                    // Simulate right touch area
+                    var rightArea = document.elementFromPoint(window.innerWidth - 100, window.innerHeight / 2);
+                    if (rightArea) rightArea.dispatchEvent(touchEvent);
+                    break;
+                case 38: // Up arrow
+                case 87:  // W key
+                    // Simulate up touch area
+                    var upArea = document.elementFromPoint(window.innerWidth / 2, 100);
+                    if (upArea) upArea.dispatchEvent(touchEvent);
+                    break;
+                case 40: // Down arrow
+                case 83:  // S key
+                    // Simulate down touch area
+                    var downArea = document.elementFromPoint(window.innerWidth / 2, window.innerHeight - 100);
+                    if (downArea) downArea.dispatchEvent(touchEvent);
+                    break;
+            }
+        });
+    }, 2000); // Wait 2 seconds for game to fully load
 });
 </script>
 </head>
