@@ -72,9 +72,13 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
 
   // 切换收藏状态
   const toggleFavorite = (gameId: string) => {
+    console.log('toggleFavorite called for:', gameId);
+    console.log('Current favorites:', favorites);
     if (isFavorite(gameId)) {
+      console.log('Removing from favorites');
       removeFromFavorites(gameId);
     } else {
+      console.log('Adding to favorites');
       addToFavorites(gameId);
     }
   };

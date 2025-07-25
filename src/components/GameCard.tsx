@@ -19,7 +19,10 @@ const GameCard = ({ game }: GameCardProps) => {
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.preventDefault(); // 阻止Link导航
     e.stopPropagation(); // 阻止事件冒泡
+    console.log('Favorite button clicked for game:', game.id);
+    console.log('Current favorite status:', isGameFavorite);
     toggleFavorite(game.id);
+    console.log('Toggle favorite called');
   };
 
   return (
