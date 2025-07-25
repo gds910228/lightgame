@@ -1,7 +1,8 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getGameById } from '../services/gameService'
 import { Game } from '../types'
+import GameLoader from '../components/GameLoader'
 
 const GameDetailPage = () => {
   const { gameId } = useParams<{ gameId: string }>()
@@ -9,12 +10,7 @@ const GameDetailPage = () => {
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [isFullScreen, setIsFullScreen] = useState(false)
-  const [iframeLoaded, setIframeLoaded] = useState(false)
-  
-  const fullscreenContainerRef = useRef<HTMLDivElement>(null)
-  const iframeRef = useRef<HTMLIFrameElement>(null)
-  const exitButtonRef = useRef<HTMLButtonElement>(null)
+  const [showGameLoader, setShowGameLoader] = useState(false)
   
   // Fetch game details
   useEffect(() => {
@@ -44,147 +40,12 @@ const GameDetailPage = () => {
     fetchGameDetails()
   }, [gameId])
   
-  // Handle fullscreen mode
-  const enterFullScreen = () => {
-    if (!game) return;
-    
-    setIsFullScreen(true);
-    setIframeLoaded(false);
-    
-    // Request fullscreen on the container
-    const container = fullscreenContainerRef.current;
-    if (container) {
-      if (container.requestFullscreen) {
-        container.requestFullscreen();
-      } else if ((container as any).mozRequestFullScreen) {
-        (container as any).mozRequestFullScreen();
-      } else if ((container as any).webkitRequestFullscreen) {
-        (container as any).webkitRequestFullscreen();
-      } else if ((container as any).msRequestFullscreen) {
-        (container as any).msRequestFullscreen();
-      }
-    }
-    
-    // Listen for fullscreen change events
-    document.addEventListener('fullscreenchange', handleFullscreenChange);
-    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-  };
-  
-  // Handle fullscreen change events
-  const handleFullscreenChange = () => {
-    const isCurrentlyFullscreen = !!(
-      document.fullscreenElement ||
-      (document as any).webkitFullscreenElement ||
-      (document as any).mozFullScreenElement ||
-      (document as any).msFullscreenElement
-    )
-    
-    if (!isCurrentlyFullscreen && isFullScreen) {
-      exitFullScreen()
-    }
-  }
-  
-  // Exit fullscreen mode
-  const exitFullScreen = () => {
-    setIsFullScreen(false)
-    setIframeLoaded(false)
-    
-    // Remove event listeners
-    document.removeEventListener('fullscreenchange', handleFullscreenChange)
-    document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
-    document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
-    document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
-    
-    // Exit fullscreen if needed
-    if (document.fullscreenElement) {
-      document.exitFullscreen()
-    } else if ((document as any).webkitExitFullscreen) {
-      (document as any).webkitExitFullscreen()
-    } else if ((document as any).mozCancelFullScreen) {
-      (document as any).mozCancelFullScreen()
-    } else if ((document as any).msExitFullscreen) {
-      (document as any).msExitFullscreen()
-    }
-  }
-  
-  // Clean up event listeners on unmount
-  useEffect(() => {
-    return () => {
-      document.removeEventListener('fullscreenchange', handleFullscreenChange)
-      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange)
-      document.removeEventListener('mozfullscreenchange', handleFullscreenChange)
-      document.removeEventListener('MSFullscreenChange', handleFullscreenChange)
-    }
-  }, [])
-
-  // Handle keyboard events for the iframe
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (isFullScreen && iframeRef.current) {
-        // 将键盘事件传递给iframe
-        const iframe = iframeRef.current;
-        const iframeWindow = iframe.contentWindow;
-        if (iframeWindow) {
-          iframeWindow.focus();
-        }
-      }
-      
-      // 处理ESC键退出全屏
-      if (e.key === 'Escape' && isFullScreen) {
-        exitFullScreen();
-      }
-    };
-
-    if (isFullScreen) {
-      window.addEventListener('keydown', handleKeyDown);
-    }
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isFullScreen]);
-  
-  // 确保退出按钮始终在最上层并可点击
-  useEffect(() => {
-    if (isFullScreen && exitButtonRef.current) {
-      // 确保按钮在iframe之上
-      exitButtonRef.current.style.pointerEvents = 'auto';
-      
-      // 添加点击事件监听器
-      const handleExitClick = () => exitFullScreen();
-      exitButtonRef.current.addEventListener('click', handleExitClick);
-      
-      return () => {
-        if (exitButtonRef.current) {
-          exitButtonRef.current.removeEventListener('click', handleExitClick);
-        }
-      };
-    }
-  }, [isFullScreen]);
-  
-  // 添加iframe加载事件处理
-  const handleIframeLoad = () => {
-    console.log('iframe loaded:', game?.path);
-    
-    // 尝试访问iframe内容以检查是否成功加载
-    try {
-      const iframe = iframeRef.current;
-      if (iframe && iframe.contentWindow) {
-        // 设置iframe为已加载状态
-        setIframeLoaded(true);
-        console.log('iframe content window accessible');
-      }
-    } catch (err) {
-      console.error('Error accessing iframe content:', err);
-    }
+  const handlePlayGame = () => {
+    setShowGameLoader(true);
   };
 
-  // 添加iframe错误处理
-  const handleIframeError = () => {
-    console.error('iframe failed to load:', game?.path);
-    setError('游戏加载失败，请刷新页面重试');
+  const handleCloseGame = () => {
+    setShowGameLoader(false);
   };
   
   if (loading) {
@@ -208,8 +69,8 @@ const GameDetailPage = () => {
   
   return (
     <>
-      {/* Normal view */}
-      <div className={`animate-fade-in ${isFullScreen ? 'hidden' : ''}`}>
+      {/* Game Details View */}
+      <div className="animate-fade-in">
         {/* Back button */}
         <Link to="/" className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 group">
           <i className="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
@@ -239,7 +100,7 @@ const GameDetailPage = () => {
               
               {/* Category badge */}
               <div className="absolute top-4 right-4 z-20 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium text-gray-800">
-                {game.category}
+                {Array.isArray(game.category) ? game.category.join(', ') : game.category}
               </div>
             </div>
             
@@ -269,15 +130,37 @@ const GameDetailPage = () => {
                 </p>
               </div>
               
-              {/* Debug info */}
-              <div className="mb-4 p-2 bg-gray-100 rounded text-xs font-mono">
-                <p>Game path: {game.path}</p>
-                <p>Image path: {game.image}</p>
+              {/* Game Features */}
+              {game.features && game.features.length > 0 && (
+                <div className="mb-8">
+                  <h2 className="text-xl font-semibold mb-2">Features</h2>
+                  <ul className="list-disc list-inside text-gray-700 space-y-1">
+                    {game.features.map((feature, index) => (
+                      <li key={index}>{feature}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {/* Game Info */}
+              <div className="mb-6 flex flex-wrap gap-4 text-sm text-gray-600">
+                {game.author && (
+                  <div className="flex items-center">
+                    <i className="fas fa-user mr-2"></i>
+                    <span>by {game.author}</span>
+                  </div>
+                )}
+                {game.version && (
+                  <div className="flex items-center">
+                    <i className="fas fa-tag mr-2"></i>
+                    <span>v{game.version}</span>
+                  </div>
+                )}
               </div>
               
               {/* Play button */}
               <button
-                onClick={enterFullScreen}
+                onClick={handlePlayGame}
                 className="btn btn-primary w-full flex items-center justify-center group"
               >
                 <i className="fas fa-play mr-2 group-hover:animate-pulse"></i>
@@ -288,51 +171,12 @@ const GameDetailPage = () => {
         </div>
       </div>
       
-      {/* Fullscreen container */}
-      <div 
-        ref={fullscreenContainerRef}
-        className={`fixed inset-0 bg-black z-50 ${isFullScreen ? 'block' : 'hidden'}`}
-      >
-        {/* Game iframe */}
-        {isFullScreen && (
-          <>
-            {/* 添加一个预加载指示器 - 修改为在iframe加载完成后隐藏 */}
-            <div className={`absolute inset-0 flex items-center justify-center bg-black transition-opacity duration-300 ${iframeLoaded ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-              <div className="text-white text-lg">游戏加载中...</div>
-            </div>
-            
-            <iframe
-              ref={iframeRef}
-              src={game.path}
-              className="w-full h-full border-0"
-              title={game.title}
-              sandbox="allow-scripts allow-same-origin"
-              allow="fullscreen; gamepad; keyboard; accelerometer; autoplay"
-              loading="eager"
-              referrerPolicy="no-referrer"
-              onLoad={handleIframeLoad}
-              onError={handleIframeError}
-              style={{ backgroundColor: '#000' }}
-            ></iframe>
-            
-            {/* Exit button - 使用绝对定位确保始终在最上层 */}
-            <button
-              ref={exitButtonRef}
-              onClick={exitFullScreen}
-              className="absolute top-4 right-4 bg-red-600 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors z-[9999]"
-              style={{ 
-                cursor: 'pointer',
-                pointerEvents: 'auto',
-                boxShadow: '0 0 10px rgba(0,0,0,0.5)'
-              }}
-            >
-              <i className="fas fa-times text-xl"></i>
-            </button>
-          </>
-        )}
-      </div>
+      {/* Game Loader Modal */}
+      {showGameLoader && game && (
+        <GameLoader game={game} onClose={handleCloseGame} />
+      )}
     </>
   )
 }
 
-export default GameDetailPage 
+export default GameDetailPage

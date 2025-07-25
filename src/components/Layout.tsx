@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
+import PerformanceDashboard from './PerformanceDashboard'
 
 const Layout: React.FC = () => {
   return (
@@ -10,8 +11,9 @@ const Layout: React.FC = () => {
         <Outlet />
       </main>
       <Footer />
+      <PerformanceDashboard />
     </div>
   )
 }
 
-export default Layout 
+export default Layout

@@ -6,6 +6,10 @@ export interface Game {
   description: string;
   controls: string;
   path: string;
+  author?: string;
+  version?: string;
+  features?: string[];
+  cover?: string;
 }
 
 export interface GamesData {
