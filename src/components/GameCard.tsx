@@ -60,7 +60,7 @@ const GameCard = ({ game }: GameCardProps) => {
               ? 'bg-red-500 text-white shadow-lg' 
               : 'bg-white/80 backdrop-blur-sm text-gray-600 hover:bg-white/90 hover:text-red-500'
           }`}
-          title={isGameFavorite ? '取消收藏' : '添加到收藏'}
+          title={isGameFavorite ? 'Remove from favorites' : 'Add to favorites'}
         >
           <i className={`fas fa-heart text-sm ${isGameFavorite ? 'animate-pulse' : ''}`}></i>
         </button>

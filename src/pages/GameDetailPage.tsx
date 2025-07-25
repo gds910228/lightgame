@@ -125,7 +125,7 @@ const GameDetailPage = () => {
                         ? 'bg-red-500 text-white shadow-lg' 
                         : 'bg-gray-100 hover:bg-gray-200 text-gray-500 hover:text-red-500'
                     }`}
-                    title={isFavorite(game.id) ? '取消收藏' : '添加到收藏'}
+                    title={isFavorite(game.id) ? 'Remove from favorites' : 'Add to favorites'}
                   >
                     <i className={`fas fa-heart ${isFavorite(game.id) ? 'animate-pulse' : ''}`}></i>
                   </button>

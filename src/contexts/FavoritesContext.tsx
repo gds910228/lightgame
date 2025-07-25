@@ -58,7 +58,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
       saveFavorites(newFavorites);
       
       // 显示成功提示
-      showNotification(`游戏已添加到收藏夹！`, 'success');
+      showNotification(`Game added to favorites!`, 'success');
     }
   };
 
@@ -68,7 +68,7 @@ export const FavoritesProvider: React.FC<FavoritesProviderProps> = ({ children }
     saveFavorites(newFavorites);
     
     // 显示成功提示
-    showNotification(`游戏已从收藏夹移除！`, 'info');
+    showNotification(`Game removed from favorites!`, 'info');
   };
 
   // 检查是否已收藏
