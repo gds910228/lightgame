@@ -286,7 +286,29 @@ $(function(){
 	});
 	//分享按钮
 	$(".share-link").on('click', function(){
-		$(".mask2").css('display','block');
+		// Try to use Web Share API first
+		if (navigator.share) {
+			navigator.share({
+				title: "Avatar Maker - Create Custom Avatars",
+				text: "I just created a custom avatar with notification badges! Try it yourself!",
+				url: window.location.origin + "/game/bsqpz"
+			}).then(() => {
+				console.log('Share successful');
+			}).catch((error) => {
+				console.log('Share failed:', error);
+				fallbackShare();
+			});
+		} else {
+			fallbackShare();
+		}
+		
+		function fallbackShare() {
+			navigator.clipboard.writeText(window.location.origin + "/game/bsqpz").then(() => {
+				alert("Game link copied to clipboard! Share it with your friends!");
+			}).catch(() => {
+				$(".mask2").css('display','block');
+			});
+		}
 		//_hmt.push(['_trackEvent', 'share', 'click', 'share pic', 0]); //埋点
 	});
 	//mask隐藏

@@ -432,10 +432,32 @@ display: none;
 	document.write(createGameLayer());
 	
 	function share(){
-		document.getElementById('share-wx').style.display = 'block';
-		document.getElementById('share-wx').onclick = function(){
-			this.style.display = 'none';
-		};
+		// Try to use Web Share API first
+		if (navigator.share) {
+			navigator.share({
+				title: "Beat the Cat - Fun Action Game",
+				text: "I just played Beat the Cat! Can you beat my score?",
+				url: window.location.origin + "/game/bdsjm"
+			}).then(() => {
+				console.log('Share successful');
+			}).catch((error) => {
+				console.log('Share failed:', error);
+				fallbackShare();
+			});
+		} else {
+			fallbackShare();
+		}
+		
+		function fallbackShare() {
+			navigator.clipboard.writeText(window.location.origin + "/game/bdsjm").then(() => {
+				alert("Game link copied to clipboard! Share it with your friends!");
+			}).catch(() => {
+				document.getElementById('share-wx').style.display = 'block';
+				document.getElementById('share-wx').onclick = function(){
+					this.style.display = 'none';
+				};
+			});
+		}
 	}
 	
 	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
