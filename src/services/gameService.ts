@@ -26,6 +26,10 @@ const getBaseUrl = (): string => {
 /**
  * Fetch all games from the games.json file
  */
+export async function getGames(): Promise<Game[]> {
+  return getAllGames();
+}
+
 export async function getAllGames(): Promise<Game[]> {
   // Return cached data if available
   if (gamesCache) {

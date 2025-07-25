@@ -2,12 +2,15 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import SearchBar from './SearchBar'
 import CategoryFilter from './CategoryFilter'
+import { useFavorites } from '../contexts/FavoritesContext'
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
   const isHomePage = location.pathname === '/'
+  const { getFavoritesCount } = useFavorites()
+  const favoritesCount = getFavoritesCount()
   
   // Handle scroll effect for header
   useEffect(() => {
@@ -55,8 +58,26 @@ const Header = () => {
           </div>
         </Link>
         
-        {/* Search and Categories */}
+        {/* Navigation and Search */}
         <div className="flex flex-col md:flex-row items-center gap-4">
+          {/* Favorites Link */}
+          <Link 
+            to="/favorites" 
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-600 hover:text-primary-600 hover:bg-primary-50 transition-all duration-200 group"
+            title="My Favorites"
+          >
+            <div className="relative">
+              <i className="fas fa-heart text-lg group-hover:scale-110 transition-transform"></i>
+              {favoritesCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-medium animate-pulse">
+                  {favoritesCount > 99 ? '99+' : favoritesCount}
+                </span>
+              )}
+            </div>
+            <span className="hidden sm:inline font-medium">Favorites</span>
+          </Link>
+          
+          {/* Search and Categories */}
           {isHomePage && <CategoryFilter />}
           <SearchBar onSearch={handleSearch} />
         </div>
