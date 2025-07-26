@@ -186,10 +186,15 @@ $(document).on("click touchstart", "#c19", function(e){
     e.preventDefault();
     e.stopPropagation();
     
+    console.log("Share button clicked!");
+    console.log("Game share data:", window.gameShareData);
+    
     // Try to share the game result if available
     if(window.gameShareData) {
+        console.log("Attempting to share game result");
         handleGameShare();
     } else {
+        console.log("No game share data, going to home");
         // Default behavior - go back to home
         window.location.href = "/";
     }
@@ -197,11 +202,14 @@ $(document).on("click touchstart", "#c19", function(e){
 
 // Standard web sharing function (similar to other games)
 async function handleGameShare() {
+    console.log("handleGameShare called");
     const shareData = window.gameShareData;
+    console.log("Share data:", shareData);
     
     // Try to use Web Share API first (mobile devices)
     if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
         try {
+            console.log("Using Web Share API");
             await navigator.share(shareData);
             showNotification('Game result shared successfully!', 'success');
             return;
@@ -212,7 +220,10 @@ async function handleGameShare() {
     
     // Fallback: Copy to clipboard
     try {
-        await navigator.clipboard.writeText(shareData.url + ' - ' + shareData.text);
+        console.log("Using clipboard fallback");
+        const textToShare = shareData.url + ' - ' + shareData.text;
+        console.log("Text to share:", textToShare);
+        await navigator.clipboard.writeText(textToShare);
         showNotification('Game result copied to clipboard!', 'success');
     } catch (error) {
         console.error('Failed to copy to clipboard:', error);
