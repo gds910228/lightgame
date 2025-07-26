@@ -274,4 +274,23 @@ function showNotification(message, type) {
 
 $(function(){
     // Game initialization
+    
+    // Hide any WeChat share guidance elements
+    setTimeout(function() {
+        // Remove any elements that might contain share guidance
+        $('[class*="share"], [class*="wx"], [id*="share"], [id*="wx"]').hide();
+        $('.wx_tip, .wx_tip_container, .wx_share_tip, .share_tip').remove();
+        
+        // Hide any floating elements that might be share guidance
+        $('div').each(function() {
+            var $this = $(this);
+            var style = $this.attr('style') || '';
+            if (style.includes('position: fixed') || style.includes('position: absolute')) {
+                var text = $this.text();
+                if (text.includes('分享') || text.includes('朋友圈') || text.includes('好友')) {
+                    $this.hide();
+                }
+            }
+        });
+    }, 1000);
 });
