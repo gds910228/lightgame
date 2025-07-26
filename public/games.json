@@ -257,6 +257,26 @@
         "Resource management system to allocate money for building towers"
       ],
       "path": "/games/tower-defense/index.html"
+    },
+    {
+      "id": "ceast",
+      "title": "Ceast Game",
+      "category": [
+        "Casual",
+        "Interactive"
+      ],
+      "description": "An interactive JavaScript-based game built with EaselJS framework. Experience smooth animations and engaging gameplay in this modern web game.",
+      "controls": "Use mouse or touch to interact with the game elements. Follow on-screen instructions for specific game mechanics.",
+      "image": "/games/ceast/icon.png",
+      "author": "Game Studio",
+      "version": "1.0.0",
+      "features": [
+        "Built with EaselJS framework",
+        "Smooth animations and graphics",
+        "Interactive gameplay elements",
+        "Modern web game experience"
+      ],
+      "path": "/games/ceast/index.html"
     }
   ]
 }

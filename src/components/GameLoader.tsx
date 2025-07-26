@@ -90,9 +90,23 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
     
     window.addEventListener('keydown', handleKeyDown);
     
+    // Add fullscreen change event listener
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+    
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+    
     return () => {
       window.removeEventListener('message', handleMessage);
       window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+      document.removeEventListener('webkitfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
+      document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
   }, [game.id]); // Only re-run when game.id changes
 
@@ -148,15 +162,23 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
     }
   };
 
-  const toggleFullscreen = () => {
-    if (!isFullscreen && iframeRef.current) {
-      if (iframeRef.current.requestFullscreen) {
-        iframeRef.current.requestFullscreen();
+  const toggleFullscreen = async () => {
+    try {
+      if (!isFullscreen && iframeRef.current) {
+        if (iframeRef.current.requestFullscreen) {
+          await iframeRef.current.requestFullscreen();
+          setIsFullscreen(true);
+        }
+      } else {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          await document.exitFullscreen();
+          setIsFullscreen(false);
+        }
       }
-    } else if (document.exitFullscreen) {
-      document.exitFullscreen();
+    } catch (error) {
+      console.warn('Fullscreen operation failed:', error);
+      // Don't show error to user, just log it
     }
-    setIsFullscreen(!isFullscreen);
   };
 
   const handleIframeLoad = (e: React.SyntheticEvent<HTMLIFrameElement, Event>) => {
@@ -166,9 +188,13 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
     
     // Focus the iframe to ensure keyboard events work
     setTimeout(() => {
-      if (iframeRef.current) {
-        iframeRef.current.focus();
-        console.log('Iframe focused');
+      try {
+        if (iframeRef.current && iframeRef.current.contentWindow) {
+          iframeRef.current.focus();
+          console.log('Iframe focused');
+        }
+      } catch (error) {
+        console.warn('Could not focus iframe:', error);
       }
     }, 500);
   };

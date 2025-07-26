@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ceast Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+        
+        .game-container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-title {
+            color: white;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .score-display {
+            color: white;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+        
+        #gameCanvas {
+            border: 3px solid white;
+            border-radius: 10px;
+            background-color: #1a1a2e;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            cursor: crosshair;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+        
+        .game-info {
+            color: #ffd700;
+            font-size: 1.1em;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="game-title">🌙 Ceast Game</h1>
+        <div class="score-display">Score: <span id="scoreValue">0</span></div>
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div class="controls">
+            <p>Click on the moving circles to catch them!</p>
+            <div class="game-info" id="gameInfo">Click to start playing!</div>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        let canvas, ctx, scoreElement, gameInfo;
+        let score = 0;
+        let gameRunning = false;
+        let circles = [];
+        let animationId;
+        
+        // Circle class
+        class Circle {
+            constructor() {
+                this.x = Math.random() * (canvas.width - 60) + 30;
+                this.y = Math.random() * (canvas.height - 60) + 30;
+                this.radius = Math.random() * 20 + 15;
+                this.vx = (Math.random() - 0.5) * 4;
+                this.vy = (Math.random() - 0.5) * 4;
+                this.color = `hsl(${Math.random() * 360}, 70%, 60%)`;
+                this.clicked = false;
+            }
+            
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                
+                // Bounce off walls
+                if (this.x - this.radius <= 0 || this.x + this.radius >= canvas.width) {
+                    this.vx = -this.vx;
+                }
+                if (this.y - this.radius <= 0 || this.y + this.radius >= canvas.height) {
+                    this.vy = -this.vy;
+                }
+                
+                // Keep within bounds
+                this.x = Math.max(this.radius, Math.min(canvas.width - this.radius, this.x));
+                this.y = Math.max(this.radius, Math.min(canvas.height - this.radius, this.y));
+            }
+            
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+                ctx.strokeStyle = 'white';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+                
+                // Add a glow effect
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+            
+            isClicked(mouseX, mouseY) {
+                const distance = Math.sqrt((mouseX - this.x) ** 2 + (mouseY - this.y) ** 2);
+                return distance <= this.radius;
+            }
+        }
+        
+        // Initialize game
+        function init() {
+            try {
+                canvas = document.getElementById('gameCanvas');
+                ctx = canvas.getContext('2d');
+                scoreElement = document.getElementById('scoreValue');
+                gameInfo = document.getElementById('gameInfo');
+                
+                if (!canvas || !ctx) {
+                    throw new Error('Canvas not available');
+                }
+                
+                // Add click event listener
+                canvas.addEventListener('click', handleClick);
+                
+                // Start the game
+                startGame();
+                
+                console.log('Game initialized successfully');
+                
+                // Send message to parent window
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({ 
+                        type: 'GAME_LOADED', 
+                        message: 'Ceast game loaded successfully' 
+                    }, '*');
+                }
+                
+            } catch (error) {
+                console.error('Error initializing game:', error);
+                if (gameInfo) {
+                    gameInfo.textContent = 'Error loading game: ' + error.message;
+                    gameInfo.style.color = '#ff6b6b';
+                }
+            }
+        }
+        
+        function startGame() {
+            gameRunning = true;
+            score = 0;
+            circles = [];
+            
+            // Create initial circles
+            for (let i = 0; i < 5; i++) {
+                circles.push(new Circle());
+            }
+            
+            gameInfo.textContent = 'Game started! Click the circles!';
+            updateScore();
+            gameLoop();
+        }
+        
+        function gameLoop() {
+            if (!gameRunning) return;
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Update and draw circles
+            circles.forEach(circle => {
+                circle.update();
+                circle.draw();
+            });
+            
+            // Add new circles occasionally
+            if (Math.random() < 0.01 && circles.length < 8) {
+                circles.push(new Circle());
+            }
+            
+            animationId = requestAnimationFrame(gameLoop);
+        }
+        
+        function handleClick(event) {
+            if (!gameRunning) return;
+            
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+            
+            // Check if any circle was clicked
+            for (let i = circles.length - 1; i >= 0; i--) {
+                if (circles[i].isClicked(mouseX, mouseY)) {
+                    // Remove the clicked circle
+                    circles.splice(i, 1);
+                    score += 10;
+                    updateScore();
+                    
+                    // Add a new circle
+                    circles.push(new Circle());
+                    
+                    // Visual feedback
+                    createClickEffect(mouseX, mouseY);
+                    break;
+                }
+            }
+        }
+        
+        function createClickEffect(x, y) {
+            // Create a temporary visual effect
+            ctx.beginPath();
+            ctx.arc(x, y, 20, 0, Math.PI * 2);
+            ctx.strokeStyle = '#ffd700';
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            
+            setTimeout(() => {
+                // The effect will be cleared in the next frame
+            }, 100);
+        }
+        
+        function updateScore() {
+            scoreElement.textContent = score;
+            
+            if (score > 0 && score % 50 === 0) {
+                gameInfo.textContent = `Great job! Score: ${score}`;
+            }
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', init);
+        
+        // Also initialize immediately if DOM is ready
+        if (document.readyState === 'complete') {
+            init();
+        }
+    </script>
+</body>
+</html>
