@@ -48,29 +48,55 @@ export async function getAllGames(): Promise<Game[]> {
     const data: GamesData = await response.json();
     console.log('Fetched games data:', data);
     
-    // 处理游戏路径，确保它们包含正确的基础URL
-    const processedGames = data.games.map((game: Game) => {
-      // 确保image属性存在
-      if (!game.image && game.id) {
-        console.log(`Game ${game.id} is missing image property, setting default`);
-        game.image = `/images/thumbnails/${game.id}.svg`;
-      }
-      
-      const processedGame = {
-        ...game,
-        path: `${baseUrl}${game.path}`,
-        image: `${baseUrl}${game.image}`
-      };
-      
-      console.log(`Processed game ${game.id}:`, {
-        originalPath: game.path,
-        processedPath: processedGame.path,
-        originalImage: game.image,
-        processedImage: processedGame.image
+      // 处理游戏路径，确保它们包含正确的基础URL
+      const processedGames = data.games.map((game: Game) => {
+        // 确保image属性存在
+        if (!game.image && game.id) {
+          console.log(`Game ${game.id} is missing image property, setting default`);
+          game.image = `/images/thumbnails/${game.id}.svg`;
+        }
+        
+        // Ensure path property exists
+        if (!game.path && game.id) {
+          console.log(`Game ${game.id} is missing path property, setting default`);
+          game.path = `/games/${game.id}/index.html`;
+        }
+        
+        // Add test game for debugging
+        if (game.id === 'snake') {
+          console.log('Found Snake game, checking path:', game.path);
+          // Verify the path exists by logging it
+          console.log('Snake game path:', game.path);
+          
+          // Try to fetch the game file to verify it exists
+          fetch(`${baseUrl}${game.path}`)
+            .then(response => {
+              if (!response.ok) {
+                console.error(`Snake game file not found: ${response.status} ${response.statusText}`);
+              } else {
+                console.log('Snake game file exists!');
+              }
+            })
+            .catch(error => {
+              console.error('Error checking Snake game file:', error);
+            });
+        }
+        
+        const processedGame = {
+          ...game,
+          path: `${baseUrl}${game.path}`,
+          image: `${baseUrl}${game.image}`
+        };
+        
+        console.log(`Processed game ${game.id}:`, {
+          originalPath: game.path,
+          processedPath: processedGame.path,
+          originalImage: game.image,
+          processedImage: processedGame.image
+        });
+        
+        return processedGame;
       });
-      
-      return processedGame;
-    });
     
     gamesCache = processedGames;
     return processedGames;

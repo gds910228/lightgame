@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Game</h1>
+        <p>This is a test game to verify iframe loading.</p>
+        <p>If you can see this, the iframe is working correctly!</p>
+        <button id="testButton">Click Me</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        document.getElementById('testButton').addEventListener('click', function() {
+            document.getElementById('result').textContent = 'Button clicked at ' + new Date().toLocaleTimeString();
+        });
+
+        // Log to console when loaded
+        window.addEventListener('load', function() {
+            console.log('Test game loaded successfully at ' + new Date().toLocaleTimeString());
+        });
+    </script>
+</body>
+</html>

@@ -22,8 +22,55 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
 
   useEffect(() => {
+    // Only load the game once when the component mounts or when the game changes
     loadGame();
-  }, [game]);
+    
+    // Add message event listener for communication with iframe
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data && event.data.type === 'GAME_ERROR') {
+        console.error('Game error:', event.data.message);
+        setLoadingState({
+          status: 'error',
+          progress: 0,
+          error: `Game error: ${event.data.message}`
+        });
+      } else if (event.data && event.data.type === 'SNAKE_GAME_LOADED') {
+        console.log('Snake game loaded message received:', event.data.message);
+        // The game is loaded, ensure it's in loaded state
+        setLoadingState({ status: 'loaded', progress: 100 });
+      } else if (event.data && event.data.type === 'SNAKE_GAME_DEBUG') {
+        console.log('Snake game debug:', event.data.message);
+      }
+    };
+    
+    window.addEventListener('message', handleMessage);
+    
+    // Add keyboard event listener to forward key presses to the iframe
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (iframeRef.current && loadingState.status === 'loaded' && game.id === 'snake') {
+        // Forward key events to the iframe
+        try {
+          const direction = e.key.toLowerCase().replace('arrow', '');
+          if (['up', 'down', 'left', 'right'].includes(direction)) {
+            iframeRef.current.contentWindow?.postMessage({
+              type: 'SNAKE_GAME_CONTROL',
+              direction: direction
+            }, '*');
+            console.log('Forwarded key event to iframe:', direction);
+          }
+        } catch (error) {
+          console.error('Error forwarding key event to iframe:', error);
+        }
+      }
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('message', handleMessage);
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [game.id]); // Only re-run when game.id changes
 
   const loadGame = async () => {
     try {
@@ -40,19 +87,26 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
         }));
       }, 200);
 
-      // Check if game resources are available
-      const response = await fetch(game.path);
-      if (!response.ok) {
-        throw new Error(`Failed to load game: ${response.statusText}`);
+      // Special handling for Snake game
+      if (game.id === 'snake') {
+        console.log('Loading Snake game with special handling');
+        // Force the path to be absolute
+        game.path = window.location.origin + '/games/snake/index.html';
+        console.log('Updated Snake game path:', game.path);
       }
 
-      clearInterval(progressInterval);
-      setLoadingState({ status: 'loaded', progress: 100 });
+      // Set to loaded state to trigger iframe rendering
+      setTimeout(() => {
+        clearInterval(progressInterval);
+        setLoadingState({ status: 'loaded', progress: 100 });
+        
+        // Complete performance tracking
+        performanceService.completeGameLoad(game.id);
+      }, 1000);
       
-      // Complete performance tracking
-      performanceService.completeGameLoad(game.id);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Game loading error:', errorMessage);
       
       // Record error in performance tracking
       performanceService.recordGameError(game.id, errorMessage);
@@ -76,11 +130,22 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
     setIsFullscreen(!isFullscreen);
   };
 
-  const handleIframeLoad = () => {
+  const handleIframeLoad = (e: React.SyntheticEvent<HTMLIFrameElement, Event>) => {
+    console.log('Iframe loaded successfully:', e);
+    console.log('Iframe src:', iframeRef.current?.src);
     setLoadingState({ status: 'loaded', progress: 100 });
+    
+    // Focus the iframe to ensure keyboard events work
+    setTimeout(() => {
+      if (iframeRef.current) {
+        iframeRef.current.focus();
+        console.log('Iframe focused');
+      }
+    }, 500);
   };
 
-  const handleIframeError = () => {
+  const handleIframeError = (e: React.SyntheticEvent<HTMLIFrameElement, Event>) => {
+    console.error('Iframe error:', e);
     setLoadingState({
       status: 'error',
       progress: 0,
@@ -161,13 +226,16 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
 
           {loadingState.status === 'loaded' && (
             <iframe
+              key={game.id} // Add a key to prevent re-rendering when state changes
               ref={iframeRef}
-              src={game.path}
+              src={game.id === 'snake' ? window.location.origin + '/games/snake/index.html' : game.path}
               className="w-full h-full border-0"
               title={game.title}
               onLoad={handleIframeLoad}
               onError={handleIframeError}
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+              allow="fullscreen"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"
+              tabIndex={0}
             />
           )}
         </div>
