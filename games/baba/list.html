@@ -308,109 +308,216 @@
 </div>
 
 <script>
-    // 简化的游戏逻辑
-    document.addEventListener('DOMContentLoaded', function() {
-        var sel_id = "";
-        var listItems = document.querySelectorAll(".J_sel");
-        var shareLink = document.getElementById("J_share_link");
+    // 游戏逻辑 - 修复版本
+    (function() {
+        'use strict';
         
-        for (var i = 0; i < listItems.length; i++) {
-            listItems[i].addEventListener('click', function() {
-                var isSelected = this.getAttribute("data-sel");
-                if (isSelected == 1) {
-                    // 取消选择
-                    var id = this.getAttribute("data-id");
-                    var reg = new RegExp("(^|,)"+ id +",");
-                    sel_id = sel_id.replace(reg, "$1");
-                    this.setAttribute("data-sel", 0);
-                    this.classList.remove("list-item-sel");
-                } else {
-                    // 选择
-                    sel_id += this.getAttribute("data-id") + ",";
-                    this.setAttribute("data-sel", 1);
-                    this.classList.add("list-item-sel");
-                }
-                
-                // 更新完成按钮链接
-                shareLink.setAttribute("href", "#" + sel_id.replace(/,$/, ""));
-            });
+        var sel_id = "";
+        var selectedItems = new Set(); // 使用Set来管理选中状态
+        var listItems = null;
+        var shareLink = null;
+        
+        // 初始化函数
+        function init() {
+            listItems = document.querySelectorAll(".J_sel");
+            shareLink = document.getElementById("J_share_link");
+            
+            if (!listItems.length || !shareLink) {
+                console.error('Required elements not found');
+                return;
+            }
+            
+            // 绑定事件
+            bindEvents();
+            
+            // 从localStorage恢复状态
+            restoreState();
         }
         
-        shareLink.addEventListener('click', function(e) {
+        // 绑定事件
+        function bindEvents() {
+            // 为每个列表项绑定点击事件
+            Array.prototype.forEach.call(listItems, function(item, index) {
+                item.addEventListener('click', handleItemClick, false);
+                item.addEventListener('touchstart', function(e) {
+                    // 防止在移动设备上的双击缩放
+                    e.preventDefault();
+                    handleItemClick.call(this, e);
+                }, false);
+            });
+            
+            // 绑定完成按钮事件
+            shareLink.addEventListener('click', handleShareClick, false);
+        }
+        
+        // 处理列表项点击
+        function handleItemClick(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            var itemId = this.getAttribute("data-id");
+            var isSelected = selectedItems.has(itemId);
+            
+            if (isSelected) {
+                // 取消选择
+                selectedItems.delete(itemId);
+                this.setAttribute("data-sel", "0");
+                this.classList.remove("list-item-sel");
+            } else {
+                // 选择
+                selectedItems.add(itemId);
+                this.setAttribute("data-sel", "1");
+                this.classList.add("list-item-sel");
+            }
+            
+            // 更新sel_id字符串
+            updateSelId();
+            
+            // 保存状态到localStorage
+            saveState();
+            
+            // 更新按钮状态
+            updateShareButton();
+        }
+        
+        // 更新sel_id字符串
+        function updateSelId() {
+            sel_id = Array.from(selectedItems).join(',');
+            if (sel_id) {
+                sel_id += ',';
+            }
+        }
+        
+        // 处理分享按钮点击
+        function handleShareClick(e) {
             e.preventDefault();
             
-            if (sel_id == "") {
-                // 创建友好提示
+            if (selectedItems.size === 0) {
                 showToast("至少要选一个拉过粑粑的地方哦！");
                 return false;
             }
             
-            // 收集选中的省份ID和名称
+            // 收集选中的省份信息
+            var selectedIds = Array.from(selectedItems);
             var selectedProvinces = [];
-            var selectedIds = sel_id.replace(/,$/, "").split(',');
             
-            document.querySelectorAll(".list-item-sel").forEach(function(item) {
-                selectedProvinces.push(item.querySelector("span").textContent);
+            selectedIds.forEach(function(id) {
+                var item = document.querySelector('.J_sel[data-id="' + id + '"]');
+                if (item) {
+                    var span = item.querySelector('span');
+                    if (span) {
+                        selectedProvinces.push(span.textContent.trim());
+                    }
+                }
             });
             
-            // 确保selectedIds和selectedProvinces数组长度匹配
-            if (selectedIds.length !== selectedProvinces.length) {
-                console.warn("选中的ID和省份名称数量不匹配，重新收集");
-                selectedIds = [];
-                selectedProvinces = [];
-                
-                document.querySelectorAll(".list-item-sel").forEach(function(item) {
-                    selectedIds.push(item.getAttribute("data-id"));
-                    selectedProvinces.push(item.querySelector("span").textContent);
-                });
-            }
+            // 保存到localStorage
+            localStorage.setItem('baba_provinces_ids', selectedIds.join(','));
+            localStorage.setItem('baba_provinces_names', selectedProvinces.join(','));
             
             // 跳转到结果页面
-            window.location.href = "result.html?selected=" + selectedIds.join(',') + "&names=" + encodeURIComponent(selectedProvinces.join(','));
-        });
+            var url = "result.html?selected=" + selectedIds.join(',') + 
+                     "&names=" + encodeURIComponent(selectedProvinces.join(','));
+            window.location.href = url;
+        }
         
-        // 创建友好提示函数
+        // 更新分享按钮
+        function updateShareButton() {
+            var selectedIds = Array.from(selectedItems);
+            shareLink.setAttribute("href", "#" + selectedIds.join(','));
+        }
+        
+        // 保存状态到localStorage
+        function saveState() {
+            var selectedIds = Array.from(selectedItems);
+            if (selectedIds.length > 0) {
+                localStorage.setItem('baba_temp_selection', selectedIds.join(','));
+            } else {
+                localStorage.removeItem('baba_temp_selection');
+            }
+        }
+        
+        // 从localStorage恢复状态
+        function restoreState() {
+            var tempSelection = localStorage.getItem('baba_temp_selection');
+            if (tempSelection) {
+                var ids = tempSelection.split(',');
+                ids.forEach(function(id) {
+                    if (id.trim()) {
+                        selectedItems.add(id.trim());
+                        var item = document.querySelector('.J_sel[data-id="' + id.trim() + '"]');
+                        if (item) {
+                            item.setAttribute("data-sel", "1");
+                            item.classList.add("list-item-sel");
+                        }
+                    }
+                });
+                updateSelId();
+                updateShareButton();
+            }
+        }
+        
+        // 显示提示信息
         function showToast(message) {
-            // 检查是否已存在toast
+            // 移除已存在的toast
             var existingToast = document.querySelector('.toast-message');
-            if (existingToast) {
-                document.body.removeChild(existingToast);
+            if (existingToast && existingToast.parentNode) {
+                existingToast.parentNode.removeChild(existingToast);
             }
             
-            // 创建toast元素
+            // 创建新的toast
             var toast = document.createElement('div');
             toast.className = 'toast-message';
             toast.textContent = message;
             
             // 设置样式
-            toast.style.position = 'fixed';
-            toast.style.bottom = '80px';
-            toast.style.left = '50%';
-            toast.style.transform = 'translateX(-50%)';
-            toast.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
-            toast.style.color = '#fff';
-            toast.style.padding = '12px 24px';
-            toast.style.borderRadius = '25px';
-            toast.style.fontSize = '16px';
-            toast.style.zIndex = '1000';
-            toast.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+            Object.assign(toast.style, {
+                position: 'fixed',
+                bottom: '100px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                color: '#fff',
+                padding: '12px 24px',
+                borderRadius: '25px',
+                fontSize: '16px',
+                zIndex: '9999',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
+                maxWidth: '80%',
+                textAlign: 'center',
+                wordWrap: 'break-word'
+            });
             
             // 添加到页面
             document.body.appendChild(toast);
             
-            // 设置自动消失
+            // 自动移除
             setTimeout(function() {
-                toast.style.opacity = '0';
-                toast.style.transition = 'opacity 0.5s ease';
-                
-                setTimeout(function() {
-                    if (document.body.contains(toast)) {
-                        document.body.removeChild(toast);
-                    }
-                }, 500);
+                if (toast && toast.parentNode) {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s ease';
+                    setTimeout(function() {
+                        if (toast && toast.parentNode) {
+                            toast.parentNode.removeChild(toast);
+                        }
+                    }, 300);
+                }
             }, 2000);
         }
-    });
+        
+        // 页面加载完成后初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+        
+        // 页面卸载时清理临时状态
+        window.addEventListener('beforeunload', function() {
+            // 可以在这里做一些清理工作
+        });
+        
+    })();
 </script>
 
 </body>
