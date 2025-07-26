@@ -272,25 +272,75 @@ function showNotification(message, type) {
     }, 3000);
 }
 
+// Aggressive overlay removal function
+function removeShareOverlays() {
+    // Remove elements with share-related classes and IDs
+    $('[class*="share"], [class*="wx"], [id*="share"], [id*="wx"]').remove();
+    $('[class*="guide"], [class*="finger"], [class*="pointer"]').remove();
+    $('.wx_tip, .wx_tip_container, .wx_share_tip, .share_tip').remove();
+    $('.share-popup, .share-overlay, .share-guide, .guide-overlay').remove();
+    $('.wechat-share, .wx-share, .share-tooltip, .share-hint').remove();
+    
+    // Remove any elements containing Chinese share text
+    $('*').each(function() {
+        var $this = $(this);
+        var text = $this.text();
+        if (text.includes('分享') || text.includes('朋友圈') || text.includes('好友') || 
+            text.includes('分享到') || text.includes('点击右上角')) {
+            $this.remove();
+        }
+    });
+    
+    // Hide high z-index floating elements
+    $('div, span').each(function() {
+        var $this = $(this);
+        var style = $this.attr('style') || '';
+        var zIndex = $this.css('z-index');
+        
+        if ((style.includes('position: fixed') || style.includes('position: absolute')) &&
+            (parseInt(zIndex) > 100 || zIndex === 'auto')) {
+            var text = $this.text();
+            if (text.includes('分享') || text.includes('朋友圈') || text.includes('好友') ||
+                text.includes('右上角') || text.includes('点击') || $this.find('img').length > 0) {
+                $this.remove();
+            }
+        }
+    });
+}
+
+// Continuous monitoring and removal
+function startOverlayMonitoring() {
+    // Remove overlays immediately
+    removeShareOverlays();
+    
+    // Set up continuous monitoring
+    setInterval(removeShareOverlays, 500);
+    
+    // Also monitor for DOM changes
+    if (window.MutationObserver) {
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length > 0) {
+                    setTimeout(removeShareOverlays, 100);
+                }
+            });
+        });
+        
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    }
+}
+
 $(function(){
     // Game initialization
     
-    // Hide any WeChat share guidance elements
-    setTimeout(function() {
-        // Remove any elements that might contain share guidance
-        $('[class*="share"], [class*="wx"], [id*="share"], [id*="wx"]').hide();
-        $('.wx_tip, .wx_tip_container, .wx_share_tip, .share_tip').remove();
-        
-        // Hide any floating elements that might be share guidance
-        $('div').each(function() {
-            var $this = $(this);
-            var style = $this.attr('style') || '';
-            if (style.includes('position: fixed') || style.includes('position: absolute')) {
-                var text = $this.text();
-                if (text.includes('分享') || text.includes('朋友圈') || text.includes('好友')) {
-                    $this.hide();
-                }
-            }
-        });
-    }, 1000);
+    // Start aggressive overlay monitoring
+    startOverlayMonitoring();
+    
+    // Also run removal after page load
+    $(window).on('load', function() {
+        setTimeout(removeShareOverlays, 1000);
+    });
 });
