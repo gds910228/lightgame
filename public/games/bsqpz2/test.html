@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OCD Challenge 2 - Test Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #222;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            text-align: center;
+            max-width: 800px;
+            padding: 20px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        .game-frame {
+            width: 640px;
+            height: 1136px;
+            border: 2px solid #444;
+            margin: 20px auto;
+            background-color: black;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .log {
+            width: 100%;
+            height: 200px;
+            background-color: #333;
+            color: #0f0;
+            font-family: monospace;
+            padding: 10px;
+            margin-top: 20px;
+            overflow-y: auto;
+            text-align: left;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>OCD Challenge 2 - Test Page</h1>
+        <div class="game-frame">
+            <iframe id="gameFrame" src="index.html" width="640" height="1136" frameborder="0"></iframe>
+        </div>
+        <div class="controls">
+            <button id="reloadBtn">Reload Game</button>
+            <button id="clearLogBtn">Clear Log</button>
+        </div>
+        <div class="log" id="logOutput"></div>
+    </div>
+
+    <script>
+        // Override console.log to display in our log div
+        const logOutput = document.getElementById('logOutput');
+        const gameFrame = document.getElementById('gameFrame');
+        const reloadBtn = document.getElementById('reloadBtn');
+        const clearLogBtn = document.getElementById('clearLogBtn');
+        
+        // Function to add log entry
+        function addLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            entry.style.color = type === 'error' ? '#ff6b6b' : type === 'warn' ? '#ffd166' : '#0f0';
+            logOutput.appendChild(entry);
+            logOutput.scrollTop = logOutput.scrollHeight;
+        }
+        
+        // Listen for messages from the iframe
+        window.addEventListener('message', function(event) {
+            if (event.data && event.data.type) {
+                switch(event.data.type) {
+                    case 'GAME_LOADING':
+                        addLog(`Game loading: ${event.data.message}`);
+                        break;
+                    case 'GAME_LOADED':
+                        addLog(`Game loaded: ${event.data.message}`);
+                        break;
+                    case 'GAME_ERROR':
+                        addLog(`Game error: ${event.data.message}`, 'error');
+                        break;
+                    case 'GAME_DEBUG':
+                        addLog(`Debug: ${event.data.message}`);
+                        break;
+                    default:
+                        addLog(`Message: ${JSON.stringify(event.data)}`);
+                }
+            }
+        });
+        
+        // Reload button
+        reloadBtn.addEventListener('click', function() {
+            addLog('Reloading game...');
+            gameFrame.src = 'index.html?' + new Date().getTime();
+        });
+        
+        // Clear log button
+        clearLogBtn.addEventListener('click', function() {
+            logOutput.innerHTML = '';
+            addLog('Log cleared');
+        });
+        
+        // Initial log
+        addLog('Test page loaded');
+    </script>
+</body>
+</html>

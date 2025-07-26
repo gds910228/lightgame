@@ -16,10 +16,43 @@ var ICONS = [
     ['youjian.png', '邮件'],
     ['2048.png', '2048']
 ];
+
+// Add missing cc.Button if needed
+if (!cc.Button) {
+    cc.Button = {
+        create: function(name, options) {
+            var sprite = cc.createSprite(name, options);
+            sprite.setTouchEnabled = function(enabled) {};
+            return sprite;
+        }
+    };
+}
+
+// Add missing cc.random function if needed
+if (!cc.random) {
+    cc.random = function(array, count) {
+        if (!array || array.length === 0) return [];
+        
+        if (count === undefined) {
+            return array[Math.floor(Math.random() * array.length)];
+        } else {
+            var shuffled = array.slice(0), i = array.length, min = i - count, temp, index;
+            while (i-- > min) {
+                index = Math.floor((i + 1) * Math.random());
+                temp = shuffled[index];
+                shuffled[index] = shuffled[i];
+                shuffled[i] = temp;
+            }
+            return shuffled.slice(min);
+        }
+    };
+}
+
 var StartLayer = cc.Layer.extend({
     ctor: function(context){
-        this._super();
-
+        // Initialize the layer
+        this.children = [];
+        
         this.setBackground('rgba(0, 0, 0, 128)');
         var title = cc.createSprite('title.png', {
             xy: [320, 700],
@@ -53,7 +86,8 @@ var StartLayer = cc.Layer.extend({
 
 var HelloWorldLayer = cc.Layer.extend({
     ctor:function () {
-        this._super();  
+        // Initialize the layer
+        this.children = [];
 
         this.setBackground('res/bg.jpg');
 
@@ -112,7 +146,14 @@ var HelloWorldLayer = cc.Layer.extend({
         var percent = (score *34763 + rand) / (hiscore*34763+rand);
         percent = Math.min(0.999, percent);
 
-		dp_submitScore(this.score);
+        try {
+            if (typeof dp_submitScore === 'function') {
+                dp_submitScore(this.score);
+            }
+        } catch (e) {
+            console.error("Error submitting score:", e);
+        }
+        
         var layerMask = cc.LayerColor.create(cc.color('rgba(0,0,0,128)'));
         layerMask.attr({
             zOrder: 88,
@@ -178,7 +219,13 @@ var HelloWorldLayer = cc.Layer.extend({
             shareButton.delay(0.6).fadeIn(0.5).act();
 
             layerMask.delegate(shareButton, 'click', function(){
-               dp_share();
+                try {
+                    if (typeof dp_share === 'function') {
+                        dp_share();
+                    }
+                } catch (e) {
+                    console.error("Error sharing:", e);
+                }
             });
 
             var otherButton = cc.Button.create('button_bg.png', {
@@ -198,7 +245,13 @@ var HelloWorldLayer = cc.Layer.extend({
             otherButton.delay(0.7).fadeIn(0.5).act();
 
             layerMask.delegate(otherButton, 'click', function(){
-                clickMore();
+                try {
+                    if (typeof clickMore === 'function') {
+                        clickMore();
+                    }
+                } catch (e) {
+                    console.error("Error clicking more:", e);
+                }
             });
         }).act();          
     },
@@ -281,9 +334,20 @@ var HelloWorldLayer = cc.Layer.extend({
 
 var HelloWorldScene = cc.Scene.extend({
     onEnter:function () {
-        this._super();
+        // Initialize the scene
+        this.children = [];
+        
         var layer = new HelloWorldLayer();
         this.addChild(layer);
     }
 });
 
+// Add reload method to Scene
+cc.Scene.prototype.reload = function() {
+    cc.director.runScene(new HelloWorldScene());
+};
+
+// Add missing methods to Layer prototype
+cc.Layer.prototype.getParent = function() {
+    return { reload: function() { cc.director.runScene(new HelloWorldScene()); } };
+};

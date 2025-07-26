@@ -34,12 +34,36 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
           progress: 0,
           error: `Game error: ${event.data.message}`
         });
-      } else if (event.data && event.data.type === 'SNAKE_GAME_LOADED') {
-        console.log('Snake game loaded message received:', event.data.message);
+        
+        // For OCD Challenge 2 game, provide more specific error handling
+        if (game.id === 'bsqpz2') {
+          console.error('OCD Challenge 2 error:', event.data.message);
+          // Try to reload the game with a different approach if it fails
+          setTimeout(() => {
+            if (iframeRef.current) {
+              console.log('Attempting to reload OCD Challenge 2 game...');
+              const src = iframeRef.current.src;
+              iframeRef.current.src = '';
+              setTimeout(() => {
+                if (iframeRef.current) {
+                  iframeRef.current.src = src;
+                }
+              }, 100);
+            }
+          }, 1000);
+        }
+      } else if (event.data && (event.data.type === 'SNAKE_GAME_LOADED' || event.data.type === 'GAME_LOADED')) {
+        console.log('Game loaded message received:', event.data.message);
         // The game is loaded, ensure it's in loaded state
         setLoadingState({ status: 'loaded', progress: 100 });
-      } else if (event.data && event.data.type === 'SNAKE_GAME_DEBUG') {
-        console.log('Snake game debug:', event.data.message);
+      } else if (event.data && event.data.type === 'GAME_LOADING') {
+        console.log('Game loading message received:', event.data.message);
+        setLoadingState(prev => ({
+          ...prev,
+          progress: Math.min(prev.progress + 20, 90)
+        }));
+      } else if (event.data && (event.data.type === 'SNAKE_GAME_DEBUG' || event.data.type === 'GAME_DEBUG')) {
+        console.log('Game debug:', event.data.message);
       }
     };
     
@@ -87,12 +111,17 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
         }));
       }, 200);
 
-      // Special handling for Snake game
+      // Special handling for specific games
       if (game.id === 'snake') {
         console.log('Loading Snake game with special handling');
         // Force the path to be absolute
         game.path = window.location.origin + '/games/snake/index.html';
         console.log('Updated Snake game path:', game.path);
+      } else if (game.id === 'bsqpz2') {
+        console.log('Loading OCD Challenge 2 game with special handling');
+        // Force the path to be absolute and use the simple HTML implementation
+        game.path = window.location.origin + '/games/bsqpz2/simple.html';
+        console.log('Updated OCD Challenge 2 game path:', game.path);
       }
 
       // Set to loaded state to trigger iframe rendering
@@ -146,10 +175,19 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
 
   const handleIframeError = (e: React.SyntheticEvent<HTMLIFrameElement, Event>) => {
     console.error('Iframe error:', e);
+    
+    // More detailed error message based on game ID
+    let errorMessage = 'Failed to load game content';
+    
+    if (game.id === 'bsqpz2') {
+      errorMessage = 'Failed to load OCD Challenge 2. This game requires external resources that may be missing.';
+      console.error('OCD Challenge 2 loading failed. Check if Cocos2d JS file exists.');
+    }
+    
     setLoadingState({
       status: 'error',
       progress: 0,
-      error: 'Failed to load game content'
+      error: errorMessage
     });
   };
 
@@ -228,13 +266,13 @@ const GameLoader: React.FC<GameLoaderProps> = ({ game, onClose }) => {
             <iframe
               key={game.id} // Add a key to prevent re-rendering when state changes
               ref={iframeRef}
-              src={game.id === 'snake' ? window.location.origin + '/games/snake/index.html' : game.path}
+              src={game.path}
               className="w-full h-full border-0"
               title={game.title}
               onLoad={handleIframeLoad}
               onError={handleIframeError}
               allow="fullscreen"
-              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"
+              sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation allow-downloads"
               tabIndex={0}
             />
           )}

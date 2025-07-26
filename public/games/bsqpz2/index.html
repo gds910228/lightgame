@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,11 +11,23 @@
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
-    <title>逼死强迫症-懒人模板</title> 
-    <script src="js/cocos2d-3.0rc1.canvas.v2.min.js"></script>
+    <title>OCD Challenge 2</title> 
+    <!-- Use local Cocos2d library -->
+    <script type="text/javascript" src="js/cocos2d-js-v3.0-rc1.min.js"></script>
+    <script type="text/javascript" src="src/app.js"></script>
     <style type="text/css">
     body {
         background-color: black;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+    }
+    #gameCanvas {
+        margin: auto;
     }
     </style>
 </head>
@@ -24,19 +35,164 @@
     <canvas id="gameCanvas" width="640" height="1136"></canvas>
     <script type="text/javascript">
           window.onload = function(){
+              // Add polyfill for cc.OrbitCamera and other missing classes
+              window.addEventListener('error', function(e) {
+                  console.error('Game error caught:', e.message);
+                  // Notify parent window of error
+                  if (window.parent && window.parent !== window) {
+                      try {
+                          window.parent.postMessage({ 
+                              type: 'GAME_ERROR', 
+                              message: e.message || 'Game error occurred' 
+                          }, '*');
+                      } catch (err) {
+                          console.error('Error sending error message to parent:', err);
+                      }
+                  }
+              });
+              
+              // Check if cc is defined
+              if (typeof cc === 'undefined') {
+                  console.error('Cocos2d library not loaded!');
+                  if (window.parent && window.parent !== window) {
+                      try {
+                          window.parent.postMessage({ 
+                              type: 'GAME_ERROR', 
+                              message: 'Cocos2d library not loaded!' 
+                          }, '*');
+                      } catch (e) {
+                          console.error('Error sending error message to parent:', e);
+                      }
+                  }
+                  return;
+              }
+              
+              // Add polyfill for cc.OrbitCamera and other missing classes
+              cc.OrbitCamera = cc.OrbitCamera || function() {};
+              cc.CatmullRomBy = cc.CatmullRomBy || function() {};
+              cc.CatmullRomTo = cc.CatmullRomTo || function() {};
+              cc.CardinalSplineBy = cc.CardinalSplineBy || function() {};
+              cc.CardinalSplineTo = cc.CardinalSplineTo || function() {};
+              
+              // Add missing cc.createSprite function if needed
+              if (!cc.createSprite) {
+                  cc.createSprite = function(name, options) {
+                      var sprite;
+                      if (name.charAt(0) === '@') {
+                          // Create a label
+                          var label = new cc.LabelTTF(name.substr(1), "Arial", options.fontSize || 20);
+                          if (options.color) label.setColor(cc.color(options.color));
+                          sprite = label;
+                      } else {
+                          // Create a sprite
+                          sprite = new cc.Sprite('#' + name);
+                      }
+                      
+                      if (options) {
+                          if (options.xy) sprite.setPosition(options.xy[0], options.xy[1]);
+                          if (options.scale) sprite.setScale(options.scale);
+                          if (options.opacity !== undefined) sprite.setOpacity(options.opacity);
+                          if (options.anchor) sprite.setAnchorPoint(options.anchor[0], options.anchor[1]);
+                      }
+                      
+                      return sprite;
+                  };
+              }
+              
+              // Add missing cc.Button if needed
+              if (!cc.Button) {
+                  cc.Button = {
+                      create: function(name, options) {
+                          var sprite = cc.createSprite(name, options);
+                          sprite.setTouchEnabled = function(enabled) {};
+                          return sprite;
+                      }
+                  };
+              }
+              
+              // Add missing cc.random function if needed
+              if (!cc.random) {
+                  cc.random = function(array, count) {
+                      if (count === undefined) {
+                          return array[Math.floor(Math.random() * array.length)];
+                      } else {
+                          var shuffled = array.slice(0), i = array.length, min = i - count, temp, index;
+                          while (i-- > min) {
+                              index = Math.floor((i + 1) * Math.random());
+                              temp = shuffled[index];
+                              shuffled[index] = shuffled[i];
+                              shuffled[i] = temp;
+                          }
+                          return shuffled.slice(min);
+                      }
+                  };
+              }
+              
+              // Add missing cc.tmpl function if needed
+              if (!cc.tmpl) {
+                  cc.tmpl = function(str, data) {
+                      return str.replace(/\{([^\}]+)\}/g, function(match, key) {
+                          return data[key] !== undefined ? data[key] : match;
+                      });
+                  };
+              }
+              
               cc.game.onStart = function(){
                   cc.view.enableAutoFullScreen(false);
                   cc.view.setDesignResolutionSize(640, 1136, cc.ResolutionPolicy.SHOW_ALL);
                   cc.view.resizeWithBrowserSize(true);
                   cc.director.setDisplayStats(cc.game.config.showFPS);
+                  
+                  // Send a message to the parent window that the game is loading
+                  if (window.parent && window.parent !== window) {
+                      try {
+                          window.parent.postMessage({ type: 'GAME_LOADING', message: 'OCD Challenge 2 game is loading' }, '*');
+                      } catch (e) {
+                          console.error('Error sending loading message to parent:', e);
+                      }
+                  }
+                  
                   //load resources
-                  //cc._loaderImage = "";
                   cc.LoaderScene.preload(["res/bg.jpg","res/imgs.png", "res/imgs.json", "icon.png"], function () {
-                      cc.spriteFrameCache.addSpriteFrames('res/imgs.json', 'res/imgs.png');
-                      cc.director.runScene(new HelloWorldScene());
+                      try {
+                          cc.spriteFrameCache.addSpriteFrames('res/imgs.json', 'res/imgs.png');
+                          cc.director.runScene(new HelloWorldScene());
+                          
+                          // Send a message to the parent window that the game is loaded
+                          if (window.parent && window.parent !== window) {
+                              try {
+                                  window.parent.postMessage({ type: 'GAME_LOADED', message: 'OCD Challenge 2 game loaded successfully' }, '*');
+                              } catch (e) {
+                                  console.error('Error sending loaded message to parent:', e);
+                              }
+                          }
+                      } catch (e) {
+                          console.error('Error running game:', e);
+                          // Send error message to parent
+                          if (window.parent && window.parent !== window) {
+                              try {
+                                  window.parent.postMessage({ type: 'GAME_ERROR', message: e.message || 'Failed to initialize game' }, '*');
+                              } catch (err) {
+                                  console.error('Error sending error message to parent:', err);
+                              }
+                          }
+                      }
                   }, this);
               };
-              cc.game.run("gameCanvas");
+              
+              try {
+                  cc.game.run("gameCanvas");
+              } catch (e) {
+                  console.error('Failed to run game:', e);
+                  // Send error message to parent
+                  if (window.parent && window.parent !== window) {
+                      try {
+                          window.parent.postMessage({ type: 'GAME_ERROR', message: e.message || 'Failed to run game' }, '*');
+                      } catch (err) {
+                          console.error('Error sending error message to parent:', err);
+                      }
+                  }
+              }
           };
     </script>
 <script language=javascript>
@@ -47,8 +203,8 @@ var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&
 		window.shareData = {
 		        "imgUrl": "http://g.lanrenmb.com/games/bsqpz2/icon.png",
 		        "timeLineLink":thegameurl,
-		        "tTitle": "逼死强迫症-懒人模板",
-		        "tContent": "逼死强迫症-懒人模板:lanrenmb"
+		        "tTitle": "OCD Challenge 2",
+		        "tContent": "OCD Challenge 2"
 		};
 				
 		function goHome(){
@@ -99,7 +255,7 @@ var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&
 		</script>
 		<div id=share style="display: none">
 			<img width=100% src="share.png"
-				style="position: fixed; z-index: 9999; top: 0; left: 0; display: "
+				style="position: fixed; z-index: 9999; top: 0; left: 0; display: block;"
 				ontouchstart="document.getElementById('share').style.display='none';" />
 		</div>
 		<div style="display: none;">
@@ -108,14 +264,14 @@ var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&
 			
 			function dp_submitScore(score){
 				myData.score = parseInt(score);
-				myData.scoreName = "干掉了"+score+"个新提示";
-					document.title ="强迫症真的伤不起，我干掉了"+score+"个新提示，你也来试试";
+				myData.scoreName = "Cleared "+score+" notifications";
+					document.title ="OCD Challenge 2 - I cleared "+score+" notifications. Can you beat that?";
 					window.shareData.tTitle = document.title;
 			}
 			function onShareComplete(res) {
                 if (localStorage.myuid && myData.score>0) {
                     setTimeout(function(){
-                        if (confirm("？")) {
+                        if (confirm("?")) {
                             window.location = mebtnopenurl;
                         }
                         else {
@@ -128,9 +284,5 @@ var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&
 				}
 	        }	 
 			</script>
-			<div style="display: none;">
-			<script type="text/javascript" src="http://tajs.qq.com/stats?sId=36313548" charset="UTF-8"></script>
-			</div>
-			 <script type="text/javascript" src="js/game9g.utils.js?r="+Math.rand()></script>
 </body>
 </html>

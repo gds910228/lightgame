@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>OCD Challenge 2</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow: hidden;
+        }
+        
+        #gameContainer {
+            width: 640px;
+            height: 1136px;
+            position: relative;
+            background-image: url('res/bg.jpg');
+            background-size: cover;
+            overflow: hidden;
+        }
+        
+        .title {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 48px;
+            font-weight: bold;
+            text-align: center;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .startButton {
+            position: absolute;
+            top: 380px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #00a538;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 40px;
+            font-size: 24px;
+            cursor: pointer;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.05); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+        
+        .icon {
+            width: 120px;
+            height: 120px;
+            position: absolute;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+        
+        .notification {
+            width: 30px;
+            height: 30px;
+            background-color: red;
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            animation: appear 0.3s;
+        }
+        
+        @keyframes appear {
+            from { transform: scale(0); }
+            to { transform: scale(1); }
+        }
+        
+        .gameOver {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .gameOver h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+        
+        .gameOver p {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+        
+        .gameOver button {
+            background-color: #00a538;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 15px 30px;
+            font-size: 20px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        
+        .score {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div class="title">OCD Challenge 2</div>
+        <button class="startButton" id="startButton">Start Game</button>
+        <div class="score" id="score" style="display: none;">Score: <span id="scoreValue">0</span></div>
+        <div class="instructions" id="instructions">Controls: Tap on notification badges to clear them. Clear all badges to complete each level. Be careful not to miss any!</div>
+        
+        <div class="gameOver" id="gameOver">
+            <h2>Game Over!</h2>
+            <p>Your Score: <span id="finalScore">0</span></p>
+            <button id="playAgainButton">Play Again</button>
+            <button id="shareButton">Share</button>
+        </div>
+    </div>
+
+    <script>
+        // Game variables
+        let score = 0;
+        let gameActive = false;
+        let icons = [];
+        let iconPositions = [
+            // Row 1
+            {x: 90, y: 500},
+            {x: 242, y: 500},
+            {x: 394, y: 500},
+            {x: 546, y: 500},
+            // Row 2
+            {x: 90, y: 650},
+            {x: 242, y: 650},
+            {x: 394, y: 650},
+            {x: 546, y: 650},
+            // Row 3
+            {x: 90, y: 800},
+            {x: 242, y: 800},
+            {x: 394, y: 800},
+            {x: 546, y: 800},
+            // Row 4
+            {x: 90, y: 950},
+            {x: 242, y: 950},
+            {x: 394, y: 950},
+            {x: 546, y: 950}
+        ];
+        
+        // Icon images
+        const iconImages = [
+            'ditu.png', 'huluwa.png', 'beiwanglu.png', 'zhuyishixiang.png',
+            'taobao.png', 'itunes.png', 'weixin.png', 'yinyue.png',
+            'qq.png', 'baokanzazhi.png', 'shanku.png', 'appstore.png',
+            'tianqi.png', 'shezhi.png', 'youjian.png', '2048.png'
+        ];
+        
+        // DOM elements
+        const gameContainer = document.getElementById('gameContainer');
+        const startButton = document.getElementById('startButton');
+        const scoreDisplay = document.getElementById('score');
+        const scoreValue = document.getElementById('scoreValue');
+        const instructions = document.getElementById('instructions');
+        const gameOverScreen = document.getElementById('gameOver');
+        const finalScore = document.getElementById('finalScore');
+        const playAgainButton = document.getElementById('playAgainButton');
+        const shareButton = document.getElementById('shareButton');
+        
+        // Start game
+        startButton.addEventListener('click', startGame);
+        playAgainButton.addEventListener('click', resetGame);
+        shareButton.addEventListener('click', shareScore);
+        
+        // Initialize game
+        function startGame() {
+            // Hide start button and show score
+            startButton.style.display = 'none';
+            scoreDisplay.style.display = 'block';
+            
+            // Create icons
+            createIcons();
+            
+            // Start game
+            gameActive = true;
+            
+            // Start adding notifications
+            addNotifications();
+            
+            // Notify parent window that game is loaded
+            if (window.parent && window.parent !== window) {
+                try {
+                    window.parent.postMessage({ type: 'GAME_LOADED', message: 'OCD Challenge 2 game loaded successfully' }, '*');
+                } catch (e) {
+                    console.error('Error sending loaded message to parent:', e);
+                }
+            }
+        }
+        
+        // Create app icons
+        function createIcons() {
+            for (let i = 0; i < 16; i++) {
+                const icon = document.createElement('div');
+                icon.className = 'icon';
+                icon.style.backgroundImage = `url('res/imgs.png')`;
+                icon.style.backgroundPosition = '-200px -200px'; // Default position
+                icon.style.left = `${iconPositions[i].x}px`;
+                icon.style.top = `${iconPositions[i].y}px`;
+                
+                // Store icon data
+                const iconData = {
+                    element: icon,
+                    hasNotification: false,
+                    notificationElement: null,
+                    notificationValue: 0
+                };
+                
+                icons.push(iconData);
+                gameContainer.appendChild(icon);
+            }
+        }
+        
+        // Add notifications randomly
+        function addNotifications() {
+            if (!gameActive) return;
+            
+            // Add 1-3 notifications randomly
+            const count = Math.floor(Math.random() * 3) + 1;
+            for (let i = 0; i < count; i++) {
+                const availableIcons = icons.filter(icon => !icon.hasNotification);
+                if (availableIcons.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * availableIcons.length);
+                    const selectedIcon = availableIcons[randomIndex];
+                    addNotification(selectedIcon);
+                }
+            }
+            
+            // Schedule next notifications
+            const delay = Math.max(1000, 3000 - score * 10);
+            setTimeout(addNotifications, delay);
+            
+            // Check if game should end (after 30 seconds)
+            if (!window.gameTimer) {
+                window.gameTimer = setTimeout(() => {
+                    endGame();
+                }, 30000);
+            }
+        }
+        
+        // Add notification to an icon
+        function addNotification(iconData) {
+            if (iconData.hasNotification) {
+                // Increase existing notification value
+                iconData.notificationValue++;
+                iconData.notificationElement.textContent = iconData.notificationValue;
+                
+                // Animate notification
+                iconData.notificationElement.style.animation = 'none';
+                setTimeout(() => {
+                    iconData.notificationElement.style.animation = 'appear 0.3s';
+                }, 10);
+            } else {
+                // Create new notification
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = '1';
+                iconData.element.appendChild(notification);
+                
+                // Update icon data
+                iconData.hasNotification = true;
+                iconData.notificationElement = notification;
+                iconData.notificationValue = 1;
+                
+                // Add click event to clear notification
+                notification.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    clearNotification(iconData);
+                });
+            }
+        }
+        
+        // Clear notification from an icon
+        function clearNotification(iconData) {
+            if (!iconData.hasNotification) return;
+            
+            // Update score
+            score += iconData.notificationValue;
+            scoreValue.textContent = score;
+            
+            // Remove notification
+            iconData.element.removeChild(iconData.notificationElement);
+            iconData.hasNotification = false;
+            iconData.notificationElement = null;
+            iconData.notificationValue = 0;
+            
+            // Check if all notifications are cleared after game timer ends
+            if (window.gameEnded) {
+                checkGameOver();
+            }
+        }
+        
+        // End game after time limit
+        function endGame() {
+            window.gameEnded = true;
+            gameActive = false;
+            
+            // Check if all notifications are cleared
+            checkGameOver();
+        }
+        
+        // Check if game is over (all notifications cleared)
+        function checkGameOver() {
+            const remainingNotifications = icons.filter(icon => icon.hasNotification);
+            if (remainingNotifications.length === 0 && window.gameEnded) {
+                // Show game over screen
+                finalScore.textContent = score;
+                gameOverScreen.style.display = 'flex';
+                
+                // Notify parent window of game completion
+                if (window.parent && window.parent !== window) {
+                    try {
+                        window.parent.postMessage({ 
+                            type: 'GAME_COMPLETED', 
+                            message: 'OCD Challenge 2 game completed',
+                            score: score
+                        }, '*');
+                    } catch (e) {
+                        console.error('Error sending completion message to parent:', e);
+                    }
+                }
+            }
+        }
+        
+        // Reset game
+        function resetGame() {
+            // Clear game container
+            while (gameContainer.children.length > 5) {
+                gameContainer.removeChild(gameContainer.lastChild);
+            }
+            
+            // Reset variables
+            score = 0;
+            scoreValue.textContent = '0';
+            icons = [];
+            clearTimeout(window.gameTimer);
+            window.gameTimer = null;
+            window.gameEnded = false;
+            
+            // Hide game over screen
+            gameOverScreen.style.display = 'none';
+            
+            // Start new game
+            startGame();
+        }
+        
+        // Share score
+        function shareScore() {
+            alert(`I scored ${score} points in OCD Challenge 2! Can you beat my score?`);
+        }
+        
+        // Send loading message to parent window
+        if (window.parent && window.parent !== window) {
+            try {
+                window.parent.postMessage({ type: 'GAME_LOADING', message: 'OCD Challenge 2 game is loading' }, '*');
+            } catch (e) {
+                console.error('Error sending loading message to parent:', e);
+            }
+        }
+    </script>
+</body>
+</html>
