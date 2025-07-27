@@ -254,24 +254,9 @@ $(function(){
 			$(".share").append(newPic);		
 			mainImgUrl = newPic.src;
 		}else{
-			var url = 'http://g.lanrenmb.com/index.html';
-			$.ajax({
-				type: 'post',
-				url: url,
-				data: {
-					'userfile': canvas.toDataURL("image/png")
-				},
-				success:function(result){
-					var result = result;
-					if (typeof result == 'string') {
-						result = eval('('+ result +')');
-					}
-					mainImgUrl = result.data;
-					$(".share").find('img').attr('src',mainImgUrl);
-				},
-				error:function(){
-				}
-			});	
+		// Use local canvas data instead of external API
+		mainImgUrl = canvas.toDataURL("image/png");
+		$(".share").find('img').attr('src',mainImgUrl);
 		}
 		//_hmt.push(['_trackEvent', 'submit', 'click', 'confirm submit', 0]); //埋点
 	});
@@ -408,7 +393,7 @@ $(function(){
 		try{
 			var mainTitle="99%的人都被逼疯了，制作新消息头像，一起逼死强迫症！",
 				mainDesc="99%的人都被逼疯了",
-				mainURL= "http://g.lanrenmb.com/games/bsqpz/";
+				mainURL= window.location.origin + "/games/bsqpz/";
 			
 			//转发朋友圈
 			WeixinJSBridge.on("menu:share:timeline", function(e) {
@@ -463,10 +448,7 @@ $(function(){
 		if(URL.getQueryString('f') == 'fans'){
 			return false;
 		}
-		var t = confirm('组团逼死强迫症，快来关注我!懒人模板:lanrenmb');
-		if(t){
-			window.location.href = 'http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&idx=1&sn=1de5daeaae94c66a3c46a13e20e8011e#rd';
-		}
+		alert('感谢分享！继续制作更多有趣的头像吧！');
 	}
 	
 });
