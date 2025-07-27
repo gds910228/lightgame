@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom'
 import GameCard from '../components/GameCard'
 import { Game } from '../types'
 import { getAllGames, getGamesByCategory, searchGames } from '../services/gameService'
+import { useFavorites } from '../contexts/FavoritesContext'
 
 const HomePage = () => {
   const [games, setGames] = useState<Game[]>([])
@@ -10,6 +11,7 @@ const HomePage = () => {
   const [error, setError] = useState<string | null>(null)
   
   const location = useLocation()
+  const { favorites } = useFavorites()
   
   useEffect(() => {
     const fetchGames = async () => {
@@ -20,10 +22,15 @@ const HomePage = () => {
         const params = new URLSearchParams(location.search)
         const categoryParam = params.get('category')
         const searchParam = params.get('search')
+        const favoritesParam = params.get('favorites')
         
         let fetchedGames: Game[]
         
-        if (searchParam) {
+        if (favoritesParam === 'true') {
+          // Show only favorite games
+          const allGames = await getAllGames()
+          fetchedGames = allGames.filter(game => favorites.includes(game.id))
+        } else if (searchParam) {
           // Search has priority over category
           fetchedGames = await searchGames(searchParam)
         } else if (categoryParam) {
@@ -51,8 +58,11 @@ const HomePage = () => {
     const params = new URLSearchParams(location.search)
     const categoryParam = params.get('category')
     const searchParam = params.get('search')
+    const favoritesParam = params.get('favorites')
     
-    if (searchParam) {
+    if (favoritesParam === 'true') {
+      return 'My Favorite Games'
+    } else if (searchParam) {
       return `Search results for "${searchParam}"`
     } else if (categoryParam) {
       return `${categoryParam} Games`

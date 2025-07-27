@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Game } from '../types'
 import { useEffect } from 'react'
+import FavoriteButton from './FavoriteButton'
 
 interface GameCardProps {
   game: Game;
@@ -37,6 +38,15 @@ const GameCard = ({ game }: GameCardProps) => {
         {/* Category badge */}
         <div className="absolute top-2 right-2 z-20 bg-white/80 backdrop-blur-sm px-2 py-1 rounded-full text-xs font-medium text-gray-800 transition-transform duration-300 group-hover:scale-105 group-hover:bg-white/90">
           {game.category}
+        </div>
+        
+        {/* Favorite button */}
+        <div className="absolute top-2 left-2 z-20">
+          <FavoriteButton 
+            gameId={game.id} 
+            size="small"
+            className="bg-white/80 backdrop-blur-sm hover:bg-white/90 transition-all duration-300"
+          />
         </div>
         
         {/* Play overlay */}

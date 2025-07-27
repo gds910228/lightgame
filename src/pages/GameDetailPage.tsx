@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getGameById } from '../services/gameService'
 import { Game } from '../types'
+import FavoriteButton from '../components/FavoriteButton'
 
 const GameDetailPage = () => {
   const { gameId } = useParams<{ gameId: string }>()
@@ -248,9 +249,11 @@ const GameDetailPage = () => {
               <div className="flex items-center mb-4">
                 <h1 className="text-3xl font-bold text-gray-900">{game.title}</h1>
                 <div className="ml-auto flex gap-2">
-                  <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
-                    <i className="fas fa-heart text-gray-500"></i>
-                  </button>
+                  <FavoriteButton 
+                    gameId={game.id} 
+                    size="large"
+                    className="bg-gray-100 hover:bg-gray-200 transition-colors"
+                  />
                   <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
                     <i className="fas fa-share text-gray-500"></i>
                   </button>
