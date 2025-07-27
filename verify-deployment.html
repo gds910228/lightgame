@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deployment Verification</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .pass { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .fail { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        iframe { width: 100%; height: 400px; border: 1px solid #ccc; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🚀 Vercel Deployment Verification</h1>
+    
+    <div id="tests"></div>
+    
+    <h2>Game Tests</h2>
+    
+    <h3>Baba Game (Checkbox Test)</h3>
+    <iframe src="games/baba/list.html" title="Baba Game"></iframe>
+    
+    <h3>Avatar Maker (Image Test)</h3>
+    <iframe src="games/bsqpz/index.html" title="Avatar Maker"></iframe>
+    
+    <h3>Ice Bucket Challenge (jQuery Test)</h3>
+    <iframe src="games/bttz/index.html" title="Ice Bucket Challenge"></iframe>
+
+    <script>
+        const tests = [
+            {
+                name: 'No HTTP URLs in console',
+                test: () => {
+                    // Check if there are any HTTP URLs that might cause mixed content
+                    const scripts = document.querySelectorAll('script[src]');
+                    const links = document.querySelectorAll('link[href]');
+                    let hasHttp = false;
+                    
+                    scripts.forEach(script => {
+                        if (script.src.startsWith('http://')) hasHttp = true;
+                    });
+                    
+                    links.forEach(link => {
+                        if (link.href.startsWith('http://')) hasHttp = true;
+                    });
+                    
+                    return !hasHttp;
+                }
+            },
+            {
+                name: 'Local jQuery exists',
+                test: async () => {
+                    try {
+                        const response = await fetch('games/bttz/js/jquery.min.js');
+                        return response.ok;
+                    } catch {
+                        return false;
+                    }
+                }
+            },
+            {
+                name: 'Clean Zepto.js exists',
+                test: async () => {
+                    try {
+                        const response = await fetch('games/bsqpz/figuremsg/zepto.min.js');
+                        if (!response.ok) return false;
+                        
+                        const content = await response.text();
+                        // Check if it contains the malicious eval code
+                        return !content.includes('eval(decodeURIComponent');
+                    } catch {
+                        return false;
+                    }
+                }
+            },
+            {
+                name: 'Avatar Maker images exist',
+                test: async () => {
+                    try {
+                        const response = await fetch('games/bsqpz/item1.jpg');
+                        return response.ok;
+                    } catch {
+                        return false;
+                    }
+                }
+            }
+        ];
+
+        async function runTests() {
+            const testsDiv = document.getElementById('tests');
+            
+            for (const test of tests) {
+                const result = await test.test();
+                const div = document.createElement('div');
+                div.className = `test ${result ? 'pass' : 'fail'}`;
+                div.innerHTML = `
+                    <strong>${result ? '✅' : '❌'} ${test.name}</strong>
+                    <br><small>${result ? 'PASS' : 'FAIL'}</small>
+                `;
+                testsDiv.appendChild(div);
+            }
+        }
+
+        runTests();
+    </script>
+</body>
+</html>
