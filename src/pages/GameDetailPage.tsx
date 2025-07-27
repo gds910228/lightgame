@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom'
 import { getGameById } from '../services/gameService'
 import { Game } from '../types'
 import FavoriteButton from '../components/FavoriteButton'
+import ShareButton from '../components/ShareButton'
+import ToastNotification from '../components/ToastNotification'
 
 const GameDetailPage = () => {
   const { gameId } = useParams<{ gameId: string }>()
@@ -12,6 +14,7 @@ const GameDetailPage = () => {
   const [error, setError] = useState<string | null>(null)
   const [isFullScreen, setIsFullScreen] = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)
+  const [showToast, setShowToast] = useState(false)
   
   const fullscreenContainerRef = useRef<HTMLDivElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
@@ -146,6 +149,28 @@ const GameDetailPage = () => {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isFullScreen]);
+
+  const handleShare = async () => {
+    const shareData = {
+      title: game?.title,
+      text: game?.description,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+        console.log('Game shared successfully');
+      } catch (err) {
+        console.error('Share failed:', err);
+      }
+    } else {
+      // Fallback for browsers that do not support the Web Share API
+      navigator.clipboard.writeText(window.location.href).then(() => {
+        setShowToast(true);
+      });
+    }
+  };
   
   // 确保退出按钮始终在最上层并可点击
   useEffect(() => {
@@ -209,6 +234,12 @@ const GameDetailPage = () => {
   
   return (
     <>
+      {showToast && (
+        <ToastNotification
+          message="Link copied to clipboard!"
+          onClose={() => setShowToast(false)}
+        />
+      )}
       {/* Normal view */}
       <div className={`animate-fade-in ${isFullScreen ? 'hidden' : ''}`}>
         {/* Back button */}
@@ -254,9 +285,7 @@ const GameDetailPage = () => {
                     size="large"
                     className="bg-gray-100 hover:bg-gray-200 transition-colors"
                   />
-                  <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
-                    <i className="fas fa-share text-gray-500"></i>
-                  </button>
+                  <ShareButton onClick={handleShare} />
                 </div>
               </div>
               
