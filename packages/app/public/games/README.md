@@ -1,35 +1,38 @@
 # 🎮 Games Source Directory
 
-## ⚠️ IMPORTANT DEVELOPMENT RULES
+## ⚠️ IMPORTANT DEVELOPMENT RULES (For AI Assistant)
 
-### 📝 Always Remember:
+### 🤖 AI Assistant Must Always Remember:
 1. **ONLY modify game source code in this directory (`packages/games/`)**
 2. **NEVER directly edit files in `packages/app/public/games/`**
-3. **After making changes, run `npm run sync-games` to sync to public directory**
+3. **ALWAYS run `npm run sync-games` immediately after modifying any game files**
+4. **Double-check that changes are synced to public directory before testing**
 
-### 🔄 Development Workflow:
+### 🤖 AI Development Workflow (MANDATORY):
+```bash
+# 1. Modify game files in packages/games/ ONLY
+# 2. IMMEDIATELY run sync command:
+npm run sync-games
+
+# 3. Verify files are copied to packages/app/public/games/
+# 4. Then test the changes
+# 5. Commit all changes including both directories
+```
+
+### 🔄 User Development Workflow:
 
 #### Option 1: Auto-sync Development (Recommended)
 ```bash
 # Start development with auto-sync
 npm run dev:watch
-
-# Now edit files in packages/games/ - they sync automatically!
-# No manual sync needed!
+# Files sync automatically when changed!
 ```
 
 #### Option 2: Manual Development
 ```bash
-# 1. Edit game files in packages/games/
-# 2. Start development (auto-syncs once)
+# Start development (auto-syncs once)
 npm run dev
-
-# 3. If you make more changes, run:
-npm run sync-games
-
-# 4. Commit your changes
-git add .
-git commit -m "your changes"
+# If making more changes, run: npm run sync-games
 ```
 
 ### 📁 Directory Structure:
@@ -44,4 +47,4 @@ git commit -m "your changes"
 5. Test the game
 
 ---
-**Remember: Source in `packages/games/`, sync with `npm run sync-games`!**
+**🚨 AI REMINDER: Always sync after editing! Source in `packages/games/`, sync with `npm run sync-games`!**
