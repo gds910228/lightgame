@@ -1,0 +1,12 @@
+{
+  "id": "bttz",
+  "title": "兔兔争霸",
+  "description": "一款可爱的兔子主题休闲游戏，体验萌萌的兔兔世界",
+  "category": "Casual",
+  "tags": ["休闲", "可爱", "兔子"],
+  "thumbnail": "share.png",
+  "playUrl": "index.html",
+  "featured": false,
+  "difficulty": "Easy",
+  "estimatedPlayTime": "5-15分钟"
+}

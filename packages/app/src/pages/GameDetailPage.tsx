@@ -196,12 +196,15 @@ const GameDetailPage = () => {
     }
   }, [game, setShowToast]);
 
-  // Listen for share messages from the game iframe
+  // Listen for messages from the game iframe
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'SHARE_GAME') {
-        const { score } = event.data.data;
+        const { score, message } = event.data.data;
         handleShare(score);
+      } else if (event.data.type === 'NAVIGATE_TO_HOME') {
+        // Navigate to home page
+        window.location.href = '/';
       }
     };
 
