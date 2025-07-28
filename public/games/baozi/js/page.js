@@ -84,3 +84,4 @@ function fallbackShare() {
 $(function(){});var shareUrl=window.location.origin,shareTitle="Bun Eating Contest - Can you beat me?",share="Bun Eating Contest - Can you beat me?",share_imgUrl="/images/thumbnails/baozi.svg";
 
 // Remove old WeChat sharing code - replaced with new share functionality above
+// Cache bust for Vercel deployment - v2.0
