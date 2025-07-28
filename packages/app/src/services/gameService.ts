@@ -1,4 +1,4 @@
-import { Game, GamesData } from '../types';
+import { Game } from '../types';
 
 // Cache the games data to avoid repeated fetches
 let gamesCache: Game[] | null = null;
