@@ -13,7 +13,7 @@
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
     <title>逼死强迫症-懒人模板</title> 
-    <script src="js/cocos2d-3.0rc1.canvas.v2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cocos2d-html5/3.0.0/cocos2d-js-v3.0.js"></script>
     <style type="text/css">
     body {
         background-color: black;
@@ -22,6 +22,8 @@
 </head>
 <body>	 
     <canvas id="gameCanvas" width="640" height="1136"></canvas>
+    <script type="text/javascript" src="js/game.min.js"></script>
+    <script type="text/javascript" src="src/app.js"></script>
     <script type="text/javascript">
           window.onload = function(){
               cc.game.onStart = function(){
@@ -33,6 +35,16 @@
                   //cc._loaderImage = "";
                   cc.LoaderScene.preload(["res/bg.jpg","res/imgs.png", "res/imgs.json", "icon.png"], function () {
                       cc.spriteFrameCache.addSpriteFrames('res/imgs.json', 'res/imgs.png');
+                      // Make sure HelloWorldScene is defined
+                      if (typeof HelloWorldScene === 'undefined') {
+                          HelloWorldScene = cc.Scene.extend({
+                              onEnter: function () {
+                                  this._super();
+                                  var layer = new HelloWorldLayer();
+                                  this.addChild(layer);
+                              }
+                          });
+                      }
                       cc.director.runScene(new HelloWorldScene());
                   }, this);
               };
@@ -99,7 +111,7 @@ var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&
 		</script>
 		<div id=share style="display: none">
 			<img width=100% src="share.png"
-				style="position: fixed; z-index: 9999; top: 0; left: 0; display: "
+				style="position: fixed; z-index: 9999; top: 0; left: 0; display: block;"
 				ontouchstart="document.getElementById('share').style.display='none';" />
 		</div>
 		<div style="display: none;">
@@ -131,6 +143,6 @@ var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&
 			<div style="display: none;">
 			<script type="text/javascript" src="http://tajs.qq.com/stats?sId=36313548" charset="UTF-8"></script>
 			</div>
-			 <script type="text/javascript" src="js/game9g.utils.js?r="+Math.rand()></script>
+			 <script type="text/javascript" src="js/game9g.utils.js"></script>
 </body>
 </html>
