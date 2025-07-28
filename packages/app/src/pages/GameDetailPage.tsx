@@ -200,7 +200,7 @@ const GameDetailPage = () => {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'SHARE_GAME') {
-        const { score, message } = event.data.data;
+        const { score } = event.data.data;
         handleShare(score);
       } else if (event.data.type === 'NAVIGATE_TO_HOME') {
         // Navigate to home page
