@@ -6,6 +6,7 @@ export interface Game {
   description: string;
   controls: string;
   path: string;
+  tags: string[];
 }
 
 export interface GamesData {

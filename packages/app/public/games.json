@@ -3,9 +3,10 @@
     "id": "baba",
     "title": "Baba Game",
     "description": "A fun Baba Game game",
-    "thumbnail": "/games/baba/./images/index_title.png",
+    "thumbnail": "/images/thumbnails/baba.svg",
     "url": "/games/baba/",
     "category": "Casual",
+    "controls": "Click on the map to select regions and complete challenges. Use mouse to navigate through different levels.",
     "tags": [
       "HTML5",
       "Browser Game"
@@ -14,10 +15,11 @@
   {
     "id": "baozi",
     "title": "Bun Eating Contest",
-    "description": "LightGame",
-    "thumbnail": "/images/game-placeholder.png",
+    "description": "A fun bun eating contest game",
+    "thumbnail": "/images/thumbnails/baozi.svg",
     "url": "/games/baozi/",
     "category": "Casual",
+    "controls": "Click and drag to interact with objects. Use mouse to navigate through the eating contest.",
     "tags": [
       "HTML5",
       "Browser Game"
@@ -27,9 +29,10 @@
     "id": "bbjx",
     "title": "Steps of Wonder",
     "description": "A fun Steps of Wonder game",
-    "thumbnail": "/games/bbjx/share.png",
+    "thumbnail": "/images/thumbnails/bbjx.svg",
     "url": "/games/bbjx/",
     "category": "Casual",
+    "controls": "Use arrow keys or WASD to move. Space bar to jump. Navigate through challenging platforms.",
     "tags": [
       "HTML5",
       "Browser Game"
@@ -37,11 +40,12 @@
   },
   {
     "id": "bdsjm",
-    "title": "暴打神经猫",
-    "description": "A fun 暴打神经猫 game",
-    "thumbnail": "/games/bdsjm/http://img.tongji.linezing.com/3455448/tongji.gif",
+    "title": "Beat the Cat",
+    "description": "A fun cat-beating arcade game",
+    "thumbnail": "/images/thumbnails/bdsjm.svg",
     "url": "/games/bdsjm/",
     "category": "Casual",
+    "controls": "Click or tap on the cats to beat them. Quick reflexes needed to achieve high scores!",
     "tags": [
       "HTML5",
       "Browser Game"
@@ -50,10 +54,11 @@
   {
     "id": "snake",
     "title": "Snake Game",
-    "description": "A fun Snake Game game",
-    "thumbnail": "/images/game-placeholder.png",
+    "description": "Classic snake game - eat food and grow longer",
+    "thumbnail": "/images/thumbnails/snake.svg",
     "url": "/games/snake/",
     "category": "Casual",
+    "controls": "Use arrow keys to control the snake. Eat food to grow longer, avoid hitting walls or yourself.",
     "tags": [
       "HTML5",
       "Browser Game"
@@ -62,10 +67,11 @@
   {
     "id": "space-shooter",
     "title": "Space Shooter",
-    "description": "A fun Space Shooter game",
-    "thumbnail": "/images/game-placeholder.png",
+    "description": "Defend Earth from alien invasion",
+    "thumbnail": "/images/thumbnails/space-shooter.svg",
     "url": "/games/space-shooter/",
-    "category": "Casual",
+    "category": "Action",
+    "controls": "Use arrow keys to move your spaceship. Space bar to shoot. Destroy all enemies to win!",
     "tags": [
       "HTML5",
       "Browser Game"
@@ -74,10 +80,11 @@
   {
     "id": "tetris",
     "title": "Tetris Game",
-    "description": "A fun Tetris Game game",
-    "thumbnail": "/images/game-placeholder.png",
+    "description": "Classic block-stacking puzzle game",
+    "thumbnail": "/images/thumbnails/tetris.svg",
     "url": "/games/tetris/",
-    "category": "Casual",
+    "category": "Puzzle",
+    "controls": "Arrow keys to move and rotate blocks. Down arrow to drop faster. Clear lines to score points.",
     "tags": [
       "HTML5",
       "Browser Game"
@@ -85,11 +92,12 @@
   },
   {
     "id": "tower-defense",
-    "title": "塔防策略游戏",
-    "description": "A fun 塔防策略游戏 game",
-    "thumbnail": "/images/game-placeholder.png",
+    "title": "Tower Defense",
+    "description": "Strategic tower defense game - protect your base",
+    "thumbnail": "/images/thumbnails/tower-defense.svg",
     "url": "/games/tower-defense/",
-    "category": "Casual",
+    "category": "Strategy",
+    "controls": "Click to place towers along the path. Upgrade towers to increase damage. Stop enemies from reaching your base!",
     "tags": [
       "HTML5",
       "Browser Game"

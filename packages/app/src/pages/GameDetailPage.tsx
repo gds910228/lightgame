@@ -296,10 +296,10 @@ const GameDetailPage = () => {
         </Link>
         
         {/* Game details */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="md:flex">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden max-w-6xl mx-auto">
+          <div className="lg:flex">
             {/* Game image */}
-            <div className="md:flex-shrink-0 md:w-1/3 h-64 md:h-auto relative">
+            <div className="lg:flex-shrink-0 lg:w-2/5 h-64 lg:h-auto relative">
               {/* Fallback image */}
               <div className="absolute inset-0 bg-gradient-to-br from-primary-100 to-primary-300 flex items-center justify-center">
                 <i className="fas fa-gamepad text-primary-600 text-5xl animate-pulse-slow"></i>
@@ -323,7 +323,7 @@ const GameDetailPage = () => {
             </div>
             
             {/* Game info */}
-            <div className="p-6 md:p-8 md:w-2/3">
+            <div className="p-6 lg:p-8 lg:w-3/5">
               <div className="flex items-center mb-4">
                 <h1 className="text-3xl font-bold text-gray-900">{game.title}</h1>
                 <div className="ml-auto flex gap-2">
@@ -348,11 +348,6 @@ const GameDetailPage = () => {
                 </p>
               </div>
               
-              {/* Debug info */}
-              <div className="mb-4 p-2 bg-gray-100 rounded text-xs font-mono">
-                <p>Game path: {game.path}</p>
-                <p>Image path: {game.image}</p>
-              </div>
               
               {/* Play button */}
               <button

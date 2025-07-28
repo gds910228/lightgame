@@ -52,6 +52,7 @@ export async function getAllGames(): Promise<Game[]> {
         title: game.title,
         description: game.description,
         category: game.category,
+        controls: game.controls || 'No control information available',
         tags: game.tags || [],
         path: `${baseUrl}${game.url}`, // Convert 'url' to 'path'
         image: game.thumbnail ? `${baseUrl}${game.thumbnail}` : `${baseUrl}/images/thumbnails/${game.id}.svg` // Convert 'thumbnail' to 'image'
