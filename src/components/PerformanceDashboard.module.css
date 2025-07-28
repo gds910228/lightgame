@@ -1,33 +1,25 @@
-.overlay {
+.dashboard {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  max-height: 500px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
   z-index: 1000;
-  display: flex;
-  justify-content: flex-end;
+  overflow: hidden;
+  animation: slideUp 0.3s ease-out;
 }
 
-.panel {
-  width: 380px;
-  height: 100%;
-  background-color: #f7fafc;
-  color: #2d3748;
-  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  animation: slideIn 0.3s ease-out;
-  overflow-y: auto;
-}
-
-@keyframes slideIn {
+@keyframes slideUp {
   from {
-    transform: translateX(100%);
+    transform: translateY(100%);
+    opacity: 0;
   }
   to {
-    transform: translateX(0);
+    transform: translateY(0);
+    opacity: 1;
   }
 }
 
@@ -35,100 +27,162 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 1.5rem;
+  padding: 12px 16px;
+  background-color: #f8fafc;
   border-bottom: 1px solid #e2e8f0;
 }
 
 .header h2 {
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: 600;
+  color: #2d3748;
+  margin: 0;
 }
 
 .closeButton {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   cursor: pointer;
   color: #718096;
+  padding: 4px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.closeButton:hover {
+  background-color: #e2e8f0;
 }
 
 .content {
-  padding: 1.5rem;
-  flex-grow: 1;
+  padding: 16px;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
 .section {
   background-color: #ffffff;
   border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #e2e8f0;
 }
 
 .section:first-child {
-    background-color: #ebf8ff;
-    border: 1px solid #90cdf4;
+  background-color: #ebf8ff;
+  border-color: #90cdf4;
 }
 
 .section:nth-child(2) {
-    background-color: #f0fff4;
-    border: 1px solid #9ae6b4;
+  background-color: #f0fff4;
+  border-color: #9ae6b4;
 }
 
 .sectionTitle {
-  font-size: 1.1rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 8px;
+  color: #2d3748;
 }
 
 .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.5rem;
-    font-size: 0.9rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: #4a5568;
+}
+
+.gridItem {
+  display: flex;
+  justify-content: space-between;
 }
 
 .buttonGroup {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .button {
   flex: 1;
-  padding: 0.75rem;
+  padding: 8px 12px;
   border: none;
   border-radius: 6px;
-  font-weight: 600;
+  font-weight: 500;
+  font-size: 0.8rem;
   cursor: pointer;
   transition: background-color 0.2s;
 }
 
-.button {
+.primary {
   background-color: #3182ce;
   color: white;
 }
 
-.button:hover {
+.primary:hover {
   background-color: #2b6cb0;
 }
 
 .secondary {
   background-color: #718096;
+  color: white;
 }
 
 .secondary:hover {
   background-color: #4a5568;
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
-    font-size: 0.9rem;
+.popularGames {
+  font-size: 0.8rem;
 }
 
-li {
-    margin-bottom: 0.5rem;
-    display: flex;
-    justify-content: space-between;
+.popularGames ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.popularGames li {
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  color: #4a5568;
+}
+
+.tips {
+  background-color: #fffbeb;
+  border-color: #f6e05e;
+}
+
+.tips ul {
+  list-style-type: disc;
+  padding-left: 16px;
+  margin: 0;
+  font-size: 0.75rem;
+  color: #744210;
+}
+
+.tips li {
+  margin-bottom: 4px;
+  display: list-item;
+}
+
+/* Scrollbar styling */
+.content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
 }

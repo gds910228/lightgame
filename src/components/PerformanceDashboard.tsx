@@ -15,15 +15,14 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isOpen, onC
   }
 
   return (
-    <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.panel} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h2>Performance Dashboard</h2>
-          <button onClick={onClose} className={styles.closeButton}>
-            &times;
-          </button>
-        </div>
-        <div className={styles.content}>
+    <div className={styles.dashboard} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.header}>
+        <h2>Performance Dashboard</h2>
+        <button className={styles.closeButton} onClick={onClose}>
+          ×
+        </button>
+      </div>
+      <div className={styles.content}>
           {/* Build Information */}
           {buildInfo && (
             <div className={styles.section}>
@@ -67,7 +66,7 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isOpen, onC
           </div>
 
           {/* Tips */}
-          <div className={styles.section}>
+          <div className={`${styles.section} ${styles.tips}`}>
             <h3 className={styles.sectionTitle}>💡 Tips</h3>
             <ul>
               <li>Games under 1MB load instantly</li>
@@ -77,7 +76,6 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isOpen, onC
             </ul>
           </div>
         </div>
-      </div>
     </div>
   );
 };
