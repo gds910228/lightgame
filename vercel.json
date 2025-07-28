@@ -40,12 +40,12 @@
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
         },
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        }
-      ]
-    }
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "packages/app/dist",
+  "installCommand": "npm install",
+  "framework": "vite"
+}
   ],
   "trailingSlash": false
 } 
