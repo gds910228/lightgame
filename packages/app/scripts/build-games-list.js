@@ -16,6 +16,7 @@ const __dirname = path.dirname(__filename);
 
 // Configuration
 const GAMES_DIR = path.join(__dirname, '..', 'public', 'games');
+const METADATA_SOURCE_DIR = path.join(__dirname, '..', '..', 'games'); // Source metadata from packages/games
 const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'games.json');
 const PUBLIC_GAMES_DIR = path.join(__dirname, '..', 'public', 'games');
 
@@ -58,30 +59,30 @@ function copyFolderRecursive(source, target) {
 }
 
 /**
- * Scans the games directory and builds a list of all games with their metadata
+ * Scans the metadata source directory and builds a list of all games with their metadata
  */
 function buildGamesList() {
-  console.log('Building games list...');
+  console.log('Building games list from metadata source...');
   
   try {
-    // Get all subdirectories in the games directory
-    const gameDirs = fs.readdirSync(GAMES_DIR, { withFileTypes: true })
+    // Get all subdirectories in the metadata source directory
+    const gameDirs = fs.readdirSync(METADATA_SOURCE_DIR, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
       .map(dirent => dirent.name);
     
-    console.log(`Found ${gameDirs.length} potential game directories`);
+    console.log(`Found ${gameDirs.length} potential game directories in metadata source`);
     
     // Array to store all valid games
     const games = [];
     
     // Process each game directory
     for (const gameDir of gameDirs) {
-      const metadataPath = path.join(GAMES_DIR, gameDir, 'metadata.json');
+      const metadataPath = path.join(METADATA_SOURCE_DIR, gameDir, 'metadata.json');
       
-      // Check if metadata.json exists
+      // Check if metadata.json exists in source
       if (fs.existsSync(metadataPath)) {
         try {
-          // Read and parse the metadata file
+          // Read and parse the metadata file from source
           const metadata = JSON.parse(fs.readFileSync(metadataPath, 'utf8'));
           
           // Validate required fields
@@ -93,8 +94,10 @@ function buildGamesList() {
             continue;
           }
           
-          // Add the game path
-          metadata.path = `/games/${gameDir}/index.html`;
+          // Ensure the game path is set correctly
+          if (!metadata.path) {
+            metadata.path = `/games/${gameDir}/index.html`;
+          }
           
           // Fix image path if it's relative
           if (metadata.image && metadata.image.startsWith('./')) {
@@ -103,7 +106,7 @@ function buildGamesList() {
           
           // Add to games list
           games.push(metadata);
-          console.log(`Added game: ${metadata.title}`);
+          console.log(`Added game: ${metadata.title} (${metadata.category})`);
         } catch (error) {
           console.error(`Error processing game "${gameDir}": ${error.message}`);
         }
@@ -116,9 +119,11 @@ function buildGamesList() {
     games.sort((a, b) => a.title.localeCompare(b.title));
     
     // Write the consolidated games.json file
-    fs.writeFileSync(OUTPUT_FILE, JSON.stringify({ games }, null, 2));
+    const gamesData = { games };
+    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(gamesData, null, 2));
     
     console.log(`Successfully wrote ${games.length} games to ${OUTPUT_FILE}`);
+    console.log('Games list built from metadata source successfully!');
   } catch (error) {
     console.error(`Error building games list: ${error.message}`);
     process.exit(1);

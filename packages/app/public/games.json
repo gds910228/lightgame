@@ -85,7 +85,7 @@
     {
       "id": "bsqpz2",
       "title": "OCD Challenge 2",
-      "category": "Casual",
+      "category": "Puzzle",
       "description": "A challenging puzzle game that tests your attention to detail and perfectionist tendencies. Clear all the notifications and organize everything perfectly!",
       "controls": "Tap to clear notifications and organize items. Pay attention to details and complete each level perfectly.",
       "author": "LightGame Team",
@@ -115,7 +115,7 @@
     {
       "id": "snake",
       "title": "Snake Game",
-      "category": "Puzzle",
+      "category": "Arcade",
       "image": "/images/thumbnails/snake.svg",
       "description": "The classic Snake game where you control a snake to eat food and grow longer. Be careful not to hit the walls or yourself!",
       "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
