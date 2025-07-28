@@ -6,13 +6,17 @@
     "packages/app"
   ],
   "scripts": {
-    "dev": "npm run dev --workspace=packages/app",
-    "build": "npm run build --workspace=packages/app",
+    "dev": "npm run sync-games && npm run dev --workspace=packages/app",
+    "dev:watch": "npm run watch-games & npm run dev --workspace=packages/app",
+    "build": "npm run sync-games && npm run build --workspace=packages/app",
     "lint": "npm run lint --workspace=packages/app",
     "preview": "npm run preview --workspace=packages/app",
-    "optimize-games": "npm run optimize-games --workspace=packages/app"
+    "optimize-games": "npm run optimize-games --workspace=packages/app",
+    "sync-games": "node scripts/sync-games.js",
+    "watch-games": "node scripts/watch-games.js"
   },
   "devDependencies": {
+    "chokidar": "^4.0.3",
     "typescript": "^5.2.2"
   }
 }

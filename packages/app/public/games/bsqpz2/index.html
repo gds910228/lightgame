@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,445 +12,137 @@
     <meta name="screen-orientation" content="portrait"/>
     <meta name="x5-fullscreen" content="true"/>
     <meta name="360-fullscreen" content="true"/>
-    <title>OCD Challenge 2</title>
+    <title>逼死强迫症-懒人模板</title> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cocos2d-html5/3.0.0/cocos2d-js-v3.0.js"></script>
     <style type="text/css">
     body {
-        background-color: #f0f0f0;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        min-height: 100vh;
-    }
-    
-    #game-container {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        padding: 20px;
-        text-align: center;
-        max-width: 400px;
-        width: 90%;
-    }
-    
-    h1 {
-        color: #333;
-        margin-bottom: 20px;
-        font-size: 24px;
-    }
-    
-    #game-board {
-        display: grid;
-        grid-template-columns: repeat(4, 80px);
-        grid-template-rows: repeat(4, 80px);
-        gap: 5px;
-        margin: 20px auto;
-        justify-content: center;
-    }
-    
-    .tile {
-        width: 80px;
-        height: 80px;
-        background-color: #e8e8e8;
-        border: 2px solid #ccc;
-        border-radius: 5px;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 18px;
-        font-weight: bold;
-        transition: all 0.2s ease;
-        position: relative;
-    }
-    
-    .tile:hover {
-        background-color: #d0d0d0;
-        transform: scale(1.05);
-    }
-    
-    .tile.misaligned {
-        background-color: #ffcccc;
-        border-color: #ff6666;
-        animation: shake 0.5s ease-in-out;
-    }
-    
-    .tile.aligned {
-        background-color: #ccffcc;
-        border-color: #66ff66;
-    }
-    
-    .tile.perfect {
-        background-color: #66ff66;
-        border-color: #00cc00;
-        color: white;
-    }
-    
-    @keyframes shake {
-        0%, 100% { transform: translateX(0); }
-        25% { transform: translateX(-2px); }
-        75% { transform: translateX(2px); }
-    }
-    
-    #score {
-        font-size: 18px;
-        margin: 20px 0;
-        color: #333;
-    }
-    
-    #level {
-        font-size: 16px;
-        color: #666;
-        margin-bottom: 10px;
-    }
-    
-    button {
-        background-color: #4a90e2;
-        border: none;
-        color: white;
-        padding: 10px 20px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        font-size: 16px;
-        margin: 10px;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-    }
-    
-    button:hover {
-        background-color: #357abd;
-    }
-    
-    #message {
-        margin: 10px 0;
-        font-size: 14px;
-        color: #666;
-        min-height: 20px;
-    }
-    
-    .notification {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background-color: #ff6b6b;
-        color: white;
-        padding: 15px 20px;
-        border-radius: 8px;
-        font-size: 16px;
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        animation: popIn 0.4s ease-out;
-        text-align: center;
-        max-width: 280px;
-        word-wrap: break-word;
-    }
-    
-    @keyframes popIn {
-        0% { 
-            transform: translate(-50%, -50%) scale(0.5); 
-            opacity: 0; 
-        }
-        50% { 
-            transform: translate(-50%, -50%) scale(1.1); 
-            opacity: 0.8; 
-        }
-        100% { 
-            transform: translate(-50%, -50%) scale(1); 
-            opacity: 1; 
-        }
+        background-color: black;
     }
     </style>
 </head>
-<body>
-    <div id="game-container">
-        <h1>OCD Challenge 2</h1>
-        <div id="level">Level 1</div>
-        <div id="score">Score: 0</div>
-        <div id="message">Align all tiles perfectly to satisfy your OCD!</div>
-        
-        <div id="game-board"></div>
-        
-        <button id="reset-btn">Reset Level</button>
-        <button id="next-btn" style="display: none;">Next Level</button>
-    </div>
-
+<body>	 
+    <canvas id="gameCanvas" width="640" height="1136"></canvas>
+    <script type="text/javascript" src="js/game.min.js"></script>
+    <script type="text/javascript" src="src/app.js"></script>
     <script type="text/javascript">
-        class OCDChallenge {
-            constructor() {
-                this.level = 1;
-                this.score = 0;
-                this.board = [];
-                this.targetPattern = [];
-                this.gameBoard = document.getElementById('game-board');
-                this.scoreElement = document.getElementById('score');
-                this.levelElement = document.getElementById('level');
-                this.messageElement = document.getElementById('message');
-                this.resetBtn = document.getElementById('reset-btn');
-                this.nextBtn = document.getElementById('next-btn');
-                
-                this.initGame();
-                this.bindEvents();
-            }
-            
-            initGame() {
-                this.generateLevel();
-                this.renderBoard();
-            }
-            
-            generateLevel() {
-                // Generate target pattern based on level
-                this.targetPattern = [];
-                const patterns = [
-                    // Level 1: Simple checkerboard
-                    [1,0,1,0,0,1,0,1,1,0,1,0,0,1,0,1],
-                    // Level 2: Cross pattern
-                    [0,0,1,0,0,0,1,0,1,1,1,1,0,0,1,0],
-                    // Level 3: Diamond pattern
-                    [0,1,1,0,1,0,0,1,1,0,0,1,0,1,1,0],
-                    // Level 4: Complex pattern
-                    [1,0,0,1,0,1,1,0,0,1,1,0,1,0,0,1],
-                    // Level 5: Spiral pattern
-                    [1,1,1,0,0,0,1,0,0,0,1,0,1,1,1,0]
-                ];
-                
-                const patternIndex = Math.min(this.level - 1, patterns.length - 1);
-                this.targetPattern = [...patterns[patternIndex]];
-                
-                // Create scrambled board
-                this.board = [...this.targetPattern];
-                this.scrambleBoard();
-            }
-            
-            scrambleBoard() {
-                // Scramble the board by making random moves
-                const moves = 10 + this.level * 5;
-                for (let i = 0; i < moves; i++) {
-                    const randomIndex = Math.floor(Math.random() * 16);
-                    this.board[randomIndex] = this.board[randomIndex] === 1 ? 0 : 1;
-                }
-            }
-            
-            renderBoard() {
-                this.gameBoard.innerHTML = '';
-                
-                for (let i = 0; i < 16; i++) {
-                    const tile = document.createElement('div');
-                    tile.className = 'tile';
-                    tile.dataset.index = i;
-                    
-                    // Add visual indicator based on state
-                    if (this.board[i] === this.targetPattern[i]) {
-                        tile.classList.add('aligned');
-                        tile.innerHTML = this.board[i] === 1 ? '●' : '○';
-                    } else {
-                        tile.classList.add('misaligned');
-                        tile.innerHTML = this.board[i] === 1 ? '●' : '○';
-                    }
-                    
-                    tile.addEventListener('click', () => this.handleTileClick(i));
-                    this.gameBoard.appendChild(tile);
-                }
-                
-                this.updateUI();
-            }
-            
-            handleTileClick(index) {
-                // Toggle the clicked tile and adjacent tiles
-                const positions = [index];
-                const row = Math.floor(index / 4);
-                const col = index % 4;
-                
-                // Add adjacent positions
-                if (row > 0) positions.push(index - 4); // Up
-                if (row < 3) positions.push(index + 4); // Down
-                if (col > 0) positions.push(index - 1); // Left
-                if (col < 3) positions.push(index + 1); // Right
-                
-                // Toggle all affected tiles
-                positions.forEach(pos => {
-                    this.board[pos] = this.board[pos] === 1 ? 0 : 1;
-                });
-                
-                this.renderBoard();
-                this.checkWin();
-                
-                // Add some OCD-triggering notifications
-                if (Math.random() < 0.3) {
-                    this.showNotification("That's not quite right...");
-                }
-            }
-            
-            checkWin() {
-                const isComplete = this.board.every((tile, index) => tile === this.targetPattern[index]);
-                
-                if (isComplete) {
-                    this.score += this.level * 100;
-                    this.messageElement.textContent = "Perfect! Your OCD is satisfied... for now.";
-                    this.nextBtn.style.display = 'inline-block';
-                    
-                    // Mark all tiles as perfect
-                    document.querySelectorAll('.tile').forEach(tile => {
-                        tile.classList.remove('aligned', 'misaligned');
-                        tile.classList.add('perfect');
-                    });
-                    
-                    // Submit score
-                    if (typeof dp_submitScore === 'function') {
-                        dp_submitScore(this.score);
-                    }
-                } else {
-                    this.nextBtn.style.display = 'none';
-                    const correctTiles = this.board.filter((tile, index) => tile === this.targetPattern[index]).length;
-                    this.messageElement.textContent = `${correctTiles}/16 tiles aligned correctly`;
-                }
-            }
-            
-            nextLevel() {
-                this.level++;
-                this.nextBtn.style.display = 'none';
-                this.generateLevel();
-                this.renderBoard();
-                this.showNotification(`Level ${this.level} - Getting more challenging!`);
-            }
-            
-            resetLevel() {
-                this.generateLevel();
-                this.renderBoard();
-                this.showNotification("Level reset - try to be more precise this time!");
-            }
-            
-            updateUI() {
-                this.scoreElement.textContent = `Score: ${this.score}`;
-                this.levelElement.textContent = `Level ${this.level}`;
-            }
-            
-            showNotification(message) {
-                const notification = document.createElement('div');
-                notification.className = 'notification';
-                notification.textContent = message;
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.remove();
-                }, 3000);
-            }
-            
-            bindEvents() {
-                this.resetBtn.addEventListener('click', () => this.resetLevel());
-                this.nextBtn.addEventListener('click', () => this.nextLevel());
-            }
-        }
-        
-        // Initialize game when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            new OCDChallenge();
-        });
-        
-        // Share functionality
-        window.shareData = {
-            "imgUrl": "icon.png",
-            "timeLineLink": window.location.href,
-            "tTitle": "OCD Challenge 2",
-            "tContent": "I completed the OCD Challenge! Can you handle the perfectionist pressure?"
-        };
-        
-        function dp_submitScore(score) {
-            const myData = { 
-                gameid: "bsqpz2", 
-                score: parseInt(score),
-                scoreName: "Achieved " + score + " points in OCD Challenge"
-            };
-            
-            document.title = "OCD Challenge 2 - I scored " + score + " points! Can you beat my perfectionist skills?";
-            window.shareData.tTitle = document.title;
-            
-            console.log("Score submitted:", myData);
-        }
+          window.onload = function(){
+              cc.game.onStart = function(){
+                  cc.view.enableAutoFullScreen(false);
+                  cc.view.setDesignResolutionSize(640, 1136, cc.ResolutionPolicy.SHOW_ALL);
+                  cc.view.resizeWithBrowserSize(true);
+                  cc.director.setDisplayStats(cc.game.config.showFPS);
+                  //load resources
+                  //cc._loaderImage = "";
+                  cc.LoaderScene.preload(["res/bg.jpg","res/imgs.png", "res/imgs.json", "icon.png"], function () {
+                      cc.spriteFrameCache.addSpriteFrames('res/imgs.json', 'res/imgs.png');
+                      // Make sure HelloWorldScene is defined
+                      if (typeof HelloWorldScene === 'undefined') {
+                          HelloWorldScene = cc.Scene.extend({
+                              onEnter: function () {
+                                  this._super();
+                                  var layer = new HelloWorldLayer();
+                                  this.addChild(layer);
+                              }
+                          });
+                      }
+                      cc.director.runScene(new HelloWorldScene());
+                  }, this);
+              };
+              cc.game.run("gameCanvas");
+          };
     </script>
+<script language=javascript>
+		var mebtnopenurl = 'http://g.lanrenmb.com/index.html';
+var thegameurl ="http://g.lanrenmb.com/games/bsqpz2/"; 
+var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&idx=1&sn=1de5daeaae94c66a3c46a13e20e8011e#rd";
+		var is9gUser=false;
+		window.shareData = {
+		        "imgUrl": "http://g.lanrenmb.com/games/bsqpz2/icon.png",
+		        "timeLineLink":thegameurl,
+		        "tTitle": "逼死强迫症-懒人模板",
+		        "tContent": "逼死强迫症-懒人模板:lanrenmb"
+		};
+				
+		function goHome(){
+			window.location=mebtnopenurl;
+		}
+		function clickMore(){
+			if((window.location+"").indexOf("zf",1)>0){
+				window.location = mebtnopenurl;
+			 }
+			 else{
+				goHome();
+			 }
+		}
+		function dp_share(){
+			document.getElementById("share").style.display="";
+			
+		}
+		function dp_Ranking(){
+			window.location=mebtnopenurl;
+		}
 
-    <script language="javascript">
-        var mebtnopenurl = 'http://g.lanrenmb.com/index.html';
-        var thegameurl = window.location.href;
-        var guanzhuurl = "http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&idx=1&sn=1de5daeaae94c66a3c46a13e20e8011e#rd";
-        var is9gUser = false;
-        
-        window.shareData = {
-            "imgUrl": "icon.png",
-            "timeLineLink": thegameurl,
-            "tTitle": "OCD Challenge 2",
-            "tContent": "OCD Challenge 2 - The ultimate perfectionist test!"
-        };
-        
-        function goHome() {
-            window.location = mebtnopenurl;
-        }
-        
-        function clickMore() {
-            if ((window.location + "").indexOf("zf", 1) > 0) {
-                window.location = mebtnopenurl;
-            } else {
-                goHome();
-            }
-        }
-        
-        function dp_share() {
-            document.getElementById("share").style.display = "";
-        }
-        
-        function dp_Ranking() {
-            window.location = mebtnopenurl;
-        }
-        
-        function showAd() {}
-        function hideAd() {}
-        
-        document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-            WeixinJSBridge.on('menu:share:appmessage', function(argv) {
-                WeixinJSBridge.invoke('sendAppMessage', {
-                    "img_url": window.shareData.imgUrl,
-                    "link": window.shareData.timeLineLink,
-                    "desc": window.shareData.tContent,
-                    "title": window.shareData.tTitle
-                }, onShareComplete);
-            });
+		function showAd(){
+		}
+		function hideAd(){
+		}
+		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		    
+		    WeixinJSBridge.on('menu:share:appmessage', function(argv) {
+		        WeixinJSBridge.invoke('sendAppMessage', {
+		            "img_url": window.shareData.imgUrl,
+		            "link": window.shareData.timeLineLink,
+		            "desc": window.shareData.tContent,
+		            "title": window.shareData.tTitle
+		        }, onShareComplete);
+		    });
 
-            WeixinJSBridge.on('menu:share:timeline', function(argv) {
-                WeixinJSBridge.invoke('shareTimeline', {
-                    "img_url": window.shareData.imgUrl,
-                    "img_width": "640",
-                    "img_height": "640",
-                    "link": window.shareData.timeLineLink,
-                    "desc": window.shareData.tContent,
-                    "title": window.shareData.tTitle
-                }, onShareComplete);
-            });
-        }, false);
-        
-        function onShareComplete(res) {
-            if (localStorage.myuid && typeof myData !== 'undefined' && myData.score > 0) {
-                setTimeout(function() {
-                    if (confirm("Share your achievement?")) {
-                        window.location = mebtnopenurl;
-                    } else {
-                        document.location.href = mebtnopenurl;
-                    }
-                }, 500);
-            } else {
-                document.location.href = guanzhuurl;
-            }
-        }
-    </script>
-    
-    <div id="share" style="display: none">
-        <img width="100%" src="share.png"
-            style="position: fixed; z-index: 9999; top: 0; left: 0; display: block;"
-            ontouchstart="document.getElementById('share').style.display='none';" />
-    </div>
+		    WeixinJSBridge.on('menu:share:timeline', function(argv) {
+		        WeixinJSBridge.invoke('shareTimeline', {
+		            "img_url": window.shareData.imgUrl,
+		            "img_width": "640",
+		            "img_height": "640",
+		            "link": window.shareData.timeLineLink,
+		            "desc": window.shareData.tContent,
+		            "title": window.shareData.tTitle
+		        }, onShareComplete);
+		    });
+		}, false);
+		</script>
+		<div id=share style="display: none">
+			<img width=100% src="share.png"
+				style="position: fixed; z-index: 9999; top: 0; left: 0; display: block;"
+				ontouchstart="document.getElementById('share').style.display='none';" />
+		</div>
+		<div style="display: none;">
+			<script type="text/javascript">
+            var myData = { gameid: "bsqpz" };
+			
+			function dp_submitScore(score){
+				myData.score = parseInt(score);
+				myData.scoreName = "干掉了"+score+"个新提示";
+					document.title ="强迫症真的伤不起，我干掉了"+score+"个新提示，你也来试试";
+					window.shareData.tTitle = document.title;
+			}
+			function onShareComplete(res) {
+                if (localStorage.myuid && myData.score>0) {
+                    setTimeout(function(){
+                        if (confirm("？")) {
+                            window.location = mebtnopenurl;
+                        }
+                        else {
+                            document.location.href = mebtnopenurl;
+                        }
+                    }, 500);
+                }
+				else {
+		        	document.location.href = guanzhuurl ;
+				}
+	        }	 
+			</script>
+			<div style="display: none;">
+			<script type="text/javascript" src="http://tajs.qq.com/stats?sId=36313548" charset="UTF-8"></script>
+			</div>
+			 <script type="text/javascript" src="js/game9g.utils.js"></script>
 </body>
 </html>
