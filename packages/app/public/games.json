@@ -38,21 +38,6 @@
       "path": "/games/bdsjm/index.html"
     },
     {
-      "id": "bljqzffxwz",
-      "title": "Bomb Defense Strategy",
-      "category": "Strategy",
-      "description": "A strategic defense game where you must protect your base from incoming threats. Plan your defenses and react quickly to survive!",
-      "controls": "Click to place defenses and interact with game elements. Use strategy to position your defenses effectively.",
-      "author": "LightGame Team",
-      "version": "1.0.0",
-      "features": [
-        "Strategic gameplay",
-        "Defense mechanics",
-        "Multiple difficulty levels"
-      ],
-      "path": "/games/bljqzffxwz/index.html"
-    },
-    {
       "id": "baozi",
       "title": "Bun Eating Contest",
       "category": "Casual",
