@@ -1,4 +1,8 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "packages/app/dist",
+  "installCommand": "npm install",
+  "framework": "vite",
   "rewrites": [
     { "source": "/games/:path*", "destination": "/games/:path*" },
     { "source": "/(.*)", "destination": "/index.html" }
@@ -39,13 +43,9 @@
         {
           "key": "X-Frame-Options",
           "value": "SAMEORIGIN"
-        },
-{
-  "buildCommand": "npm run build",
-  "outputDirectory": "packages/app/dist",
-  "installCommand": "npm install",
-  "framework": "vite"
-}
+        }
+      ]
+    }
   ],
   "trailingSlash": false
-} 
+}
