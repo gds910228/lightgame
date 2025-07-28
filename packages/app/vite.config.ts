@@ -30,5 +30,10 @@ export default defineConfig({
     port: 3000,
     // 允许跨域
     cors: true,
+    // 配置静态文件服务，确保游戏文件能正确访问
+    fs: {
+      // 允许访问项目根目录之外的文件
+      strict: false,
+    },
   },
-}) 
+})
