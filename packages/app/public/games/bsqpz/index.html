@@ -286,12 +286,8 @@ $(function(){
 	});
 	//分享按钮
 	$(".share-link").on('click', function(){
-		$(".mask2").css('display','block');
+		dp_share();
 		//_hmt.push(['_trackEvent', 'share', 'click', 'share pic', 0]); //埋点
-	});
-	//mask隐藏
-	$(".mask2").on('click', function(){
-		$(".mask2").css('display','none');
 	});
 	//生成canvas
 	function drawImage(src){
@@ -382,60 +378,45 @@ $(function(){
 		readAsDataURL();
 		//_hmt.push(['_trackEvent', 'add', 'click', 'add location pic', 0]); //埋点
 	});
-	function onBridgeReady() {
-		try{
-			var mainTitle="99%的人都被逼疯了，制作新消息头像，一起逼死强迫症！",
-				mainDesc="99%的人都被逼疯了",
-				mainURL= "http://g.lanrenmb.com/games/bsqpz/";
-			
-			//转发朋友圈
-			WeixinJSBridge.on("menu:share:timeline", function(e) {
-				WeixinJSBridge.invoke("shareTimeline", {
-					img_url:mainImgUrl,
-					img_width: "120",
-					img_height: "120",
-					link: mainURL,
-					desc: mainDesc,
-					title: mainTitle				
-				}, function(res) {
-					dialog();
-					$(".mask2").css('display','none');
-				});
-			});
-			//同步到微博
-			WeixinJSBridge.on("menu:share:weibo", function() {
-				WeixinJSBridge.invoke("shareWeibo", {
-					"content": mainDesc,
-					"url": mainURL
-				}, function(res) {
-					dialog();
-					$(".mask2").css('display','none');
-				});
-			});
-			//分享给朋友
-			WeixinJSBridge.on('menu:share:appmessage', function(argv) {
-				WeixinJSBridge.invoke("sendAppMessage", {
-					img_url: mainImgUrl,
-					img_width: "120",
-					img_height: "120",
-					link: mainURL,
-					desc: mainDesc,
-					title: mainTitle
-				}, function(res) {
-					setTimeout(function(){
-						dialog();
-						$(".mask2").css('display','none');
-					},1);
-				});
-			});
-		}catch(e){
-			alert(e);
+	// Modern sharing function
+	function dp_share() {
+		var shareData = {
+			title: "Picture Puzzle Challenge - Create Your Avatar!",
+			text: "I just created a custom avatar with message notifications! Try it yourself!",
+			url: window.location.href
+		};
+		
+		// Try to use parent page sharing first
+		try {
+			if (window.parent && window.parent !== window) {
+				window.parent.postMessage({
+					type: 'SHARE_GAME',
+					data: shareData
+				}, '*');
+				return;
+			}
+		} catch (e) {
+			console.log('Could not message parent:', e);
 		}
-	};
-	//执行
-	document.addEventListener('WeixinJSBridgeReady', function() {
-		onBridgeReady();
-	},false);
+		
+		// Fallback to global share function
+		if (typeof window.handleGlobalShare === 'function') {
+			window.handleGlobalShare(shareData);
+			return;
+		}
+		
+		// Fallback to Web Share API or clipboard
+		if (navigator.share) {
+			navigator.share(shareData).catch(console.error);
+		} else {
+			// Copy to clipboard as fallback
+			navigator.clipboard.writeText(shareData.url).then(() => {
+				alert('Game link copied to clipboard!');
+			}).catch(() => {
+				alert('Share this game: ' + shareData.url);
+			});
+		}
+	}
 	//分享弹出框
 	function dialog(){
 		if(URL.getQueryString('f') == 'fans'){
