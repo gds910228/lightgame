@@ -74,20 +74,31 @@
 			 }
 		}
 		function dp_share(){
-			// Use modern sharing functionality instead of old overlay
-			if (navigator.share) {
-				navigator.share({
-					title: window.shareData.tTitle,
-					text: window.shareData.tContent,
-					url: window.shareData.timeLineLink
-				}).catch(console.error);
+			// Use the parent page's sharing functionality
+			if (window.parent && window.parent !== window) {
+				// Send message to parent page to trigger sharing
+				window.parent.postMessage({
+					type: 'SHARE_GAME',
+					data: { score: myData.score }
+				}, '*');
+			} else if (window.handleGlobalShare) {
+				// Use global share function if available
+				window.handleGlobalShare(myData.score);
 			} else {
-				// Fallback: copy link to clipboard
-				navigator.clipboard.writeText(window.shareData.timeLineLink).then(() => {
-					alert('Game link copied to clipboard! Share it with your friends!');
-				}).catch(() => {
-					alert('Share this game: ' + window.shareData.timeLineLink);
-				});
+				// Fallback for standalone mode
+				if (navigator.share) {
+					navigator.share({
+						title: window.shareData.tTitle,
+						text: window.shareData.tContent,
+						url: window.shareData.timeLineLink
+					}).catch(console.error);
+				} else {
+					navigator.clipboard.writeText(window.shareData.timeLineLink).then(() => {
+						alert('Game link copied to clipboard!');
+					}).catch(() => {
+						alert('Share this game: ' + window.shareData.timeLineLink);
+					});
+				}
 			}
 		}
 		function dp_Ranking(){
