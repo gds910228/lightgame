@@ -5,9 +5,12 @@ import { Game } from '../types'
 import FavoriteButton from '../components/FavoriteButton'
 import ShareButton from '../components/ShareButton'
 import ToastNotification from '../components/ToastNotification'
+import { usePerformance } from '../contexts/PerformanceContext'
 
 const GameDetailPage = () => {
   const { gameId } = useParams<{ gameId: string }>()
+  const { recordGameLoad, recordGamePlay, recordLoadError } = usePerformance()
+  const startTimeRef = useRef(Date.now())
   
   const [game, setGame] = useState<Game | null>(null)
   const [loading, setLoading] = useState(true)
@@ -47,6 +50,13 @@ const GameDetailPage = () => {
     
     fetchGameDetails()
   }, [gameId])
+
+  // Record game play event
+  useEffect(() => {
+    if (gameId) {
+      recordGamePlay(gameId);
+    }
+  }, [gameId, recordGamePlay]);
   
   // Handle fullscreen mode
   const enterFullScreen = () => {
@@ -226,7 +236,9 @@ const GameDetailPage = () => {
   
   // 添加iframe加载事件处理
   const handleIframeLoad = () => {
-    console.log('iframe loaded:', game?.path);
+    const loadTime = Date.now() - startTimeRef.current
+    recordGameLoad(loadTime)
+    console.log(`iframe loaded in ${loadTime}ms:`, game?.path)
     
     // 尝试访问iframe内容以检查是否成功加载
     try {
@@ -243,6 +255,7 @@ const GameDetailPage = () => {
 
   // 添加iframe错误处理
   const handleIframeError = () => {
+    recordLoadError()
     console.error('iframe failed to load:', game?.path);
     setError('游戏加载失败，请刷新页面重试');
   };
