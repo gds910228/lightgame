@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta id="viewport" name="viewport" content="width=540,user-scalable=no,target-densitydpi=high-dpi">
+		
+		<script data-main="js/main" src="require.js"></script>
+		<title>Don't Die Challenge</title>
+		<style type="text/css">
+			body{
+		        margin:0px;
+		        padding:0px;
+		        overflow: hidden;
+		    }
+		</style>
+		<script type="text/javascript" src="http://g.lanrenmb.com/" charset="UTF-8"></script>
+		<script language="javascript">
+		var mebtnopenurl = '/';
+		window.shareData = {
+		        "imgUrl": "/games/bunengsi/460.jpg",
+		        "timeLineLink": window.location.origin + "/game/bunengsi",
+		        "tTitle": "Don't Die Challenge - LightGame",
+		        "tContent": "Play Don't Die Challenge on LightGame - A thrilling survival game!"
+		};
+		
+		
+		function dp_submitScore(m,t){
+		}
+		
+		function dp_share(t){
+			var seconds = (t/1000).toFixed(1);
+			var shareText = "I survived " + seconds + " seconds in Don't Die Challenge! Can you beat my score?";
+			
+			// Use postMessage to communicate with parent window
+			if (window.parent && window.parent !== window) {
+				window.parent.postMessage({
+					type: 'SHARE_GAME',
+					data: {
+						score: seconds,
+						message: shareText
+					}
+				}, '*');
+			} else {
+				// Fallback for standalone mode
+				document.title = shareText;
+				document.getElementById("share").style.display="";
+				window.shareData.tTitle = document.title;
+			}
+		}
+
+		function dp_share2(t){
+			dp_share(t); // Use the same share function
+		}
+		function dp_Ranking(){
+			// Navigate back to home page
+			if (window.parent && window.parent !== window) {
+				window.parent.postMessage({ type: 'NAVIGATE_TO_HOME' }, '*');
+			} else {
+				window.location = mebtnopenurl;
+			}
+		}
+
+		function showAd(){
+		}
+		function hideAd(){
+		}
+		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		    
+		    WeixinJSBridge.on('menu:share:appmessage', function(argv) {
+		        WeixinJSBridge.invoke('sendAppMessage', {
+		            "img_url": window.shareData.imgUrl,
+		            "link": window.shareData.timeLineLink,
+		            "desc": window.shareData.tContent,
+		            "title": window.shareData.tTitle
+		        }, function(res) {
+		        	document.location.href = mebtnopenurl;
+		        })
+		    });
+
+		    WeixinJSBridge.on('menu:share:timeline', function(argv) {
+		        WeixinJSBridge.invoke('shareTimeline', {
+		            "img_url": window.shareData.imgUrl,
+		            "img_width": "640",
+		            "img_height": "640",
+		            "link": window.shareData.timeLineLink,
+		            "desc": window.shareData.tContent,
+		            "title": window.shareData.tTitle
+		        }, function(res) {
+		        	document.location.href = mebtnopenurl;
+		        });
+		    });
+		}, false);
+		</script>
+
+	<script type="text/javascript" charset="utf-8" async="" data-requirecontext="_" data-requiremodule="main" src="main.js"></script></head>
+	<body>
+		<div style="text-align:center;">
+			<canvas id="linkScreen" width="1366" height="621" style="width: 1366px; height: 621px;">
+				很遗憾，您的浏览器不支持HTML5，请使用支持HTML5的浏览器。
+			</canvas>
+		</div>
+		<div id="share" style="display:none">
+		<img id="logo" width="100%" src="460.jpg" style="position:absolute;top:0;left:0;">
+		<img width="100%" src="2000.png" style="position:absolute;top:0;left:0;display:block;" onClick="document.getElementById('share').style.display='none';">
+		</div>
+</body></html>

@@ -1,0 +1,13 @@
+{
+  "id": "bunengsi",
+  "title": "Don't Die Challenge",
+  "description": "A thrilling survival game where you must avoid obstacles and stay alive as long as possible. Test your reflexes and endurance!",
+  "category": "Action",
+  "tags": ["survival", "reflex", "challenge"],
+  "thumbnail": "/images/thumbnails/bunengsi.svg",
+  "playUrl": "index.html",
+  "featured": false,
+  "difficulty": "Medium",
+  "estimatedPlayTime": "3-10 minutes",
+  "controls": "Use arrow keys or WASD to move and avoid obstacles. Stay alive as long as possible!"
+}
