@@ -75,7 +75,7 @@ const PerformanceDashboard: React.FC<PerformanceDashboardProps> = ({ isOpen, onC
               <li>Check build summary for optimization opportunities</li>
             </ul>
           </div>
-        </div>
+      </div>
     </div>
   );
 };
