@@ -1,8 +1,0 @@
-{
-  "id": "space-shooter",
-  "title": "Space Shooter",
-  "category": "Action",
-  "image": "/images/thumbnails/space-shooter.svg",
-  "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
-  "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles."
-} 

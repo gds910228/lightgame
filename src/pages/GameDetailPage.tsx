@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import { getGameById } from '../services/gameService'
 import { Game } from '../types'
@@ -150,10 +150,24 @@ const GameDetailPage = () => {
     };
   }, [isFullScreen]);
 
-  const handleShare = async () => {
+  const handleShare = useCallback(async (score?: number) => {
+    if (!game) return;
+
+    let shareText;
+    if (score !== undefined) {
+      // Special message for Beat the Cat game with score
+      if (game.title.includes('神经猫') || game.title.includes('Beat the Cat')) {
+        shareText = `我打爆了${score}只神经猫，不服来挑战！！！`;
+      } else {
+        shareText = `I scored ${score} in ${game.title}! Can you beat me?`;
+      }
+    } else {
+      shareText = `Check out this game: ${game.title}`;
+    }
+
     const shareData = {
-      title: game?.title,
-      text: game?.description,
+      title: game.title,
+      text: shareText,
       url: window.location.href,
     };
 
@@ -166,11 +180,31 @@ const GameDetailPage = () => {
       }
     } else {
       // Fallback for browsers that do not support the Web Share API
-      navigator.clipboard.writeText(window.location.href).then(() => {
+      navigator.clipboard.writeText(`${shareText} ${shareData.url}`).then(() => {
         setShowToast(true);
       });
     }
-  };
+  }, [game, setShowToast]);
+
+  // Listen for share messages from the game iframe
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      if (event.data.type === 'SHARE_GAME') {
+        const { score, gameTitle, message } = event.data.data;
+        handleShare(score);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    
+    // Also expose the share function directly for backward compatibility
+    (window as any).handleGlobalShare = handleShare;
+    
+    return () => {
+      window.removeEventListener('message', handleMessage);
+      delete (window as any).handleGlobalShare;
+    };
+  }, [handleShare]);
   
   // 确保退出按钮始终在最上层并可点击
   useEffect(() => {

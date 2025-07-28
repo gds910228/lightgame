@@ -25,7 +25,7 @@
 	}
     .SHADE {top: 0; left:0; width:100%; height: 100%; bottom:0; z-index: 11;}
     .BOX-V {box-orient: vertical;-webkit-box-orient: vertical; -moz-box-orient: vertical;-ms-flex-direction:column;}
-	.BOX-D {box-align: end; box-pack: center -webkit-box-align: end; -webkit-box-pack: center; -ms-flex-align:end; -ms-flex-pack:center;}
+	.BOX-D {box-align: end; box-pack: center; -webkit-box-align: end; -webkit-box-pack: center; -ms-flex-align:end; -ms-flex-pack:center;}
 	.BOX-M {box-align: center;box-pack: center; -webkit-box-align: center; -webkit-box-pack: center; -ms-flex-align:center; -ms-flex-pack:center;}
 	.BOX-S {display:block; box-flex:1; -webkit-box-flex:1; -moz-box-flex:1;-ms-flex:1;}
 	.BOX   ,.BOX-V,.BOX-D,.BOX-M, .FOOTER{display: box; display: -webkit-box; display: -moz-box; display: -ms-flexbox;}
@@ -431,39 +431,55 @@ display: none;
 	}
 	document.write(createGameLayer());
 	
-	function share(){
-		document.getElementById('share-wx').style.display = 'block';
-		document.getElementById('share-wx').onclick = function(){
-			this.style.display = 'none';
-		};
+	function shareToParent() {
+		console.log('shareToParent called with score:', _gameScore);
+		
+		// 阻止任何默认行为
+		if (event) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
+		
+		// 尝试调用父窗口的分享功能
+		if (window.parent && window.parent !== window) {
+			try {
+				console.log('Sending message to parent window');
+				// 通过 postMessage 向父窗口发送分享请求
+				window.parent.postMessage({
+					type: 'SHARE_GAME',
+					data: {
+						score: _gameScore,
+						gameTitle: '暴打神经猫',
+						message: '我打爆了' + _gameScore + '只神经猫，不服来挑战！'
+					}
+				}, '*');
+				console.log('Message sent successfully');
+			} catch (e) {
+				console.error('Failed to communicate with parent window:', e);
+				// 降级处理：复制链接到剪贴板
+				fallbackShare();
+			}
+		} else {
+			console.log('Not in iframe, using fallback share');
+			// 如果不在iframe中，使用降级分享
+			fallbackShare();
+		}
+		
+		return false; // 阻止任何进一步的事件处理
 	}
 	
-	document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
-	    
-	    WeixinJSBridge.on('menu:share:appmessage', function(argv) {
-	        WeixinJSBridge.invoke('sendAppMessage', {
-	            "img_url": window.shareData.imgUrl,
-	            "link": window.shareData.timeLineLink,
-	            "desc": window.shareData.tContent,
-	            "title": window.shareData.tTitle
-	        }, function(res) {
-	        	showEnd();
-	        })
-	    });
-
-	    WeixinJSBridge.on('menu:share:timeline', function(argv) {
-	        WeixinJSBridge.invoke('shareTimeline', {
-	            "img_url": window.shareData.imgUrl,
-	            "img_width": "640",
-	            "img_height": "640",
-	            "link": window.shareData.timeLineLink,
-	            "desc": window.shareData.tContent,
-	            "title": window.shareData.tTitle
-	        }, function(res) {	 
-          showEnd();
-	        });
-	    });
-	}, false);
+	function fallbackShare() {
+		try {
+			const shareText = '我打爆了' + _gameScore + '只神经猫，不服来挑战！ ' + window.location.href;
+			navigator.clipboard.writeText(shareText).then(() => {
+				alert('分享链接已复制到剪贴板！');
+			}).catch(() => {
+				alert('分享功能暂不可用');
+			});
+		} catch (e) {
+			alert('分享功能暂不可用');
+		}
+	}
 </script>
 
 	<div id="GameScoreLayer" class="BBOX SHADE bgc1" style="display:none;">
@@ -476,7 +492,7 @@ display: none;
 			</div><br />
 			<div id="GameScoreLayer-btn" class="BOX">
 				<div class="btn BOX-S" onClick="replayBtn()">重来</div>&nbsp;
-				<div class="btn BOX-S" onClick="share()">分享到朋友圈</div>&nbsp;
+				<div class="btn BOX-S" onClick="shareToParent()">分享到朋友圈</div>&nbsp;
 			</div>
 			<br/>
       <a class="bt" href="/">更多游戏</a>
