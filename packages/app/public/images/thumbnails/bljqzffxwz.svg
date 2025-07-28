@@ -1,0 +1,31 @@
+<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="defense-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffecd2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#fcb69f;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="300" height="200" fill="url(#defense-gradient)" rx="15"/>
+  
+  <!-- Base/Tower -->
+  <rect x="130" y="120" width="40" height="60" fill="#8d6e63" rx="5"/>
+  <rect x="125" y="110" width="50" height="20" fill="#a1887f" rx="3"/>
+  
+  <!-- Bomb/Threat -->
+  <circle cx="80" cy="80" r="20" fill="#f44336"/>
+  <rect x="75" y="65" width="10" height="15" fill="#ff9800" rx="2"/>
+  
+  <!-- Defense elements -->
+  <polygon points="200,100 220,120 180,120" fill="#4caf50"/>
+  <rect x="195" y="120" width="10" height="30" fill="#2e7d32"/>
+  
+  <!-- Explosion effect -->
+  <circle cx="240" cy="60" r="8" fill="#ff5722" opacity="0.7"/>
+  <circle cx="245" cy="55" r="6" fill="#ff9800" opacity="0.8"/>
+  <circle cx="235" cy="65" r="5" fill="#ffeb3b" opacity="0.9"/>
+  
+  <!-- Title -->
+  <text x="150" y="180" text-anchor="middle" fill="white" font-size="14" font-weight="bold">Bomb Defense</text>
+</svg>

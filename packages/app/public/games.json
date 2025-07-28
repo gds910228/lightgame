@@ -1,98 +1,176 @@
-[
-  {
-    "id": "baba",
-    "title": "Baba Game",
-    "description": "A fun Baba Game game",
-    "thumbnail": "/games/baba/./images/index_title.png",
-    "url": "/games/baba/",
-    "category": "Casual",
-    "tags": [
-      "HTML5",
-      "Browser Game"
-    ]
-  },
-  {
-    "id": "baozi",
-    "title": "Bun Eating Contest",
-    "description": "LightGame",
-    "thumbnail": "/images/game-placeholder.png",
-    "url": "/games/baozi/",
-    "category": "Casual",
-    "tags": [
-      "HTML5",
-      "Browser Game"
-    ]
-  },
-  {
-    "id": "bbjx",
-    "title": "Steps of Wonder",
-    "description": "A fun Steps of Wonder game",
-    "thumbnail": "/games/bbjx/share.png",
-    "url": "/games/bbjx/",
-    "category": "Casual",
-    "tags": [
-      "HTML5",
-      "Browser Game"
-    ]
-  },
-  {
-    "id": "bdsjm",
-    "title": "暴打神经猫",
-    "description": "A fun 暴打神经猫 game",
-    "thumbnail": "/games/bdsjm/http://img.tongji.linezing.com/3455448/tongji.gif",
-    "url": "/games/bdsjm/",
-    "category": "Casual",
-    "tags": [
-      "HTML5",
-      "Browser Game"
-    ]
-  },
-  {
-    "id": "snake",
-    "title": "Snake Game",
-    "description": "A fun Snake Game game",
-    "thumbnail": "/images/game-placeholder.png",
-    "url": "/games/snake/",
-    "category": "Casual",
-    "tags": [
-      "HTML5",
-      "Browser Game"
-    ]
-  },
-  {
-    "id": "space-shooter",
-    "title": "Space Shooter",
-    "description": "A fun Space Shooter game",
-    "thumbnail": "/images/game-placeholder.png",
-    "url": "/games/space-shooter/",
-    "category": "Casual",
-    "tags": [
-      "HTML5",
-      "Browser Game"
-    ]
-  },
-  {
-    "id": "tetris",
-    "title": "Tetris Game",
-    "description": "A fun Tetris Game game",
-    "thumbnail": "/images/game-placeholder.png",
-    "url": "/games/tetris/",
-    "category": "Casual",
-    "tags": [
-      "HTML5",
-      "Browser Game"
-    ]
-  },
-  {
-    "id": "tower-defense",
-    "title": "塔防策略游戏",
-    "description": "A fun 塔防策略游戏 game",
-    "thumbnail": "/images/game-placeholder.png",
-    "url": "/games/tower-defense/",
-    "category": "Casual",
-    "tags": [
-      "HTML5",
-      "Browser Game"
-    ]
-  }
-]
+{
+  "games": [
+    {
+      "id": "baba",
+      "title": "Baba Game",
+      "category": [
+        "Casual",
+        "Geography",
+        "Collection"
+      ],
+      "description": "A fun casual game where you mark places you've visited. Explore different locations and collect achievements!",
+      "controls": "Use mouse or touch to interact with the game interface. Click on locations to mark them as visited.",
+      "image": "/images/thumbnails/baba.svg",
+      "cover": "/images/covers/baba.svg",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Interactive map interface",
+        "Location marking system",
+        "Achievement tracking",
+        "Simple and intuitive gameplay"
+      ],
+      "path": "/games/baba/index.html"
+    },
+    {
+      "id": "bdsjm",
+      "title": "Beat the Cat",
+      "category": "Casual",
+      "description": "Tired of seeing that neurotic cat all over your social feed? Now it's time to beat it! A fun casual game that tests your reaction speed and hand-eye coordination.",
+      "controls": "Click on the cat to beat it before it escapes. The faster your reaction, the higher your score!",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Simple and easy to play gameplay",
+        "Fun animation effects",
+        "Score recording system"
+      ],
+      "path": "/games/bdsjm/index.html"
+    },
+    {
+      "id": "bljqzffxwz",
+      "title": "Bomb Defense Strategy",
+      "category": "Strategy",
+      "description": "A strategic defense game where you must protect your base from incoming threats. Plan your defenses and react quickly to survive!",
+      "controls": "Click to place defenses and interact with game elements. Use strategy to position your defenses effectively.",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Strategic gameplay",
+        "Defense mechanics",
+        "Multiple difficulty levels"
+      ],
+      "path": "/games/bljqzffxwz/index.html"
+    },
+    {
+      "id": "baozi",
+      "title": "Bun Eating Contest",
+      "category": "Casual",
+      "description": "A fun casual game where you see how many steamed buns you can eat in a limited time! Test your speed and reaction skills.",
+      "controls": "Click on the buns to eat them. Try to eat as many as possible within the time limit to get a high score.",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Simple and fun clicking gameplay",
+        "Timed challenge mode",
+        "Score ranking system"
+      ],
+      "path": "/games/baozi/index.html"
+    },
+    {
+      "id": "blglez",
+      "title": "Dragon Rescue Mission",
+      "category": "Action",
+      "description": "Help the dragon rescue his son in this exciting action-adventure game. Navigate through challenges and obstacles to complete your mission!",
+      "controls": "Use touch controls to move and interact. Collect items and avoid obstacles to progress through levels.",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Engaging storyline",
+        "Action-packed gameplay",
+        "Multiple levels and challenges"
+      ],
+      "path": "/games/blglez/index.html"
+    },
+    {
+      "id": "bsqpz2",
+      "title": "OCD Challenge 2",
+      "category": "Casual",
+      "description": "A challenging puzzle game that tests your attention to detail and perfectionist tendencies. Clear all the notifications and organize everything perfectly!",
+      "controls": "Tap to clear notifications and organize items. Pay attention to details and complete each level perfectly.",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Mind-bending puzzle mechanics",
+        "Multiple challenging levels",
+        "Perfect for detail-oriented players"
+      ],
+      "path": "/games/bsqpz2/index.html"
+    },
+    {
+      "id": "bsqpz",
+      "title": "Picture Puzzle Challenge",
+      "category": "Puzzle",
+      "description": "A visual puzzle game featuring beautiful images. Solve puzzles by arranging pieces correctly and test your problem-solving skills!",
+      "controls": "Click and drag to move puzzle pieces. Arrange all pieces correctly to complete each level.",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Beautiful imagery",
+        "Multiple puzzle types",
+        "Progressive difficulty"
+      ],
+      "path": "/games/bsqpz/index.html"
+    },
+    {
+      "id": "snake",
+      "title": "Snake Game",
+      "category": "Puzzle",
+      "image": "/images/thumbnails/snake.svg",
+      "description": "The classic Snake game where you control a snake to eat food and grow longer. Be careful not to hit the walls or yourself!",
+      "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
+      "path": "/games/snake/index.html"
+    },
+    {
+      "id": "space-shooter",
+      "title": "Space Shooter",
+      "category": "Action",
+      "image": "/images/thumbnails/space-shooter.svg",
+      "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
+      "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles.",
+      "path": "/games/space-shooter/index.html"
+    },
+    {
+      "id": "bbjx",
+      "title": "Steps of Wonder",
+      "category": "Puzzle",
+      "description": "A challenging puzzle game that tests your intelligence and strategy. Push your thinking to the limit. Every step matters in this thrilling brain teaser!",
+      "controls": "Click on the blocks to move them. Try to solve the puzzle with as few steps as possible. Careful thinking and planning is required for each move.",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Carefully designed puzzle levels",
+        "Step counting system",
+        "Ranking mechanism",
+        "Challenging gameplay"
+      ],
+      "path": "/games/bbjx/index.html"
+    },
+    {
+      "id": "tetris",
+      "title": "Tetris",
+      "category": "Puzzle",
+      "image": "/images/thumbnails/tetris.svg",
+      "description": "The classic block-stacking puzzle game. Arrange falling blocks to create complete lines and prevent the blocks from stacking up to the top.",
+      "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop.",
+      "path": "/games/tetris/index.html"
+    },
+    {
+      "id": "tower-defense",
+      "title": "Tower Defense",
+      "category": "Strategy",
+      "description": "Classic tower defense game where you build defensive towers to prevent enemy invasion. Plan your resources wisely and survive 10 waves of enemies!",
+      "controls": "Click to select tower type, then click on the map to place it. Basic Tower ($50): Normal attack; Cannon Tower ($100): High damage; Ice Tower ($150): Slows enemies.",
+      "image": "/images/thumbnails/tower-defense.svg",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Three different types of defense towers: Basic Tower, Cannon Tower, and Ice Tower",
+        "Multiple enemy types including Normal, Fast, and Tank enemies",
+        "10 waves of enemies with increasing difficulty",
+        "Resource management system to allocate money for building towers"
+      ],
+      "path": "/games/tower-defense/index.html"
+    }
+  ]
+}

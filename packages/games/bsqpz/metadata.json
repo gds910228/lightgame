@@ -1,0 +1,14 @@
+{
+  "id": "bsqpz",
+  "title": "Picture Puzzle Challenge",
+  "category": "Puzzle",
+  "description": "A visual puzzle game featuring beautiful images. Solve puzzles by arranging pieces correctly and test your problem-solving skills!",
+  "controls": "Click and drag to move puzzle pieces. Arrange all pieces correctly to complete each level.",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Beautiful imagery",
+    "Multiple puzzle types",
+    "Progressive difficulty"
+  ]
+}

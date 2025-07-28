@@ -1,0 +1,14 @@
+{
+  "id": "blglez",
+  "title": "Dragon Rescue Mission",
+  "category": "Action",
+  "description": "Help the dragon rescue his son in this exciting action-adventure game. Navigate through challenges and obstacles to complete your mission!",
+  "controls": "Use touch controls to move and interact. Collect items and avoid obstacles to progress through levels.",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Engaging storyline",
+    "Action-packed gameplay",
+    "Multiple levels and challenges"
+  ]
+}

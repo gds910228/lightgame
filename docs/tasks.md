@@ -97,6 +97,19 @@
         - [ ] 优化移动端体验
         - [ ] 添加反馈成功后的引导
 
+## 已完成
+- [x] **新增四个游戏源码到游戏站**
+    - [x] 为bsqpz2创建metadata.json文件（OCD Challenge 2 - 休闲类）
+    - [x] 为blglez创建metadata.json文件（Dragon Rescue Mission - 动作类）
+    - [x] 为bljqzffxwz创建metadata.json文件（Bomb Defense Strategy - 策略类）
+    - [x] 为bsqpz创建metadata.json文件（Picture Puzzle Challenge - 益智类）
+    - [x] 将新游戏复制到public/games目录
+    - [x] 运行构建脚本更新games.json配置
+    - [x] 修复gameService.ts中的数据结构问题
+    - [x] 为新游戏创建缩略图（SVG格式）
+    - [x] 修复游戏详情页路径问题
+    - [x] 测试新游戏在网站中的展示和运行功能
+
 ## 设计资源
 ### 字体资源
 - [Inter](https://fonts.google.com/specimen/Inter) - 用于主要文本内容

@@ -41,8 +41,11 @@ export async function getAllGames(): Promise<Game[]> {
       throw new Error(`Failed to fetch games: ${response.status} ${response.statusText}`);
     }
     
-    const data: Game[] = await response.json();
-    console.log('Fetched games data:', data);
+    const jsonData = await response.json();
+    console.log('Fetched games data:', jsonData);
+    
+    // Extract games array from the JSON structure
+    const data: Game[] = jsonData.games || jsonData;
     
     // 处理游戏路径，确保它们包含正确的基础URL
     const processedGames = data.map((game: any) => {
@@ -54,8 +57,8 @@ export async function getAllGames(): Promise<Game[]> {
         category: game.category,
         controls: game.controls || 'No control information available',
         tags: game.tags || [],
-        path: `${baseUrl}${game.url}index.html`, // Convert 'url' to 'path' and add index.html
-        image: game.thumbnail ? `${baseUrl}${game.thumbnail}` : `${baseUrl}/images/thumbnails/${game.id}.svg` // Convert 'thumbnail' to 'image'
+        path: game.path ? `${baseUrl}${game.path}` : `${baseUrl}/games/${game.id}/index.html`, // Use existing path or construct it
+        image: game.image ? `${baseUrl}${game.image}` : `${baseUrl}/images/thumbnails/${game.id}.svg` // Use existing image or construct thumbnail path
       };
       
       console.log(`Processed game ${game.id}:`, {
