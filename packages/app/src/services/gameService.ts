@@ -41,27 +41,26 @@ export async function getAllGames(): Promise<Game[]> {
       throw new Error(`Failed to fetch games: ${response.status} ${response.statusText}`);
     }
     
-    const data: GamesData = await response.json();
+    const data: Game[] = await response.json();
     console.log('Fetched games data:', data);
     
     // 处理游戏路径，确保它们包含正确的基础URL
-    const processedGames = data.games.map((game: Game) => {
-      // 确保image属性存在
-      if (!game.image && game.id) {
-        console.log(`Game ${game.id} is missing image property, setting default`);
-        game.image = `/images/thumbnails/${game.id}.svg`;
-      }
-      
-      const processedGame = {
-        ...game,
-        path: `${baseUrl}${game.path}`,
-        image: `${baseUrl}${game.image}`
+    const processedGames = data.map((game: any) => {
+      // Convert the JSON format to our expected Game format
+      const processedGame: Game = {
+        id: game.id,
+        title: game.title,
+        description: game.description,
+        category: game.category,
+        tags: game.tags || [],
+        path: `${baseUrl}${game.url}`, // Convert 'url' to 'path'
+        image: game.thumbnail ? `${baseUrl}${game.thumbnail}` : `${baseUrl}/images/thumbnails/${game.id}.svg` // Convert 'thumbnail' to 'image'
       };
       
       console.log(`Processed game ${game.id}:`, {
-        originalPath: game.path,
+        originalUrl: game.url,
         processedPath: processedGame.path,
-        originalImage: game.image,
+        originalThumbnail: game.thumbnail,
         processedImage: processedGame.image
       });
       

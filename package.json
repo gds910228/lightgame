@@ -1,38 +1,18 @@
 {
-  "name": "lightgame",
+  "name": "lightgame-monorepo",
   "private": true,
-  "version": "0.1.0",
-  "type": "module",
+  "version": "1.1.0",
+  "workspaces": [
+    "packages/app"
+  ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "prebuild": "node scripts/build-games-list.js",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@emailjs/browser": "^4.4.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-hook-form": "^7.58.1",
-    "react-router-dom": "^6.21.1",
-    "react-select": "^5.10.1"
+    "dev": "npm run dev --workspace=packages/app",
+    "build": "npm run build --workspace=packages/app",
+    "lint": "npm run lint --workspace=packages/app",
+    "preview": "npm run preview --workspace=packages/app",
+    "optimize-games": "npm run optimize-games --workspace=packages/app"
   },
   "devDependencies": {
-    "@types/node": "^20.10.5",
-    "@types/react": "^18.2.43",
-    "@types/react-dom": "^18.2.17",
-    "@typescript-eslint/eslint-plugin": "^6.14.0",
-    "@typescript-eslint/parser": "^6.14.0",
-    "@vitejs/plugin-react": "^4.2.1",
-    "autoprefixer": "^10.4.16",
-    "base64-img": "^1.0.4",
-    "eslint": "^8.55.0",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-plugin-react-refresh": "^0.4.5",
-    "postcss": "^8.4.32",
-    "tailwindcss": "^3.4.0",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.8"
+    "typescript": "^5.2.2"
   }
 }
