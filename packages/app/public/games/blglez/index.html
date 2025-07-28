@@ -74,7 +74,21 @@
 			 }
 		}
 		function dp_share(){
-			document.getElementById("share").style.display="";
+			// Use modern sharing functionality instead of old overlay
+			if (navigator.share) {
+				navigator.share({
+					title: window.shareData.tTitle,
+					text: window.shareData.tContent,
+					url: window.shareData.timeLineLink
+				}).catch(console.error);
+			} else {
+				// Fallback: copy link to clipboard
+				navigator.clipboard.writeText(window.shareData.timeLineLink).then(() => {
+					alert('Game link copied to clipboard! Share it with your friends!');
+				}).catch(() => {
+					alert('Share this game: ' + window.shareData.timeLineLink);
+				});
+			}
 		}
 		function dp_Ranking(){
 			window.location=mebtnopenurl;
@@ -107,11 +121,6 @@
 		    });
 		}, false);
 		</script>
-		<div id="share" style="display: none">
-			<img width="100%" src="share.png"
-				style="position: fixed; z-index: 9999; top: 0; left: 0; display: block;"
-				ontouchstart="document.getElementById('share').style.display='none';" />
-		</div>
 		<div style="display: none;">
 			<script type="text/javascript">
             var myData = { gameid: "blglez" };
