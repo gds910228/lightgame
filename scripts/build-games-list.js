@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configuration
-const GAMES_DIR = path.join(__dirname, '..', 'games');
+const GAMES_DIR = path.join(__dirname, '..', 'public', 'games');
 const OUTPUT_FILE = path.join(__dirname, '..', 'public', 'games.json');
 const PUBLIC_GAMES_DIR = path.join(__dirname, '..', 'public', 'games');
 
@@ -104,25 +104,6 @@ function buildGamesList() {
           // Add to games list
           games.push(metadata);
           console.log(`Added game: ${metadata.title}`);
-          
-          // 复制游戏目录到 public/games 目录
-          const sourceDir = path.join(GAMES_DIR, gameDir);
-          const targetDir = path.join(PUBLIC_GAMES_DIR, gameDir);
-          
-          // 如果目标目录已存在，先删除
-          if (fs.existsSync(targetDir)) {
-            // 递归删除目录的函数是fs.rm，但在Node.js旧版本中可能不存在
-            // 我们使用fs.rmSync或fs.rmdirSync的递归选项
-            if (fs.rmSync) {
-              fs.rmSync(targetDir, { recursive: true, force: true });
-            } else {
-              fs.rmdirSync(targetDir, { recursive: true });
-            }
-          }
-          
-          // 复制游戏目录
-          copyFolderRecursive(sourceDir, targetDir);
-          console.log(`Copied game files for: ${metadata.title} to public/games/${gameDir}`);
         } catch (error) {
           console.error(`Error processing game "${gameDir}": ${error.message}`);
         }

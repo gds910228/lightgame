@@ -190,7 +190,7 @@ const GameDetailPage = () => {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       if (event.data.type === 'SHARE_GAME') {
-        const { score, gameTitle, message } = event.data.data;
+        const { score } = event.data.data;
         handleShare(score);
       }
     };
