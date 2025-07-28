@@ -1,0 +1,98 @@
+[
+  {
+    "id": "baba",
+    "title": "Baba Game",
+    "description": "A fun Baba Game game",
+    "thumbnail": "/games/baba/./images/index_title.png",
+    "url": "/games/baba/",
+    "category": "Casual",
+    "tags": [
+      "HTML5",
+      "Browser Game"
+    ]
+  },
+  {
+    "id": "baozi",
+    "title": "Bun Eating Contest",
+    "description": "LightGame",
+    "thumbnail": "/images/game-placeholder.png",
+    "url": "/games/baozi/",
+    "category": "Casual",
+    "tags": [
+      "HTML5",
+      "Browser Game"
+    ]
+  },
+  {
+    "id": "bbjx",
+    "title": "Steps of Wonder",
+    "description": "A fun Steps of Wonder game",
+    "thumbnail": "/games/bbjx/share.png",
+    "url": "/games/bbjx/",
+    "category": "Casual",
+    "tags": [
+      "HTML5",
+      "Browser Game"
+    ]
+  },
+  {
+    "id": "bdsjm",
+    "title": "暴打神经猫",
+    "description": "A fun 暴打神经猫 game",
+    "thumbnail": "/games/bdsjm/http://img.tongji.linezing.com/3455448/tongji.gif",
+    "url": "/games/bdsjm/",
+    "category": "Casual",
+    "tags": [
+      "HTML5",
+      "Browser Game"
+    ]
+  },
+  {
+    "id": "snake",
+    "title": "Snake Game",
+    "description": "A fun Snake Game game",
+    "thumbnail": "/images/game-placeholder.png",
+    "url": "/games/snake/",
+    "category": "Casual",
+    "tags": [
+      "HTML5",
+      "Browser Game"
+    ]
+  },
+  {
+    "id": "space-shooter",
+    "title": "Space Shooter",
+    "description": "A fun Space Shooter game",
+    "thumbnail": "/images/game-placeholder.png",
+    "url": "/games/space-shooter/",
+    "category": "Casual",
+    "tags": [
+      "HTML5",
+      "Browser Game"
+    ]
+  },
+  {
+    "id": "tetris",
+    "title": "Tetris Game",
+    "description": "A fun Tetris Game game",
+    "thumbnail": "/images/game-placeholder.png",
+    "url": "/games/tetris/",
+    "category": "Casual",
+    "tags": [
+      "HTML5",
+      "Browser Game"
+    ]
+  },
+  {
+    "id": "tower-defense",
+    "title": "塔防策略游戏",
+    "description": "A fun 塔防策略游戏 game",
+    "thumbnail": "/images/game-placeholder.png",
+    "url": "/games/tower-defense/",
+    "category": "Casual",
+    "tags": [
+      "HTML5",
+      "Browser Game"
+    ]
+  }
+]

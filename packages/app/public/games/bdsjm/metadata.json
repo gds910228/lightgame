@@ -1,0 +1,14 @@
+{
+  "id": "bdsjm",
+  "title": "Beat the Cat",
+  "category": "Casual",
+  "description": "Tired of seeing that neurotic cat all over your social feed? Now it's time to beat it! A fun casual game that tests your reaction speed and hand-eye coordination.",
+  "controls": "Click on the cat to beat it before it escapes. The faster your reaction, the higher your score!",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Simple and easy to play gameplay",
+    "Fun animation effects",
+    "Score recording system"
+  ]
+} 

@@ -1,0 +1,14 @@
+{
+  "id": "baozi",
+  "title": "Bun Eating Contest",
+  "category": "Casual",
+  "description": "A fun casual game where you see how many steamed buns you can eat in a limited time! Test your speed and reaction skills.",
+  "controls": "Click on the buns to eat them. Try to eat as many as possible within the time limit to get a high score.",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Simple and fun clicking gameplay",
+    "Timed challenge mode",
+    "Score ranking system"
+  ]
+} 
