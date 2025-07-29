@@ -84,20 +84,33 @@
 		};
 				
 		function goHome(){
-			window.location=mebtnopenurl;
+			// Use postMessage to communicate with parent window
+			if (window.parent && window.parent !== window) {
+				window.parent.postMessage({ action: 'navigateHome' }, '*');
+			} else {
+				// Fallback: try to navigate to root
+				window.location.href = '/';
+			}
 		}
 		function clickMore(){
-			if((window.location+"").indexOf("zf",1)>0){
-				window.location = "http://g.lanrenmb.com/";
-			 }
-			 else{
-				goHome();
-			 }
+			goHome();
 		}
 		function dp_share(){
-			document.title ="原来我这么吊，吃了"+myData.score+"分的豆豆，吊炸天是形容我的？";
-			document.getElementById("share").style.display="";
-			window.shareData.tTitle = document.title;
+			// Use the website's share functionality
+			if (window.parent && window.parent.shareGame) {
+				window.parent.shareGame('cdd');
+			} else if (navigator.share) {
+				navigator.share({
+					title: 'Pac-Man Style Game',
+					text: `I just scored ${myData.score} points in Pac-Man Style Game!`,
+					url: window.location.href
+				});
+			} else {
+				// Fallback: show share overlay
+				document.title = `I scored ${myData.score} points in Pac-Man Style Game!`;
+				document.getElementById("share").style.display="";
+				window.shareData.tTitle = document.title;
+			}
 		}
 		function dp_Ranking(){
 			window.location=mebtnopenurl;
@@ -132,7 +145,7 @@
 		</script>
 		<div id=share style="display: none">
 			<img width=100% src="share.png"
-				style="position: fixed; z-index: 9999; top: 0; left: 0; display: "
+				style="position: fixed; z-index: 9999; top: 0; left: 0; display: block;"
 				ontouchstart="document.getElementById('share').style.display='none';" />
 		</div>
 		<div style="display: none;">
