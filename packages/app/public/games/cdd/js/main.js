@@ -279,11 +279,28 @@ var lose_state = {
 		});
 
 		this["playsharetips"] = this["game"]["add"]["button"](162, 300, "playsharetips", function() {
-			dp_share();
+			// Use the website's share functionality instead of dp_share()
+			if (window.parent && window.parent.shareGame) {
+				window.parent.shareGame('cdd');
+			} else {
+				// Fallback to native share if available
+				if (navigator.share) {
+					navigator.share({
+						title: 'Pac-Man Style Game',
+						text: `I just scored ${main_state["score"]} points in Pac-Man Style Game!`,
+						url: window.location.href
+					});
+				}
+			}
 		});
 
 		this["getmoregame"] = this["game"]["add"]["button"](110, 400, "getmoregame", function() {
-			clickMore();
+			// Navigate to homepage - updated path for correct navigation
+			if (window.parent) {
+				window.parent.location.href = '../../index.html';
+			} else {
+				window.location.href = '../../index.html';
+			}
 		});
 
 		this["doudouin"] = this["game"]["add"]["sprite"](0, 453, "doudouin");

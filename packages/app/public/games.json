@@ -249,6 +249,24 @@
         "Resource management system to allocate money for building towers"
       ],
       "path": "/games/tower-defense/index.html"
+    },
+    {
+      "id": "pacman",
+      "title": "Pac-Man Style Game",
+      "category": "Arcade",
+      "description": "Classic Pac-Man style arcade game with dots, ghosts, and power pellets. Navigate through mazes while avoiding colorful ghosts!",
+      "controls": "Use arrow keys to move Pac-Man. Collect all dots to advance to next level. Eat power pellets to turn ghosts blue and gain bonus points.",
+      "image": "/images/thumbnails/pacman.svg",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Classic Pac-Man gameplay mechanics",
+        "Multiple levels with increasing difficulty",
+        "Power pellets for temporary ghost vulnerability",
+        "Score tracking and lives system",
+        "Smooth keyboard controls"
+      ],
+      "path": "/games/pacman/index.html"
     }
   ]
 }

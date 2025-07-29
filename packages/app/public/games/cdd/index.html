@@ -84,20 +84,31 @@
 		};
 				
 		function goHome(){
-			window.location=mebtnopenurl;
+			if (window.parent) {
+				window.parent.location.href = '../../index.html';
+			} else {
+				window.location.href = '../../index.html';
+			}
 		}
 		function clickMore(){
-			if((window.location+"").indexOf("zf",1)>0){
-				window.location = "http://g.lanrenmb.com/";
-			 }
-			 else{
-				goHome();
-			 }
+			goHome();
 		}
 		function dp_share(){
-			document.title ="原来我这么吊，吃了"+myData.score+"分的豆豆，吊炸天是形容我的？";
-			document.getElementById("share").style.display="";
-			window.shareData.tTitle = document.title;
+			// Use the website's share functionality
+			if (window.parent && window.parent.shareGame) {
+				window.parent.shareGame('cdd');
+			} else if (navigator.share) {
+				navigator.share({
+					title: 'Pac-Man Style Game',
+					text: `I just scored ${myData.score} points in Pac-Man Style Game!`,
+					url: window.location.href
+				});
+			} else {
+				// Fallback: show share overlay
+				document.title = `I scored ${myData.score} points in Pac-Man Style Game!`;
+				document.getElementById("share").style.display="";
+				window.shareData.tTitle = document.title;
+			}
 		}
 		function dp_Ranking(){
 			window.location=mebtnopenurl;

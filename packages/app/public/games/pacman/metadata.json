@@ -1,0 +1,12 @@
+{
+  "id": "pacman",
+  "title": "Pac-Man Style Game",
+  "description": "Classic Pac-Man style arcade game with dots, ghosts, and power pellets",
+  "category": "arcade",
+  "tags": ["arcade", "classic", "retro", "pacman"],
+  "difficulty": "medium",
+  "playTime": "5-15 minutes",
+  "controls": "Arrow keys to move",
+  "thumbnail": "thumbnail.png",
+  "featured": true
+}
