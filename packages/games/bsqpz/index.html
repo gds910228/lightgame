@@ -299,44 +299,44 @@ $(function(){
 		flag = false;
 	
 		canvas = document.createElement('canvas');
-		canvas.width = 100;  
-		canvas.height = 100; 
+		canvas.width = 400;  
+		canvas.height = 400; 
 		
 		var canvasCtx = canvas.getContext('2d');
 		var image = new Image();
-		var _x = 62;
-		var _fn = 28;
-		var _y = 30;
+		var _x = 248;
+		var _fn = 112;
+		var _y = 120;
 		
 		if(num == '99+'){
-			_x = 62;
-			_fn = 20;
-			_y = 28;
+			_x = 248;
+			_fn = 80;
+			_y = 112;
 		}else if(num == '2B'){
-			_x = 64;
-			_fn = 26;
+			_x = 256;
+			_fn = 104;
 		}else if(parseInt(num) < 10){
-			_x = 70;
-			_fn = 30;
+			_x = 280;
+			_fn = 120;
 		}else if(parseInt(num) >= 10){
-			_x = 63;
-			_fn = 28;
+			_x = 252;
+			_fn = 112;
 		}
 		
 		image.onload = function () {
 			if(this.width > this.height && this.width > 1280){
 				if (IsAndroid) {
-					canvasCtx.drawImage(this, 0, 0, this.width, this.height, 0, 0, 100, 100);
+					canvasCtx.drawImage(this, 0, 0, this.width, this.height, 0, 0, 400, 400);
 				} else {
-					canvasCtx.drawImage(this, 0, 0, this.width, 1000, 0, 0, 100, 100);
+					canvasCtx.drawImage(this, 0, 0, this.width, 1000, 0, 0, 400, 400);
 				}
 				
 			}else{
-				canvasCtx.drawImage(this, 0, 0, this.width, this.height, 0, 0, 100, 100);
+				canvasCtx.drawImage(this, 0, 0, this.width, this.height, 0, 0, 400, 400);
 			}
 	
 			canvasCtx.beginPath();
-			canvasCtx.arc(80,22,20,0,2*Math.PI);
+			canvasCtx.arc(320,88,80,0,2*Math.PI);
 			canvasCtx.fillStyle="#f00";
 			canvasCtx.fill();
 			canvasCtx.font=_fn+"px arial";
