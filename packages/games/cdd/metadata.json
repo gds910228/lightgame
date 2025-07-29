@@ -1,0 +1,18 @@
+{
+  "id": "cdd",
+  "title": "Pac-Man Style Game",
+  "category": "Arcade",
+  "description": "A classic Pac-Man style arcade game where you navigate through mazes, collect dots, and avoid enemies. Test your reflexes and strategy skills!",
+  "controls": "Use arrow keys or WASD keys to move your character. Collect all dots while avoiding enemies to advance to the next level.",
+  "image": "/images/thumbnails/cdd.png",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Classic arcade gameplay",
+    "Maze navigation challenges",
+    "Score tracking system",
+    "Progressive difficulty levels",
+    "Keyboard and touch controls"
+  ],
+  "path": "/games/cdd/index.html"
+}

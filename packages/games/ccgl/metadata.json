@@ -1,0 +1,17 @@
+{
+  "id": "ccgl",
+  "title": "Relationship Loyalty Test",
+  "category": "Quiz",
+  "description": "A fun personality quiz that tests your loyalty in relationships. Answer questions honestly to discover your relationship tendencies and commitment level.",
+  "controls": "Click on answer choices to progress through the quiz. Share your results with friends to compare scores.",
+  "image": "/images/thumbnails/ccgl.jpg",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Interactive personality quiz",
+    "Multiple choice questions",
+    "Shareable results",
+    "Relationship insights"
+  ],
+  "path": "/games/ccgl/index.html"
+}

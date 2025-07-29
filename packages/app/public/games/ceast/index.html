@@ -1,0 +1,307 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moon Landing Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #000428, #004e92);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Arial', sans-serif;
+            color: white;
+        }
+        
+        #gameContainer {
+            text-align: center;
+            position: relative;
+        }
+        
+        canvas {
+            border: 2px solid #fff;
+            background: linear-gradient(to bottom, #000428, #004e92);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+        
+        #gameInfo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            font-size: 16px;
+            z-index: 10;
+        }
+        
+        #instructions {
+            color: #fff;
+            margin-top: 20px;
+            font-size: 18px;
+            max-width: 600px;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        #gameOver {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            display: none;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div id="gameInfo">
+            <div>Fuel: <span id="fuel">100</span></div>
+            <div>Score: <span id="score">0</span></div>
+        </div>
+        <div id="instructions">
+            <p><strong>Moon Landing Challenge</strong></p>
+            <p>Use ARROW KEYS or WASD to control your spacecraft</p>
+            <p>Land safely on the moon surface to score points!</p>
+            <button class="btn" onclick="startGame()">Start Game</button>
+            <button class="btn" onclick="resetGame()">Reset</button>
+        </div>
+        <div id="gameOver">
+            <h2 id="gameOverText">Game Over</h2>
+            <p id="finalScore">Final Score: 0</p>
+            <button class="btn" onclick="resetGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let gameState = 'menu'; // menu, playing, gameOver
+        let spacecraft = {
+            x: 400,
+            y: 50,
+            vx: 0,
+            vy: 0,
+            angle: 0,
+            fuel: 100,
+            thrust: false
+        };
+        
+        let score = 0;
+        let stars = [];
+        let landingPads = [];
+        
+        // Initialize stars
+        for (let i = 0; i < 100; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 2
+            });
+        }
+        
+        // Initialize landing pads
+        landingPads = [
+            { x: 100, y: 550, width: 80, points: 50 },
+            { x: 300, y: 520, width: 100, points: 30 },
+            { x: 600, y: 540, width: 120, points: 40 }
+        ];
+        
+        // Input handling
+        const keys = {};
+        document.addEventListener('keydown', (e) => {
+            keys[e.code] = true;
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            keys[e.code] = false;
+        });
+        
+        function startGame() {
+            gameState = 'playing';
+            resetSpacecraft();
+            document.getElementById('instructions').style.display = 'none';
+            document.getElementById('gameOver').style.display = 'none';
+            gameLoop();
+        }
+        
+        function resetGame() {
+            gameState = 'menu';
+            resetSpacecraft();
+            score = 0;
+            updateUI();
+            document.getElementById('instructions').style.display = 'block';
+            document.getElementById('gameOver').style.display = 'none';
+        }
+        
+        function resetSpacecraft() {
+            spacecraft.x = 400;
+            spacecraft.y = 50;
+            spacecraft.vx = Math.random() * 4 - 2;
+            spacecraft.vy = 0;
+            spacecraft.angle = 0;
+            spacecraft.fuel = 100;
+            spacecraft.thrust = false;
+        }
+        
+        function updateUI() {
+            document.getElementById('fuel').textContent = Math.max(0, Math.floor(spacecraft.fuel));
+            document.getElementById('score').textContent = score;
+        }
+        
+        function handleInput() {
+            if (spacecraft.fuel <= 0) return;
+            
+            spacecraft.thrust = false;
+            
+            if (keys['ArrowUp'] || keys['KeyW']) {
+                spacecraft.thrust = true;
+                spacecraft.vy -= 0.2;
+                spacecraft.fuel -= 0.5;
+            }
+            if (keys['ArrowLeft'] || keys['KeyA']) {
+                spacecraft.vx -= 0.1;
+                spacecraft.angle -= 0.1;
+                spacecraft.fuel -= 0.2;
+            }
+            if (keys['ArrowRight'] || keys['KeyD']) {
+                spacecraft.vx += 0.1;
+                spacecraft.angle += 0.1;
+                spacecraft.fuel -= 0.2;
+            }
+        }
+        
+        function updatePhysics() {
+            // Apply gravity
+            spacecraft.vy += 0.1;
+            
+            // Update position
+            spacecraft.x += spacecraft.vx;
+            spacecraft.y += spacecraft.vy;
+            
+            // Boundary checks
+            if (spacecraft.x < 0) spacecraft.x = 0;
+            if (spacecraft.x > canvas.width) spacecraft.x = canvas.width;
+            
+            // Check landing
+            if (spacecraft.y > canvas.height - 60) {
+                checkLanding();
+            }
+            
+            // Check if crashed (too fast landing)
+            if (spacecraft.y > canvas.height - 50 && (Math.abs(spacecraft.vy) > 3 || Math.abs(spacecraft.vx) > 2)) {
+                gameOver('Crashed! Landing too fast!');
+            }
+        }
+        
+        function checkLanding() {
+            for (let pad of landingPads) {
+                if (spacecraft.x > pad.x && spacecraft.x < pad.x + pad.width && 
+                    spacecraft.y > pad.y - 20) {
+                    // Successful landing
+                    score += pad.points;
+                    resetSpacecraft();
+                    return;
+                }
+            }
+            
+            // Crashed on surface
+            if (spacecraft.y > canvas.height - 50) {
+                gameOver('Crashed on surface!');
+            }
+        }
+        
+        function gameOver(message) {
+            gameState = 'gameOver';
+            document.getElementById('gameOverText').textContent = message;
+            document.getElementById('finalScore').textContent = `Final Score: ${score}`;
+            document.getElementById('gameOver').style.display = 'block';
+        }
+        
+        function draw() {
+            // Clear canvas
+            ctx.fillStyle = 'rgba(0, 4, 40, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw stars
+            ctx.fillStyle = 'white';
+            for (let star of stars) {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            
+            // Draw moon surface
+            ctx.fillStyle = '#666';
+            ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+            
+            // Draw landing pads
+            for (let pad of landingPads) {
+                ctx.fillStyle = '#0f0';
+                ctx.fillRect(pad.x, pad.y, pad.width, 10);
+                ctx.fillStyle = 'white';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${pad.points}pts`, pad.x + pad.width/2, pad.y - 5);
+            }
+            
+            // Draw spacecraft
+            ctx.save();
+            ctx.translate(spacecraft.x, spacecraft.y);
+            ctx.rotate(spacecraft.angle);
+            
+            // Spacecraft body
+            ctx.fillStyle = '#ccc';
+            ctx.fillRect(-10, -15, 20, 30);
+            
+            // Thrust flame
+            if (spacecraft.thrust && spacecraft.fuel > 0) {
+                ctx.fillStyle = '#f80';
+                ctx.fillRect(-5, 15, 10, 15);
+                ctx.fillStyle = '#ff0';
+                ctx.fillRect(-3, 15, 6, 10);
+            }
+            
+            ctx.restore();
+        }
+        
+        function gameLoop() {
+            if (gameState !== 'playing') return;
+            
+            handleInput();
+            updatePhysics();
+            draw();
+            updateUI();
+            
+            requestAnimationFrame(gameLoop);
+        }
+        
+        // Initial draw
+        draw();
+        
+        console.log("Moon Landing game initialized successfully!");
+    </script>
+</body>
+</html>

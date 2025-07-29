@@ -68,7 +68,18 @@ alwaysApply: true
 6、希望网站能让人惊艳、美观、符合用户习惯
 
 ## 输出目标 (Output Targets)
+生成的内容是英文，并且引用以下设计资源
+1. 字体资源
+Inter: https://fonts.google.com/specimen/Inter
+Montserrat: https://fonts.google.com/specimen/Montserrat
+Fira Code: https://fonts.google.com/specimen/Fira+Code
+
+2. 图标资源
+FontAwesome: https://fontawesome.com/
+
+3. 图片资源
+Unsplash: https://unsplash.com/
+Pexels: https://www.pexels.com/
 
 
-
-*   任务进度表 (PRD): 保存到 `docs/tasks.md`。
+*   任务进度表 (PRD): 顶置更新到 `docs/tasks.md`。
