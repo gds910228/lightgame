@@ -104,25 +104,78 @@
           }
 
       });
+    var showResult = function () {
+              // Calculate and show result
+              var totalScore = 0;
+              $(".options ul li.selected").each(function() {
+                  totalScore += parseInt($(this).data("score")) || 0;
+              });
+              
+              // Generate result based on score
+              var resultMessage = "";
+              if(totalScore >= 0 && totalScore <= 13){
+                  resultMessage = "经测试您的出轨概率是 0% 您若出轨美人鱼都会劈腿，希望您且行且珍惜。";
+              } else if(totalScore >= 14 && totalScore <= 17){
+                  resultMessage = "经测试您的出轨概率是 "+totalScore+"% 您不出轨是因为很懒甚至都懒得出轨，希望您且行且珍惜。";
+              } else if(totalScore >= 18 && totalScore <= 20){
+                  resultMessage = "经测试您的出轨概率是 "+totalScore+"% 您是小火车，除非轨道没了，否则不会出轨，希望您且行且珍惜。";
+              } else if(totalScore >= 21 && totalScore <= 25){
+                  resultMessage = "经测试您的出轨概率是 "+totalScore+"% 您有想法也没勇气这么做，希望您且行且珍惜。";
+              } else if(totalScore >= 26 && totalScore <= 30){
+                  resultMessage = "经测试您的出轨概率是 "+totalScore+"% 您重感情又自律，除非那个人很特别，希望您且行且珍惜。";
+              } else if(totalScore >= 31 && totalScore <= 35){
+                  resultMessage = "经测试您的出轨概率是 "+totalScore+"% 您只是幻想会有那么一天，希望您且行且珍惜。";
+              } else if(totalScore >= 36 && totalScore <= 40){
+                  resultMessage = "经测试您的出轨概率是 "+(totalScore+10)+"% 您身边诱惑可能有点多，希望您且行且珍惜。";
+              } else if(totalScore >= 41 && totalScore <= 45){
+                  resultMessage = "经测试您的出轨概率是 "+(totalScore+20)+"% 希望您能处理好几个情人的关系，希望您且行且珍惜。";
+              } else if(totalScore >= 46 && totalScore <= 50){
+                  resultMessage = "经测试您的出轨概率是 "+(totalScore+30)+"% 您这么花心你另一半知道吗，希望您且行且珍惜。";
+              }
+              
+              // Show result
+              $(".aside").html(resultMessage);
+              $(".header-title").hide();
+              $("#toptop").hide();
+              $(".question").hide();
+              $(".result").show();
+            }
+
     var mask = function () {
-              document.getElementById('sharediv').style.display = '';
+              // Trigger the parent page's share functionality
+              if (window.parent && window.parent.postMessage) {
+                  // Send message to parent page to trigger share
+                  window.parent.postMessage({
+                      type: 'SHARE_GAME',
+                      data: {
+                          gameId: 'ccgl'
+                      }
+                  }, '*');
+                  
+                  // Show result after a short delay to allow sharing
+                  setTimeout(function() {
+                      showResult();
+                  }, 1000);
+              } else {
+                  // Fallback: show result directly if not in iframe
+                  showResult();
+              }
             }
 //resultPath='http://game.9g.com/cscg/game.html?result='+resrand;
 resultPath='http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&idx=1&sn=1de5daeaae94c66a3c46a13e20e8011e#rd'+resrand;
 var mebtnopenurl = '/';
 window.shareData = {
-    "imgUrl": "http://g.lanrenmb.com/icon/cggl.jpg",
-    "timeLineLink": "http://g.lanrenmb.com/games/ccgl",
-    "tTitle": "我刚刚测了我的出轨率，你想知道吗？点击查看！",
-    "tContent": "我刚刚测了我的出轨率，你想知道吗？点击查看！"
+    "imgUrl": "/images/thumbnails/ccgl.jpg",
+    "timeLineLink": window.location.href,
+    "tTitle": "I just tested my relationship loyalty rate, want to know yours? Click to find out!",
+    "tContent": "Take this fun relationship loyalty quiz and discover your commitment level!"
 };
 	function goHome(){
 			window.location=mebtnopenurl;
 		}
 		function clickMore(){
-			
-				window.location = "http://g.lanrenmb.com/";
-			
+			// Navigate to Quiz category page
+			window.location = "/?category=Quiz";
 		}
     document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
         
@@ -435,7 +488,7 @@ text-align:left;
   </div>
      <a href="#" onclick="clickMore();" style="text-decoration:none;font-size: 25px;color: #f00;font-weight: bold;display: block;margin-top:30px;">更多测试</a>
 
-      <a style="font-size: 25px;color: #f00;font-weight: bold;display: block;margin-top:20px;text-decoration:none" href="http://g.lanrenmb.com/games/gzh">狙击手专用眼力测试，你能闯到第几关？</a> --&gt;
+      <!-- <a style="font-size: 25px;color: #f00;font-weight: bold;display: block;margin-top:20px;text-decoration:none" href="#" onclick="clickMore();">狙击手专用眼力测试，你能闯到第几关？</a> -->
 
     <a href="#" onclick="clickMore();" style="display: block;margin-top:80px;text-decoration:none"><img src="images/more.jpg" width="100%"></a>
 
@@ -666,7 +719,7 @@ text-align:left;
   </ul>
   </div>
      <div class="title-sub">
-        <a href="http://g.lanrenmb.com/games/cggl/" style="text-decoration:none"><button style="font-size:25px">重新测试</button></a>
+        <a href="javascript:void(0)" onclick="location.reload()" style="text-decoration:none"><button style="font-size:25px">重新测试</button></a>
       </div>
      <a href="#" onclick="clickMore();" style="text-decoration:none;font-size: 25px;color: #f00;font-weight: bold;display: block;margin-top:30px;">更多测试</a>
 
@@ -684,7 +737,7 @@ text-align:left;
 
       </div>
       <div class="title-sub">
-        <a href="http://g.lanrenmb.com/games/cggl/" style="text-decoration:none"><button style="font-size:25px">测测我的出轨率</button></a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="clickMore();" style="text-decoration:none"><button style="font-size:25px">更多测试</button></a>
+        <a href="javascript:void(0)" onclick="location.reload()" style="text-decoration:none"><button style="font-size:25px">测测我的出轨率</button></a>&nbsp;&nbsp;&nbsp;<a href="#" onclick="clickMore();" style="text-decoration:none"><button style="font-size:25px">更多测试</button></a>
       </div>
      <a href="#" onclick="clickMore();" style="text-decoration:none;font-size: 25px;color: #f00;font-weight: bold;display: block;margin-top:30px;">更多测试</a>
 
