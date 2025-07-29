@@ -383,7 +383,7 @@ const GameDetailPage = () => {
               src={game.path}
               className="w-full h-full border-0"
               title={game.title}
-              sandbox="allow-scripts allow-same-origin"
+              sandbox="allow-scripts allow-same-origin allow-downloads allow-forms allow-popups allow-modals"
               allow="fullscreen; gamepad; keyboard; accelerometer; autoplay"
               loading="eager"
               referrerPolicy="no-referrer"

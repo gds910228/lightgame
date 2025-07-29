@@ -126,7 +126,7 @@ body{color:#333; background:#4e97e9; font-family:"Microsoft YaHei", Arial, Verda
 .share{position:absolute; top:50%; left:50%; width:320px; height:271px; padding-top:60px; margin:-180px -160px; background:url(share.gif) no-repeat #EFCB4E; background-size:320px 271px; z-index:102;}
 .share .new-pic{position:absolute; top:63px; left:50%; margin-left:-77px; width:140px; height:140px; border:3px solid #fff;}
 .share p{position:absolute; bottom:0; left:0; width:320px; height:60px; text-align:center;}
-.share p .share-link,
+.share p .download-link,
 .share p .reset-link{display:inline-block; width:111px; height:38px; margin:5px 20px; background:url(bg.png) no-repeat 0 -230px; background-size:275px 275px; overflow:hidden;}
 .share p .reset-link{background-position:-111px -230px;}
 

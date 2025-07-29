@@ -154,7 +154,7 @@
  
 
 <div class="share" style="display:none;">
-	<p><a href="javascript:;" class="reset-link"></a><a href="javascript:;" class="share-link"></a></p>
+	<p><a href="javascript:;" class="reset-link"></a><a href="javascript:;" class="download-link"></a></p>
 	<img src="" class="new-pic" />
 </div><!-- share end -->
 
@@ -284,10 +284,10 @@ $(function(){
 		$(".mask1").css('display','none');
 		//_hmt.push(['_trackEvent', 'reset', 'click', 'reset pic', 0]); //埋点
 	});
-	//分享按钮
-	$(".share-link").on('click', function(){
-		$(".mask2").css('display','block');
-		//_hmt.push(['_trackEvent', 'share', 'click', 'share pic', 0]); //埋点
+	//下载按钮
+	$(".download-link").on('click', function(){
+		downloadImage();
+		//_hmt.push(['_trackEvent', 'download', 'click', 'download pic', 0]); //埋点
 	});
 	//mask隐藏
 	$(".mask2").on('click', function(){
@@ -436,15 +436,38 @@ $(function(){
 	document.addEventListener('WeixinJSBridgeReady', function() {
 		onBridgeReady();
 	},false);
-	//分享弹出框
-	function dialog(){
-		if(URL.getQueryString('f') == 'fans'){
-			return false;
+	//下载图片功能
+	function downloadImage(){
+		if(!canvas){
+			alert('请先生成头像');
+			return;
 		}
-		var t = confirm('组团逼死强迫症，快来关注我!懒人模板:lanrenmb');
-		if(t){
-			window.location.href = 'http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&idx=1&sn=1de5daeaae94c66a3c46a13e20e8011e#rd';
+		
+		try {
+			// 创建下载链接
+			var link = document.createElement('a');
+			link.download = 'avatar_' + new Date().getTime() + '.png';
+			link.href = canvas.toDataURL('image/png');
+			
+			// 触发下载
+			document.body.appendChild(link);
+			link.click();
+			document.body.removeChild(link);
+			
+			// 显示保存成功提示
+			showToast('图片已保存到本地');
+		} catch(e) {
+			alert('保存失败，请重试');
 		}
+	}
+	
+	//显示提示信息
+	function showToast(message){
+		var toast = $('.toast_tip');
+		toast.text(message).show();
+		setTimeout(function(){
+			toast.hide();
+		}, 2000);
 	}
 	
 });
