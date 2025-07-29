@@ -101,13 +101,13 @@
 				window.parent.shareGame('cdd');
 			} else if (navigator.share) {
 				navigator.share({
-					title: 'Pac-Man Style Game',
-					text: `I just scored ${myData.score} points in Pac-Man Style Game!`,
+					title: 'Dot Eater',
+					text: `I just scored ${myData.score} points in Dot Eater!`,
 					url: window.location.href
 				});
 			} else {
 				// Fallback: show share overlay
-				document.title = `I scored ${myData.score} points in Pac-Man Style Game!`;
+				document.title = `I scored ${myData.score} points in Dot Eater!`;
 				document.getElementById("share").style.display="";
 				window.shareData.tTitle = document.title;
 			}

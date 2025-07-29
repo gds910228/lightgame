@@ -142,9 +142,9 @@
     },
     {
       "id": "cdd",
-      "title": "Pac-Man Style Game",
+      "title": "Dot Eater",
       "category": "Arcade",
-      "description": "A classic Pac-Man style arcade game where you navigate through mazes, collect dots, and avoid enemies. Test your reflexes and strategy skills!",
+      "description": "A classic dot-eating arcade game where you navigate through mazes, collect dots, and avoid enemies. Test your reflexes and strategy skills!",
       "controls": "Use arrow keys or WASD keys to move your character. Collect all dots while avoiding enemies to advance to the next level.",
       "image": "/images/thumbnails/cdd.png",
       "author": "LightGame Team",

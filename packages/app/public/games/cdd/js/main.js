@@ -286,8 +286,8 @@ var lose_state = {
 				// Fallback to native share if available
 				if (navigator.share) {
 					navigator.share({
-						title: 'Pac-Man Style Game',
-						text: `I just scored ${main_state["score"]} points in Pac-Man Style Game!`,
+						title: 'Dot Eater',
+						text: `I just scored ${main_state["score"]} points in Dot Eater!`,
 						url: window.location.href
 					});
 				}
