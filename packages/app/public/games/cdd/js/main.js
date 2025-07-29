@@ -295,11 +295,12 @@ var lose_state = {
 		});
 
 		this["getmoregame"] = this["game"]["add"]["button"](110, 400, "getmoregame", function() {
-			// Navigate to homepage - updated path for correct navigation
-			if (window.parent) {
-				window.parent.location.href = '../../index.html';
+			// Use postMessage to communicate with parent window
+			if (window.parent && window.parent !== window) {
+				window.parent.postMessage({ action: 'navigateHome' }, '*');
 			} else {
-				window.location.href = '../../index.html';
+				// Fallback: try to navigate to root
+				window.location.href = '/';
 			}
 		});
 

@@ -202,7 +202,7 @@ const GameDetailPage = () => {
       if (event.data.type === 'SHARE_GAME') {
         const { score } = event.data.data;
         handleShare(score);
-      } else if (event.data.type === 'NAVIGATE_TO_HOME') {
+      } else if (event.data.type === 'NAVIGATE_TO_HOME' || event.data.action === 'navigateHome') {
         // Navigate to home page
         window.location.href = '/';
       }
