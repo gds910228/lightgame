@@ -13,7 +13,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' data: blob: https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https:; frame-src 'self' https://lgames.io; frame-ancestors 'self'; base-uri 'self'; worker-src 'self' blob:;"
+          "value": "default-src 'self' data: blob: https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com at.alicdn.com; img-src 'self' data: blob:; connect-src 'self' https:; frame-src 'self' https://lgames.io; child-src 'self' https://lgames.io; frame-ancestors 'self'; base-uri 'self'; worker-src 'self' blob:;"
         },
         {
           "key": "X-Content-Type-Options",
@@ -34,7 +34,7 @@
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self' data: blob: https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https:; frame-src 'self' https://lgames.io; frame-ancestors 'self'; base-uri 'self'; worker-src 'self' blob:;"
+          "value": "default-src 'self' data: blob: https://cdnjs.cloudflare.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdnjs.cloudflare.com https://cdn.tailwindcss.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com at.alicdn.com; img-src 'self' data: blob:; connect-src 'self' https:; frame-src 'self' https://lgames.io; child-src 'self' https://lgames.io; frame-ancestors 'self'; base-uri 'self'; worker-src 'self' blob:;"
         },
         {
           "key": "X-Content-Type-Options",
