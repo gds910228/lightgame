@@ -2,6 +2,15 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/html">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-H6B57GLQ13"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-H6B57GLQ13');
+</script>
 <meta charset="utf-8" />
 <title>99%的人都被逼疯了，制作新消息头像，一起逼死强迫症！</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"/>
@@ -449,14 +458,23 @@ $(function(){
 			link.download = 'avatar_' + new Date().getTime() + '.png';
 			link.href = canvas.toDataURL('image/png');
 			
+			// 设置链接样式确保可见性
+			link.style.display = 'none';
+			
 			// 触发下载
 			document.body.appendChild(link);
-			link.click();
-			document.body.removeChild(link);
 			
-			// 显示保存成功提示
-			showToast('图片已保存到本地');
+			// 使用setTimeout确保DOM更新完成
+			setTimeout(function() {
+				link.click();
+				document.body.removeChild(link);
+				
+				// 显示保存成功提示
+				showToast('图片已保存到本地');
+			}, 100);
+			
 		} catch(e) {
+			console.error('Download error:', e);
 			alert('保存失败，请重试');
 		}
 	}
