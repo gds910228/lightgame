@@ -275,6 +275,7 @@
       "description": "An exciting multiplayer snake game where you compete against other players in real-time. Grow your snake by eating food and avoid colliding with other snakes or walls.",
       "controls": "Use arrow keys or WASD to move your snake. Eat food to grow longer while avoiding other snakes and walls.",
       "image": "/images/thumbnails/snake-arena.svg",
+      "cover": "/images/covers/snake-arena.svg",
       "author": "1games.io",
       "version": "1.0.0",
       "features": [
