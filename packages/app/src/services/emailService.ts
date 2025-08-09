@@ -9,23 +9,11 @@ const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_vn7sci
 export const initEmailService = () => {
   // 使用环境变量初始化EmailJS
   emailjs.init(PUBLIC_KEY);
-  console.log('EmailJS已初始化');
-  
-  // 调试环境变量
-  console.log('环境变量检查:');
-  console.log('- PUBLIC_KEY:', PUBLIC_KEY);
-  console.log('- SERVICE_ID:', SERVICE_ID);
-  console.log('- TEMPLATE_ID:', TEMPLATE_ID);
 };
 
 // 发送反馈邮件
 export const sendFeedbackEmail = async (templateParams: any) => {
   try {
-    console.log('准备发送邮件:');
-    console.log('- 使用服务:', SERVICE_ID);
-    console.log('- 使用模板:', TEMPLATE_ID);
-    console.log('- 发送参数:', templateParams);
-    
     // 使用环境变量发送邮件
     const response = await emailjs.send(
       SERVICE_ID,
@@ -34,7 +22,6 @@ export const sendFeedbackEmail = async (templateParams: any) => {
       PUBLIC_KEY
     );
     
-    console.log('邮件发送成功:', response);
     return {
       success: true,
       data: response
