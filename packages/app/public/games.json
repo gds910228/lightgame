@@ -182,7 +182,7 @@
       "difficulty": "medium",
       "playTime": "5-15 minutes",
       "controls": "Arrow keys to move",
-      "thumbnail": "thumbnail.png",
+      "thumbnail": "/games/pacman/pacman.svg",
       "featured": true,
       "author": "LightGame Team",
       "version": "1.0.0",
@@ -194,8 +194,8 @@
         "Smooth keyboard controls"
       ],
       "path": "/games/pacman/index.html",
-      "type": "local",
-      "image": "/games/pacman/thumbnail.png"
+      "image": "/games/pacman/pacman.svg",
+      "type": "local"
     },
     {
       "id": "bsqpz",
@@ -243,7 +243,7 @@
         "competitive",
         "real-time"
       ],
-      "thumbnail": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop&crop=center",
+      "thumbnail": "/games/snake-arena/snake-arena.svg",
       "rating": 4.5,
       "players": "Multiplayer",
       "difficulty": "Medium",
@@ -264,8 +264,8 @@
         "Online leaderboards"
       ],
       "path": "/games/snake-arena/index.html",
-      "type": "iframe",
-      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop&crop=center"
+      "image": "/games/snake-arena/snake-arena.svg",
+      "type": "iframe"
     },
     {
       "id": "snake",

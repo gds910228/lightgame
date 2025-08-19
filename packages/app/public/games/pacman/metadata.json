@@ -7,7 +7,7 @@
   "difficulty": "medium",
   "playTime": "5-15 minutes",
   "controls": "Arrow keys to move",
-  "thumbnail": "thumbnail.png",
+  "thumbnail": "/games/pacman/pacman.svg",
   "featured": true,
   "author": "LightGame Team",
   "version": "1.0.0",
@@ -18,5 +18,6 @@
     "Score tracking and lives system",
     "Smooth keyboard controls"
   ],
-  "path": "/games/pacman/index.html"
+  "path": "/games/pacman/index.html",
+  "image": "/games/pacman/pacman.svg"
 }

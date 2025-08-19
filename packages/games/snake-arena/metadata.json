@@ -4,7 +4,7 @@
   "description": "An exciting multiplayer snake game where you compete against other players in real-time. Grow your snake by eating food and avoid colliding with other snakes or walls.",
   "category": "Action",
   "tags": ["multiplayer", "snake", "arcade", "competitive", "real-time"],
-  "thumbnail": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop&crop=center",
+  "thumbnail": "/games/snake-arena/snake-arena.svg",
   "rating": 4.5,
   "players": "Multiplayer",
   "difficulty": "Medium",
@@ -24,5 +24,6 @@
     "Smooth controls and responsive gameplay",
     "Online leaderboards"
   ],
-  "path": "/games/snake-arena/index.html"
+  "path": "/games/snake-arena/index.html",
+  "image": "/games/snake-arena/snake-arena.svg"
 }
