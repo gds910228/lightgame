@@ -185,7 +185,7 @@
       "difficulty": "medium",
       "playTime": "5-15 minutes",
       "controls": "Arrow keys to move",
-      "thumbnail": "/games/pacman/pacman.svg",
+      "thumbnail": "pacman.svg",
       "featured": true,
       "author": "LightGame Team",
       "version": "1.0.0",
@@ -247,7 +247,7 @@
         "competitive",
         "real-time"
       ],
-      "thumbnail": "/games/snake-arena/snake-arena.svg",
+      "thumbnail": "snake-arena.svg",
       "rating": 4.5,
       "players": "Multiplayer",
       "difficulty": "Medium",

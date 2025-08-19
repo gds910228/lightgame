@@ -1,23 +1,28 @@
 {
-  "id": "pacman",
-  "title": "Pac-Man Style Game",
-  "description": "Classic Pac-Man style arcade game with dots, ghosts, and power pellets",
-  "category": "Arcade",
-  "tags": ["arcade", "classic", "retro", "pacman"],
-  "difficulty": "medium",
-  "playTime": "5-15 minutes",
-  "controls": "Arrow keys to move",
-  "thumbnail": "/games/pacman/pacman.svg",
-  "featured": true,
-  "author": "LightGame Team",
-  "version": "1.0.0",
-  "features": [
-    "Classic Pac-Man gameplay mechanics",
-    "Multiple levels with increasing difficulty", 
-    "Power pellets for temporary ghost vulnerability",
-    "Score tracking and lives system",
-    "Smooth keyboard controls"
-  ],
-  "path": "/games/pacman/index.html",
-  "image": "/games/pacman/pacman.svg"
+    "id":  "pacman",
+    "title":  "Pac-Man Style Game",
+    "description":  "Classic Pac-Man style arcade game with dots, ghosts, and power pellets",
+    "category":  "Arcade",
+    "tags":  [
+                 "arcade",
+                 "classic",
+                 "retro",
+                 "pacman"
+             ],
+    "difficulty":  "medium",
+    "playTime":  "5-15 minutes",
+    "controls":  "Arrow keys to move",
+    "thumbnail":  "pacman.svg",
+    "featured":  true,
+    "author":  "LightGame Team",
+    "version":  "1.0.0",
+    "features":  [
+                     "Classic Pac-Man gameplay mechanics",
+                     "Multiple levels with increasing difficulty",
+                     "Power pellets for temporary ghost vulnerability",
+                     "Score tracking and lives system",
+                     "Smooth keyboard controls"
+                 ],
+    "path":  "/games/pacman/index.html",
+    "image":  "pacman.svg"
 }
