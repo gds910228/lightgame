@@ -1,180 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Snake Arena - Light Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Snake Arena</title>
+    <meta name="description" content="An exciting multiplayer snake game where you compete against other players in real-time. Grow your snake by eating food and avoid colliding with other snakes or walls.">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .game-container {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-        .game-frame {
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            border-radius: 16px;
-            overflow: hidden;
-        }
+      :root { --bg: #0b0f17; --fg: #e5e7eb; --acc: #22d3ee; }
+      html,body { height:100%; }
+      body {
+        margin:0; background: var(--bg); color: var(--fg);
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+        display:flex; align-items:center; justify-content:center; padding:16px;
+      }
+      .wrap { width: min(1200px, 100%); }
+      .frame {
+        position: relative; width: 100%;
+        background: #111827; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,.4);
+      }
+      .ratio { width: 100%; height: 0; padding-top: calc(100% * 720 / 1280); }
+      iframe {
+        position:absolute; inset:0; width:100%; height:100%; border:0; display:none; background:#000;
+      }
+      .overlay {
+        position:absolute; inset:0; display:flex; align-items:center; justify-content:center; gap:16px;
+        background: radial-gradient(1200px 600px at 50% 40%, rgba(34,211,238,.15), transparent 70%);
+      }
+      .btn {
+        appearance: none; border:0; border-radius: 10px;
+        padding: 12px 20px; cursor: pointer; font-weight: 600; letter-spacing: .2px;
+        color: #0b0f17; background: var(--acc);
+        box-shadow: 0 6px 20px rgba(34,211,238,.25);
+      }
+      .toolbar {
+        display:flex; justify-content: flex-end; gap: 8px; padding: 10px;
+        position:absolute; right:0; top:0; z-index:2;
+      }
+      .toolbtn {
+        background: rgba(255,255,255,.08); color:#e5e7eb; border: 1px solid rgba(255,255,255,.1);
+        border-radius: 8px; padding: 6px 10px; cursor: pointer;
+      }
     </style>
-</head>
-<body class="bg-gray-900">
-    <div class="game-container flex flex-col items-center justify-center p-4">
-        <!-- Header -->
-        <div class="w-full max-w-6xl mb-6">
-            <div class="flex items-center justify-between bg-white/10 backdrop-blur-md rounded-2xl p-4">
-                <div class="flex items-center space-x-4">
-                    <a href="/" class="flex items-center space-x-2 text-white hover:text-blue-200 transition-colors">
-                        <i class="fas fa-arrow-left text-lg"></i>
-                        <span class="font-medium">Back to Games</span>
-                    </a>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <div class="flex items-center space-x-2 text-white">
-                        <i class="fas fa-gamepad text-blue-300"></i>
-                        <h1 class="text-xl font-bold">Snake Arena</h1>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="toggleFullscreen()" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition-colors flex items-center space-x-2">
-                        <i class="fas fa-expand"></i>
-                        <span>Fullscreen</span>
-                    </button>
-                </div>
-            </div>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="frame">
+        <div class="ratio"></div>
+        <div class="toolbar">
+          <button class="toolbtn" id="fullscreen">全屏</button>
         </div>
-
-        <!-- Game Frame -->
-        <div class="game-frame bg-white/5 backdrop-blur-md p-6">
-            <div class="relative">
-                <iframe 
-                    id="gameFrame"
-                    src="https://1games.io/game/snake-arena/" 
-                    width="1280" 
-                    height="720" 
-                    scrolling="none" 
-                    frameborder="0"
-                    class="rounded-lg"
-                    allowfullscreen>
-                </iframe>
-                
-                <!-- Loading Overlay -->
-                <div id="loadingOverlay" class="absolute inset-0 bg-gray-900/80 flex items-center justify-center rounded-lg">
-                    <div class="text-center text-white">
-                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400 mx-auto mb-4"></div>
-                        <p class="text-lg font-medium">Loading Snake Arena...</p>
-                        <p class="text-sm text-gray-300 mt-2">Please wait while the game loads</p>
-                    </div>
-                </div>
-            </div>
+        <iframe id="game"  allow="fullscreen; autoplay"></iframe>
+        <div class="overlay">
+          <button class="btn" id="start">开始游戏</button>
         </div>
-
-        <!-- Game Info -->
-        <div class="w-full max-w-6xl mt-6">
-            <div class="bg-white/10 backdrop-blur-md rounded-2xl p-6">
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white mb-3">
-                            <i class="fas fa-info-circle text-blue-300 mr-2"></i>
-                            About Snake Arena
-                        </h2>
-                        <p class="text-gray-200 leading-relaxed">
-                            Snake Arena is an exciting multiplayer snake game where you compete against other players in real-time. 
-                            Grow your snake by eating food and avoid colliding with other snakes or the walls. 
-                            The longer you survive, the higher your score!
-                        </p>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-white mb-3">
-                            <i class="fas fa-keyboard text-green-300 mr-2"></i>
-                            How to Play
-                        </h3>
-                        <ul class="text-gray-200 space-y-2">
-                            <li class="flex items-center">
-                                <i class="fas fa-arrow-up text-blue-300 w-6"></i>
-                                <span>Use arrow keys or WASD to move</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-circle text-yellow-300 w-6"></i>
-                                <span>Eat food to grow your snake</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-skull text-red-300 w-6"></i>
-                                <span>Avoid hitting walls and other snakes</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-trophy text-purple-300 w-6"></i>
-                                <span>Compete for the highest score</span>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
-
     <script>
-        // Hide loading overlay when iframe loads
-        const gameFrame = document.getElementById('gameFrame');
-        const loadingOverlay = document.getElementById('loadingOverlay');
-        
-        gameFrame.addEventListener('load', function() {
-            setTimeout(() => {
-                loadingOverlay.style.opacity = '0';
-                setTimeout(() => {
-                    loadingOverlay.style.display = 'none';
-                }, 300);
-            }, 1000);
-        });
-
-        // Fullscreen functionality
-        function toggleFullscreen() {
-            const gameFrame = document.getElementById('gameFrame');
-            
-            if (!document.fullscreenElement) {
-                gameFrame.requestFullscreen().catch(err => {
-                    console.log('Error attempting to enable fullscreen:', err);
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
-        // Handle fullscreen changes
-        document.addEventListener('fullscreenchange', function() {
-            const gameFrame = document.getElementById('gameFrame');
-            if (document.fullscreenElement) {
-                gameFrame.style.width = '100vw';
-                gameFrame.style.height = '100vh';
-            } else {
-                gameFrame.style.width = '1280px';
-                gameFrame.style.height = '720px';
-            }
-        });
-
-        // Responsive design
-        function adjustGameSize() {
-            const gameFrame = document.getElementById('gameFrame');
-            const container = gameFrame.parentElement;
-            const containerWidth = container.offsetWidth;
-            
-            if (containerWidth < 1280) {
-                const scale = containerWidth / 1280;
-                gameFrame.style.transform = `scale(${scale})`;
-                gameFrame.style.transformOrigin = 'top left';
-                container.style.height = `${720 * scale}px`;
-            } else {
-                gameFrame.style.transform = 'none';
-                container.style.height = '720px';
-            }
-        }
-
-        window.addEventListener('resize', adjustGameSize);
-        window.addEventListener('load', adjustGameSize);
+      const src = "https://1games.io/game/snake-arena/";
+      const iframe = document.getElementById("game");
+      const start = document.getElementById("start");
+      const overlay = document.querySelector(".overlay");
+      const fsBtn = document.getElementById("fullscreen");
+      start.addEventListener("click", () => {
+        if (!src) return;
+        iframe.src = src;
+        iframe.style.display = "block";
+        overlay.style.display = "none";
+      });
+      fsBtn.addEventListener("click", async () => {
+        const el = document.documentElement;
+        try { await (el.requestFullscreen?.call(el) || el.webkitRequestFullscreen?.call(el)); } catch {}
+      });
     </script>
-</body>
+  </body>
 </html>

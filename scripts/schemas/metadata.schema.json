@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Lightgame Metadata",
+  "type": "object",
+  "required": ["id", "title", "category", "description", "controls"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "title": { "type": "string", "minLength": 1 },
+    "description": { "type": "string", "minLength": 1 },
+    "category": {
+      "oneOf": [
+        { "type": "string", "minLength": 1 },
+        {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      ]
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "controls": { "type": "string", "minLength": 1 },
+    "author": { "type": ["string", "null"] },
+    "version": { "type": ["string", "null"] },
+    "featured": { "type": ["boolean", "null"] },
+    "date_added": { "type": ["string", "null"] },
+    "play_count": { "type": ["number", "integer", "null"] },
+    "thumbnail": { "type": ["string", "null"] },
+    "image": { "type": ["string", "null"] },
+    "cover": { "type": ["string", "null"] },
+    "path": { "type": ["string", "null"] },
+
+    "iframe_url": { "type": ["string", "null"], "format": "uri" },
+    "embedUrl": { "type": ["string", "null"], "format": "uri" },
+
+    "width": { "type": ["number", "integer", "null"], "minimum": 1 },
+    "height": { "type": ["number", "integer", "null"], "minimum": 1 },
+    "aspectRatio": { "type": ["string", "null"], "pattern": "^[0-9]+:[0-9]+$" },
+
+    "allow": { "type": ["string", "null"] },
+    "sandbox": { "type": ["string", "boolean", "null"] }
+  },
+  "allOf": [
+    {
+      "if": {
+        "anyOf": [
+          { "required": ["iframe_url"] },
+          { "required": ["embedUrl"] }
+        ]
+      },
+      "then": {
+        "properties": {
+          "iframe_url": { "type": "string", "format": "uri" },
+          "embedUrl": { "type": "string", "format": "uri" }
+        }
+      }
+    }
+  ],
+  "additionalProperties": true
+}

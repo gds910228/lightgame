@@ -1,0 +1,33 @@
+name: validate-games
+
+on:
+  pull_request:
+    paths:
+      - "packages/games/**"
+      - "scripts/**"
+      - "packages/app/scripts/build-games-list.js"
+  push:
+    branches:
+      - main
+    paths:
+      - "packages/games/**"
+      - "scripts/**"
+      - "packages/app/scripts/build-games-list.js"
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate games (schema + iframe precheck)
+        run: node scripts/validate-games.js

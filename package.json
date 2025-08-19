@@ -13,9 +13,13 @@
     "preview": "npm run preview --workspace=packages/app",
     "optimize-games": "npm run optimize-games --workspace=packages/app",
     "sync-games": "node scripts/sync-games.js",
-    "watch-games": "node scripts/watch-games.js"
+    "watch-games": "node scripts/watch-games.js",
+    "validate:games": "node scripts/validate-games.js",
+    "build:games:list": "node scripts/build-games-list.js"
   },
   "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "chokidar": "^4.0.3",
     "typescript": "^5.2.2"
   }

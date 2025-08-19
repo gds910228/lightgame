@@ -94,16 +94,32 @@ function buildGamesList() {
             continue;
           }
           
-          // Ensure the game path is set correctly
-          if (!metadata.path) {
-            metadata.path = `/games/${gameDir}/index.html`;
+          // Normalize fields and ensure compatibility
+          // Unified path (wrapper for iframe or local index)
+          metadata.path = `/games/${gameDir}/index.html`;
+
+          // Detect type (iframe/local)
+          metadata.type = (metadata.embedUrl || metadata.iframe_url) ? 'iframe' : 'local';
+
+          // Normalize asset paths (image/thumbnail/cover)
+          const normalizeAsset = (p) => {
+            if (!p) return p;
+            if (/^https?:\/\//i.test(p)) return p;     // keep absolute URL
+            if (p.startsWith('/')) return p;           // already absolute in site
+            if (p.startsWith('./')) return `/games/${gameDir}/${p.substring(2)}`;
+            return `/games/${gameDir}/${p}`;
+          };
+
+          // image fallback to thumbnail if absent
+          if (!metadata.image && metadata.thumbnail) {
+            metadata.image = normalizeAsset(metadata.thumbnail);
+          } else if (metadata.image) {
+            metadata.image = normalizeAsset(metadata.image);
           }
-          
-          // Fix image path if it's relative
-          if (metadata.image && metadata.image.startsWith('./')) {
-            metadata.image = `/games/${gameDir}/${metadata.image.substring(2)}`;
+          if (metadata.cover) {
+            metadata.cover = normalizeAsset(metadata.cover);
           }
-          
+
           // Add to games list
           games.push(metadata);
           console.log(`Added game: ${metadata.title} (${metadata.category})`);

@@ -20,7 +20,8 @@
         "Achievement tracking",
         "Simple and intuitive gameplay"
       ],
-      "path": "/games/baba/index.html"
+      "path": "/games/baba/index.html",
+      "type": "local"
     },
     {
       "id": "bdsjm",
@@ -35,7 +36,8 @@
         "Fun animation effects",
         "Score recording system"
       ],
-      "path": "/games/bdsjm/index.html"
+      "path": "/games/bdsjm/index.html",
+      "type": "local"
     },
     {
       "id": "baozi",
@@ -50,7 +52,8 @@
         "Timed challenge mode",
         "Score ranking system"
       ],
-      "path": "/games/baozi/index.html"
+      "path": "/games/baozi/index.html",
+      "type": "local"
     },
     {
       "id": "bttz",
@@ -72,7 +75,8 @@
         "Timed challenge mode",
         "Score tracking system"
       ],
-      "path": "/games/bttz/index.html"
+      "path": "/games/bttz/index.html",
+      "type": "local"
     },
     {
       "id": "bunengsi",
@@ -90,7 +94,28 @@
       "difficulty": "Medium",
       "estimatedPlayTime": "3-10 minutes",
       "controls": "Use arrow keys or WASD to move and avoid obstacles. Stay alive as long as possible!",
-      "path": "/games/bunengsi/index.html"
+      "path": "/games/bunengsi/index.html",
+      "type": "local",
+      "image": "/images/thumbnails/bunengsi.svg"
+    },
+    {
+      "id": "cdd",
+      "title": "Dot Eater",
+      "category": "Arcade",
+      "description": "A classic Pac-Man style arcade game where you navigate through mazes, collect dots, and avoid enemies. Test your reflexes and strategy skills!",
+      "controls": "Use arrow keys or WASD keys to move your character. Collect all dots while avoiding enemies to advance to the next level.",
+      "image": "/images/thumbnails/cdd.png",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Classic arcade gameplay",
+        "Maze navigation challenges",
+        "Score tracking system",
+        "Progressive difficulty levels",
+        "Keyboard and touch controls"
+      ],
+      "path": "/games/cdd/index.html",
+      "type": "local"
     },
     {
       "id": "blglez",
@@ -105,7 +130,8 @@
         "Action-packed gameplay",
         "Multiple levels and challenges"
       ],
-      "path": "/games/blglez/index.html"
+      "path": "/games/blglez/index.html",
+      "type": "local"
     },
     {
       "id": "ceast",
@@ -123,7 +149,8 @@
         "Progressive difficulty",
         "Keyboard controls"
       ],
-      "path": "/games/ceast/index.html"
+      "path": "/games/ceast/index.html",
+      "type": "local"
     },
     {
       "id": "bsqpz2",
@@ -138,25 +165,37 @@
         "Multiple challenging levels",
         "Perfect for detail-oriented players"
       ],
-      "path": "/games/bsqpz2/index.html"
+      "path": "/games/bsqpz2/index.html",
+      "type": "local"
     },
     {
-      "id": "cdd",
-      "title": "Dot Eater",
+      "id": "pacman",
+      "title": "Pac-Man Style Game",
+      "description": "Classic Pac-Man style arcade game with dots, ghosts, and power pellets",
       "category": "Arcade",
-      "description": "A classic dot-eating arcade game where you navigate through mazes, collect dots, and avoid enemies. Test your reflexes and strategy skills!",
-      "controls": "Use arrow keys or WASD keys to move your character. Collect all dots while avoiding enemies to advance to the next level.",
-      "image": "/images/thumbnails/cdd.png",
+      "tags": [
+        "arcade",
+        "classic",
+        "retro",
+        "pacman"
+      ],
+      "difficulty": "medium",
+      "playTime": "5-15 minutes",
+      "controls": "Arrow keys to move",
+      "thumbnail": "thumbnail.png",
+      "featured": true,
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
-        "Classic arcade gameplay",
-        "Maze navigation challenges",
-        "Score tracking system",
-        "Progressive difficulty levels",
-        "Keyboard and touch controls"
+        "Classic Pac-Man gameplay mechanics",
+        "Multiple levels with increasing difficulty",
+        "Power pellets for temporary ghost vulnerability",
+        "Score tracking and lives system",
+        "Smooth keyboard controls"
       ],
-      "path": "/games/cdd/index.html"
+      "path": "/games/pacman/index.html",
+      "type": "local",
+      "image": "/games/pacman/thumbnail.png"
     },
     {
       "id": "bsqpz",
@@ -171,7 +210,8 @@
         "Multiple puzzle types",
         "Progressive difficulty"
       ],
-      "path": "/games/bsqpz/index.html"
+      "path": "/games/bsqpz/index.html",
+      "type": "local"
     },
     {
       "id": "ccgl",
@@ -188,7 +228,44 @@
         "Shareable results",
         "Relationship insights"
       ],
-      "path": "/games/ccgl/index.html"
+      "path": "/games/ccgl/index.html",
+      "type": "local"
+    },
+    {
+      "id": "snake-arena",
+      "title": "Snake Arena",
+      "description": "An exciting multiplayer snake game where you compete against other players in real-time. Grow your snake by eating food and avoid colliding with other snakes or walls.",
+      "category": "Action",
+      "tags": [
+        "multiplayer",
+        "snake",
+        "arcade",
+        "competitive",
+        "real-time"
+      ],
+      "thumbnail": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop&crop=center",
+      "rating": 4.5,
+      "players": "Multiplayer",
+      "difficulty": "Medium",
+      "controls": "Arrow Keys / WASD",
+      "source": "1games.io",
+      "iframe_url": "https://1games.io/game/snake-arena/",
+      "width": 1280,
+      "height": 720,
+      "featured": true,
+      "date_added": "2025-01-08",
+      "play_count": 0,
+      "author": "1games.io",
+      "version": "1.0.0",
+      "features": [
+        "Real-time multiplayer gameplay",
+        "Competitive snake mechanics",
+        "Smooth controls and responsive gameplay",
+        "Online leaderboards"
+      ],
+      "path": "/games/snake-arena/index.html",
+      "type": "iframe",
+      "image": "https://images.unsplash.com/photo-1511512578047-dfb367046420?w=400&h=300&fit=crop&crop=center"
     },
     {
       "id": "snake",
@@ -197,7 +274,8 @@
       "image": "/images/thumbnails/snake.svg",
       "description": "The classic Snake game where you control a snake to eat food and grow longer. Be careful not to hit the walls or yourself!",
       "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
-      "path": "/games/snake/index.html"
+      "path": "/games/snake/index.html",
+      "type": "local"
     },
     {
       "id": "space-shooter",
@@ -206,7 +284,8 @@
       "image": "/images/thumbnails/space-shooter.svg",
       "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
       "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles.",
-      "path": "/games/space-shooter/index.html"
+      "path": "/games/space-shooter/index.html",
+      "type": "local"
     },
     {
       "id": "bbjx",
@@ -222,7 +301,8 @@
         "Ranking mechanism",
         "Challenging gameplay"
       ],
-      "path": "/games/bbjx/index.html"
+      "path": "/games/bbjx/index.html",
+      "type": "local"
     },
     {
       "id": "tetris",
@@ -231,7 +311,8 @@
       "image": "/images/thumbnails/tetris.svg",
       "description": "The classic block-stacking puzzle game. Arrange falling blocks to create complete lines and prevent the blocks from stacking up to the top.",
       "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop.",
-      "path": "/games/tetris/index.html"
+      "path": "/games/tetris/index.html",
+      "type": "local"
     },
     {
       "id": "tower-defense",
@@ -248,43 +329,8 @@
         "10 waves of enemies with increasing difficulty",
         "Resource management system to allocate money for building towers"
       ],
-      "path": "/games/tower-defense/index.html"
-    },
-    {
-      "id": "pacman",
-      "title": "Pac-Man Style Game",
-      "category": "Arcade",
-      "description": "Classic Pac-Man style arcade game with dots, ghosts, and power pellets. Navigate through mazes while avoiding colorful ghosts!",
-      "controls": "Use arrow keys to move Pac-Man. Collect all dots to advance to next level. Eat power pellets to turn ghosts blue and gain bonus points.",
-      "image": "/images/thumbnails/pacman.svg",
-      "author": "LightGame Team",
-      "version": "1.0.0",
-      "features": [
-        "Classic Pac-Man gameplay mechanics",
-        "Multiple levels with increasing difficulty",
-        "Power pellets for temporary ghost vulnerability",
-        "Score tracking and lives system",
-        "Smooth keyboard controls"
-      ],
-      "path": "/games/pacman/index.html"
-    },
-    {
-      "id": "snake-arena",
-      "title": "Snake Arena",
-      "category": "Action",
-      "description": "An exciting multiplayer snake game where you compete against other players in real-time. Grow your snake by eating food and avoid colliding with other snakes or walls.",
-      "controls": "Use arrow keys or WASD to move your snake. Eat food to grow longer while avoiding other snakes and walls.",
-      "image": "/images/thumbnails/snake-arena.svg",
-      "cover": "/images/covers/snake-arena.svg",
-      "author": "1games.io",
-      "version": "1.0.0",
-      "features": [
-        "Real-time multiplayer gameplay",
-        "Competitive snake mechanics",
-        "Smooth controls and responsive gameplay",
-        "Online leaderboards"
-      ],
-      "path": "/games/snake-arena/index.html"
+      "path": "/games/tower-defense/index.html",
+      "type": "local"
     }
   ]
 }
