@@ -1,0 +1,14 @@
+{
+  "id": "cjrst",
+  "title": "Super Chromosome",
+  "description": "A step-based puzzle where you arrange and color cells to complete levels in the fewest moves.",
+  "category": "Puzzle",
+  "tags": ["puzzle", "logic", "casual"],
+  "controls": "touch",
+  "author": null,
+  "version": "1.0.0",
+  "thumbnail": "icon.png",
+  "image": "icon.png",
+  "path": "index.html",
+  "date_added": "2025-08-19"
+}

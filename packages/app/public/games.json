@@ -305,6 +305,25 @@
       "type": "local"
     },
     {
+      "id": "cjrst",
+      "title": "Super Chromosome",
+      "description": "A step-based puzzle where you arrange and color cells to complete levels in the fewest moves.",
+      "category": "Puzzle",
+      "tags": [
+        "puzzle",
+        "logic",
+        "casual"
+      ],
+      "controls": "touch",
+      "author": null,
+      "version": "1.0.0",
+      "thumbnail": "icon.png",
+      "image": "/games/cjrst/icon.png",
+      "path": "/games/cjrst/index.html",
+      "date_added": "2025-08-19",
+      "type": "local"
+    },
+    {
       "id": "tetris",
       "title": "Tetris",
       "category": "Puzzle",
