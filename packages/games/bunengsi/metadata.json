@@ -4,7 +4,7 @@
   "description": "A thrilling survival game where you must avoid obstacles and stay alive as long as possible. Test your reflexes and endurance!",
   "category": "Action",
   "tags": ["survival", "reflex", "challenge"],
-  "thumbnail": "/images/thumbnails/bunengsi.svg",
+  "thumbnail": "/games/bunengsi/bunengsi.svg",
   "playUrl": "index.html",
   "featured": false,
   "difficulty": "Medium",

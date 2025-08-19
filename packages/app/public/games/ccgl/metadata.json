@@ -4,7 +4,7 @@
   "category": "Quiz",
   "description": "A fun personality quiz that tests your loyalty in relationships. Answer questions honestly to discover your relationship tendencies and commitment level.",
   "controls": "Click on answer choices to progress through the quiz. Share your results with friends to compare scores.",
-  "image": "/images/thumbnails/ccgl.jpg",
+  "image": "/games/ccgl/ccgl.jpg",
   "author": "LightGame Team",
   "version": "1.0.0",
   "features": [
@@ -15,3 +15,4 @@
   ],
   "path": "/games/ccgl/index.html"
 }
+

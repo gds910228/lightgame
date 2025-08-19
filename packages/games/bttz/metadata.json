@@ -5,7 +5,7 @@
   "category": "Casual",
   "controls": "Click the button to play. Try to complete as many challenges as possible within the time limit",
   "tags": ["casual", "cute", "bunny"],
-  "image": "/images/thumbnails/bttz.svg",
+  "image": "/games/bttz/bttz.svg",
   "author": "LightGame Team",
   "version": "1.0.0",
   "features": [
@@ -16,3 +16,4 @@
   ],
   "path": "/games/bttz/index.html"
 }
+
