@@ -10,8 +10,8 @@
       ],
       "description": "A fun casual game where you mark places you've visited. Explore different locations and collect achievements!",
       "controls": "Use mouse or touch to interact with the game interface. Click on locations to mark them as visited.",
-      "image": "/games/baba/baba.svg",
-      "cover": "/games/baba/baba.svg",
+      "image": "/games/baba/icon.png",
+      "cover": "/games/baba/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -66,7 +66,7 @@
         "cute",
         "bunny"
       ],
-      "image": "/games/bttz/bttz.svg",
+      "image": "/games/bttz/share.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -76,6 +76,7 @@
         "Score tracking system"
       ],
       "path": "/games/bttz/index.html",
+      "thumbnail": "share.png",
       "type": "local"
     },
     {
@@ -88,15 +89,15 @@
         "reflex",
         "challenge"
       ],
-      "thumbnail": "/games/bunengsi/bunengsi.svg",
+      "thumbnail": "460.jpg",
       "playUrl": "index.html",
       "featured": false,
       "difficulty": "Medium",
       "estimatedPlayTime": "3-10 minutes",
       "controls": "Use arrow keys or WASD to move and avoid obstacles. Stay alive as long as possible!",
+      "image": "/games/bunengsi/460.jpg",
       "path": "/games/bunengsi/index.html",
-      "type": "local",
-      "image": "/games/bunengsi/bunengsi.svg"
+      "type": "local"
     },
     {
       "id": "cdd",
@@ -104,7 +105,7 @@
       "category": "Arcade",
       "description": "A classic Pac-Man style arcade game where you navigate through mazes, collect dots, and avoid enemies. Test your reflexes and strategy skills!",
       "controls": "Use arrow keys or WASD keys to move your character. Collect all dots while avoiding enemies to advance to the next level.",
-      "image": "/games/cdd/cdd.png",
+      "image": "/games/cdd/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -115,6 +116,7 @@
         "Keyboard and touch controls"
       ],
       "path": "/games/cdd/index.html",
+      "thumbnail": "icon.png",
       "type": "local"
     },
     {
@@ -139,7 +141,7 @@
       "category": "Action",
       "description": "Navigate your spacecraft through space and land safely on the moon! Control thrust and direction to achieve perfect landings while managing your fuel supply.",
       "controls": "Use Arrow Keys or WASD to control your spacecraft. UP/W for thrust, LEFT/A and RIGHT/D to steer. Land gently on the green landing pads to score points!",
-      "image": "/games/ceast/ceast.png",
+      "image": "/games/ceast/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -150,6 +152,7 @@
         "Keyboard controls"
       ],
       "path": "/games/ceast/index.html",
+      "thumbnail": "icon.png",
       "type": "local"
     },
     {
@@ -219,7 +222,7 @@
       "category": "Quiz",
       "description": "A fun personality quiz that tests your loyalty in relationships. Answer questions honestly to discover your relationship tendencies and commitment level.",
       "controls": "Click on answer choices to progress through the quiz. Share your results with friends to compare scores.",
-      "image": "/games/ccgl/ccgl.jpg",
+      "image": "/games/ccgl/cggl.jpg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -229,6 +232,7 @@
         "Relationship insights"
       ],
       "path": "/games/ccgl/index.html",
+      "thumbnail": "cggl.jpg",
       "type": "local"
     },
     {
@@ -271,9 +275,10 @@
       "id": "snake",
       "title": "Snake Game",
       "category": "Arcade",
-      "image": "/games/snake/snake.svg",
+      "image": "/games/snake/thumbnail.png",
       "description": "The classic Snake game where you control a snake to eat food and grow longer. Be careful not to hit the walls or yourself!",
       "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
+      "thumbnail": "thumbnail.png",
       "path": "/games/snake/index.html",
       "type": "local"
     },
@@ -281,9 +286,10 @@
       "id": "space-shooter",
       "title": "Space Shooter",
       "category": "Action",
-      "image": "/games/space-shooter/space-shooter.svg",
+      "image": "/games/space-shooter/thumbnail.png",
       "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
       "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles.",
+      "thumbnail": "thumbnail.png",
       "path": "/games/space-shooter/index.html",
       "type": "local"
     },
@@ -327,9 +333,10 @@
       "id": "tetris",
       "title": "Tetris",
       "category": "Puzzle",
-      "image": "/games/tetris/tetris.svg",
+      "image": "/games/tetris/thumbnail.svg",
       "description": "The classic block-stacking puzzle game. Arrange falling blocks to create complete lines and prevent the blocks from stacking up to the top.",
       "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop.",
+      "thumbnail": "thumbnail.svg",
       "path": "/games/tetris/index.html",
       "type": "local"
     },
@@ -339,7 +346,7 @@
       "category": "Strategy",
       "description": "Classic tower defense game where you build defensive towers to prevent enemy invasion. Plan your resources wisely and survive 10 waves of enemies!",
       "controls": "Click to select tower type, then click on the map to place it. Basic Tower ($50): Normal attack; Cannon Tower ($100): High damage; Ice Tower ($150): Slows enemies.",
-      "image": "/games/tower-defense/tower-defense.svg",
+      "image": "/games/tower-defense/thumbnail.svg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -348,6 +355,7 @@
         "10 waves of enemies with increasing difficulty",
         "Resource management system to allocate money for building towers"
       ],
+      "thumbnail": "thumbnail.svg",
       "path": "/games/tower-defense/index.html",
       "type": "local"
     }

@@ -1,19 +1,19 @@
 {
-  "id": "ceast",
-  "title": "Moon Landing Challenge",
-  "category": "Action",
-  "description": "Navigate your spacecraft through space and land safely on the moon! Control thrust and direction to achieve perfect landings while managing your fuel supply.",
-  "controls": "Use Arrow Keys or WASD to control your spacecraft. UP/W for thrust, LEFT/A and RIGHT/D to steer. Land gently on the green landing pads to score points!",
-  "image": "/games/ceast/ceast.png",
-  "author": "LightGame Team",
-  "version": "1.0.0",
-  "features": [
-    "Realistic physics simulation",
-    "Multiple landing zones with different point values",
-    "Fuel management system",
-    "Progressive difficulty",
-    "Keyboard controls"
-  ],
-  "path": "/games/ceast/index.html"
+    "id":  "ceast",
+    "title":  "Moon Landing Challenge",
+    "category":  "Action",
+    "description":  "Navigate your spacecraft through space and land safely on the moon! Control thrust and direction to achieve perfect landings while managing your fuel supply.",
+    "controls":  "Use Arrow Keys or WASD to control your spacecraft. UP/W for thrust, LEFT/A and RIGHT/D to steer. Land gently on the green landing pads to score points!",
+    "image":  "icon.png",
+    "author":  "LightGame Team",
+    "version":  "1.0.0",
+    "features":  [
+                     "Realistic physics simulation",
+                     "Multiple landing zones with different point values",
+                     "Fuel management system",
+                     "Progressive difficulty",
+                     "Keyboard controls"
+                 ],
+    "path":  "/games/ceast/index.html",
+    "thumbnail":  "icon.png"
 }
-
