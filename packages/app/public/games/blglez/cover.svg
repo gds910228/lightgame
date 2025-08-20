@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="45%" r="70%">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </radialGradient>
+    <linearGradient id="flame" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ef4444"/>
+      <stop offset="1" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#flame)" opacity="0.10"/>
+  <g transform="translate(250,120)" fill="url(#flame)">
+    <path d="M0,300 C120,200 260,120 380,160 C500,200 580,340 700,320 L700,380 L0,380 Z" opacity="0.35"/>
+  </g>
+  <g transform="translate(660,210)" fill="#e5e7eb">
+    <path d="M0,60 C20,40 40,20 80,0 C120,20 160,40 180,80 C160,120 120,140 80,160 C40,140 20,120 0,100 Z" opacity="0.9"/>
+    <circle cx="170" cy="75" r="6" fill="#0b0f17"/>
+  </g>
+  <g transform="translate(28,24)">
+    <rect x="0" y="0" rx="12" ry="12" width="150" height="40" fill="#ef4444" fill-opacity="0.18" stroke="#ef4444" stroke-opacity="0.35"/>
+    <text x="75" y="26" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="18" fill="#e5e7eb">Action</text>
+  </g>
+  <text x="600" y="568" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="46" fill="#e5e7eb">Dragon Rescue Mission</text>
+</svg>

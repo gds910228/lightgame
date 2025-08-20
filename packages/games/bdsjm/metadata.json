@@ -10,5 +10,7 @@
     "Simple and easy to play gameplay",
     "Fun animation effects",
     "Score recording system"
-  ]
-} 
+  ],
+  "image": "cover.svg",
+  "thumbnail": "cover.svg"
+}

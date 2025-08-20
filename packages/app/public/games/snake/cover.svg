@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </radialGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22c55e"/>
+      <stop offset="1" stop-color="#16a34a"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g opacity="0.12" stroke="#22c55e" stroke-width="1">
+    <path d="M0,520 H1200 M0,440 H1200 M0,360 H1200 M0,280 H1200 M0,200 H1200 M0,120 H1200" />
+    <path d="M200,0 V630 M400,0 V630 M600,0 V630 M800,0 V630 M1000,0 V630" />
+  </g>
+  <path d="M160,460 C260,390 300,300 420,300 C540,300 560,420 660,420 C760,420 820,320 920,320 C1020,320 1060,360 1080,390"
+        fill="none" stroke="url(#acc)" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="1080" cy="220" r="14" fill="#ef4444"/>
+  <circle cx="1080" cy="220" r="5" fill="#fff" opacity="0.9"/>
+  <g transform="translate(28,24)">
+    <rect x="0" y="0" rx="12" ry="12" width="150" height="40" fill="#22c55e" fill-opacity="0.18" stroke="#22c55e" stroke-opacity="0.35"/>
+    <text x="75" y="26" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="18" fill="#e5e7eb">Arcade</text>
+  </g>
+  <text x="600" y="568" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="46" fill="#e5e7eb">Snake</text>
+</svg>

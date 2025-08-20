@@ -10,5 +10,7 @@
     "Engaging storyline",
     "Action-packed gameplay",
     "Multiple levels and challenges"
-  ]
+  ],
+  "image": "cover.svg",
+  "thumbnail": "cover.svg"
 }

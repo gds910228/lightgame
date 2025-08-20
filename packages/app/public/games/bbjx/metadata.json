@@ -11,5 +11,7 @@
     "Step counting system",
     "Ranking mechanism",
     "Challenging gameplay"
-  ]
-} 
+  ],
+  "image": "cover.svg",
+  "thumbnail": "cover.svg"
+}

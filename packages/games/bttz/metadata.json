@@ -1,23 +1,23 @@
 {
-    "id":  "bttz",
-    "title":  "Bunny Challenge",
-    "description":  "A cute bunny-themed casual game where you experience the adorable bunny world",
-    "category":  "Casual",
-    "controls":  "Click the button to play. Try to complete as many challenges as possible within the time limit",
-    "tags":  [
-                 "casual",
-                 "cute",
-                 "bunny"
-             ],
-    "image":  "share.png",
-    "author":  "LightGame Team",
-    "version":  "1.0.0",
-    "features":  [
-                     "Cute bunny theme",
-                     "Simple and easy controls",
-                     "Timed challenge mode",
-                     "Score tracking system"
-                 ],
-    "path":  "/games/bttz/index.html",
-    "thumbnail":  "share.png"
+  "id": "bttz",
+  "title": "Bunny Challenge",
+  "description": "A cute bunny-themed casual game where you experience the adorable bunny world",
+  "category": "Casual",
+  "controls": "Click the button to play. Try to complete as many challenges as possible within the time limit",
+  "tags": [
+    "casual",
+    "cute",
+    "bunny"
+  ],
+  "image": "cover.svg",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Cute bunny theme",
+    "Simple and easy controls",
+    "Timed challenge mode",
+    "Score tracking system"
+  ],
+  "path": "/games/bttz/index.html",
+  "thumbnail": "cover.svg"
 }

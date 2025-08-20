@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="40%" r="70%">
+      <stop offset="0" stop-color="#0f172a"/>
+      <stop offset="1" stop-color="#0b1220"/>
+    </radialGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <g transform="translate(300,140)">
+    <rect x="0" y="240" width="140" height="140" rx="12" fill="url(#bar)"/>
+    <rect x="160" y="180" width="140" height="200" rx="12" fill="url(#bar)" opacity="0.85"/>
+    <rect x="320" y="120" width="140" height="260" rx="12" fill="url(#bar)" opacity="0.7"/>
+    <rect x="480" y="60" width="140" height="320" rx="12" fill="url(#bar)" opacity="0.55"/>
+  </g>
+  <g transform="translate(28,24)">
+    <rect x="0" y="0" rx="12" ry="12" width="150" height="40" fill="#22d3ee" fill-opacity="0.18" stroke="#22d3ee" stroke-opacity="0.35"/>
+    <text x="75" y="26" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="18" fill="#e5e7eb">Puzzle</text>
+  </g>
+  <text x="600" y="568" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto" font-size="46" fill="#e5e7eb">Steps of Wonder</text>
+</svg>

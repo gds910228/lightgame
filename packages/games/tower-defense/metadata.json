@@ -1,17 +1,17 @@
 {
-    "id":  "tower-defense",
-    "title":  "Tower Defense",
-    "category":  "Strategy",
-    "description":  "Classic tower defense game where you build defensive towers to prevent enemy invasion. Plan your resources wisely and survive 10 waves of enemies!",
-    "controls":  "Click to select tower type, then click on the map to place it. Basic Tower ($50): Normal attack; Cannon Tower ($100): High damage; Ice Tower ($150): Slows enemies.",
-    "image":  "thumbnail.svg",
-    "author":  "LightGame Team",
-    "version":  "1.0.0",
-    "features":  [
-                     "Three different types of defense towers: Basic Tower, Cannon Tower, and Ice Tower",
-                     "Multiple enemy types including Normal, Fast, and Tank enemies",
-                     "10 waves of enemies with increasing difficulty",
-                     "Resource management system to allocate money for building towers"
-                 ],
-    "thumbnail":  "thumbnail.svg"
+  "id": "tower-defense",
+  "title": "Tower Defense",
+  "category": "Strategy",
+  "description": "Classic tower defense game where you build defensive towers to prevent enemy invasion. Plan your resources wisely and survive 10 waves of enemies!",
+  "controls": "Click to select tower type, then click on the map to place it. Basic Tower ($50): Normal attack; Cannon Tower ($100): High damage; Ice Tower ($150): Slows enemies.",
+  "image": "cover.svg",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Three different types of defense towers: Basic Tower, Cannon Tower, and Ice Tower",
+    "Multiple enemy types including Normal, Fast, and Tank enemies",
+    "10 waves of enemies with increasing difficulty",
+    "Resource management system to allocate money for building towers"
+  ],
+  "thumbnail": "cover.svg"
 }
