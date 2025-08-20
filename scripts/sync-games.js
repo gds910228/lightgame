@@ -29,6 +29,22 @@ function copyDirectory(src, dest) {
   }
 }
 
+function isLocalAsset(p) {
+  return typeof p === 'string' && !/^https?:\/\//i.test(p) && !p.startsWith('/');
+}
+
+function copyLocalAsset(srcBase, destBase, relPath) {
+  try {
+    const srcPath = path.join(srcBase, relPath);
+    if (!fs.existsSync(srcPath)) return;
+    const destPath = path.join(destBase, relPath);
+    ensureDir(path.dirname(destPath));
+    fs.copyFileSync(srcPath, destPath);
+  } catch (e) {
+    console.warn(`⚠️ Failed to copy asset "${relPath}": ${e.message}`);
+  }
+}
+
 function parseAspect(meta) {
   // priority: meta.aspectRatio "W:H" -> width/height -> default 16:9
   if (typeof meta.aspectRatio === 'string' && /^[0-9]+:[0-9]+$/.test(meta.aspectRatio)) {
@@ -152,6 +168,12 @@ async function processIframeGame(dirName, meta) {
     sandbox: meta.sandbox ? String(meta.sandbox) : ''
   }, ratio);
   await fsp.writeFile(path.join(destDir, 'index.html'), html, 'utf8');
+  // Also copy local cover assets (image/thumbnail/cover) if they are relative paths
+  const srcBase = path.join(sourceDir, dirName);
+  const assets = [meta.image, meta.thumbnail, meta.cover].filter(isLocalAsset);
+  for (const rel of assets) {
+    copyLocalAsset(srcBase, destDir, rel);
+  }
 }
 
 async function processLocalGame(dirName) {

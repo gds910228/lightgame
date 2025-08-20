@@ -21,7 +21,8 @@
         "Simple and intuitive gameplay"
       ],
       "path": "/games/baba/index.html",
-      "type": "local"
+      "type": "local",
+      "thumbnail": "icon.png"
     },
     {
       "id": "bdsjm",
@@ -37,7 +38,9 @@
         "Score recording system"
       ],
       "path": "/games/bdsjm/index.html",
-      "type": "local"
+      "type": "local",
+      "image": "/games/bdsjm/images/2000.png",
+      "thumbnail": "images/2000.png"
     },
     {
       "id": "baozi",
@@ -53,7 +56,9 @@
         "Score ranking system"
       ],
       "path": "/games/baozi/index.html",
-      "type": "local"
+      "type": "local",
+      "image": "/games/baozi/icon.png",
+      "thumbnail": "icon.png"
     },
     {
       "id": "bttz",
@@ -133,7 +138,9 @@
         "Multiple levels and challenges"
       ],
       "path": "/games/blglez/index.html",
-      "type": "local"
+      "type": "local",
+      "image": "/games/blglez/share.png",
+      "thumbnail": "share.png"
     },
     {
       "id": "ceast",
@@ -169,7 +176,9 @@
         "Perfect for detail-oriented players"
       ],
       "path": "/games/bsqpz2/index.html",
-      "type": "local"
+      "type": "local",
+      "image": "/games/bsqpz2/icon.png",
+      "thumbnail": "icon.png"
     },
     {
       "id": "pacman",
@@ -214,7 +223,9 @@
         "Progressive difficulty"
       ],
       "path": "/games/bsqpz/index.html",
-      "type": "local"
+      "type": "local",
+      "image": "/games/bsqpz/item0.jpg",
+      "thumbnail": "item0.jpg"
     },
     {
       "id": "ccgl",
@@ -286,10 +297,10 @@
       "id": "space-shooter",
       "title": "Space Shooter",
       "category": "Action",
-      "image": "/games/space-shooter/thumbnail.png",
+      "image": "/games/space-shooter/thumbnail.svg",
       "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
       "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles.",
-      "thumbnail": "thumbnail.png",
+      "thumbnail": "thumbnail.svg",
       "path": "/games/space-shooter/index.html",
       "type": "local"
     },
@@ -308,7 +319,9 @@
         "Challenging gameplay"
       ],
       "path": "/games/bbjx/index.html",
-      "type": "local"
+      "type": "local",
+      "image": "/games/bbjx/share.png",
+      "thumbnail": "share.png"
     },
     {
       "id": "cjrst",

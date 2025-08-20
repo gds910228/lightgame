@@ -58,6 +58,60 @@ function copyFolderRecursive(source, target) {
   }
 }
 
+function findCandidateImage(sourceRoot, gameDir) {
+  const dir = path.join(sourceRoot, gameDir);
+
+  const primary = [
+    'icon.png', 'icon.jpg', 'icon.jpeg', 'icon.svg',
+    'share.png', 'share.jpg', 'share.jpeg', 'share.svg',
+    'thumbnail.png', 'thumbnail.jpg', 'thumbnail.jpeg', 'thumbnail.svg',
+    `${gameDir}.png`, `${gameDir}.jpg`, `${gameDir}.jpeg`, `${gameDir}.svg`
+  ];
+
+  // 1) Try primary names at root
+  for (const name of primary) {
+    const p = path.join(dir, name);
+    if (fs.existsSync(p)) return name;
+  }
+
+  // 2) Try primary names in common subdirs
+  const subdirs = ['images', 'img', 'assets', 'res', 'resource'];
+  for (const sub of subdirs) {
+    for (const name of primary) {
+      const rel = path.join(sub, name);
+      const p = path.join(dir, rel);
+      if (fs.existsSync(p)) return rel.replace(/\\/g, '/');
+    }
+  }
+
+  // 3) Fallback: first image file in subdirs
+  const exts = ['.png', '.jpg', '.jpeg', '.svg', '.webp'];
+  for (const sub of subdirs) {
+    const subPath = path.join(dir, sub);
+    if (!fs.existsSync(subPath)) continue;
+    try {
+      const files = fs.readdirSync(subPath, { withFileTypes: true });
+      for (const f of files) {
+        if (f.isFile() && exts.some(ext => f.name.toLowerCase().endsWith(ext))) {
+          return path.join(sub, f.name).replace(/\\/g, '/');
+        }
+      }
+    } catch {}
+  }
+
+  // 4) Fallback: first image file in root
+  try {
+    const files = fs.readdirSync(dir, { withFileTypes: true });
+    for (const f of files) {
+      if (f.isFile() && exts.some(ext => f.name.toLowerCase().endsWith(ext))) {
+        return f.name;
+      }
+    }
+  } catch {}
+
+  return null;
+}
+
 /**
  * Scans the metadata source directory and builds a list of all games with their metadata
  */
@@ -110,14 +164,54 @@ function buildGamesList() {
             return `/games/${gameDir}/${p}`;
           };
 
-          // image fallback to thumbnail if absent
+          // image normalize with robust fallback
+          const candidate = (!metadata.image && !metadata.thumbnail)
+            ? findCandidateImage(METADATA_SOURCE_DIR, gameDir)
+            : null;
+
           if (!metadata.image && metadata.thumbnail) {
             metadata.image = normalizeAsset(metadata.thumbnail);
+          } else if (!metadata.image && candidate) {
+            metadata.image = normalizeAsset(candidate);
           } else if (metadata.image) {
             metadata.image = normalizeAsset(metadata.image);
           }
+
+          // ensure thumbnail if missing and image points within /games/{slug}/
+          if (!metadata.thumbnail && metadata.image && metadata.image.startsWith(`/games/${gameDir}/`)) {
+            metadata.thumbnail = metadata.image.replace(`/games/${gameDir}/`, '');
+          }
+
           if (metadata.cover) {
             metadata.cover = normalizeAsset(metadata.cover);
+          }
+
+          // verify existence and fallback if missing
+          const existsRel = (rel) => {
+            try { return fs.existsSync(path.join(METADATA_SOURCE_DIR, gameDir, rel)); } catch { return false; }
+          };
+
+          // fix image pointing to non-existent source file
+          if (metadata.image && metadata.image.startsWith(`/games/${gameDir}/`)) {
+            const rel = metadata.image.slice((`/games/${gameDir}/`).length);
+            if (!existsRel(rel)) {
+              const alt = findCandidateImage(METADATA_SOURCE_DIR, gameDir);
+              if (alt) {
+                metadata.image = normalizeAsset(alt);
+                if (!metadata.thumbnail) metadata.thumbnail = alt;
+              }
+            }
+          }
+
+          // fix thumbnail missing file
+          if (metadata.thumbnail && !existsRel(metadata.thumbnail)) {
+            const alt = findCandidateImage(METADATA_SOURCE_DIR, gameDir);
+            if (alt) {
+              metadata.thumbnail = alt;
+              if (!metadata.image || metadata.image.startsWith(`/games/${gameDir}/`)) {
+                metadata.image = normalizeAsset(alt);
+              }
+            }
           }
 
           // Add to games list
