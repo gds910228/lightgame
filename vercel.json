@@ -4,8 +4,14 @@
   "installCommand": "npm install",
   "framework": "vite",
   "rewrites": [
-    { "source": "/games/:path*", "destination": "/games/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/games/:path*",
+      "destination": "/games/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
@@ -45,22 +51,33 @@
           "value": "SAMEORIGIN"
         }
       ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/xml; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=600"
+        }
+      ]
+    },
+    {
+      "source": "/robots.txt",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "text/plain; charset=utf-8"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=600"
+        }
+      ]
     }
-  ],
-  {
-    "source": "/sitemap.xml",
-    "headers": [
-      { "key": "Content-Type", "value": "application/xml; charset=utf-8" },
-      { "key": "Cache-Control", "value": "public, max-age=600" }
-    ]
-  },
-  {
-    "source": "/robots.txt",
-    "headers": [
-      { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
-      { "key": "Cache-Control", "value": "public, max-age=600" }
-    ]
-  }
   ],
   "trailingSlash": false
 }
