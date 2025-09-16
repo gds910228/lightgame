@@ -1,5 +1,5 @@
 {
-    "id":  "pacman",
+    "id":  "pacman-classic",
     "title":  "Pac-Man Style Game",
     "description":  "Classic Pac-Man style arcade game with dots, ghosts, and power pellets",
     "category":  "Arcade",

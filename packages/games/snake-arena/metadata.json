@@ -1,5 +1,5 @@
 {
-    "id":  "snake-arena",
+    "id":  "snake-arena-multiplayer",
     "title":  "Snake Arena",
     "description":  "An exciting multiplayer snake game where you compete against other players in real-time. Grow your snake by eating food and avoid colliding with other snakes or walls.",
     "category":  "Action",
