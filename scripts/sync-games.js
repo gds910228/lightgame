@@ -176,9 +176,10 @@ async function processIframeGame(dirName, meta) {
   }
 }
 
-async function processLocalGame(dirName) {
+async function processLocalGame(dirName, meta) {
+  const slug = meta.id || dirName;
   const src = path.join(sourceDir, dirName);
-  const dest = path.join(targetDir, dirName);
+  const dest = path.join(targetDir, slug);
   copyDirectory(src, dest);
 }
 
@@ -218,7 +219,7 @@ async function syncGames() {
           wrapped++;
           console.log(`🧩 Wrapped iframe game: ${meta.id || dirName}`);
         } else {
-          await processLocalGame(dirName);
+          await processLocalGame(dirName, meta);
           copied++;
           console.log(`📦 Copied local game: ${meta.id || dirName}`);
         }
