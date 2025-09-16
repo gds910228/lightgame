@@ -1,7 +1,7 @@
 {
   "games": [
     {
-      "id": "baba",
+      "id": "geography-collection-game",
       "title": "Baba Game",
       "category": [
         "Casual",
@@ -10,8 +10,8 @@
       ],
       "description": "A fun casual game where you mark places you've visited. Explore different locations and collect achievements!",
       "controls": "Use mouse or touch to interact with the game interface. Click on locations to mark them as visited.",
-      "image": "/games/baba/icon.png",
-      "cover": "/games/baba/icon.png",
+      "image": "/games/geography-collection-game/icon.png",
+      "cover": "/games/geography-collection-game/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -20,12 +20,12 @@
         "Achievement tracking",
         "Simple and intuitive gameplay"
       ],
-      "path": "/games/baba/index.html",
+      "path": "/games/geography-collection-game/index.html",
       "type": "local",
       "thumbnail": "icon.png"
     },
     {
-      "id": "bdsjm",
+      "id": "beat-the-cat",
       "title": "Beat the Cat",
       "category": "Casual",
       "description": "Tired of seeing that neurotic cat all over your social feed? Now it's time to beat it! A fun casual game that tests your reaction speed and hand-eye coordination.",
@@ -37,13 +37,13 @@
         "Fun animation effects",
         "Score recording system"
       ],
-      "image": "/games/bdsjm/cover.svg",
+      "image": "/games/beat-the-cat/cover.svg",
       "thumbnail": "cover.svg",
-      "path": "/games/bdsjm/index.html",
+      "path": "/games/beat-the-cat/index.html",
       "type": "local"
     },
     {
-      "id": "baozi",
+      "id": "bun-eating-contest",
       "title": "Bun Eating Contest",
       "category": "Casual",
       "description": "A fun casual game where you see how many steamed buns you can eat in a limited time! Test your speed and reaction skills.",
@@ -55,13 +55,13 @@
         "Timed challenge mode",
         "Score ranking system"
       ],
-      "path": "/games/baozi/index.html",
+      "path": "/games/bun-eating-contest/index.html",
       "type": "local",
-      "image": "/games/baozi/icon.png",
+      "image": "/games/bun-eating-contest/icon.png",
       "thumbnail": "icon.png"
     },
     {
-      "id": "bttz",
+      "id": "bunny-challenge",
       "title": "Bunny Challenge",
       "description": "A cute bunny-themed casual game where you experience the adorable bunny world",
       "category": "Casual",
@@ -71,7 +71,7 @@
         "cute",
         "bunny"
       ],
-      "image": "/games/bttz/cover.svg",
+      "image": "/games/bunny-challenge/cover.svg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -80,12 +80,12 @@
         "Timed challenge mode",
         "Score tracking system"
       ],
-      "path": "/games/bttz/index.html",
+      "path": "/games/bunny-challenge/index.html",
       "thumbnail": "cover.svg",
       "type": "local"
     },
     {
-      "id": "bunengsi",
+      "id": "dont-die-challenge",
       "title": "Don't Die Challenge",
       "description": "A thrilling survival game where you must avoid obstacles and stay alive as long as possible. Test your reflexes and endurance!",
       "category": "Action",
@@ -100,17 +100,17 @@
       "difficulty": "Medium",
       "estimatedPlayTime": "3-10 minutes",
       "controls": "Use arrow keys or WASD to move and avoid obstacles. Stay alive as long as possible!",
-      "image": "/games/bunengsi/460.jpg",
-      "path": "/games/bunengsi/index.html",
+      "image": "/games/dont-die-challenge/460.jpg",
+      "path": "/games/dont-die-challenge/index.html",
       "type": "local"
     },
     {
-      "id": "cdd",
+      "id": "dot-eater-arcade",
       "title": "Dot Eater",
       "category": "Arcade",
       "description": "A classic Pac-Man style arcade game where you navigate through mazes, collect dots, and avoid enemies. Test your reflexes and strategy skills!",
       "controls": "Use arrow keys or WASD keys to move your character. Collect all dots while avoiding enemies to advance to the next level.",
-      "image": "/games/cdd/icon.png",
+      "image": "/games/dot-eater-arcade/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -120,12 +120,12 @@
         "Progressive difficulty levels",
         "Keyboard and touch controls"
       ],
-      "path": "/games/cdd/index.html",
+      "path": "/games/dot-eater-arcade/index.html",
       "thumbnail": "icon.png",
       "type": "local"
     },
     {
-      "id": "blglez",
+      "id": "dragon-rescue-mission",
       "title": "Dragon Rescue Mission",
       "category": "Action",
       "description": "Help the dragon rescue his son in this exciting action-adventure game. Navigate through challenges and obstacles to complete your mission!",
@@ -137,18 +137,18 @@
         "Action-packed gameplay",
         "Multiple levels and challenges"
       ],
-      "image": "/games/blglez/cover.svg",
+      "image": "/games/dragon-rescue-mission/cover.svg",
       "thumbnail": "cover.svg",
-      "path": "/games/blglez/index.html",
+      "path": "/games/dragon-rescue-mission/index.html",
       "type": "local"
     },
     {
-      "id": "ceast",
+      "id": "moon-landing-challenge",
       "title": "Moon Landing Challenge",
       "category": "Action",
       "description": "Navigate your spacecraft through space and land safely on the moon! Control thrust and direction to achieve perfect landings while managing your fuel supply.",
       "controls": "Use Arrow Keys or WASD to control your spacecraft. UP/W for thrust, LEFT/A and RIGHT/D to steer. Land gently on the green landing pads to score points!",
-      "image": "/games/ceast/icon.png",
+      "image": "/games/moon-landing-challenge/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -158,12 +158,12 @@
         "Progressive difficulty",
         "Keyboard controls"
       ],
-      "path": "/games/ceast/index.html",
+      "path": "/games/moon-landing-challenge/index.html",
       "thumbnail": "icon.png",
       "type": "local"
     },
     {
-      "id": "bsqpz2",
+      "id": "ocd-challenge-2",
       "title": "OCD Challenge 2",
       "category": "Puzzle",
       "description": "A challenging puzzle game that tests your attention to detail and perfectionist tendencies. Clear all the notifications and organize everything perfectly!",
@@ -175,13 +175,13 @@
         "Multiple challenging levels",
         "Perfect for detail-oriented players"
       ],
-      "path": "/games/bsqpz2/index.html",
+      "path": "/games/ocd-challenge-2/index.html",
       "type": "local",
-      "image": "/games/bsqpz2/icon.png",
+      "image": "/games/ocd-challenge-2/icon.png",
       "thumbnail": "icon.png"
     },
     {
-      "id": "pacman",
+      "id": "pacman-classic",
       "title": "Pac-Man Style Game",
       "description": "Classic Pac-Man style arcade game with dots, ghosts, and power pellets",
       "category": "Arcade",
@@ -205,12 +205,12 @@
         "Score tracking and lives system",
         "Smooth keyboard controls"
       ],
-      "path": "/games/pacman/index.html",
-      "image": "/games/pacman/pacman.svg",
+      "path": "/games/pacman-classic/index.html",
+      "image": "/games/pacman-classic/pacman.svg",
       "type": "local"
     },
     {
-      "id": "bsqpz",
+      "id": "picture-puzzle-challenge",
       "title": "Picture Puzzle Challenge",
       "category": "Puzzle",
       "description": "A visual puzzle game featuring beautiful images. Solve puzzles by arranging pieces correctly and test your problem-solving skills!",
@@ -222,18 +222,18 @@
         "Multiple puzzle types",
         "Progressive difficulty"
       ],
-      "path": "/games/bsqpz/index.html",
+      "path": "/games/picture-puzzle-challenge/index.html",
       "type": "local",
-      "image": "/games/bsqpz/item0.jpg",
+      "image": "/games/picture-puzzle-challenge/item0.jpg",
       "thumbnail": "item0.jpg"
     },
     {
-      "id": "ccgl",
+      "id": "relationship-loyalty-test",
       "title": "Relationship Loyalty Test",
       "category": "Quiz",
       "description": "A fun personality quiz that tests your loyalty in relationships. Answer questions honestly to discover your relationship tendencies and commitment level.",
       "controls": "Click on answer choices to progress through the quiz. Share your results with friends to compare scores.",
-      "image": "/games/ccgl/cggl.jpg",
+      "image": "/games/relationship-loyalty-test/cggl.jpg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -242,12 +242,12 @@
         "Shareable results",
         "Relationship insights"
       ],
-      "path": "/games/ccgl/index.html",
+      "path": "/games/relationship-loyalty-test/index.html",
       "thumbnail": "cggl.jpg",
       "type": "local"
     },
     {
-      "id": "snake-arena",
+      "id": "snake-arena-multiplayer",
       "title": "Snake Arena",
       "description": "An exciting multiplayer snake game where you compete against other players in real-time. Grow your snake by eating food and avoid colliding with other snakes or walls.",
       "category": "Action",
@@ -278,34 +278,34 @@
         "Smooth controls and responsive gameplay",
         "Online leaderboards"
       ],
-      "path": "/games/snake-arena/index.html",
-      "image": "/games/snake-arena/snake-arena.svg",
+      "path": "/games/snake-arena-multiplayer/index.html",
+      "image": "/games/snake-arena-multiplayer/snake-arena.svg",
       "type": "iframe"
     },
     {
-      "id": "snake",
+      "id": "snake-classic",
       "title": "Snake Game",
       "category": "Arcade",
-      "image": "/games/snake/cover.svg",
+      "image": "/games/snake-classic/cover.svg",
       "description": "The classic Snake game where you control a snake to eat food and grow longer. Be careful not to hit the walls or yourself!",
       "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
       "thumbnail": "cover.svg",
-      "path": "/games/snake/index.html",
+      "path": "/games/snake-classic/index.html",
       "type": "local"
     },
     {
-      "id": "space-shooter",
+      "id": "space-shooter-game",
       "title": "Space Shooter",
       "category": "Action",
-      "image": "/games/space-shooter/thumbnail.svg",
+      "image": "/games/space-shooter-game/thumbnail.svg",
       "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
       "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles.",
       "thumbnail": "thumbnail.svg",
-      "path": "/games/space-shooter/index.html",
+      "path": "/games/space-shooter-game/index.html",
       "type": "local"
     },
     {
-      "id": "bbjx",
+      "id": "steps-of-wonder-puzzle",
       "title": "Steps of Wonder",
       "category": "Puzzle",
       "description": "A challenging puzzle game that tests your intelligence and strategy. Push your thinking to the limit. Every step matters in this thrilling brain teaser!",
@@ -318,13 +318,13 @@
         "Ranking mechanism",
         "Challenging gameplay"
       ],
-      "image": "/games/bbjx/cover.svg",
+      "image": "/games/steps-of-wonder-puzzle/cover.svg",
       "thumbnail": "cover.svg",
-      "path": "/games/bbjx/index.html",
+      "path": "/games/steps-of-wonder-puzzle/index.html",
       "type": "local"
     },
     {
-      "id": "cjrst",
+      "id": "super-chromosome-puzzle",
       "title": "Super Chromosome",
       "description": "A step-based puzzle where you arrange and color cells to complete levels in the fewest moves.",
       "category": "Puzzle",
@@ -337,29 +337,29 @@
       "author": null,
       "version": "1.0.0",
       "thumbnail": "icon.png",
-      "image": "/games/cjrst/icon.png",
-      "path": "/games/cjrst/index.html",
+      "image": "/games/super-chromosome-puzzle/icon.png",
+      "path": "/games/super-chromosome-puzzle/index.html",
       "date_added": "2025-08-19",
       "type": "local"
     },
     {
-      "id": "tetris",
+      "id": "tetris-classic",
       "title": "Tetris",
       "category": "Puzzle",
-      "image": "/games/tetris/cover.svg",
+      "image": "/games/tetris-classic/cover.svg",
       "description": "The classic block-stacking puzzle game. Arrange falling blocks to create complete lines and prevent the blocks from stacking up to the top.",
       "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop.",
       "thumbnail": "cover.svg",
-      "path": "/games/tetris/index.html",
+      "path": "/games/tetris-classic/index.html",
       "type": "local"
     },
     {
-      "id": "tower-defense",
+      "id": "tower-defense-strategy",
       "title": "Tower Defense",
       "category": "Strategy",
       "description": "Classic tower defense game where you build defensive towers to prevent enemy invasion. Plan your resources wisely and survive 10 waves of enemies!",
       "controls": "Click to select tower type, then click on the map to place it. Basic Tower ($50): Normal attack; Cannon Tower ($100): High damage; Ice Tower ($150): Slows enemies.",
-      "image": "/games/tower-defense/cover.svg",
+      "image": "/games/tower-defense-strategy/cover.svg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -369,7 +369,7 @@
         "Resource management system to allocate money for building towers"
       ],
       "thumbnail": "cover.svg",
-      "path": "/games/tower-defense/index.html",
+      "path": "/games/tower-defense-strategy/index.html",
       "type": "local"
     }
   ]
