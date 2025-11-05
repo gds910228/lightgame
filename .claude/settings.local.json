@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree -L 3 -I 'node_modules|dist' .)",
+      "Bash(npm run validate:games)",
+      "Bash(npm run sync-games)",
+      "Bash(npm run build:games:list)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

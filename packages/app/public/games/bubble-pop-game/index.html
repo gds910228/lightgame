@@ -1,0 +1,152 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+
+	<title>Bubble Pop Game</title>
+
+    <meta name="keywords" content="games, online games, mobile games, html5 games" />
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <link rel="stylesheet" href="css/pop.css" />
+
+    <script src="js/Stats.js"></script>
+    <script src="js/buzz.js"></script>
+
+    <style type="text/css">
+    iframe {position: absolute; bottom: 0; left: center; }
+    </style>
+
+	<link rel="shortcut icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<link type="text/css" href="css/common.css" rel="stylesheet" />
+<script type="text/javascript" src="js/zepto.min.js"></script>
+<script src="js/common.js?v=1"></script>
+
+
+</head>
+
+<body>
+
+<div id="SF_Game">
+    <canvas></canvas>
+    <div id="textLayer">
+        <p>
+           Share Your Score!
+        </p>
+    </div>
+    <div id="inputBox">
+		<a href="#" id="playAgain">
+			Play Again
+		</a>
+		<a href="#" id="shareGame">
+			Share Score
+		</a>
+    </div>
+		<input id="bt-game-id" type="hidden" value="bubble-pop-game">
+
+
+</div>
+
+<script src="js/pop.base.js"></script>
+<script src="js/pop.ua.js"></script>
+<script src="js/pop.input.js"></script>
+<script src="js/pop.scoreboard.js"></script>
+<script src="js/pop.draw.js"></script>
+<script src="js/pop.collision.js"></script>
+<script src="js/pop.form.js"></script>
+<script src="js/pop.explosion.js"></script>
+<script src="js/pop.bubble.js"></script>
+<script src="js/pop.touch.js"></script>
+<script src="js/pop.starfish.js"></script>
+<script src="js/pop.router.js"></script>
+<script src="js/pop.init.js"></script>
+
+<script type="text/javascript">
+    // Initialize game data immediately
+    window.myData = window.myData || { gameid: "bubble-pop-game" };
+    console.log('Initializing game data:', window.myData);
+
+    function SF_gameStart() {
+        if (!!document.createElement('canvas').getContext === false) {
+
+            document.writeln('<h1>Sorry, your browser does not support HTML5!</h1>');
+            document.writeln('<h2>Please change your browser to continue playing!</h2>');
+
+        }
+        else {
+            POP.init();
+        }
+    }
+
+	$(function(){
+		$("#playAgain").on("click", function(){
+			POP.againGame();
+		});
+		$("#shareGame").on("click", function(){
+			console.log('Share button clicked');
+			shareScore();
+		});
+		console.log('Event handlers attached, myData:', window.myData);
+	});
+	btGame.onlyVScreen(false, function(count){
+		if(count > 0){
+			location.reload();
+		}
+	});
+	btGame.resizePlayArea($("#SF_Game"), 320, 480, "center", "center");
+	$("#SF_Game").on("resizePlayArea", function(){
+		SF_gameStart();
+		SF_gameStart = function(){};
+	});
+
+	// Share function using parent window's Web Share API
+	function shareScore() {
+		console.log('shareScore called', window.myData);
+		if (!window.myData) {
+			window.myData = { gameid: "bubble-pop-game" };
+		}
+		if (window.myData.score !== undefined && window.myData.score > 0) {
+			console.log('Sending share message with score:', window.myData.score);
+			// Send message to parent window to handle sharing
+			if (window.parent && window.parent !== window) {
+				window.parent.postMessage({
+					type: 'SHARE_GAME',
+					data: { score: window.myData.score }
+				}, '*');
+				console.log('Message sent to parent');
+			} else {
+				console.log('No parent window found');
+			}
+		} else {
+			console.log('No valid score found:', window.myData.score);
+		}
+	}
+
+	// Submit score and trigger share dialog
+	function dp_submitScore(score){
+		console.log('dp_submitScore called with score:', score);
+		if (window.myData === undefined) {
+			window.myData = {};
+		}
+		window.myData.score = score;
+		window.myData.gameid = "bubble-pop-game";
+
+		console.log('myData updated:', window.myData);
+
+		// Auto-trigger share dialog after game ends
+		if(score > 0){
+			console.log('Auto-triggering share in 500ms');
+			setTimeout(function() {
+				shareScore();
+			}, 500);
+		}
+	}
+
+</script>
+</body>
+</html>

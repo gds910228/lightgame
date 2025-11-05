@@ -1,0 +1,11 @@
+{
+  "id": "bubble-pop-game",
+  "title": "Bubble Pop Game",
+  "category": "Puzzle",
+  "description": "Classic bubble shooter puzzle game. Match 3 or more bubbles of the same color to pop them and score points. Shoot bubbles strategically to clear the board in this addictive arcade-style game.",
+  "image": "icon.png",
+  "controls": "Click or tap to shoot bubbles. Match 3+ bubbles of the same color to pop them. Clear all bubbles to advance to the next level.",
+  "path": "/games/bubble-pop-game/index.html",
+  "type": "local",
+  "tags": ["bubble", "shooter", "puzzle", "arcade", "match3"]
+}
