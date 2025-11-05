@@ -150,7 +150,8 @@ function buildGamesList() {
           
           // Normalize fields and ensure compatibility
           // Unified path (wrapper for iframe or local index)
-          metadata.path = `/games/${gameDir}/index.html`;
+          const gameId = metadata.id || gameDir;
+          metadata.path = `/games/${gameId}/index.html`;
 
           // Detect type (iframe/local)
           metadata.type = (metadata.embedUrl || metadata.iframe_url) ? 'iframe' : 'local';
@@ -160,8 +161,8 @@ function buildGamesList() {
             if (!p) return p;
             if (/^https?:\/\//i.test(p)) return p;     // keep absolute URL
             if (p.startsWith('/')) return p;           // already absolute in site
-            if (p.startsWith('./')) return `/games/${gameDir}/${p.substring(2)}`;
-            return `/games/${gameDir}/${p}`;
+            if (p.startsWith('./')) return `/games/${gameId}/${p.substring(2)}`;
+            return `/games/${gameId}/${p}`;
           };
 
           // image normalize with robust fallback
@@ -178,8 +179,8 @@ function buildGamesList() {
           }
 
           // ensure thumbnail if missing and image points within /games/{slug}/
-          if (!metadata.thumbnail && metadata.image && metadata.image.startsWith(`/games/${gameDir}/`)) {
-            metadata.thumbnail = metadata.image.replace(`/games/${gameDir}/`, '');
+          if (!metadata.thumbnail && metadata.image && metadata.image.startsWith(`/games/${gameId}/`)) {
+            metadata.thumbnail = metadata.image.replace(`/games/${gameId}/`, '');
           }
 
           if (metadata.cover) {
@@ -192,8 +193,8 @@ function buildGamesList() {
           };
 
           // fix image pointing to non-existent source file
-          if (metadata.image && metadata.image.startsWith(`/games/${gameDir}/`)) {
-            const rel = metadata.image.slice((`/games/${gameDir}/`).length);
+          if (metadata.image && metadata.image.startsWith(`/games/${gameId}/`)) {
+            const rel = metadata.image.slice((`/games/${gameId}/`).length);
             if (!existsRel(rel)) {
               const alt = findCandidateImage(METADATA_SOURCE_DIR, gameDir);
               if (alt) {
@@ -208,7 +209,7 @@ function buildGamesList() {
             const alt = findCandidateImage(METADATA_SOURCE_DIR, gameDir);
             if (alt) {
               metadata.thumbnail = alt;
-              if (!metadata.image || metadata.image.startsWith(`/games/${gameDir}/`)) {
+              if (!metadata.image || metadata.image.startsWith(`/games/${gameId}/`)) {
                 metadata.image = normalizeAsset(alt);
               }
             }
