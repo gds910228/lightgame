@@ -67,6 +67,9 @@
 <script src="js/pop.init.js"></script>
 
 <script type="text/javascript">
+    // Initialize game data immediately
+    window.myData = window.myData || { gameid: "bubble-pop-game" };
+    console.log('Initializing game data:', window.myData);
 
     function SF_gameStart() {
         if (!!document.createElement('canvas').getContext === false) {
@@ -85,8 +88,10 @@
 			POP.againGame();
 		});
 		$("#shareGame").on("click", function(){
+			console.log('Share button clicked');
 			shareScore();
 		});
+		console.log('Event handlers attached, myData:', window.myData);
 	});
 	btGame.onlyVScreen(false, function(count){
 		if(count > 0){
@@ -101,26 +106,41 @@
 
 	// Share function using parent window's Web Share API
 	function shareScore() {
-		if (myData && myData.score !== undefined) {
+		console.log('shareScore called', window.myData);
+		if (!window.myData) {
+			window.myData = { gameid: "bubble-pop-game" };
+		}
+		if (window.myData.score !== undefined && window.myData.score > 0) {
+			console.log('Sending share message with score:', window.myData.score);
 			// Send message to parent window to handle sharing
 			if (window.parent && window.parent !== window) {
 				window.parent.postMessage({
 					type: 'SHARE_GAME',
-					data: { score: myData.score }
+					data: { score: window.myData.score }
 				}, '*');
+				console.log('Message sent to parent');
+			} else {
+				console.log('No parent window found');
 			}
+		} else {
+			console.log('No valid score found:', window.myData.score);
 		}
 	}
 
 	// Submit score and trigger share dialog
 	function dp_submitScore(score){
-		if (myData === undefined) {
+		console.log('dp_submitScore called with score:', score);
+		if (window.myData === undefined) {
 			window.myData = {};
 		}
-		myData.score = score;
+		window.myData.score = score;
+		window.myData.gameid = "bubble-pop-game";
+
+		console.log('myData updated:', window.myData);
 
 		// Auto-trigger share dialog after game ends
 		if(score > 0){
+			console.log('Auto-triggering share in 500ms');
 			setTimeout(function() {
 				shareScore();
 			}, 500);
