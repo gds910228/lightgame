@@ -41,6 +41,18 @@ Lightgame/
 └─ .github/workflows/            # CI 工作流
 ```
 
+## 源码 → 构建过程
+
+  packages/games/             (源码目录)
+        ↓
+  [构建脚本从这里读取]
+        ↓
+  packages/app/public/games/  (临时构建目录)
+        ↓
+  [最终打包]
+        ↓
+  packages/app/dist/games/    (部署产物)
+
 ## 本地开发
 
 ```bash

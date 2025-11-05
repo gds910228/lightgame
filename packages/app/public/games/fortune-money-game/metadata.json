@@ -1,0 +1,11 @@
+{
+  "id": "fortune-money-game",
+  "title": "Fortune Money Game",
+  "category": "Casual",
+  "description": "Help the god of prosperity collect money in this fun and engaging game! Tap the left and right arrows alternatively to collect your money before time runs out. Inspired by the Chinese god of prosperity, Cai Shen.",
+  "image": "logo.jpg",
+  "controls": "Click or tap the LEFT and RIGHT arrows alternatively to collect money. Time is limited, so be quick!",
+  "path": "/games/fortune-money-game/index.html",
+  "type": "local",
+  "tags": ["fortune", "money", "prosperity", "casual", "arcade", "chinese", "caishen"]
+}
