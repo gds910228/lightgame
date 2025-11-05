@@ -89,7 +89,7 @@
         "cute",
         "bunny"
       ],
-      "image": "/games/bunny-tower-jump/cover.svg",
+      "image": "/games/bunny-challenge/cover.svg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -98,7 +98,7 @@
         "Timed challenge mode",
         "Score tracking system"
       ],
-      "path": "/games/bunny-tower-jump/index.html",
+      "path": "/games/bunny-challenge/index.html",
       "thumbnail": "cover.svg",
       "type": "local"
     },
@@ -118,8 +118,8 @@
       "difficulty": "Medium",
       "estimatedPlayTime": "3-10 minutes",
       "controls": "Use arrow keys or WASD to move and avoid obstacles. Stay alive as long as possible!",
-      "image": "/games/immortal-warrior/460.jpg",
-      "path": "/games/immortal-warrior/index.html",
+      "image": "/games/dont-die-challenge/460.jpg",
+      "path": "/games/dont-die-challenge/index.html",
       "type": "local"
     },
     {
@@ -128,7 +128,7 @@
       "category": "Arcade",
       "description": "A classic Pac-Man style arcade game where you navigate through mazes, collect dots, and avoid enemies. Test your reflexes and strategy skills!",
       "controls": "Use arrow keys or WASD keys to move your character. Collect all dots while avoiding enemies to advance to the next level.",
-      "image": "/games/card-memory-match/icon.png",
+      "image": "/games/dot-eater-arcade/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -138,7 +138,7 @@
         "Progressive difficulty levels",
         "Keyboard and touch controls"
       ],
-      "path": "/games/card-memory-match/index.html",
+      "path": "/games/dot-eater-arcade/index.html",
       "thumbnail": "icon.png",
       "type": "local"
     },
@@ -155,9 +155,9 @@
         "Action-packed gameplay",
         "Multiple levels and challenges"
       ],
-      "image": "/games/glass-bridge-challenge/cover.svg",
+      "image": "/games/dragon-rescue-mission/cover.svg",
       "thumbnail": "cover.svg",
-      "path": "/games/glass-bridge-challenge/index.html",
+      "path": "/games/dragon-rescue-mission/index.html",
       "type": "local"
     },
     {
@@ -166,7 +166,7 @@
       "category": "Action",
       "description": "Navigate your spacecraft through space and land safely on the moon! Control thrust and direction to achieve perfect landings while managing your fuel supply.",
       "controls": "Use Arrow Keys or WASD to control your spacecraft. UP/W for thrust, LEFT/A and RIGHT/D to steer. Land gently on the green landing pads to score points!",
-      "image": "/games/eastern-adventure/icon.png",
+      "image": "/games/moon-landing-challenge/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -176,7 +176,7 @@
         "Progressive difficulty",
         "Keyboard controls"
       ],
-      "path": "/games/eastern-adventure/index.html",
+      "path": "/games/moon-landing-challenge/index.html",
       "thumbnail": "icon.png",
       "type": "local"
     },
@@ -193,9 +193,9 @@
         "Multiple challenging levels",
         "Perfect for detail-oriented players"
       ],
-      "path": "/games/bubble-shooter-puzzle-2/index.html",
+      "path": "/games/ocd-challenge-2/index.html",
       "type": "local",
-      "image": "/games/bubble-shooter-puzzle-2/icon.png",
+      "image": "/games/ocd-challenge-2/icon.png",
       "thumbnail": "icon.png"
     },
     {
@@ -223,8 +223,8 @@
         "Score tracking and lives system",
         "Smooth keyboard controls"
       ],
-      "path": "/games/pacman/index.html",
-      "image": "/games/pacman/pacman.svg",
+      "path": "/games/pacman-classic/index.html",
+      "image": "/games/pacman-classic/pacman.svg",
       "type": "local"
     },
     {
@@ -240,9 +240,9 @@
         "Multiple puzzle types",
         "Progressive difficulty"
       ],
-      "path": "/games/bubble-shooter-puzzle/index.html",
+      "path": "/games/picture-puzzle-challenge/index.html",
       "type": "local",
-      "image": "/games/bubble-shooter-puzzle/item0.jpg",
+      "image": "/games/picture-puzzle-challenge/item0.jpg",
       "thumbnail": "item0.jpg"
     },
     {
@@ -251,7 +251,7 @@
       "category": "Quiz",
       "description": "A fun personality quiz that tests your loyalty in relationships. Answer questions honestly to discover your relationship tendencies and commitment level.",
       "controls": "Click on answer choices to progress through the quiz. Share your results with friends to compare scores.",
-      "image": "/games/super-mario-adventure/cggl.jpg",
+      "image": "/games/relationship-loyalty-test/cggl.jpg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -260,7 +260,7 @@
         "Shareable results",
         "Relationship insights"
       ],
-      "path": "/games/super-mario-adventure/index.html",
+      "path": "/games/relationship-loyalty-test/index.html",
       "thumbnail": "cggl.jpg",
       "type": "local"
     },
@@ -296,30 +296,30 @@
         "Smooth controls and responsive gameplay",
         "Online leaderboards"
       ],
-      "path": "/games/snake-arena/index.html",
-      "image": "/games/snake-arena/snake-arena.svg",
+      "path": "/games/snake-arena-multiplayer/index.html",
+      "image": "/games/snake-arena-multiplayer/snake-arena.svg",
       "type": "iframe"
     },
     {
       "id": "snake-classic",
       "title": "Snake Game",
       "category": "Arcade",
-      "image": "/games/snake/cover.svg",
+      "image": "/games/snake-classic/cover.svg",
       "description": "The classic Snake game where you control a snake to eat food and grow longer. Be careful not to hit the walls or yourself!",
       "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
       "thumbnail": "cover.svg",
-      "path": "/games/snake/index.html",
+      "path": "/games/snake-classic/index.html",
       "type": "local"
     },
     {
       "id": "space-shooter-game",
       "title": "Space Shooter",
       "category": "Action",
-      "image": "/games/space-shooter/thumbnail.svg",
+      "image": "/games/space-shooter-game/thumbnail.svg",
       "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
       "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles.",
       "thumbnail": "thumbnail.svg",
-      "path": "/games/space-shooter/index.html",
+      "path": "/games/space-shooter-game/index.html",
       "type": "local"
     },
     {
@@ -336,9 +336,9 @@
         "Ranking mechanism",
         "Challenging gameplay"
       ],
-      "image": "/games/step-by-step-heart/cover.svg",
+      "image": "/games/steps-of-wonder-puzzle/cover.svg",
       "thumbnail": "cover.svg",
-      "path": "/games/step-by-step-heart/index.html",
+      "path": "/games/steps-of-wonder-puzzle/index.html",
       "type": "local"
     },
     {
@@ -355,8 +355,8 @@
       "author": null,
       "version": "1.0.0",
       "thumbnail": "icon.png",
-      "image": "/games/super-jump-adventure/icon.png",
-      "path": "/games/super-jump-adventure/index.html",
+      "image": "/games/super-chromosome-puzzle/icon.png",
+      "path": "/games/super-chromosome-puzzle/index.html",
       "date_added": "2025-08-19",
       "type": "local"
     },
@@ -364,11 +364,11 @@
       "id": "tetris-classic",
       "title": "Tetris",
       "category": "Puzzle",
-      "image": "/games/tetris/cover.svg",
+      "image": "/games/tetris-classic/cover.svg",
       "description": "The classic block-stacking puzzle game. Arrange falling blocks to create complete lines and prevent the blocks from stacking up to the top.",
       "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop.",
       "thumbnail": "cover.svg",
-      "path": "/games/tetris/index.html",
+      "path": "/games/tetris-classic/index.html",
       "type": "local"
     },
     {
@@ -377,7 +377,7 @@
       "category": "Strategy",
       "description": "Classic tower defense game where you build defensive towers to prevent enemy invasion. Plan your resources wisely and survive 10 waves of enemies!",
       "controls": "Click to select tower type, then click on the map to place it. Basic Tower ($50): Normal attack; Cannon Tower ($100): High damage; Ice Tower ($150): Slows enemies.",
-      "image": "/games/tower-defense/cover.svg",
+      "image": "/games/tower-defense-strategy/cover.svg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -387,7 +387,7 @@
         "Resource management system to allocate money for building towers"
       ],
       "thumbnail": "cover.svg",
-      "path": "/games/tower-defense/index.html",
+      "path": "/games/tower-defense-strategy/index.html",
       "type": "local"
     }
   ]
