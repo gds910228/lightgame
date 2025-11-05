@@ -103,6 +103,25 @@
       "type": "local"
     },
     {
+      "id": "cube-tetris-game",
+      "title": "Cube Tetris Game",
+      "category": "Puzzle",
+      "description": "Mind-bending block puzzle game that will test your skills. Navigate through challenging cube formations in this unique twist on classic tetris-style gameplay.",
+      "image": "/games/cube-tetris-game/share.png",
+      "controls": "Use Left/Right buttons to move blocks. Tap Rotate to change block orientation. Clear lines by filling complete rows.",
+      "path": "/games/cube-tetris-game/index.html",
+      "type": "local",
+      "tags": [
+        "cube",
+        "puzzle",
+        "blocks",
+        "tetris",
+        "challenge",
+        "brain"
+      ],
+      "thumbnail": "share.png"
+    },
+    {
       "id": "dont-die-challenge",
       "title": "Don't Die Challenge",
       "description": "A thrilling survival game where you must avoid obstacles and stay alive as long as possible. Test your reflexes and endurance!",

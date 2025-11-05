@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>Cube Challenge - Mind-Bending Block Puzzle Game</title>
+  <link rel="stylesheet" href="tetris.css"/>
+</head>
+<body>
+<div class="container">
+  <div class="main">
+    <div class="main-game">
+      <div class="main-panel"><canvas></canvas></div>
+      <div class="main-info">
+        <div class="wrap">
+          <div class="main-info-shape main-info-shape0"></div>
+          <div class="main-info-grade">
+            <p class="main-info-score"></p>
+            <p class="main-info-level"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main-direction">
+      <div class="wrap">
+        <button class="up" type="button" data-role="up">Rotate</button>
+        <button class="left" type="button" data-role="left">Left</button>
+        <button class="right" type="button" data-role="right">Right</button>
+        <!--<button class="down" type="button" data-role="down" style="left: 60px">下</button>-->
+      </div>
+    </div>
+    <!--<div class="main-adv"><a href="#"><img src="jp.jpg"/></a></div>-->
+  </div>
+  <div class="curtain">
+    <div class="curtain-start">
+      <div class="curtain-header">
+        <p>Cube Challenge</p>
+        <p>Test Your Skills</p>
+      </div>
+      <div class="curtain-buttons">
+        <button type="button" data-role="start">Start Game</button>
+      </div>
+    </div>
+    <div class="curtain-end" style="display: none;">
+      <div class="curtain-header"></div>
+      <div class="curtain-buttons">
+        <div class="wrap">
+          <button class="retry" type="button" data-role="start">Retry</button>
+          <a class="score" href="#">Claim Prize</a>
+          <button class="share" type="button" data-role="share">Share</button>
+        </div>
+      </div>
+    </div>
+    <div class="curtain-info"></div>
+  </div>
+</div>
+<script src="tetris.min.js"></script>
+</body>
+</html>

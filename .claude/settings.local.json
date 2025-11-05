@@ -4,7 +4,11 @@
       "Bash(tree -L 3 -I 'node_modules|dist' .)",
       "Bash(npm run validate:games)",
       "Bash(npm run sync-games)",
-      "Bash(npm run build:games:list)"
+      "Bash(npm run build:games:list)",
+      "Bash(cat packages/games/cube/metadata.json)",
+      "Bash(npm run build)",
+      "Bash(read packages/games/cube/metadata.json)",
+      "Bash(cat packages/games/cube-tetris-game/metadata.json)"
     ],
     "deny": [],
     "ask": []
