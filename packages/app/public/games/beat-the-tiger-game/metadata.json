@@ -1,0 +1,19 @@
+{
+  "id": "beat-the-tiger-game",
+  "title": "Beat the Tiger",
+  "category": "Action",
+  "description": "A fast-paced action game where you tap the tiger to score points! Test your reaction speed and hand-eye coordination in this exciting arcade-style game. Hit the tiger as many times as possible before time runs out!",
+  "controls": "Click or tap on the tiger to hit it and score points. The faster you react, the higher your score!",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Fast-paced arcade gameplay",
+    "Simple click-to-play mechanics",
+    "Real-time score tracking",
+    "Responsive touch and mouse controls",
+    "Challenge your reaction speed"
+  ],
+  "image": "/games/beat-the-tiger-game/icon.png",
+  "cover": "/games/beat-the-tiger-game/icon.png",
+  "thumbnail": "icon.png"
+}
