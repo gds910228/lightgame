@@ -469,6 +469,25 @@
       "thumbnail": "cover.svg",
       "path": "/games/tower-defense-strategy/index.html",
       "type": "local"
+    },
+    {
+      "id": "twins-match-up",
+      "title": "Twins Match Up",
+      "category": "Puzzle",
+      "description": "Test your memory in this engaging card matching puzzle game! Flip cards to find matching pairs and clear the board. Challenge yourself with different levels of difficulty and improve your memory skills.",
+      "controls": "Click on cards to flip them. Find two identical cards to make a match. Clear all cards by matching all pairs to win!",
+      "path": "/games/twins-match-up/index.html",
+      "type": "local",
+      "tags": [
+        "memory",
+        "puzzle",
+        "cards",
+        "matching",
+        "brain",
+        "training"
+      ],
+      "thumbnail": "logo.jpg",
+      "image": "/games/twins-match-up/logo.jpg"
     }
   ]
 }
