@@ -83,7 +83,7 @@
 						</div>
 					</td>
 					<td>
-						<div class="btn"  onclick="clickMore();">更多福利</div>
+						<div class="btn"  onclick="clickMore();">更多游戏</div>
 					</td>
 				</tr>
 			</table>
@@ -93,7 +93,7 @@
 					<div class="btn play-again" onclick="Init(true)">
 							再来一盘
 						</div>
-					<div class="btn"  onclick="clickMore();">更多福利</div>
+					<div class="btn"  onclick="clickMore();">更多游戏</div>
 				</div>
 			</div>
 		</div>
@@ -109,14 +109,7 @@
 		function goHome(){
 			window.location=mebtnopenurl;
 		}
-		function clickMore(){
-			if((window.location+"").indexOf("zf",1)>0){
-				window.location = "http://g.lanrenmb.com/";
-			 }
-			 else{
-				goHome();
-			 }
-		}
+		function clickMore(){			window.location.href = "/";		}
 		function dp_share(){
 			document.title ="点亮你的智商！我用了"+myData.score+"步,点亮了所有电灯，你也来试试吧！";
 			document.getElementById("share").style.display="";

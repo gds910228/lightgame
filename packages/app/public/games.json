@@ -37,7 +37,7 @@
         "Fun animation effects",
         "Score recording system"
       ],
-      "image": "/games/beat-the-cat/cover.svg",
+      "image": "/games/beat-the-cat/images/dbsjm.jpg",
       "thumbnail": "cover.svg",
       "path": "/games/beat-the-cat/index.html",
       "type": "local"
@@ -110,7 +110,7 @@
         "cute",
         "bunny"
       ],
-      "image": "/games/bunny-challenge/cover.svg",
+      "image": "/games/bunny-challenge/img/01.jpg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -195,7 +195,7 @@
         "Action-packed gameplay",
         "Multiple levels and challenges"
       ],
-      "image": "/games/dragon-rescue-mission/cover.svg",
+      "image": "/games/dragon-rescue-mission/blglez.png",
       "thumbnail": "cover.svg",
       "path": "/games/dragon-rescue-mission/index.html",
       "type": "local"
