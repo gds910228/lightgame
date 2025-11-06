@@ -375,7 +375,16 @@ btGame.makePublisher(a);
         a.fire("pageChange", 0);
         return false;
     }).on("click", ".notify", function() {
-        btGame.playShareTip();
+        // Send share message to parent page
+        var level = $(".level").text();
+        var title = $(".title").text();
+        window.parent.postMessage({
+            type: 'SHARE_GAME',
+            data: {
+                score: level,
+                title: title
+            }
+        }, '*');
         return false;
     });
     var g = [ {
@@ -433,15 +442,21 @@ btGame.makePublisher(a);
 
 ~function(a, btGame) {
     a.on("gameResult", function(d, e) {
-        var f = "我玩《岛国么么答》获得【" + e.title + "】称号，我很纯洁别怀疑！";
+        // Set share text in English for the parent page to use
+        var shareTitle = "I played Island Quiz Game!";
+        var shareText = "I achieved the title '" + e.title + "' and reached level " + e.level + ". Can you beat me?";
         if (e.level >= 5) {
-            f = "我玩《岛国么么答》获得【" + e.title + "】称号，别说你没看过？";
+            shareText = "I achieved the title '" + e.title + "' at level " + e.level + ". Think you can do better?";
         }
-        var f = btGame.setShare({
-            title: f
+
+        // Store share data for potential use
+        btGame.setShare({
+            title: shareTitle,
+            text: shareText
         });
+
         setTimeout(function() {
-            btGame.playScoreMsg("你认出" + e.level + "个老湿,获得【" + e.title + "】称号，快去刷屏吧！");
+            btGame.playScoreMsg("You completed " + e.level + " levels and earned the title '" + e.title + "'! Can you do better?");
         }, 300);
     });
 }(a, btGame);
