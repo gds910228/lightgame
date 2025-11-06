@@ -9,7 +9,7 @@
     "cute",
     "bunny"
   ],
-  "image": "cover.svg",
+  "image": "/games/bunny-challenge/img/01.jpg",
   "author": "LightGame Team",
   "version": "1.0.0",
   "features": [
