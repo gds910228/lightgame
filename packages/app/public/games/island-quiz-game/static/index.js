@@ -454,10 +454,6 @@ btGame.makePublisher(a);
             title: shareTitle,
             text: shareText
         });
-
-        setTimeout(function() {
-            btGame.playScoreMsg("You completed " + e.level + " levels and earned the title '" + e.title + "'! Can you do better?");
-        }, 300);
     });
 }(a, btGame);
 
