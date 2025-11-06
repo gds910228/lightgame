@@ -46,8 +46,8 @@
       <div class="curtain-buttons">
         <div class="wrap">
           <button class="retry" type="button" data-role="start">Retry</button>
-          <a class="score" href="#">Claim Prize</a>
-          <button class="share" type="button" data-role="share">Share</button>
+          <button class="score" type="button" onclick="navigateToHome()">More</button>
+          <button class="share" type="button" onclick="shareGame()">Share</button>
         </div>
       </div>
     </div>
@@ -55,5 +55,26 @@
   </div>
 </div>
 <script src="tetris.min.js"></script>
+
+<script>
+function shareGame() {
+    const score = document.querySelector('.main-info-score').textContent.replace('S：', '').replace('分', '');
+    if (window.parent) {
+        window.parent.postMessage({
+            type: 'SHARE_GAME',
+            data: { score: score }
+        }, '*');
+    }
+}
+
+function navigateToHome() {
+    if (window.parent) {
+        window.parent.postMessage({
+            type: 'NAVIGATE_TO_HOME'
+        }, '*');
+    }
+}
+</script>
+
 </body>
 </html>
