@@ -221,6 +221,26 @@
       "thumbnail": "logo.jpg"
     },
     {
+      "id": "island-quiz-game",
+      "title": "Island Quiz Game",
+      "category": "Puzzle",
+      "description": "Test your knowledge of Japanese islands and culture in this engaging quiz game. Choose between picture mode to identify locations from images or name mode to match names with locations.",
+      "image": "/games/island-quiz-game/resource/1.jpg",
+      "controls": "Tap on your answer choice. You have limited time and lives to complete each level. Clear levels by answering correctly.",
+      "path": "/games/island-quiz-game/index.html",
+      "type": "local",
+      "tags": [
+        "island",
+        "quiz",
+        "japan",
+        "puzzle",
+        "trivia",
+        "knowledge",
+        "geography"
+      ],
+      "thumbnail": "resource/1.jpg"
+    },
+    {
       "id": "moon-landing-challenge",
       "title": "Moon Landing Challenge",
       "category": "Action",
