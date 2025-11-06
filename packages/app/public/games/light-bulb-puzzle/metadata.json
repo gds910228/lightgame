@@ -1,0 +1,29 @@
+{
+  "id": "light-bulb-puzzle",
+  "title": "Light Bulb Puzzle",
+  "category": "Puzzle",
+  "description": "A challenging logic puzzle game where you need to light up all the bulbs! Click on bulbs to toggle them on and off, but beware - clicking one bulb affects its neighbors. Find the strategy to illuminate every bulb in the fewest moves possible!",
+  "controls": "Click on bulbs to toggle them on or off. When you click a bulb, it and its adjacent bulbs will change state. Light up all bulbs to win!",
+  "image": "/games/light-bulb-puzzle/icon.png",
+  "cover": "/games/light-bulb-puzzle/icon.png",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Classic lights-out puzzle mechanics",
+    "Multiple challenging levels",
+    "Step counter to track your efficiency",
+    "Simple and intuitive click-to-play controls",
+    "Brain-teasing logic puzzles"
+  ],
+  "path": "/games/light-bulb-puzzle/index.html",
+  "type": "local",
+  "tags": [
+    "puzzle",
+    "logic",
+    "brain",
+    "lights",
+    "strategy",
+    "challenge"
+  ],
+  "thumbnail": "icon.png"
+}

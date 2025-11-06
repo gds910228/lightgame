@@ -145,6 +145,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+  <url>
+    <loc>https://games.misitebo.win/game/light-bulb-puzzle</loc>
+    <lastmod>2025-11-06</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
     <loc>https://games.misitebo.win/game/twins-match-up</loc>
     <lastmod>2025-11-06</lastmod>
     <changefreq>monthly</changefreq>
