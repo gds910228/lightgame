@@ -1,4 +1,3 @@
-
 <!DOCTYPE HTML>
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -45,8 +44,24 @@ var Attack = new game($("myCanvas"));
 			 }
 		}
 		function dp_share(){
-			document.getElementById("share").style.display="";
-			
+			// 使用项目的统一分享功能
+			if (window.parent && window.parent !== window) {
+				// 获取当前游戏分数
+				var score = 0;
+				if (typeof Attack !== 'undefined' && Attack.player && Attack.player.kill) {
+					score = Attack.player.kill;
+				}
+				// 向父窗口发送分享消息
+				window.parent.postMessage({
+					type: 'SHARE_GAME',
+					data: {
+						score: score
+					}
+				}, '*');
+			} else {
+				// 回退到原有的分享方式
+				document.getElementById("share").style.display="";
+			}
 		}
 		function dp_Ranking(){
 			window.location=mebtnopenurl;
