@@ -250,6 +250,11 @@
 
         function endGame() {
             showMessage('Game Over! Final Score: ' + gameState.score, 'error');
+            // Remove any existing restart buttons
+            const existingButtons = document.querySelectorAll('.restart-btn');
+            existingButtons.forEach(btn => btn.remove());
+
+            // Create new restart button
             const restartBtn = document.createElement('button');
             restartBtn.className = 'restart-btn';
             restartBtn.textContent = 'Play Again';
