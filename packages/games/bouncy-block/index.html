@@ -53,9 +53,38 @@ var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&
 			 }
 		}
 		function dp_share(){
-			document.title ="我在《弹力小方块》中弹出了"+myData.score+"次还没死，你有我这么能弹吗？";
-			document.getElementById("share").style.display="";
-			window.shareData.tTitle = document.title;
+			// Use project's share function
+			const shareText = `I scored ${myData.score} in Bouncy Block! Can you beat my score?`;
+			const shareUrl = window.location.href;
+
+			if (window.parent && window.parent !== window) {
+				// Post message to parent page
+				window.parent.postMessage({
+					type: 'SHARE_GAME',
+					action: 'share',
+					data: { score: myData.score }
+				}, '*');
+			} else if (typeof window.handleGlobalShare === 'function') {
+				window.handleGlobalShare(myData.score);
+			} else {
+				// Fallback to native share API
+				if (navigator.share) {
+					navigator.share({
+						title: 'Bouncy Block',
+						text: shareText,
+						url: shareUrl
+					}).catch(() => {});
+				} else {
+					// Copy to clipboard as fallback
+					const fullText = `${shareText} ${shareUrl}`;
+					navigator.clipboard.writeText(fullText).then(() => {
+						alert('Share text copied to clipboard!');
+					}).catch(() => {});
+				}
+			}
+
+			// Hide the share overlay
+			document.getElementById("share").style.display = "none";
 		}
 		function dp_Ranking(){
 			window.location=mebtnopenurl;
@@ -100,9 +129,9 @@ var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&
 			window.shareData.timeLineLink = thegameurl ;
 			function dp_submitScore(score){
 				myData.score = parseInt(score);
-				myData.scoreName ="坚持了"+score+"次";
+				myData.scoreName = "Bounced " + score + " times";
 				if(score>0){
-					if (confirm("弹弹弹！你坚持了"+score+"次，快分享到朋友圈炫耀一下吧？")){
+					if (confirm("Great job! You bounced " + score + " times! Want to share your score with friends?")){
 						setTimeout(dp_share,500);
 					}
 				}

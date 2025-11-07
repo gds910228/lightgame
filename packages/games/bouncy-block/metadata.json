@@ -4,7 +4,7 @@
   "category": "Action",
   "description": "Test your reflexes in this exciting bouncy block game! Tap or click to make the block jump through obstacles and avoid the spikes. How many times can you bounce without dying? Challenge yourself and share your high score with friends!",
   "controls": "Click or tap to make the block bounce. Time your jumps carefully to avoid spikes and obstacles. The faster you tap, the higher you bounce!",
-  "image": "/games/bouncy-block/assets/title.png",
+  "image": "/games/bouncy-block/tanli.png",
   "path": "/games/bouncy-block/index.html",
   "type": "local",
   "tags": ["bouncy", "block", "action", "reflex", "jump", "phaser"]
