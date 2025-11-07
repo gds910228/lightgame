@@ -501,6 +501,26 @@
       "type": "local"
     },
     {
+      "id": "super-shooter-football",
+      "title": "Super Shooter",
+      "category": "Sports",
+      "description": "Shoot the football as far as you can! Test your strength and precision in this exciting sports game. Hit the target with maximum power to achieve the greatest distance.",
+      "controls": "Tap the screen repeatedly within 5 seconds to charge up your shot. The faster you tap, the more power you'll generate. Release at the right moment to shoot!",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Simple one-tap gameplay",
+        "Multiple game modes",
+        "Distance scoring system",
+        "Fun animation effects",
+        "Challenge your friends"
+      ],
+      "image": "/games/super-shooter-football/images/start/football.png",
+      "thumbnail": "share.png",
+      "path": "/games/super-shooter-football/index.html",
+      "type": "local"
+    },
+    {
       "id": "tetris-classic",
       "title": "Tetris",
       "category": "Puzzle",
