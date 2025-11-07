@@ -46,6 +46,26 @@ margin: auto;}
  .fontostext {color: #ffffff;}
 
  #preload {width:320px;position:absolute; visibility:hidden; overflow:hidden;}
+
+ .gameover-buttons {
+  margin-top: 15px;
+  text-align: center;
+ }
+
+ .gameover-buttons a {
+  display: inline-block;
+  margin: 0 5px;
+  padding: 8px 15px;
+  background-color: #444;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 3px;
+  font-size: 14px;
+ }
+
+ .gameover-buttons a:hover {
+  background-color: #666;
+ }
 </style>
 
 <script type="text/javascript" src="standard.js"  charset="utf-8"></script>
@@ -62,7 +82,7 @@ margin: auto;}
 <div id="imenu">
  <a id="button_game" href="#game" class="active" onclick="return menuswitch(this);" ontouchstart="return menuswitch(this);"><span style="display:none">Restart Game</span></a>
  <a id="button_highscore" href="#highscore" onclick="return menuswitch(this);" ontouchstart="return menuswitch(this);"><span style="display:none">High Score</span></a>
- <a id="button_about" href="https://lightgame.com/"  ontouchstart="return menuswitch(this);"><span style="display:none">More Games</span></a>
+ <a id="button_about" href="javascript:void(0)" onclick="goToHomePage()" ontouchstart="goToHomePage()"><span style="display:none">More Games</span></a>
 </div>
 
 <div class="ibox" id="container"><div style="width:10000px;" id="container_scroller">
@@ -89,6 +109,10 @@ firstinit();
 ialert('<h1>Stack Wood</h1><p style="margin: 0 20px 0 20px; text-align:left;"><img src="i/icon.png" alt="Stack Wood!" style="width:64px; height:64px;float:left; margin-right:5px;"/> Release the wood when it is directly above the stack. Align the wood pieces perfectly to build the highest tower.</p>'+
 '<div style="width:110px; margin:30px auto -30px auto;"></div>','restartgame()');
 //-->
+
+function goToHomePage() {
+  window.location.href = '../../';
+}
 
 function play68_init() {
 	updateShare(0);

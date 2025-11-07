@@ -167,7 +167,7 @@ function handleclick() {
   bon*=2;
   $('combo').innerHTML=parseInt($('combo').innerHTML)+1;
   tmp=document.createElement('div');
-  tmp.innerHTML='<div style="padding:5px"><b>漂亮 完美!</b></div>';
+  tmp.innerHTML='<div style="padding:5px"><b>Perfect!</b></div>';
   tmp.id='box_perfect';
   tmp.style.zIndex='10';
   tmp.style.position='absolute';
@@ -399,3 +399,19 @@ function updateShareScore(stscore) {
 	}
 }*/
 //xinli001
+
+function showGameOverDialog(score, isRecord) {
+  var title = '<h1>Game Over: ' + score + ' points</h1>';
+  var message = isRecord ? '<p>Amazing! You set a new record!</p>' : '<p>Try again to beat your best score!</p>';
+  var buttons = '<div class="gameover-buttons">' +
+    '<a href="#" onclick="idismiss();restartgame();return false;" ontouchstart="idismiss();restartgame();return false;">Play Again</a>' +
+    '<a href="#" onclick="idismiss();goToHomePage();return false;" ontouchstart="idismiss();goToHomePage();return false;">More Games</a>' +
+    '</div>';
+
+  document.getElementById('alertbox_content').innerHTML = title + message + '<br style="clear:both" />' + buttons;
+  document.getElementById('alertbox').style.display='block';
+}
+
+function goToHomePage() {
+  window.location.href = '../../';
+}
