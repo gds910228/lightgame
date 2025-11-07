@@ -127,11 +127,30 @@
             numbers: [],
             userNumbers: [],
             showingNumbers: false,
-            gameStarted: false
+            gameStarted: false,
+            memorizeTime: 3
         };
 
         const levelSizes = [4, 6, 9, 12, 16, 20];
-        const memorizeTime = 3;
+
+        // Calculate appropriate memorize time based on level and number count
+        function getMemorizeTime(level) {
+            const cellCount = levelSizes[Math.min(levelSizes.length, level) - 1];
+            let memorizeTime;
+
+            if (level <= 6) {
+                // Levels 1-6: Time based on cell count
+                // Formula: 3 + cellCount * 0.4
+                memorizeTime = 3 + cellCount * 0.4;
+            } else {
+                // Levels 7+: Fixed cell count (20) with gradual increase
+                // Base time for level 6 + incremental growth (0.3s per level)
+                const baseTime = 3 + 20 * 0.4; // 11 seconds for level 6
+                memorizeTime = baseTime + (level - 6) * 0.3;
+            }
+
+            return Math.max(3, memorizeTime);
+        }
 
         function startGame() {
             gameState = {
@@ -140,7 +159,8 @@
                 numbers: [],
                 userNumbers: [],
                 showingNumbers: false,
-                gameStarted: true
+                gameStarted: true,
+                memorizeTime: 3
             };
             document.getElementById('startScreen').style.display = 'none';
             document.getElementById('gameScreen').style.display = 'block';
@@ -154,8 +174,11 @@
             gameState.userNumbers = [];
             gameState.showingNumbers = true;
 
+            // Calculate appropriate memorize time for this level
+            gameState.memorizeTime = getMemorizeTime(gameState.level);
+
             document.getElementById('level').textContent = gameState.level;
-            document.getElementById('info').textContent = 'Memorize the numbers!';
+            document.getElementById('info').textContent = `Memorize the numbers! (${gameState.memorizeTime.toFixed(1)}s)`;
             document.getElementById('message').className = 'message';
             document.getElementById('message').style.display = 'none';
 
@@ -165,7 +188,7 @@
                 hideNumbers();
                 gameState.showingNumbers = false;
                 document.getElementById('info').textContent = 'Tap numbers in order: 1, 2, 3...';
-            }, memorizeTime * 1000);
+            }, gameState.memorizeTime * 1000);
         }
 
         function generateNumbers(count) {
