@@ -37,6 +37,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://games.misitebo.win/game/bouncy-block</loc>
+    <lastmod>2025-11-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://games.misitebo.win/game/bun-eating-contest</loc>
     <lastmod>2025-11-05</lastmod>
     <changefreq>monthly</changefreq>

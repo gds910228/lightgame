@@ -95,6 +95,25 @@
       "type": "local"
     },
     {
+      "id": "bouncy-block",
+      "title": "Bouncy Block",
+      "category": "Action",
+      "description": "Test your reflexes in this exciting bouncy block game! Tap or click to make the block jump through obstacles and avoid the spikes. How many times can you bounce without dying? Challenge yourself and share your high score with friends!",
+      "controls": "Click or tap to make the block bounce. Time your jumps carefully to avoid spikes and obstacles. The faster you tap, the higher you bounce!",
+      "image": "/games/bouncy-block/assets/title.png",
+      "path": "/games/bouncy-block/index.html",
+      "type": "local",
+      "tags": [
+        "bouncy",
+        "block",
+        "action",
+        "reflex",
+        "jump",
+        "phaser"
+      ],
+      "thumbnail": "assets/title.png"
+    },
+    {
       "id": "bubble-pop-game",
       "title": "Bubble Pop Game",
       "category": "Puzzle",
@@ -515,7 +534,7 @@
         "Fun animation effects",
         "Challenge your friends"
       ],
-      "image": "/games/super-shooter-football/images/start/football.png",
+      "image": "/games/super-shooter-football/share.png",
       "thumbnail": "share.png",
       "path": "/games/super-shooter-football/index.html",
       "type": "local"
