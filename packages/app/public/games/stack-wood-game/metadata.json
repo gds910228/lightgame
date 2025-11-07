@@ -1,0 +1,33 @@
+{
+  "id": "stack-wood-game",
+  "title": "Stack Wood Game",
+  "category": "Puzzle",
+  "description": "Stack the wooden blocks as high as you can! Time your drops perfectly to align the wood pieces and achieve the highest tower. Test your precision and reflexes in this addictive puzzle game where every piece counts.",
+  "controls": "Click or tap to release the wood when it is aligned above the stack. The closer the alignment, the more points you earn. Build your tower as high as possible without any pieces falling off.",
+  "image": "/games/stack-wood-game/icon.png",
+  "cover": "/games/stack-wood-game/icon.png",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Addictive stack-building gameplay",
+    "Precision timing mechanics",
+    "Progressive difficulty with combo system",
+    "High score tracking",
+    "Responsive touch and click controls",
+    "Retro-style graphics"
+  ],
+  "path": "/games/stack-wood-game/index.html",
+  "type": "local",
+  "tags": [
+    "puzzle",
+    "stack",
+    "wood",
+    "tower",
+    "precision",
+    "timing",
+    "blocks",
+    "skill",
+    "casual"
+  ],
+  "thumbnail": "icon.png"
+}

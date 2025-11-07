@@ -1,0 +1,120 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width = 320,initial-scale=1,user-scalable=no" />
+<link rel="apple-touch-icon-precomposed" href="icon.png"/>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<link rel="apple-touch-icon-precomposed" href="icon.png"/>
+<link rel="apple-touch-startup-image" href="i/loader.png">
+<meta name="description" content="Stack Wood Game - Stack the wooden blocks as high as you can! Time your drops perfectly to align the wood pieces and achieve the highest tower. Test your precision and reflexes in this addictive puzzle game." />
+<title>Stack Wood Game - Stack and Build the Highest Tower</title>
+<style type="text/css">
+ body { font-family: helvetica, arial; background-color: #000000; color: #a3b3c3; border:0; padding:0; font-size:90%; overflow: hidden;
+width: 320px;
+margin: auto;}
+
+ h1 {margin:.4em;}
+ h3 { font-size:120%; margin:12px; padding-left:0;margin-bottom:.5em; color: #ffffff;}
+ p {margin:0; margin:12px; margin-top:.5em; margin-bottom:.5em; font-size:84%;}
+ a { color: #ffffff; }
+
+ td{text-align:center; font-size: 70%;}
+
+ .ibox {width:320px; height:315px; overflow:hidden; background-color: #000000; margin:auto;}
+ .iboxcontent {width:320px; height:315px; float:left; overflow:hidden;}
+ .ibc1 {background-color: #3b4859; background-image:url(./i/bg1.png);}
+ .ibc2 {background-color: #404d5e; background-image:url(./i/bg2.png);}
+
+ #alertbox {display:none;position:absolute; z-index:200;}
+ #alertbox_flekk {position:absolute; width:320px; height: 356px; background-color:#000000; opacity: .8;}
+ #alertbox_content {position:absolute; width:320px; height:286px; margin-top:70px; text-align:center; color:#ffffff;}
+ #alertbox_content .fontostext {color:#a3b3c3;}
+ #alertbox a {margin:10px; width:114px; height:54px; }
+ img {border:0;}
+
+ #imenu {width:320px;height:41px; margin:auto; text-align:center; background-image:url(./i/menu.png); background-position:0 0px;}
+ #imenu a:hover {opacity:.5;}
+ #button_game {background-image:url(./i/menu.png); display:block; float:left; width:72px; height:41px; background-position:0 0;}
+ #button_highscore {background-image:url(./i/menu.png); display:block; float:left; width:110px; height:41px;background-position: -72px -41px;}
+ #button_about {background-image:url(./i/menu.png); display:block; float:left; width:100px; height:41px; background-position: -182px -41px;}
+
+ #score,#combo,#level {color:#ffffff;}
+
+ #button_xwuz {position:absolute; display:block; width:48px; height:57px; margin: 5px 0 0 267px; background-image:url(./i/xwuz.png);z-index:1; cursor:pointer;}
+
+ #yourbest { text-align:center; font-weight:bold; color:#ffffff;font-size: 300%; margin: .5em auto .5em auto; background-image:url(./i/flekk.png); width:296px; height:65px; padding-top:15px;}
+ .fontostext {color: #ffffff;}
+
+ #preload {width:320px;position:absolute; visibility:hidden; overflow:hidden;}
+</style>
+
+<script type="text/javascript" src="standard.js"  charset="utf-8"></script>
+<script type="text/javascript" src="stack.js"  charset="utf-8"></script>
+</head>
+<body>
+
+<div style="width:320px; height: 500px;">
+<div style="position: absolute;margin-top: 400px; width: 320px; heigth: 48px; background: #ffffff"></div>
+
+<div id="alertbox"><div id="alertbox_flekk"></div><div id="alertbox_content"></div></div>
+ <a id="button_xwuz" onclick="return menuswitch(document.getElementById('button_about'));" ontouchstart="return menuswitch(document.getElementById('button_about'));"></a>
+
+<div id="imenu">
+ <a id="button_game" href="#game" class="active" onclick="return menuswitch(this);" ontouchstart="return menuswitch(this);"><span style="display:none">Restart Game</span></a>
+ <a id="button_highscore" href="#highscore" onclick="return menuswitch(this);" ontouchstart="return menuswitch(this);"><span style="display:none">High Score</span></a>
+ <a id="button_about" href="https://lightgame.com/"  ontouchstart="return menuswitch(this);"><span style="display:none">More Games</span></a>
+</div>
+
+<div class="ibox" id="container"><div style="width:10000px;" id="container_scroller">
+ <div id="ibox_game" class="iboxcontent ibc1" style="position: relative;">
+  <div style="width: 237px; height:15px; overflow:hidden;margin-left: 13px;padding-top:10px; font-size:90%; position:absolute; z-index:20;">
+  <div style="float:left"><div style="float:left" id="score_title">Score:&nbsp;</div><div id="score" style="float:left;  width:2em;">0</div></div>
+  <div style="float:right"><div style="float:left">Combo:&nbsp;</div><div id="combo" style="float:left; width:1.5em;">0</div></div>
+  <div style="text-align:center">Level: <span id="level">1</span></div>
+  </div>
+  <div style="width:320px;height:316px; overflow:hidden; position: relative;" id="st_outerarea">
+  </div>
+ </div>
+ <div id="ibox_highscore" class="iboxcontent ibc2">
+  <h3>Your Best Score</h3>
+  <div id="yourbest"></div>
+  <p>Most people can reach <span class="fontostext">2500</span> points, skilled players can reach <span class="fontostext">3500</span> points. Share with friends to challenge them!</p>
+  <p>You have played <span id="gamesplayed" class="fontostext">0</span> times of <span class="fontostext">Stack Wood</span>.</p>
+  <p>Share your score with friends</p>
+
+ </div>
+</div></div>
+<script type="text/javascript"><!--
+firstinit();
+ialert('<h1>Stack Wood</h1><p style="margin: 0 20px 0 20px; text-align:left;"><img src="i/icon.png" alt="Stack Wood!" style="width:64px; height:64px;float:left; margin-right:5px;"/> Release the wood when it is directly above the stack. Align the wood pieces perfectly to build the highest tower.</p>'+
+'<div style="width:110px; margin:30px auto -30px auto;"></div>','restartgame()');
+//-->
+
+function play68_init() {
+	updateShare(0);
+}
+
+function updateShare(bestScore) {
+	imgUrl = './icon.png';
+	lineLink = './index.html';
+	descContent = "Stack Wood Game - Build the highest wooden tower!";
+	updateShareScore(bestScore);
+	appid = '';
+}
+
+function updateShareScore(bestScore) {
+	if(bestScore > 0) {
+		shareTitle = "I stacked " + bestScore + " points in Stack Wood! Can you beat me?";
+	}
+	else{
+		shareTitle = "Stack Wood Game - Can you build a high tower?";
+	}
+}
+
+play68_init();
+</script>
+
+</div>
+
+</body>
+</html>
