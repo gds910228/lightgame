@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <link rel="icon" type="image/GIF" href="res/favicon.ico"/>
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta name="viewport" content="user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <title>Age Test Memory Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #f0f0f0;
+            flex-direction: column;
+        }
+        .game-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        .title {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .tile {
+            aspect-ratio: 1;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+        .tile:hover { transform: scale(1.05); }
+        .tile.hidden { background: #2196F3; }
+        .tile.correct { background: #4CAF50; }
+        .tile.wrong { background: #f44336; }
+        .tile:disabled { opacity: 0.5; cursor: not-allowed; }
+        .info {
+            text-align: center;
+            margin: 20px 0;
+            color: #666;
+        }
+        .score {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: #2196F3;
+            margin: 10px 0;
+        }
+        .start-btn, .restart-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px auto;
+            display: block;
+        }
+        .start-btn:hover, .restart-btn:hover {
+            background: #0b7dda;
+        }
+        .message {
+            text-align: center;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+        .message.show { display: block; }
+        .message.success { background: #d4edda; color: #155724; }
+        .message.error { background: #f8d7da; color: #721c24; }
+        .message.info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1 class="title">Age Test Memory Game</h1>
+        <p class="subtitle">Test your memory! Remember the numbers and tap them in order.</p>
+
+        <div id="startScreen">
+            <button class="start-btn" onclick="startGame()">Start Game</button>
+        </div>
+
+        <div id="gameScreen" style="display: none;">
+            <div class="score">Level: <span id="level">1</span> | Score: <span id="score">0</span></div>
+            <div class="info" id="info">Memorize the numbers for 3 seconds...</div>
+            <div class="game-grid" id="gameGrid"></div>
+            <div class="message" id="message"></div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            level: 1,
+            score: 0,
+            numbers: [],
+            userNumbers: [],
+            showingNumbers: false,
+            gameStarted: false
+        };
+
+        const levelSizes = [4, 6, 9, 12, 16, 20];
+        const memorizeTime = 3;
+
+        function startGame() {
+            gameState = {
+                level: 1,
+                score: 0,
+                numbers: [],
+                userNumbers: [],
+                showingNumbers: false,
+                gameStarted: true
+            };
+            document.getElementById('startScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'block';
+            nextLevel();
+        }
+
+        function nextLevel() {
+            const gridSize = Math.min(levelSizes.length, gameState.level);
+            const cellCount = levelSizes[gridSize - 1];
+            gameState.numbers = generateNumbers(cellCount);
+            gameState.userNumbers = [];
+            gameState.showingNumbers = true;
+
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('info').textContent = 'Memorize the numbers!';
+            document.getElementById('message').className = 'message';
+            document.getElementById('message').style.display = 'none';
+
+            displayNumbers(cellCount);
+
+            setTimeout(() => {
+                hideNumbers();
+                gameState.showingNumbers = false;
+                document.getElementById('info').textContent = 'Tap numbers in order: 1, 2, 3...';
+            }, memorizeTime * 1000);
+        }
+
+        function generateNumbers(count) {
+            const numbers = Array.from({length: count}, (_, i) => i + 1);
+            for (let i = numbers.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [numbers[i], numbers[j]] = [numbers[j], numbers[i]];
+            }
+            return numbers;
+        }
+
+        function displayNumbers(count) {
+            const grid = document.getElementById('gameGrid');
+            grid.innerHTML = '';
+            grid.style.gridTemplateColumns = count <= 4 ? 'repeat(4, 1fr)' :
+                                            count <= 9 ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)';
+
+            const size = count <= 4 ? 80 : count <= 9 ? 90 : 70;
+
+            gameState.numbers.forEach((num, index) => {
+                const tile = document.createElement('button');
+                tile.className = 'tile';
+                tile.style.width = size + 'px';
+                tile.style.height = size + 'px';
+                tile.textContent = num;
+                tile.style.fontSize = size / 3 + 'px';
+                tile.onclick = () => handleTileClick(num, tile);
+                tile.dataset.number = num;
+                grid.appendChild(tile);
+            });
+        }
+
+        function hideNumbers() {
+            const tiles = document.querySelectorAll('.tile');
+            tiles.forEach(tile => {
+                tile.textContent = '?';
+                tile.classList.add('hidden');
+            });
+        }
+
+        function handleTileClick(number, tile) {
+            if (gameState.showingNumbers) return;
+
+            const expected = gameState.userNumbers.length + 1;
+
+            if (number === expected) {
+                tile.textContent = number;
+                tile.classList.remove('hidden');
+                tile.classList.add('correct');
+                tile.disabled = true;
+                gameState.userNumbers.push(number);
+                gameState.score += 10;
+                document.getElementById('score').textContent = gameState.score;
+
+                if (gameState.userNumbers.length === gameState.numbers.length) {
+                    setTimeout(() => {
+                        showMessage('Level Complete!', 'success');
+                        gameState.level++;
+                        setTimeout(() => {
+                            showMessage('Get ready for the next level...', 'info');
+                            setTimeout(() => {
+                                nextLevel();
+                            }, 1500);
+                        }, 500);
+                    }, 500);
+                }
+            } else {
+                tile.classList.add('wrong');
+                showMessage('Wrong! Game Over!', 'error');
+                setTimeout(() => {
+                    endGame();
+                }, 2000);
+            }
+        }
+
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = 'message ' + type + ' show';
+            message.style.display = 'block';
+        }
+
+        function endGame() {
+            showMessage('Game Over! Final Score: ' + gameState.score, 'error');
+            const restartBtn = document.createElement('button');
+            restartBtn.className = 'restart-btn';
+            restartBtn.textContent = 'Play Again';
+            restartBtn.onclick = startGame;
+            document.getElementById('gameScreen').appendChild(restartBtn);
+        }
+    </script>
+</body>
+</html>

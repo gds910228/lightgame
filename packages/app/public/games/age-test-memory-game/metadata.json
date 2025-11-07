@@ -1,0 +1,26 @@
+{
+  "id": "age-test-memory-game",
+  "title": "Age Test Memory Game",
+  "category": "Puzzle",
+  "description": "Test your memory and reaction speed! Remember the numbers that appear on screen, then tap them in ascending order. This classic memory challenge tests your brain power and quick thinking. Can you beat the clock and prove you have the memory of a pro?",
+  "image": "/games/age-test-memory-game/icon.png",
+  "cover": "/games/age-test-memory-game/icon.png",
+  "controls": "Memorize the numbers for 3 seconds. When the numbers disappear, tap them in ascending order (1, 2, 3, etc.) as quickly as possible. Complete all numbers to advance to the next level.",
+  "path": "/games/age-test-memory-game/index.html",
+  "type": "local",
+  "tags": [
+    "memory",
+    "puzzle",
+    "test",
+    "age",
+    "brain",
+    "training",
+    "numbers",
+    "challenge",
+    "logic",
+    "skill",
+    "casual",
+    "educational"
+  ],
+  "thumbnail": "icon.png"
+}
