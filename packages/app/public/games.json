@@ -1,6 +1,37 @@
 {
   "games": [
     {
+      "id": "air-strike-battle",
+      "title": "Air Strike Battle",
+      "category": "Action",
+      "description": "Take to the skies in this exciting air combat game! Pilot your fighter jet, engage enemy aircraft, and destroy targets in intense aerial battles. Test your reflexes and strategic thinking as you navigate through challenging missions.",
+      "controls": "Use mouse or touch to control your fighter jet. Click or tap to fire missiles at enemy aircraft. Avoid enemy fire and destroy all targets to complete each mission.",
+      "image": "/games/air-strike-battle/icon.png",
+      "cover": "/games/air-strike-battle/icon.png",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Intense aerial combat gameplay",
+        "Multiple enemy aircraft types",
+        "Explosive visual effects",
+        "Score-based progression system",
+        "Responsive touch and mouse controls"
+      ],
+      "path": "/games/air-strike-battle/index.html",
+      "type": "local",
+      "tags": [
+        "action",
+        "combat",
+        "aircraft",
+        "shooting",
+        "war",
+        "battle",
+        "flight",
+        "fighter"
+      ],
+      "thumbnail": "icon.png"
+    },
+    {
       "id": "geography-collection-game",
       "title": "Baba Game",
       "category": [
