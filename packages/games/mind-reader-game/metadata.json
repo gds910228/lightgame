@@ -1,0 +1,11 @@
+{
+  "id": "mind-reader-game",
+  "title": "Mind Reader Game",
+  "category": "Puzzle",
+  "description": "Amazing mind-reading magic trick that will amaze your friends! Think of a card and watch as the game reads your mind. Can you figure out the secret?",
+  "image": "icon.png",
+  "controls": "Tap the cards to play. Follow the instructions on screen. This is a magical mind-reading experience!",
+  "path": "/games/mind-reader-game/index.html",
+  "type": "local",
+  "tags": ["mind", "read", "magic", "puzzle", "card", "trick", "psychic"]
+}
