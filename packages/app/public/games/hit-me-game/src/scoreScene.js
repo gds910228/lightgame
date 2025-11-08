@@ -212,7 +212,35 @@ var scoreLayer = cc.LayerColor.extend({
 
         //share
             var shareItem = cc.MenuItemImage.create(s_ui1,s_ui2,function(){
-				dp_share();
+				// Use platform's share function
+				if (window.parent && window.parent !== window) {
+					// Send share message to parent window
+					window.parent.postMessage({
+						type: 'SHARE_GAME',
+						data: {
+							score: myScore
+						}
+					}, '*');
+				} else {
+					// Fallback: try global share function
+					if (window.handleGlobalShare) {
+						window.handleGlobalShare(myScore);
+					} else if (navigator.share) {
+						var shareText = '我用了 ' + myTimeString + '秒在' + g_score.score[this.scoreIndex].titleName + '游戏中获得了' + g_score.score[this.scoreIndex].percent + '%的成绩！';
+						navigator.share({
+							title: 'Hit Me Game',
+							text: shareText,
+							url: window.location.href
+						});
+					} else {
+						// Fallback: copy to clipboard
+						var shareText = '我用了 ' + myTimeString + '秒在' + g_score.score[this.scoreIndex].titleName + '游戏中获得了' + g_score.score[this.scoreIndex].percent + '%的成绩！';
+						if (navigator.clipboard) {
+							navigator.clipboard.writeText(shareText + ' ' + window.location.href);
+							alert('分享内容已复制到剪贴板！');
+						}
+					}
+				}
             /*var sharelayer = cc.LayerColor.create(cc.c4b(0,0,0,255*0.95),this.size.width,this.size.height);
 
 
