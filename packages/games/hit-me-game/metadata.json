@@ -1,0 +1,11 @@
+{
+  "id": "hit-me-game",
+  "title": "Hit Me!",
+  "category": "Action",
+  "description": "A fun and exciting Cocos2d-HTML5 action game! Tap to attack and dodge in this thrilling game. Challenge yourself with fast-paced gameplay and see how long you can survive!",
+  "image": "icon.png",
+  "controls": "Tap the screen to play. Use touch controls to interact with the game. Simple and intuitive gameplay for everyone!",
+  "path": "/games/hit-me-game/index.html",
+  "type": "local",
+  "tags": ["action", "tap", "casual", "fun", "cocos2d", "mobile"]
+}
