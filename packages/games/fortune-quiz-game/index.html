@@ -52,10 +52,12 @@
              }
              </script>
 <script type="text/javascript">
+  // Global variables for sharing
+  var result = 0;
+  var result_message = "";
+  var result_messages = "";
+
   $(document).ready(function(){
-          var result=0;
-          var result_message;
-		   var result_messages;
 		  $("#beginG").click(function(){
 			$("#toptop").hide();
 			$("#toptops").hide();
@@ -137,7 +139,7 @@
                       result_message = "经测试您的发财关键是自行创业。";
 					   result_messages = "经测试我的发财关键是自行创业。";
                   }
-				  result_message = result_message+"好牛<img src='img/1.gif' _moz_resizing='true'>";
+				  result_message = result_message+"好牛<img src='icon.jpg' _moz_resizing='true'>";
                   $(".aside").append(result_message);
 				  $("#infos").html(result_messages);
                   $(".header-title").hide();
@@ -155,19 +157,82 @@
               }
           });
       });
-	  var mask = function () {
-                if (document.getElementById('mask').style.display == 'inline') {
-                    document.getElementById('mask').style.display = 'none';
-                    document.getElementById('tip').style.display = 'none';
-                } else {
-                    document.getElementById('mask').style.display = 'inline';
-                    document.getElementById('tip').style.display = 'inline';
-                }
-            }
 
-            var share = function () {
-                mask();
-            }
+	  // Modern share function using project's sharing system
+	  function shareResult() {
+		  console.log('shareResult called');
+		  console.log('result:', result, 'result_messages:', result_messages);
+
+		  var shareText = result_messages || "我完成了财富测试，快来看看你的发财关键是什么！";
+		  var shareData = {
+			  gameid: "fortune-quiz-game",
+			  result: result_messages,
+			  score: result
+		  };
+
+		  console.log('shareData:', shareData);
+
+		  // Try parent window postMessage first (for iframe embedding)
+		  if (window.parent !== window) {
+			  try {
+				  console.log('Attempting postMessage to parent');
+				  window.parent.postMessage({
+					  type: 'SHARE_GAME',  // Must match GameDetailPage.tsx expectation
+					  data: {
+						  score: result,
+						  result: result_messages
+					  }
+				  }, '*');
+				  console.log('Share message sent to parent');
+				  return;
+			  } catch (e) {
+				  console.log('postMessage failed:', e);
+			  }
+		  }
+
+		  // Try global share handler
+		  if (typeof window.handleGlobalShare === 'function') {
+			  console.log('Using handleGlobalShare');
+			  window.handleGlobalShare(result);
+			  return;
+		  }
+
+		  // Fallback to Web Share API
+		  if (navigator.share) {
+			  console.log('Using Web Share API');
+			  navigator.share({
+				  title: 'Fortune Quiz Game - 财富测试',
+				  text: shareText,
+				  url: window.location.href
+			  }).then(function() {
+				  console.log('Share successful');
+			  }).catch(function(err) {
+				  console.log('Share failed or cancelled:', err);
+				  // User cancelled, show fallback
+				  if (err.name !== 'AbortError') {
+					  fallbackShare(shareText);
+				  }
+			  });
+		  } else {
+			  console.log('Using clipboard fallback');
+			  fallbackShare(shareText);
+		  }
+	  }
+
+	  function fallbackShare(shareText) {
+		  // Ultimate fallback - copy to clipboard
+		  var textToCopy = shareText + ' ' + window.location.href;
+		  if (navigator.clipboard && navigator.clipboard.writeText) {
+			  navigator.clipboard.writeText(textToCopy).then(function() {
+				  alert('分享链接已复制到剪贴板！\n\n' + shareText);
+			  }).catch(function(err) {
+				  console.error('Clipboard failed:', err);
+				  alert('分享内容：\n' + shareText + '\n\n链接：' + window.location.href + '\n\n请手动复制分享');
+			  });
+		  } else {
+			  alert('分享内容：\n' + shareText + '\n\n链接：' + window.location.href + '\n\n请手动复制分享');
+		  }
+	  }
       </script>
 	          <style type="text/css">
  body{
@@ -351,24 +416,6 @@
           background: #317eac;
           filter:Alpha(opacity=60);
       }
-            #tip {
-                display: none;
-                position: absolute;
-                top: 0;
-                left: 0;
-            }
-		 #tip img{width:100%;display: inline;}	
-	#mask {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		display: none;
-		background-color: #333;
-		-moz-opacity: 0.9;
-		opacity: 0.9;
-	}
 .game{
 display:inlineblock; 
 margin:5px 0px; 
@@ -618,11 +665,8 @@ text-align:left;
 
       </div>
     </div>
-    <div class="share tools-button" onclick="mask();">分享</div>
+    <div class="share tools-button" onclick="shareResult();">分享</div>
 </div>
-
-<div id="mask" onclick="mask();"></div>
-<div id="tip" onclick="mask();"><img src="./images/tip-share.jpg"></div>
 
 <div id="infos" style="display:none"></div>
 
