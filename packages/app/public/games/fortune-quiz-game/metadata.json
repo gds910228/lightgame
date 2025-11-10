@@ -1,0 +1,32 @@
+{
+  "id": "fortune-quiz-game",
+  "title": "Fortune Quiz Game",
+  "category": ["Puzzle", "Quiz"],
+  "description": "Discover the key to your wealth and fortune! Take this engaging personality quiz to find out what will bring you financial success. Answer 10 carefully crafted questions about your lifestyle, preferences, and habits to reveal your unique path to prosperity.",
+  "controls": "Click or tap on the options to answer each question. Use the back button to review previous questions. Complete all 10 questions to discover your fortune key!",
+  "image": "/games/fortune-quiz-game/icon.jpg",
+  "cover": "/games/fortune-quiz-game/icon.jpg",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "10 unique personality questions",
+    "12 different fortune outcomes",
+    "Interactive quiz interface",
+    "Beautiful visual design",
+    "Social sharing functionality",
+    "Instant results"
+  ],
+  "path": "/games/fortune-quiz-game/index.html",
+  "type": "local",
+  "tags": [
+    "quiz",
+    "personality",
+    "fortune",
+    "wealth",
+    "test",
+    "fun",
+    "casual",
+    "prediction"
+  ],
+  "thumbnail": "icon.jpg"
+}
