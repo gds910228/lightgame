@@ -228,7 +228,7 @@ function Press(e) {
 		break;
 	case 0:
 		e = e.y / wdpr | 0;
-		175 < t && 365 < e ? window.location.href = HOME_PATH: 60 > t && 350 < e ? setTimeout(function() {
+		175 < t && 365 < e ? window.location.href = "/": 60 > t && 350 < e ? setTimeout(function() {
 			show_share()
 		},
 		500) : (gmstini(), 6 != dvid ? stm = setTimeout("lp()", 1e3 / stti2) : (window.requestAnimationFrame = function() {
@@ -240,7 +240,7 @@ function Press(e) {
 		break;
 	case 2:
 		f = e.y / wdpr | 0;
-		175 < t && 365 < f ? window.location.href = HOME_PATH: 35 < t && 280 < f && t < 155 && f < 325 ? (t = scr_m | 0, scr_m = t = 0, stini(), gmstini()) : 168 < t && 280 < f && t < 286 && f < 325 && setTimeout(function() {
+		175 < t && 365 < f ? window.location.href = "/": 35 < t && 280 < f && t < 155 && f < 325 ? (t = scr_m | 0, scr_m = t = 0, stini(), gmstini()) : 168 < t && 280 < f && t < 286 && f < 325 && setTimeout(function() {
 			show_share()
 		},
 		500)

@@ -31,6 +31,37 @@ document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
 //new Image().src = 'http://g.lanrenmb.com/feidegenggao/';
 </script>
 <script type="text/javascript" src="play168.js"></script>
+<script type="text/javascript">
+// Share function integration
+function show_share() {
+    if (typeof window.parent.shareGame === 'function') {
+        // Use parent's share function if available (in iframe)
+        window.parent.shareGame('fly-higher-challenge', 'I can fly to ' + scr_m + ' meters! How high can you fly?');
+    } else if (navigator.share) {
+        // Use native Web Share API
+        navigator.share({
+            title: 'Fly Higher Challenge',
+            text: 'I can fly to ' + scr_m + ' meters! How high can you fly?',
+            url: window.location.href
+        }).catch(function(err) {
+            console.log('Share cancelled or failed:', err);
+        });
+    } else {
+        // Fallback: copy to clipboard
+        var shareText = 'I can fly to ' + scr_m + ' meters in Fly Higher Challenge! Try it: ' + window.location.href;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(shareText).then(function() {
+                alert('Share link copied to clipboard!');
+            }).catch(function(err) {
+                alert('Could not copy to clipboard. Please share manually: ' + window.location.href);
+            });
+        } else {
+            // Old browser fallback
+            alert('Share this: ' + shareText);
+        }
+    }
+}
+</script>
 <script type="text/javascript" src="gm17.min.js"></script>
     </head>
     <body onorientationchange="rtalt()" style="-webkit-transform-origin: 0px 0px 0px;">
