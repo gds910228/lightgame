@@ -277,6 +277,36 @@
       "type": "local"
     },
     {
+      "id": "fly-higher-challenge",
+      "title": "Fly Higher Challenge",
+      "category": "Action",
+      "description": "An exciting flying game where you navigate upward through obstacles and challenges. Test your reflexes and timing skills as you soar higher and higher. How far can you fly?",
+      "controls": "Tap or click to fly upward. Avoid obstacles and collect items to score points. Time your movements carefully to reach maximum height!",
+      "image": "/games/fly-higher-challenge/icon.png",
+      "cover": "/games/fly-higher-challenge/icon.png",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Addictive flying gameplay",
+        "Simple one-tap controls",
+        "Progressive difficulty",
+        "Score tracking system",
+        "Responsive touch and click controls"
+      ],
+      "path": "/games/fly-higher-challenge/index.html",
+      "type": "local",
+      "tags": [
+        "action",
+        "flying",
+        "arcade",
+        "casual",
+        "reflex",
+        "challenge",
+        "skill"
+      ],
+      "thumbnail": "icon.png"
+    },
+    {
       "id": "fortune-money-game",
       "title": "Fortune Money Game",
       "category": "Casual",
