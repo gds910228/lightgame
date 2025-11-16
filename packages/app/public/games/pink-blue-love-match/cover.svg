@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
+  <!-- Background gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB3E6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#E6B3FF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#B3D9FF;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Pink gradient -->
+    <linearGradient id="pinkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF69B4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF1493;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Blue gradient -->
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#87CEEB;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4169E1;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Heart shape -->
+    <path id="heart" d="M12,21.35l-1.45-1.32C5.4,15.36,2,12.28,2,8.5C2,5.42,4.42,3,7.5,3c1.74,0,3.41,0.81,4.5,2.09C13.09,3.81,14.76,3,16.5,3C19.58,3,22,5.42,22,8.5c0,3.78-3.4,6.86-8.55,11.54L12,21.35z"/>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="400" height="400" fill="url(#bgGradient)"/>
+  
+  <!-- Decorative circles -->
+  <circle cx="80" cy="80" r="30" fill="#FFB3E6" opacity="0.3"/>
+  <circle cx="320" cy="100" r="40" fill="#B3D9FF" opacity="0.3"/>
+  <circle cx="100" cy="320" r="35" fill="#E6B3FF" opacity="0.3"/>
+  <circle cx="300" cy="300" r="45" fill="#FFB3E6" opacity="0.3"/>
+  
+  <!-- Pink character (female) -->
+  <g transform="translate(120, 150)">
+    <!-- Body -->
+    <circle cx="0" cy="0" r="50" fill="url(#pinkGradient)"/>
+    <!-- Face features -->
+    <circle cx="-15" cy="-10" r="6" fill="#FFF"/>
+    <circle cx="15" cy="-10" r="6" fill="#FFF"/>
+    <circle cx="-15" cy="-10" r="3" fill="#333"/>
+    <circle cx="15" cy="-10" r="3" fill="#333"/>
+    <!-- Smile -->
+    <path d="M -20,10 Q 0,20 20,10" stroke="#FFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- Bow -->
+    <path d="M -40,-40 L -20,-30 L -40,-20 Z" fill="#FF1493"/>
+    <path d="M 40,-40 L 20,-30 L 40,-20 Z" fill="#FF1493"/>
+    <circle cx="0" cy="-30" r="5" fill="#FF1493"/>
+  </g>
+  
+  <!-- Blue character (male) -->
+  <g transform="translate(280, 150)">
+    <!-- Body -->
+    <circle cx="0" cy="0" r="50" fill="url(#blueGradient)"/>
+    <!-- Face features -->
+    <circle cx="-15" cy="-10" r="6" fill="#FFF"/>
+    <circle cx="15" cy="-10" r="6" fill="#FFF"/>
+    <circle cx="-15" cy="-10" r="3" fill="#333"/>
+    <circle cx="15" cy="-10" r="3" fill="#333"/>
+    <!-- Smile -->
+    <path d="M -20,10 Q 0,20 20,10" stroke="#FFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- Hat -->
+    <rect x="-30" y="-45" width="60" height="8" fill="#4169E1" rx="3"/>
+    <rect x="-20" y="-60" width="40" height="20" fill="#4169E1" rx="5"/>
+  </g>
+  
+  <!-- Heart in the middle -->
+  <g transform="translate(200, 180) scale(3)">
+    <use href="#heart" fill="#FF1493" opacity="0.8"/>
+  </g>
+  
+  <!-- Sparkles -->
+  <g fill="#FFD700" opacity="0.8">
+    <circle cx="160" cy="100" r="3"/>
+    <circle cx="240" cy="95" r="2"/>
+    <circle cx="180" cy="130" r="2.5"/>
+    <circle cx="220" cy="125" r="2"/>
+    <circle cx="150" cy="200" r="2.5"/>
+    <circle cx="250" cy="205" r="3"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="200" y="290" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFF" text-anchor="middle" stroke="#333" stroke-width="1">
+    Pink Blue
+  </text>
+  <text x="200" y="325" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#FFF" text-anchor="middle" stroke="#333" stroke-width="1">
+    Love Match
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="200" y="355" font-family="Arial, sans-serif" font-size="16" fill="#FFF" text-anchor="middle" opacity="0.9">
+    Test Your Romance Fortune!
+  </text>
+</svg>

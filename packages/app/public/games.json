@@ -216,7 +216,7 @@
         "challenge",
         "brain"
       ],
-      "thumbnail": "share.png"
+      "thumbnail": "cover.svg"
     },
     {
       "id": "dodge-the-lover",
@@ -728,7 +728,7 @@
         "Challenge your friends"
       ],
       "image": "/games/super-shooter-football/share.png",
-      "thumbnail": "share.png",
+      "thumbnail": "cover.svg",
       "path": "/games/super-shooter-football/index.html",
       "type": "local"
     },
@@ -780,6 +780,37 @@
       ],
       "thumbnail": "logo.jpg",
       "image": "/games/twins-match-up/logo.jpg"
+    },
+    {
+      "id": "pink-blue-love-match",
+      "title": "Pink Blue Love Match",
+      "category": "Puzzle",
+      "description": "A fun and engaging love matching puzzle game! Match pink and blue characters to test your romance fortune. Challenge yourself with colorful gameplay and see how high you can score in this adorable matching adventure.",
+      "controls": "Tap or click to match pink and blue characters. Complete matches to score points and progress through levels. The better your matching skills, the higher your romance fortune index!",
+      "image": "/games/pink-blue-love-match/cover.svg",
+      "cover": "/games/pink-blue-love-match/cover.svg",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Colorful matching puzzle gameplay",
+        "Romance fortune scoring system",
+        "Simple and intuitive controls",
+        "Progressive difficulty levels",
+        "Cute pink and blue character design"
+      ],
+      "path": "/games/pink-blue-love-match/index.html",
+      "type": "local",
+      "tags": [
+        "puzzle",
+        "matching",
+        "love",
+        "romance",
+        "casual",
+        "colorful",
+        "cute",
+        "fortune"
+      ],
+      "thumbnail": "cover.svg"
     }
   ]
 }
