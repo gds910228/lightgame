@@ -219,6 +219,36 @@
       "thumbnail": "share.png"
     },
     {
+      "id": "dodge-the-lover",
+      "title": "Dodge the Lover",
+      "category": "Action",
+      "description": "A fast-paced action game where you dodge the lover while collecting points! Test your reflexes and timing skills as you navigate through increasingly challenging obstacles. Click on the right blocks to escape and survive as long as possible!",
+      "controls": "Tap or click on blocks to dodge. Match the correct blocks to escape the lover and score points. Avoid wrong blocks that will end your game. The faster you react, the higher your score!",
+      "image": "/games/dodge-the-lover/fkfzm.png",
+      "thumbnail": "fkfzm.png",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Fast-paced dodging gameplay",
+        "Simple tap-to-play controls",
+        "Progressive difficulty increase",
+        "Score tracking system",
+        "Responsive touch and mouse controls"
+      ],
+      "tags": [
+        "action",
+        "dodge",
+        "reflex",
+        "arcade",
+        "casual",
+        "skill",
+        "timing",
+        "challenge"
+      ],
+      "path": "/games/dodge-the-lover/index.html",
+      "type": "local"
+    },
+    {
       "id": "dont-die-challenge",
       "title": "Don't Die Challenge",
       "description": "A thrilling survival game where you must avoid obstacles and stay alive as long as possible. Test your reflexes and endurance!",
