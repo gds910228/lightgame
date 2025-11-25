@@ -10,7 +10,9 @@
       "Bash(read packages/games/cube/metadata.json)",
       "Bash(cat packages/games/cube-tetris-game/metadata.json)",
       "Bash(cat packages/games/cube-tetris-game/tetris.min.js)",
-      "Bash(cp -r packages/games/air-strike-battle packages/app/public/games/)"
+      "Bash(cp -r packages/games/air-strike-battle packages/app/public/games/)",
+      "Bash(node scripts/build-games-list.js:*)",
+      "Bash(cat:*)"
     ],
     "deny": [],
     "ask": []

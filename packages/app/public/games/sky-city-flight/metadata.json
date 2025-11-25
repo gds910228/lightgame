@@ -1,0 +1,27 @@
+{
+  "id": "sky-city-flight",
+  "title": "Sky City Flight",
+  "category": "Action",
+  "description": "Soar through the sky and fly over the majestic Sky City! Navigate your aircraft through challenging obstacles, collect power-ups, and see how high you can fly in this thrilling aerial adventure. Test your reflexes and aim for the highest score as you explore the beautiful sky city landscapes.",
+  "controls": "Touch or click to control your aircraft. Avoid obstacles and collect items to increase your score. The higher you fly, the more challenging it becomes!",
+  "path": "/games/sky-city-flight/index.html",
+  "type": "local",
+  "image": "/games/sky-city-flight/icon.png",
+  "cover": "/games/sky-city-flight/icon.png",
+  "tags": [
+    "flight",
+    "action",
+    "sky",
+    "city",
+    "flying",
+    "adventure",
+    "arcade",
+    "skill",
+    "challenge",
+    "casual",
+    "endless",
+    "reflexes"
+  ],
+  "thumbnail": "icon.png",
+  "author": "LightGame Team"
+}
