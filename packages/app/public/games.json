@@ -219,6 +219,39 @@
       "thumbnail": "share.png"
     },
     {
+      "id": "dodge-police-18s",
+      "title": "Dodge Police 18s",
+      "category": "Action",
+      "description": "Escape from the police in this intense survival game! Dodge the police officers for 18 seconds to prove your skills. The longer you survive, the higher your score. How long can you evade the cops?",
+      "controls": "Touch or click and drag your avatar to dodge the police officers. Avoid contact at all costs! Move quickly and strategically to survive for 18 seconds. The police move faster as time progresses.",
+      "image": "/games/dodge-police-18s/gqtz.png",
+      "thumbnail": "gqtz.png",
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Intense police dodging gameplay",
+        "Real-time survival mechanics",
+        "Score tracking and percentile ranking",
+        "Drag and move controls",
+        "Progressive difficulty as time increases",
+        "Performance tracking system"
+      ],
+      "tags": [
+        "action",
+        "dodge",
+        "police",
+        "escape",
+        "survival",
+        "reflex",
+        "arcade",
+        "challenge",
+        "timing",
+        "skill"
+      ],
+      "path": "/games/dodge-police-18s/index.html",
+      "type": "local"
+    },
+    {
       "id": "dodge-the-lover",
       "title": "Dodge the Lover",
       "category": "Action",
