@@ -1,0 +1,282 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<head>
+<title>Stock Trader Pro - LightGame</title>
+<link rel="stylesheet" href="css/jquery.mobile.min.css" type="text/css"/>
+<style>
+body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+#gameContainer {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+#gameCanvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('vapp/background.gif') no-repeat center;
+    background-size: cover;
+}
+#gameUI {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+.stock-info {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.8);
+    padding: 15px;
+    border-radius: 10px;
+}
+.trading-buttons {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 20px;
+}
+.trade-btn {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+.buy-btn {
+    background: #4CAF50;
+    color: white;
+}
+.sell-btn {
+    background: #f44336;
+    color: white;
+}
+.trade-btn:hover {
+    transform: scale(1.05);
+}
+.trade-btn:active {
+    transform: scale(0.95);
+}
+#profit {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4CAF50;
+    margin-top: 10px;
+}
+.arrow {
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-left: 10px;
+}
+.menu-buttons {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 15px;
+}
+.menu-btn {
+    padding: 10px 20px;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+.menu-btn:hover {
+    background: rgba(255,255,255,0.3);
+}
+</style>
+</head>
+<body>
+<div id="gameContainer">
+    <div id="gameCanvas">
+        <div id="gameUI">
+            <div class="stock-info">
+                <h2>Stock Trader Pro</h2>
+                <p>Current Stock Price: $<span id="stockPrice">100</span></p>
+                <p>Shares Owned: <span id="sharesOwned">0</span></p>
+                <p>Balance: $<span id="balance">10000</span></p>
+                <div id="profit">Profit: $0</div>
+            </div>
+
+            <div class="trading-buttons">
+                <button class="trade-btn buy-btn" onclick="buyStock()">
+                    <img src="vapp/buy.gif" alt="Buy" style="width:40px;height:20px;vertical-align:middle;margin-right:8px;">
+                    BUY
+                </button>
+                <button class="trade-btn sell-btn" onclick="sellStock()">
+                    <img src="vapp/sell.gif" alt="Sell" style="width:40px;height:20px;vertical-align:middle;margin-right:8px;">
+                    SELL
+                </button>
+            </div>
+
+            <div class="menu-buttons">
+                <button class="menu-btn" onclick="goHome()">🏠 Home</button>
+                <button class="menu-btn" onclick="clickMore()">🎮 More Games</button>
+                <button class="menu-btn" onclick="dp_share()">📤 Share</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery.mobile.min.js"></script>
+
+<script>
+// Game variables
+let stockPrice = 100;
+let sharesOwned = 0;
+let balance = 10000;
+let initialBalance = 10000;
+let marketInterval;
+
+// Initialize game
+function initGame() {
+    updateDisplay();
+    startMarketSimulation();
+}
+
+// Market simulation
+function startMarketSimulation() {
+    marketInterval = setInterval(() => {
+        // Random price movement between -10% and +10%
+        const change = (Math.random() - 0.5) * 20;
+        stockPrice = Math.max(10, stockPrice * (1 + change / 100));
+        stockPrice = Math.round(stockPrice * 100) / 100;
+        updateDisplay();
+    }, 2000);
+}
+
+// Buy stock
+function buyStock() {
+    const sharesToBuy = Math.floor(balance / stockPrice);
+    if (sharesToBuy > 0) {
+        sharesOwned += sharesToBuy;
+        balance -= sharesToBuy * stockPrice;
+        updateDisplay();
+        showMessage(`Bought ${sharesToBuy} shares at $${stockPrice}!`);
+    } else {
+        showMessage("Insufficient balance to buy stocks!");
+    }
+}
+
+// Sell stock
+function sellStock() {
+    if (sharesOwned > 0) {
+        const sellValue = sharesOwned * stockPrice;
+        balance += sellValue;
+        showMessage(`Sold ${sharesOwned} shares at $${stockPrice}!`);
+        sharesOwned = 0;
+        updateDisplay();
+    } else {
+        showMessage("No shares to sell!");
+    }
+}
+
+// Update display
+function updateDisplay() {
+    document.getElementById('stockPrice').textContent = stockPrice.toFixed(2);
+    document.getElementById('sharesOwned').textContent = sharesOwned;
+    document.getElementById('balance').textContent = balance.toFixed(2);
+
+    const totalValue = balance + (sharesOwned * stockPrice);
+    const profit = totalValue - initialBalance;
+    const profitElement = document.getElementById('profit');
+    profitElement.textContent = `Profit: $${profit.toFixed(2)}`;
+    profitElement.style.color = profit >= 0 ? '#4CAF50' : '#f44336';
+}
+
+// Show message
+function showMessage(message) {
+    const msgDiv = document.createElement('div');
+    msgDiv.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0,0,0,0.9);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        z-index: 1000;
+        font-size: 18px;
+    `;
+    msgDiv.textContent = message;
+    document.getElementById('gameContainer').appendChild(msgDiv);
+
+    setTimeout(() => {
+        msgDiv.remove();
+    }, 2000);
+}
+
+// Navigation functions
+function goHome(){
+    window.location.href = '/';
+}
+
+function clickMore(){
+    window.location.href = '/';
+}
+
+function dp_share(){
+    if (window.parent && window.parent !== window) {
+        const totalValue = balance + (sharesOwned * stockPrice);
+        const profit = totalValue - initialBalance;
+        window.parent.postMessage({
+            type: 'SHARE_GAME',
+            data: {
+                score: Math.max(0, Math.round(profit))
+            }
+        }, '*');
+    } else {
+        // Fallback for standalone play
+        const shareText = `I'm playing Stock Trader Pro! Current profit: $${((balance + sharesOwned * stockPrice) - initialBalance).toFixed(2)}`;
+        if (navigator.share) {
+            navigator.share({
+                title: 'Stock Trader Pro',
+                text: shareText,
+                url: window.location.href
+            });
+        } else {
+            showMessage('Share feature not available');
+        }
+    }
+}
+
+// Initialize game when page loads
+document.addEventListener('DOMContentLoaded', initGame);
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (marketInterval) {
+        clearInterval(marketInterval);
+    }
+});
+</script>
+
+</body>
+</html>

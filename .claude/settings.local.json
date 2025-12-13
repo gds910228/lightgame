@@ -12,7 +12,8 @@
       "Bash(cat packages/games/cube-tetris-game/tetris.min.js)",
       "Bash(cp -r packages/games/air-strike-battle packages/app/public/games/)",
       "Bash(node scripts/build-games-list.js:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []

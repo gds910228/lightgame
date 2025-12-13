@@ -1,0 +1,31 @@
+{
+  "id": "stock-trader-pro",
+  "title": "Stock Trader Pro",
+  "category": "Strategy",
+  "description": "Test your trading skills in this exciting stock market simulation game! Buy and sell stocks at the right time to maximize your profits. Market trends change rapidly, so stay alert and make smart investment decisions!",
+  "controls": "Use mouse or touch to click Buy/Sell buttons. Watch the market trends and buy stocks when prices are low, sell when high. Monitor your portfolio and react quickly to market changes.",
+  "image": "logo.jpg",
+  "thumbnail": "logo.jpg",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Real-time stock market simulation",
+    "Buy and sell trading mechanics",
+    "Market trend indicators",
+    "Profit tracking system",
+    "Responsive controls",
+    "Visual trading interface"
+  ],
+  "tags": [
+    "strategy",
+    "trading",
+    "stock",
+    "market",
+    "simulation",
+    "investment",
+    "finance",
+    "puzzle",
+    "timing",
+    "skill"
+  ]
+}
