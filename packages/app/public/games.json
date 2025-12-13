@@ -200,6 +200,17 @@
       "type": "local"
     },
     {
+      "id": "car-crash-rally",
+      "title": "Car Crash Rally",
+      "category": "Racing",
+      "description": "An exciting crash rally game where you drive and crash to unlock different car types! From bicycles to Lamborghinis, test your luck in this thrilling car collision game.",
+      "controls": "Click or tap to control your car and crash into objects",
+      "path": "/games/car-crash-rally/index.html",
+      "type": "local",
+      "image": "/games/car-crash-rally/hczz.png",
+      "thumbnail": "hczz.png"
+    },
+    {
       "id": "cube-tetris-game",
       "title": "Cube Tetris Game",
       "category": "Puzzle",

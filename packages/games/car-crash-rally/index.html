@@ -1,0 +1,99 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width"/>
+<meta name="format-detection" content="telephone=no" />
+<meta name="format-detection" content="email=no" />
+<meta name="format-detection" content="address=no;">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+<meta name="keywords" content="car crash, racing game, rally game, driving game, collision game"/>
+<meta name="description" content="An exciting crash rally game where you drive and crash to unlock different car types! From bicycles to Lamborghinis, test your luck in this thrilling car collision game."/>
+<title>Car Crash Rally</title>
+<link type="text/css" rel="stylesheet" href="wap_game_index.css" media="all"/>
+<script type="text/javascript" src="car-crash-rally.js" charset="utf-8"></script>
+</head>
+<body>
+<div class="result" id="result" style="display:none;">
+	<ul>
+    	<li>GAME OVER</li>
+        <li>You unlocked:</li>
+        <li id="resultname">Bicycle</li>
+        <li><img id="resultIMG" src="qc/2014/1.png"></li></li>
+    </ul>
+</div>
+<div class="btn_top" id="header">
+	<div class="btn_l">
+   		<ul>
+            <li>CAR</li>
+            <li>CRASH</li>
+        </ul>
+    </div>
+    <div class="btn_r">
+    	<div class="btn_s">BEST: <span id="game_score">Lamborghini</span></div>
+        <div class="btn_d">Only 15% of players unlock the Lamborghini! Can you do it?</div>
+    </div>
+</div>
+<div class="c"></div>
+
+<div id="game_body"></div>
+
+<div class="c"></div>
+<div class="btn_foot">
+<div id="reset" class="btn_reset"><span><img src="qc/2014/wap.gif"></span>Try Again</div>
+<a href="/" class="btn_reset floatR" style="text-decoration: none; display: inline-block; margin-left: 10px;"><span><img src="qc/2014/wap2.gif"></span>More Games</a>
+<button onclick="shareGame()" class="btn_reset floatR" style="border: none; background: none; cursor: pointer; margin-left: 10px;"><span><img src="qc/2014/wap2.gif"></span>Share</button>
+</div>
+<div class="c"></div>
+<!--<div class="h60"></div>-->
+<div class="foot" id="foot">
+	<div class="foot_btn">
+    	
+    </div>
+</div>
+
+<!--<div>当前得分:<span id="game_score">0</span></div>
+<div>最高得分:<span id="game_UPscore">0</span></div>
+<div id="reset">重新开始</div>-->
+<div style="display:none">
+最高得分:<span id="game_UPscore" style="display:none">0</span>
+</div>
+
+<script>
+function shareGame() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Car Crash Rally',
+            text: 'An exciting crash rally game where you drive and crash to unlock different car types! Can you unlock the Lamborghini?',
+            url: window.location.href
+        }).then(() => {
+            console.log('Thanks for sharing!');
+        }).catch((error) => {
+            console.log('Error sharing:', error);
+            // Fallback: copy to clipboard
+            copyToClipboard(window.location.href);
+        });
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        copyToClipboard(window.location.href);
+    }
+}
+
+function copyToClipboard(text) {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+        document.execCommand('copy');
+        alert('Game link copied to clipboard!');
+    } catch (err) {
+        alert('Unable to copy link. Please copy manually: ' + text);
+    }
+    document.body.removeChild(textarea);
+}
+</script>
+
+</body>
+</html>
