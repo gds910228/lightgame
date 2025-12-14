@@ -1,0 +1,11 @@
+{
+  "id": "color-brain-challenge",
+  "title": "Color Brain Challenge",
+  "category": "Puzzle",
+  "description": "Test your color perception and brain coordination with this challenging color puzzle game",
+  "controls": "Click on the color that matches the text color, not the word meaning",
+  "path": "/games/color-brain-challenge/index.html",
+  "type": "local",
+  "tags": ["brain", "puzzle", "color", "test", "challenge"],
+  "thumbnail": "/games/color-brain-challenge/logo.jpg"
+}

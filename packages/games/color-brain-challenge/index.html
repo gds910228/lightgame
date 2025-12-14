@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width; initial-scale=1; maximum-scale=1; minimum-scale=1; user-scalable=no;">
+<meta name="keywords" content="color game,brain challenge,puzzle game,perception test">
+<meta name="description" content="Color Brain Challenge tests your color perception and brain coordination through fun puzzles">
+<meta property="og:image" content="logo.jpg">
+<title>Color Brain Challenge - Test Your Perception!</title>
+<style type="text/css">
+.green{color:#27ae60;}.red{color:#e74c3c;}.orange{color:#f39c12;}.yellow{color:#f6dd09;}.blue{color:#3498db;}.black{color:#000;}.brown{color:#795118;}.all_quest h1{font-size:40px;margin-top:30px;}
+body{background:url(460.jpg) repeat left top;color:#61696a;font-family:'Bree Serif',serif;font-size:13px;margin:0;padding:0;-webkit-text-size-adjust:none}h1{color:#2e4053;font-size:28px;margin-top:10px}h2{border-top:1px dotted #61696a;margin-top:30px;padding-top:30px}a{color:#3498db;text-decoration:none;transition:all ease 1s;}a:hover{background:#f39c12;border-color:#f39c12;}p{margin:0}p.sequence{color:#2e4053;font-size:20px;margin:0 0 10px}span.blank{border:2px dotted #ffc000;color:#ffc000;padding:1px 10px;-webkit-border-radius:100px;-moz-border-radius:100px;border-radius:100px}.wrapper{background:url(h.png) no-repeat center -15px;text-align:center;position:relative;height:480px;width:100%}.splash,.howto,ul.hud{position:absolute;left:50%}.splash{background:url(b.png) no-repeat center -200px;padding-top:189px;top:10px;margin-left:-90px;}.howto{margin-left:-120px;top:10px}.all_quest{position:relative;top:80px}.button{background:#e74c3c;border:2px solid #e74c3c;color:#fff;display:inline-block;font-size:16px;margin-top:5px;padding:5px 10px;-webkit-border-radius:100px;-moz-border-radius:100px;border-radius:100px}ul{list-style-type:none;margin:0;padding:0}ul li{display:inline-block;margin:0;padding:0}ul.hud{top:30px;margin-left:-150px}ul.hud li{color:#61696a;margin:0 10px;text-align:left;width:105px}ul.hud li.timeCount{background:url(b.png) no-repeat left -62px;padding-left:25px}ul.hud li.totalQuest{background:url(b.png) no-repeat -148px -62px;padding-left:25px}.answer{margin-top:50px}.answer ul li{font-size:24px;margin:0 10px 10px}.answer ul li a{border:2px solid #ffc000;color:#ffc000;display:inline-block;padding:1px 10px;-webkit-border-radius:100px;-moz-border-radius:100px;border-radius:100px}.answer ul li a.option_a:hover,.answer ul li a.option_b:hover,.answer ul li a.option_c:hover,.answer ul li a.option_d:hover{background-color:#0f591b}.answer ul li a.option_a{/*background:url(b.png) no-repeat 9px -5px*/}.answer ul li a.option_b{/*background:url(b.png) no-repeat -48px -5px*/}.answer ul li a.option_c{/*background:url(b.png) no-repeat -114px -5px*/}.answer ul li a.option_d{/*background:url(b.png) no-repeat -176px -5px*/}a.disable_click{pointer-events:none}.hint{height:20px;position:relative;top:85px}.tick{background:url(b.png) no-repeat left -110px;text-indent:-99999px;height:50px;width:55px}.cross{background:url(b.png) no-repeat -75px -110px;text-indent:-99999px;height:50px;width:55px}.result{margin:0 auto;position:relative;top:-45px}.result span.score{color:#27ae60;display:block;font-size:24px}.copyrights{position:absolute;margin-left:-173px;left:50%;top:375px;width:346px}.copyrights p{color:#7f888f;}.copyrights a{background: none;}.copyrights a:hover{background: none;}.fb_plugin{margin:0 auto;padding:0 20px;width:320px}.other_game{background:#222;margin:0 auto;overflow:hidden;padding:10px;width:708px}.other_game p{color:#ccc;font-family:Arial,Helvetica,sans-serif;font-weight:normal;font-size:14px;margin-top:0}.other_game ul{list-style-type:none;margin:0;padding:0}.other_game ul li{margin-top:10px;display:block;}.other_game ul li:first-child{margin:0}.other_game ul li img{float:left;margin-right:10px}.other_game a{display:block;color:#09c;font-size:14px;overflow:hidden;text-decoration:none}.other_game a:hover{background:#138c46;color: #fff;}.other_game a span{font-size:12px;font-family:Arial,Helvetica,sans-serif;color:#ccc}@media screen and (max-width:320px){.wrapper{overflow-x:hidden;width:320px;min-width:320px}.splash{margin-left:-160px;width:320px}.splash h1{font-size:18px}h2{margin-top:15px;padding-top:15px}.howto{margin-left:-150px;width:300px}.copyrights p{font-size:11px}.fb_plugin{width:280px;padding:0}.result{width:280px}.result span.score{font-size:16px}}
+</style>
+<link href="bdsstyle.css" rel="stylesheet" type="text/css"><script src="logger.js"></script></head>
+
+<body style="zoom: 1;">
+
+
+
+
+<div class="wrapper">
+	<div class="splash">
+    	<h1><span class="green">Red</span> or <span class="red">Green</span>?</h1>
+    	<p><a href="index.html" class="button">Continue</a></p>
+    </div><!-- END splash -->
+    <div class="howto" style="display: none;">
+    	<h1>How to Play?</h1>
+        <p>Test your color sensitivity and right brain coordination!<br>Complete this test to find out!</p>
+        <p>Let's test your skills!</p>
+        <h2>Rules</h2>
+        <p><strong>Select the COLOR of the text, not the word!</strong></p>
+    	<p><a href="index.html" class="button">Start Game!</a></p>
+    </div><!-- END howto -->
+    
+	<ul class="hud">
+        <li class="timeCount"></li><!-- END timeCount -->
+        <li class="totalQuest" style="display: none;">Question 1 / 20</li><!-- END totalQuest -->
+    </ul>
+    <div class="all_quest">
+        <div class="quest1" style="display: none;">
+        	<p class="sequence">What color is the text?</p>
+            <h1 class="green">橙</h1>
+            <div class="answer">
+            	<ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Red</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="dui">Green</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Orange</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Blue</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest1 -->
+        
+        <div class="quest2" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="red">黑</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Black</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="dui">Red</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Yellow</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest2 -->
+        
+        <div class="quest3" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="yellow">黄</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Black</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="dui">Yellow</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest3 -->
+        
+        <div class="quest4" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="blue">红</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Yellow</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Orange</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">红</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="dui">Blue</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest4 -->
+        
+        <div class="quest5" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="black">黑</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Orange</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="dui">黑</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest5 -->
+        
+        <div class="quest6" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="yellow">绿</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="dui">Yellow</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">红</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest6 -->
+        
+        <div class="quest7" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="orange">黄</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Yellow</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Black</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="dui">橙</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Green</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest7 -->
+        
+        <div class="quest8" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="blue">蓝</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Black</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="dui">Blue</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Yellow</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">红</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest8 -->
+        
+        <div class="quest9" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="yellow">绿</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="dui">Yellow</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Black</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest9 -->
+        
+        <div class="quest10" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="orange">红</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">红</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="dui">橙</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Green</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest10 -->
+        
+        <div class="quest11" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="red">橙</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Black</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="dui">Red</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest11 -->
+        
+        <div class="quest12" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="orange">黑</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="dui">橙</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Black</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Blue</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest12 -->
+        
+        <div class="quest13" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="yellow">黄</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Orange</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="dui">Yellow</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest13 -->
+        
+        <div class="quest14" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="black">蓝</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="dui">黑</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">红</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest14 -->
+        
+        <div class="quest15" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="brown">绿</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Orange</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Yellow</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="dui">Brown</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest15 -->
+        
+        <div class="quest16" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="brown">褐</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Blue</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="dui">Brown</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Yellow</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest16 -->
+        
+        <div class="quest17" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="green">红</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="dui">绿</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">红</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Black</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Orange</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest17 -->
+        
+        <div class="quest18" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="brown">橙</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="dui">Brown</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Orange</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">Yellow</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">红</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest18 -->
+        
+        <div class="quest19" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="blue">绿</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Black</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="cuo">红</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="dui">Blue</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest19 -->
+        
+        <div class="quest20" style="display: none;">
+            <p class="sequence">What color is the text?</p>
+            <h1 class="black">褐</h1>
+            <div class="answer">
+                <ul>
+                    <li><a href="index.html" class="option_a" data-verify="cuo">Green</a></li>
+                    <li><a href="index.html" class="option_b" data-verify="cuo">红</a></li>
+                    <li><a href="index.html" class="option_c" data-verify="dui">黑</a></li>
+                    <li><a href="index.html" class="option_d" data-verify="cuo">Blue</a></li>
+                </ul>
+            </div><!-- END answer -->
+        </div><!-- END quest20 -->
+        
+        <div class="result" style="display: none;">
+        	<h1>Your Score</h1>
+            <p>Your answers<span class="score">0</span></p>
+            <div class="fb_plugin">
+            <p>Share with friends</p>
+            <!---->
+
+            <p><br><br><br></p>
+            <p><a href="index.html" class="button retry">Play Again</a>&nbsp;&nbsp;<a href="/" class="button">More Games</a></p>
+            <!---->
+            </div>
+            <!-- END fb_plugin -->
+            
+            
+        </div><!-- END result -->
+    </div><!-- END all_quest -->
+    <div class="hint"><ul><li class="tick" style="display: none;">Correct!</li><li class="cross" style="display: none;">Wrong!</li></ul></div><!-- END hint -->
+    
+    <div class="copyrights"><p style="font-size:17px;"><a href="/" target="_blank" style="color:red;">Color Brain Challenge</a>|<a href="/" target="_blank" title="More Games">More Games</a></p>
+    <script src="static/saved_resource"></script>
+    </div>
+    
+    <!-- END copyrights -->
+</div>
+
+<script src="jquery.js"></script>
+<script>
+window.addEventListener("load",function(){setTimeout(function(){window.scrollTo(0,1)},0)});$(document).ready(function(){var i,totalQuest,timeUp,score,howto=$('.howto'),allQuest=$('.all_quest'),splash=$('.splash'),timeCountDiv=$(".timeCount"),totalQuestDiv=$('.totalQuest'),tickIcon=$('.tick'),crossIcon=$('.cross');init();function init(){i=1;totalQuest=20;timeUp=3500;score=0;$('.result').hide();howto.hide();$('.hint ul').children().hide();allQuest.children().hide();totalQuestDiv.hide().html('Question '+i+' / '+totalQuest);splash.show()}$('.splash a').click(function(e){e.preventDefault();splash.hide();howto.fadeIn('slow')});$('.howto a').click(function(e){e.preventDefault();howto.hide();startGame()});$('.answer a').click(function(e){var ans=$(this).data('verify');var default_ans="dui";e.preventDefault();$('.answer a').addClass('disable_click');if(ans===default_ans){score+=1;tickIcon.fadeIn('slow',function(){$(this).fadeOut('fast')})}else{crossIcon.fadeIn('slow',function(){$(this).fadeOut('fast')})}$('.quest'+i).fadeOut('slow',function(){if(i<totalQuest&&timeUp>=1){i++;$('.quest'+i).fadeIn('slow',function(){$('.answer a').removeClass('disable_click')})}else{showResult();clearInterval(timeLoop)}totalQuestDiv.html('Question '+i+' / '+totalQuest)})});$('.retry').click(function(e){e.preventDefault();init()});function startGame(){$('.quest1').show();timeCountDiv.show();totalQuestDiv.show();timeLoop=setInterval(timeUpCount,1000/60)}function timeUpCount(){var time=parseInt(timeUp);var minutes=Math.floor(time/60);var seconds=time%60;if(timeUp>=1){timeUp--}else{showResult();clearInterval(timeLoop)}timeCountDiv.html("Time "+minutes+":"+seconds)}function showResult(){allQuest.children().hide();totalQuestDiv.hide();timeCountDiv.hide();$('.result .score').html('Correct: '+score+' / '+totalQuest+'. Color Score: '+score*5+' points');$('.result').fadeIn('slow');dp_submitScore(score)}});
+</script>
+<script language="javascript">
+		function dp_submitScore(t){
+			dp_share(t);
+		}
+
+		function dp_share(t){
+            if(15>t && t> 5) {
+                document.title = "My color perception is "+t*5+" points! Pretty good! Try to beat me!";
+                $('.result .score').append(" Not bad, your eye-brain coordination is normal!");
+            }else if(20>t && t>15){
+                document.title = "My color perception is "+t*5+" points! Excellent! Try to beat me!";
+                $('.result .score').append(" Amazing, your eye-brain coordination is super strong!");
+            }else if(t==20){
+                document.title = "My color perception is "+t*5+" points! Perfect score! Try to match me!";
+                $('.result .score').append(" Perfect color perception and eye-brain coordination!");
+            }else{
+                document.title = "Want to know your color perception? Take the test!";
+                $('.result .score').append(" Your color perception needs improvement! Keep practicing!");
+            }
+		}
+</script>
+
+</body></html>
