@@ -1,0 +1,19 @@
+{
+  "id": "fiery-dragon",
+  "title": "Fiery Dragon",
+  "category": "Action",
+  "description": "Control a fiery dragon in this exciting arcade adventure! Navigate through challenging levels, avoid obstacles, and test your reflexes in this classic dragon game. Experience the thrill of flying a powerful dragon through dangerous territories.",
+  "controls": "Use arrow keys or on-screen controls to move the dragon. Avoid obstacles and enemies to survive as long as possible.",
+  "path": "/games/fiery-dragon/index.html",
+  "type": "local",
+  "tags": [
+    "dragon",
+    "action",
+    "arcade",
+    "adventure",
+    "flying",
+    "retro",
+    "classic",
+    "mobile"
+  ]
+}
