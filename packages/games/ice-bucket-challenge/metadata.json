@@ -1,0 +1,9 @@
+{
+  "id": "ice-bucket-challenge",
+  "title": "Ice Bucket Challenge",
+  "category": ["Action", "Casual"],
+  "description": "Take the ice bucket challenge! Drop ice buckets on characters and enjoy the refreshing splash in this fun casual game.",
+  "controls": "Click or tap to drop the ice bucket at the right moment",
+  "path": "/games/ice-bucket-challenge/index.html",
+  "type": "local"
+}

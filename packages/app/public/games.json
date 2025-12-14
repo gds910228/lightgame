@@ -236,7 +236,7 @@
         "test",
         "challenge"
       ],
-      "thumbnail": "460.jpg",
+      "thumbnail": "logo.jpg",
       "image": "/games/color-brain-challenge/logo.jpg"
     },
     {
@@ -517,6 +517,20 @@
         "mobile"
       ],
       "thumbnail": "icon.png"
+    },
+    {
+      "id": "ice-bucket-challenge",
+      "title": "Ice Bucket Challenge",
+      "category": [
+        "Action",
+        "Casual"
+      ],
+      "description": "Take the ice bucket challenge! Drop ice buckets on characters and enjoy the refreshing splash in this fun casual game.",
+      "controls": "Click or tap to drop the ice bucket at the right moment",
+      "path": "/games/ice-bucket-challenge/index.html",
+      "type": "local",
+      "image": "/games/ice-bucket-challenge/img/bg.png",
+      "thumbnail": "img/bg.png"
     },
     {
       "id": "island-quiz-game",
