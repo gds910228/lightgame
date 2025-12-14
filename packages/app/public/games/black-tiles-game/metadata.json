@@ -1,0 +1,9 @@
+{
+  "id": "black-tiles-game",
+  "title": "Black Tiles Game",
+  "category": "Puzzle",
+  "description": "A fast-paced puzzle game where you must tap only the black tiles and avoid the white ones. Test your reflexes and concentration in multiple game modes including Classic, Zen, Relay, Arcade, and Speed modes.",
+  "controls": "Tap the black tiles as quickly as possible. Avoid tapping the white tiles or the game will end!",
+  "path": "/games/black-tiles-game/index.html",
+  "type": "local"
+}
