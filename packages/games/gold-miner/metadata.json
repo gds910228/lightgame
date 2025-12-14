@@ -1,0 +1,9 @@
+{
+  "id": "gold-miner",
+  "title": "Gold Miner",
+  "category": ["Action", "Puzzle"],
+  "description": "Classic gold mining game where you use a hook to grab gold and gems underground.",
+  "controls": "Click or tap to launch the hook and grab valuable items",
+  "path": "/games/gold-miner/index.html",
+  "type": "local"
+}
