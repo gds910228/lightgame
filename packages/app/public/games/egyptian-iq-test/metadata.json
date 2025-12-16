@@ -1,0 +1,9 @@
+{
+  "id": "egyptian-iq-test",
+  "title": "Egyptian IQ Test",
+  "category": "Puzzle",
+  "description": "Challenge your intelligence with this ancient Egyptian pattern completion IQ test. Measure your cognitive abilities through spatial reasoning and pattern recognition.",
+  "controls": "Click on the options (A-H) to complete the pattern. Fill in all 6 answers and submit to see your IQ score.",
+  "path": "/games/egyptian-iq-test/index.html",
+  "type": "local"
+}

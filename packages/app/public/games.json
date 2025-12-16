@@ -236,8 +236,8 @@
         "test",
         "challenge"
       ],
-      "thumbnail": "logo.jpg",
-      "image": "/games/color-brain-challenge/logo.jpg"
+      "thumbnail": "460.jpg",
+      "image": "/games/color-brain-challenge/460.jpg"
     },
     {
       "id": "cube-tetris-game",
@@ -378,6 +378,17 @@
       "thumbnail": "cover.svg",
       "path": "/games/dragon-rescue-mission/index.html",
       "type": "local"
+    },
+    {
+      "id": "egyptian-iq-test",
+      "title": "Egyptian IQ Test",
+      "category": "Puzzle",
+      "description": "Challenge your intelligence with this ancient Egyptian pattern completion IQ test. Measure your cognitive abilities through spatial reasoning and pattern recognition.",
+      "controls": "Click on the options (A-H) to complete the pattern. Fill in all 6 answers and submit to see your IQ score.",
+      "path": "/games/egyptian-iq-test/index.html",
+      "type": "local",
+      "image": "/games/egyptian-iq-test/logo.png",
+      "thumbnail": "logo.png"
     },
     {
       "id": "fiery-dragon",

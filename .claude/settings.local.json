@@ -13,7 +13,8 @@
       "Bash(cp -r packages/games/air-strike-battle packages/app/public/games/)",
       "Bash(node scripts/build-games-list.js:*)",
       "Bash(cat:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": []
