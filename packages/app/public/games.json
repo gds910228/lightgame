@@ -259,6 +259,39 @@
       "thumbnail": "/games/cube-tetris-game/share.png"
     },
     {
+      "id": "danger-ranger",
+      "title": "Danger Ranger",
+      "description": "An exciting action-adventure game where you play as a ranger navigating through dangerous terrains. Face challenges, avoid obstacles, and complete missions in this thrilling mobile-friendly game!",
+      "category": "Action",
+      "tags": [
+        "action",
+        "adventure",
+        "ranger",
+        "mobile",
+        "platformer",
+        "challenge",
+        "obstacle",
+        "mission"
+      ],
+      "difficulty": "medium",
+      "playTime": "5-15 minutes",
+      "controls": "Arrow keys or on-screen controls to move, avoid obstacles and complete missions",
+      "thumbnail": "/games/danger-ranger/logo.JPG",
+      "featured": false,
+      "author": "LightGame Team",
+      "version": "1.0.0",
+      "features": [
+        "Mobile-responsive design",
+        "Smooth action gameplay",
+        "Multiple levels with increasing difficulty",
+        "Touch and keyboard controls",
+        "Progressive challenge system"
+      ],
+      "path": "/games/danger-ranger/index.html",
+      "image": "/games/danger-ranger/logo.JPG",
+      "type": "local"
+    },
+    {
       "id": "dodge-police-18s",
       "title": "Dodge Police 18s",
       "category": "Action",
