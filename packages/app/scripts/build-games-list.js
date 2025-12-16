@@ -113,12 +113,43 @@ function findCandidateImage(sourceRoot, gameDir) {
 }
 
 /**
+ * Load existing games.json to preserve manual modifications
+ */
+function loadExistingGamesList() {
+  if (fs.existsSync(OUTPUT_FILE)) {
+    try {
+      const existingData = JSON.parse(fs.readFileSync(OUTPUT_FILE, 'utf8'));
+      if (existingData.games && Array.isArray(existingData.games)) {
+        // Create a map of existing games by id for quick lookup
+        const existingMap = new Map();
+        existingData.games.forEach(game => {
+          if (game.id) {
+            existingMap.set(game.id, {
+              image: game.image,
+              thumbnail: game.thumbnail,
+              cover: game.cover
+            });
+          }
+        });
+        console.log(`Loaded ${existingMap.size} existing games for manual path preservation`);
+        return existingMap;
+      }
+    } catch (error) {
+      console.warn(`Warning: Could not load existing games.json: ${error.message}`);
+    }
+  }
+  return new Map();
+}
+
+/**
  * Scans the metadata source directory and builds a list of all games with their metadata
  */
 function buildGamesList() {
   console.log('Building games list from metadata source...');
-  
+
   try {
+    // Load existing games to preserve manual modifications
+    const existingGames = loadExistingGamesList();
     // Get all subdirectories in the metadata source directory
     const gameDirs = fs.readdirSync(METADATA_SOURCE_DIR, { withFileTypes: true })
       .filter(dirent => dirent.isDirectory())
@@ -156,6 +187,14 @@ function buildGamesList() {
           // Detect type (iframe/local)
           metadata.type = (metadata.embedUrl || metadata.iframe_url) ? 'iframe' : 'local';
 
+          // Check if we have existing manual modifications for this game
+          const existingGame = existingGames.get(gameId);
+
+          // Helper function to verify file existence
+          const existsRel = (rel) => {
+            try { return fs.existsSync(path.join(METADATA_SOURCE_DIR, gameDir, rel)); } catch { return false; }
+          };
+
           // Normalize asset paths (image/thumbnail/cover)
           const normalizeAsset = (p) => {
             if (!p) return p;
@@ -165,35 +204,66 @@ function buildGamesList() {
             return `/games/${gameId}/${p}`;
           };
 
-          // image normalize with robust fallback
-          const candidate = (!metadata.image && !metadata.thumbnail)
-            ? findCandidateImage(METADATA_SOURCE_DIR, gameDir)
-            : null;
+          // Preserve manually modified asset paths if they exist and are valid
+          const preserveManualPath = (assetType, assetPath) => {
+            if (existingGame && existingGame[assetType]) {
+              const manualPath = existingGame[assetType];
+              // Check if the manually set asset is an external URL or absolute path
+              if (/^https?:\/\//i.test(manualPath) || manualPath.startsWith('/')) {
+                metadata[assetType] = manualPath;
+                console.log(`Preserving manual ${assetType} path for ${gameId}: ${manualPath}`);
+                return true;
+              } else if (existsRel(manualPath)) {
+                metadata[assetType] = normalizeAsset(manualPath);
+                console.log(`Preserving manual local ${assetType} path for ${gameId}: ${manualPath}`);
+                return true;
+              }
+            }
+            return false;
+          };
 
-          if (!metadata.image && metadata.thumbnail) {
-            metadata.image = normalizeAsset(metadata.thumbnail);
-          } else if (!metadata.image && candidate) {
-            metadata.image = normalizeAsset(candidate);
-          } else if (metadata.image) {
-            metadata.image = normalizeAsset(metadata.image);
+          // Try to preserve manual paths first
+          const imagePreserved = preserveManualPath('image', metadata.image);
+          const thumbnailPreserved = preserveManualPath('thumbnail', metadata.thumbnail);
+          const coverPreserved = preserveManualPath('cover', metadata.cover);
+
+          // Automatic image detection only if not preserved
+          if (!imagePreserved) {
+            const candidate = !metadata.image && !metadata.thumbnail
+              ? findCandidateImage(METADATA_SOURCE_DIR, gameDir)
+              : null;
+
+            if (!metadata.image && metadata.thumbnail) {
+              metadata.image = normalizeAsset(metadata.thumbnail);
+            } else if (!metadata.image && candidate) {
+              metadata.image = normalizeAsset(candidate);
+            } else if (metadata.image) {
+              metadata.image = normalizeAsset(metadata.image);
+            }
           }
 
-          // ensure thumbnail if missing and image points within /games/{slug}/
-          if (!metadata.thumbnail && metadata.image && metadata.image.startsWith(`/games/${gameId}/`)) {
-            metadata.thumbnail = metadata.image.replace(`/games/${gameId}/`, '');
+          // Automatic thumbnail handling only if not preserved
+          if (!thumbnailPreserved) {
+            // ensure thumbnail if missing and image points within /games/{slug}/
+            if (!metadata.thumbnail && metadata.image && metadata.image.startsWith(`/games/${gameId}/`)) {
+              metadata.thumbnail = metadata.image.replace(`/games/${gameId}/`, '');
+            } else if (metadata.thumbnail) {
+              metadata.thumbnail = normalizeAsset(metadata.thumbnail);
+            }
           }
 
-          if (metadata.cover) {
+          // Automatic cover handling only if not preserved
+          if (!coverPreserved && metadata.cover) {
             metadata.cover = normalizeAsset(metadata.cover);
           }
 
-          // verify existence and fallback if missing
-          const existsRel = (rel) => {
-            try { return fs.existsSync(path.join(METADATA_SOURCE_DIR, gameDir, rel)); } catch { return false; }
+          // Verify existence and fallback if missing (only for auto-detected paths)
+          const shouldFallback = (assetPath, preserved) => {
+            return assetPath && !preserved && assetPath.startsWith(`/games/${gameId}/`);
           };
 
           // fix image pointing to non-existent source file
-          if (metadata.image && metadata.image.startsWith(`/games/${gameId}/`)) {
+          if (shouldFallback(metadata.image, imagePreserved)) {
             const rel = metadata.image.slice((`/games/${gameId}/`).length);
             if (!existsRel(rel)) {
               const alt = findCandidateImage(METADATA_SOURCE_DIR, gameDir);
@@ -205,7 +275,7 @@ function buildGamesList() {
           }
 
           // fix thumbnail missing file
-          if (metadata.thumbnail && !existsRel(metadata.thumbnail)) {
+          if (shouldFallback(metadata.thumbnail, thumbnailPreserved) && !existsRel(metadata.thumbnail)) {
             const alt = findCandidateImage(METADATA_SOURCE_DIR, gameDir);
             if (alt) {
               metadata.thumbnail = alt;

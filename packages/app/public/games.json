@@ -24,7 +24,7 @@
         "casual",
         "educational"
       ],
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/age-test-memory-game/icon.png"
     },
     {
       "id": "air-strike-battle",
@@ -55,7 +55,7 @@
         "flight",
         "fighter"
       ],
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/air-strike-battle/icon.png"
     },
     {
       "id": "geography-collection-game",
@@ -79,7 +79,7 @@
       ],
       "path": "/games/geography-collection-game/index.html",
       "type": "local",
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/geography-collection-game/icon.png"
     },
     {
       "id": "beat-the-cat",
@@ -95,7 +95,7 @@
         "Score recording system"
       ],
       "image": "/games/beat-the-cat/images/dbsjm.jpg",
-      "thumbnail": "cover.svg",
+      "thumbnail": "/games/beat-the-cat/cover.svg",
       "path": "/games/beat-the-cat/index.html",
       "type": "local"
     },
@@ -116,7 +116,7 @@
       ],
       "image": "/games/beat-the-tiger-game/icon.png",
       "cover": "/games/beat-the-tiger-game/icon.png",
-      "thumbnail": "icon.png",
+      "thumbnail": "/games/beat-the-tiger-game/icon.png",
       "path": "/games/beat-the-tiger-game/index.html",
       "type": "local"
     },
@@ -129,7 +129,7 @@
       "path": "/games/black-tiles-game/index.html",
       "type": "local",
       "image": "/games/black-tiles-game/logo.png",
-      "thumbnail": "logo.png"
+      "thumbnail": "/games/black-tiles-game/logo.png"
     },
     {
       "id": "bouncy-block",
@@ -148,7 +148,7 @@
         "jump",
         "phaser"
       ],
-      "thumbnail": "tanli.png"
+      "thumbnail": "/games/bouncy-block/tanli.png"
     },
     {
       "id": "bubble-pop-game",
@@ -166,7 +166,7 @@
         "arcade",
         "match3"
       ],
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/bubble-pop-game/icon.png"
     },
     {
       "id": "bun-eating-contest",
@@ -184,7 +184,7 @@
       "path": "/games/bun-eating-contest/index.html",
       "type": "local",
       "image": "/games/bun-eating-contest/icon.png",
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/bun-eating-contest/icon.png"
     },
     {
       "id": "bunny-challenge",
@@ -207,7 +207,7 @@
         "Score tracking system"
       ],
       "path": "/games/bunny-challenge/index.html",
-      "thumbnail": "cover.svg",
+      "thumbnail": "/games/bunny-challenge/cover.svg",
       "type": "local"
     },
     {
@@ -219,7 +219,7 @@
       "path": "/games/car-crash-rally/index.html",
       "type": "local",
       "image": "/games/car-crash-rally/hczz.png",
-      "thumbnail": "hczz.png"
+      "thumbnail": "/games/car-crash-rally/hczz.png"
     },
     {
       "id": "color-brain-challenge",
@@ -236,8 +236,8 @@
         "test",
         "challenge"
       ],
-      "thumbnail": "460.jpg",
-      "image": "/games/color-brain-challenge/460.jpg"
+      "thumbnail": "/games/color-brain-challenge/logo.jpg",
+      "image": "/games/color-brain-challenge/logo.jpg"
     },
     {
       "id": "cube-tetris-game",
@@ -256,7 +256,7 @@
         "challenge",
         "brain"
       ],
-      "thumbnail": "share.png"
+      "thumbnail": "/games/cube-tetris-game/share.png"
     },
     {
       "id": "dodge-police-18s",
@@ -265,7 +265,7 @@
       "description": "Escape from the police in this intense survival game! Dodge the police officers for 18 seconds to prove your skills. The longer you survive, the higher your score. How long can you evade the cops?",
       "controls": "Touch or click and drag your avatar to dodge the police officers. Avoid contact at all costs! Move quickly and strategically to survive for 18 seconds. The police move faster as time progresses.",
       "image": "/games/dodge-police-18s/gqtz.png",
-      "thumbnail": "gqtz.png",
+      "thumbnail": "/games/dodge-police-18s/gqtz.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -298,7 +298,7 @@
       "description": "A fast-paced action game where you dodge the lover while collecting points! Test your reflexes and timing skills as you navigate through increasingly challenging obstacles. Click on the right blocks to escape and survive as long as possible!",
       "controls": "Tap or click on blocks to dodge. Match the correct blocks to escape the lover and score points. Avoid wrong blocks that will end your game. The faster you react, the higher your score!",
       "image": "/games/dodge-the-lover/fkfzm.png",
-      "thumbnail": "fkfzm.png",
+      "thumbnail": "/games/dodge-the-lover/fkfzm.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -331,7 +331,7 @@
         "reflex",
         "challenge"
       ],
-      "thumbnail": "460.jpg",
+      "thumbnail": "/games/dont-die-challenge/460.jpg",
       "playUrl": "index.html",
       "featured": false,
       "difficulty": "Medium",
@@ -358,7 +358,7 @@
         "Keyboard and touch controls"
       ],
       "path": "/games/dot-eater-arcade/index.html",
-      "thumbnail": "icon.png",
+      "thumbnail": "/games/dot-eater-arcade/icon.png",
       "type": "local"
     },
     {
@@ -375,7 +375,7 @@
         "Multiple levels and challenges"
       ],
       "image": "/games/dragon-rescue-mission/blglez.png",
-      "thumbnail": "cover.svg",
+      "thumbnail": "/games/dragon-rescue-mission/cover.svg",
       "path": "/games/dragon-rescue-mission/index.html",
       "type": "local"
     },
@@ -388,7 +388,7 @@
       "path": "/games/egyptian-iq-test/index.html",
       "type": "local",
       "image": "/games/egyptian-iq-test/logo.png",
-      "thumbnail": "logo.png"
+      "thumbnail": "/games/egyptian-iq-test/logo.png"
     },
     {
       "id": "fiery-dragon",
@@ -409,7 +409,7 @@
         "mobile"
       ],
       "image": "/games/fiery-dragon/logo.JPG",
-      "thumbnail": "logo.JPG"
+      "thumbnail": "/games/fiery-dragon/logo.JPG"
     },
     {
       "id": "fly-higher-challenge",
@@ -439,7 +439,7 @@
         "challenge",
         "skill"
       ],
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/fly-higher-challenge/icon.png"
     },
     {
       "id": "fortune-money-game",
@@ -459,7 +459,7 @@
         "chinese",
         "caishen"
       ],
-      "thumbnail": "logo.jpg"
+      "thumbnail": "/games/fortune-money-game/logo.jpg"
     },
     {
       "id": "fortune-quiz-game",
@@ -494,7 +494,7 @@
         "casual",
         "prediction"
       ],
-      "thumbnail": "icon.jpg"
+      "thumbnail": "/games/fortune-quiz-game/icon.jpg"
     },
     {
       "id": "gold-miner",
@@ -508,7 +508,7 @@
       "path": "/games/gold-miner/index.html",
       "type": "local",
       "image": "/games/gold-miner/ba.png",
-      "thumbnail": "ba.png"
+      "thumbnail": "/games/gold-miner/ba.png"
     },
     {
       "id": "hit-me-game",
@@ -527,7 +527,7 @@
         "cocos2d",
         "mobile"
       ],
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/hit-me-game/icon.png"
     },
     {
       "id": "ice-bucket-challenge",
@@ -541,7 +541,7 @@
       "path": "/games/ice-bucket-challenge/index.html",
       "type": "local",
       "image": "/games/ice-bucket-challenge/img/bg.png",
-      "thumbnail": "img/bg.png"
+      "thumbnail": "/games/ice-bucket-challenge/img/bg.png"
     },
     {
       "id": "island-quiz-game",
@@ -561,7 +561,7 @@
         "knowledge",
         "geography"
       ],
-      "thumbnail": "resource/1.jpg"
+      "thumbnail": "/games/island-quiz-game/resource/1.jpg"
     },
     {
       "id": "light-bulb-puzzle",
@@ -590,7 +590,7 @@
         "strategy",
         "challenge"
       ],
-      "thumbnail": "img/icon.png"
+      "thumbnail": "/games/light-bulb-puzzle/img/icon.png"
     },
     {
       "id": "mind-reader-game",
@@ -610,7 +610,7 @@
         "trick",
         "psychic"
       ],
-      "thumbnail": "images/2.jpg"
+      "thumbnail": "/games/mind-reader-game/images/2.jpg"
     },
     {
       "id": "moon-landing-challenge",
@@ -629,7 +629,7 @@
         "Keyboard controls"
       ],
       "path": "/games/moon-landing-challenge/index.html",
-      "thumbnail": "icon.png",
+      "thumbnail": "/games/moon-landing-challenge/icon.png",
       "type": "local"
     },
     {
@@ -648,7 +648,7 @@
       "path": "/games/ocd-challenge-2/index.html",
       "type": "local",
       "image": "/games/ocd-challenge-2/icon.png",
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/ocd-challenge-2/icon.png"
     },
     {
       "id": "pacman-classic",
@@ -664,7 +664,7 @@
       "difficulty": "medium",
       "playTime": "5-15 minutes",
       "controls": "Arrow keys to move",
-      "thumbnail": "pacman.svg",
+      "thumbnail": "/games/pacman-classic/pacman.svg",
       "featured": true,
       "author": "LightGame Team",
       "version": "1.0.0",
@@ -695,7 +695,7 @@
       "path": "/games/picture-puzzle-challenge/index.html",
       "type": "local",
       "image": "/games/picture-puzzle-challenge/item0.jpg",
-      "thumbnail": "item0.jpg"
+      "thumbnail": "/games/picture-puzzle-challenge/item0.jpg"
     },
     {
       "id": "pink-blue-love-match",
@@ -726,7 +726,7 @@
         "cute",
         "fortune"
       ],
-      "thumbnail": "cover.svg"
+      "thumbnail": "/games/pink-blue-love-match/cover.svg"
     },
     {
       "id": "relationship-loyalty-test",
@@ -744,7 +744,7 @@
         "Relationship insights"
       ],
       "path": "/games/relationship-loyalty-test/index.html",
-      "thumbnail": "cggl.jpg",
+      "thumbnail": "/games/relationship-loyalty-test/cggl.jpg",
       "type": "local"
     },
     {
@@ -771,7 +771,7 @@
         "endless",
         "reflexes"
       ],
-      "thumbnail": "icon.png",
+      "thumbnail": "/games/sky-city-flight/icon.png",
       "author": "LightGame Team"
     },
     {
@@ -786,7 +786,7 @@
         "competitive",
         "real-time"
       ],
-      "thumbnail": "snake-arena.svg",
+      "thumbnail": "/games/snake-arena-multiplayer/snake-arena.svg",
       "rating": 4.5,
       "players": "Multiplayer",
       "difficulty": "Medium",
@@ -817,7 +817,7 @@
       "image": "/games/snake-classic/cover.svg",
       "description": "The classic Snake game where you control a snake to eat food and grow longer. Be careful not to hit the walls or yourself!",
       "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
-      "thumbnail": "cover.svg",
+      "thumbnail": "/games/snake-classic/cover.svg",
       "path": "/games/snake-classic/index.html",
       "type": "local"
     },
@@ -828,7 +828,7 @@
       "image": "/games/space-shooter-game/thumbnail.svg",
       "description": "Defend Earth from waves of alien invaders in this classic arcade-style space shooter. Dodge enemy fire and collect power-ups to upgrade your weapons.",
       "controls": "Use Arrow Keys or WASD to move your spaceship. Press Space to shoot. Avoid enemy ships and their projectiles.",
-      "thumbnail": "thumbnail.svg",
+      "thumbnail": "/games/space-shooter-game/thumbnail.svg",
       "path": "/games/space-shooter-game/index.html",
       "type": "local"
     },
@@ -863,7 +863,7 @@
         "skill",
         "casual"
       ],
-      "thumbnail": "icon.png"
+      "thumbnail": "/games/stack-wood-game/icon.png"
     },
     {
       "id": "steps-of-wonder-puzzle",
@@ -880,7 +880,7 @@
         "Challenging gameplay"
       ],
       "image": "/games/steps-of-wonder-puzzle/cover.svg",
-      "thumbnail": "cover.svg",
+      "thumbnail": "/games/steps-of-wonder-puzzle/cover.svg",
       "path": "/games/steps-of-wonder-puzzle/index.html",
       "type": "local"
     },
@@ -891,7 +891,7 @@
       "description": "Test your trading skills in this exciting stock market simulation game! Buy and sell stocks at the right time to maximize your profits. Market trends change rapidly, so stay alert and make smart investment decisions!",
       "controls": "Use mouse or touch to click Buy/Sell buttons. Watch the market trends and buy stocks when prices are low, sell when high. Monitor your portfolio and react quickly to market changes.",
       "image": "/games/stock-trader-pro/logo.jpg",
-      "thumbnail": "logo.jpg",
+      "thumbnail": "/games/stock-trader-pro/logo.jpg",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
@@ -930,7 +930,7 @@
       "controls": "touch",
       "author": null,
       "version": "1.0.0",
-      "thumbnail": "icon.png",
+      "thumbnail": "/games/super-chromosome-puzzle/icon.png",
       "image": "/games/super-chromosome-puzzle/icon.png",
       "path": "/games/super-chromosome-puzzle/index.html",
       "date_added": "2025-08-19",
@@ -952,7 +952,7 @@
         "Challenge your friends"
       ],
       "image": "/games/super-shooter-football/share.png",
-      "thumbnail": "share.png",
+      "thumbnail": "/games/super-shooter-football/share.png",
       "path": "/games/super-shooter-football/index.html",
       "type": "local"
     },
@@ -963,7 +963,7 @@
       "image": "/games/tetris-classic/cover.svg",
       "description": "The classic block-stacking puzzle game. Arrange falling blocks to create complete lines and prevent the blocks from stacking up to the top.",
       "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop.",
-      "thumbnail": "cover.svg",
+      "thumbnail": "/games/tetris-classic/cover.svg",
       "path": "/games/tetris-classic/index.html",
       "type": "local"
     },
@@ -982,7 +982,7 @@
         "10 waves of enemies with increasing difficulty",
         "Resource management system to allocate money for building towers"
       ],
-      "thumbnail": "cover.svg",
+      "thumbnail": "/games/tower-defense-strategy/cover.svg",
       "path": "/games/tower-defense-strategy/index.html",
       "type": "local"
     },
@@ -1002,7 +1002,7 @@
         "brain",
         "training"
       ],
-      "thumbnail": "logo.jpg",
+      "thumbnail": "/games/twins-match-up/logo.jpg",
       "image": "/games/twins-match-up/logo.jpg"
     }
   ]
