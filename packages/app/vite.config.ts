@@ -22,29 +22,8 @@ export default defineConfig({
     // 优化chunk分割策略
     rollupOptions: {
       output: {
-        // 更细粒度的代码分割
-        manualChunks: (id) => {
-          // 将所有 React 相关库打包到同一个 chunk，避免 ForwardRef 错误
-          if (id.includes('node_modules/react') ||
-              id.includes('node_modules/react-dom') ||
-              id.includes('node_modules/scheduler') ||
-              id.includes('node_modules/react-router') ||
-              id.includes('node_modules/remix-run') ||
-              id.includes('node_modules/react-helmet') ||
-              id.includes('node_modules/react-select') ||
-              id.includes('node_modules/react-hook-form') ||
-              id.includes('@emailjs')) {
-            return 'react-vendor'
-          }
-          // 分析工具
-          if (id.includes('node_modules/@vercel/analytics')) {
-            return 'analytics-vendor'
-          }
-          // 其他node_modules
-          if (id.includes('node_modules')) {
-            return 'vendor'
-          }
-        },
+        // 使用 Vite 默认的代码分割策略，避免 React ForwardRef 问题
+        manualChunks: undefined,
         // 为生成的chunk文件命名
         chunkFileNames: 'assets/[name]-[hash].js',
         entryFileNames: 'assets/[name]-[hash].js',
