@@ -24,21 +24,17 @@ export default defineConfig({
       output: {
         // 更细粒度的代码分割
         manualChunks: (id) => {
-          // React核心库 - 必须在同一个chunk中
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/scheduler')) {
+          // 将所有 React 相关库打包到同一个 chunk，避免 ForwardRef 错误
+          if (id.includes('node_modules/react') ||
+              id.includes('node_modules/react-dom') ||
+              id.includes('node_modules/scheduler') ||
+              id.includes('node_modules/react-router') ||
+              id.includes('node_modules/remix-run') ||
+              id.includes('node_modules/react-helmet') ||
+              id.includes('node_modules/react-select') ||
+              id.includes('node_modules/react-hook-form') ||
+              id.includes('@emailjs')) {
             return 'react-vendor'
-          }
-          // 路由库
-          if (id.includes('node_modules/react-router') || id.includes('node_modules/remix-run')) {
-            return 'router-vendor'
-          }
-          // SEO相关
-          if (id.includes('node_modules/react-helmet')) {
-            return 'seo-vendor'
-          }
-          // UI组件库（如果有）
-          if (id.includes('node_modules/@heroicons') || id.includes('node_modules/lucide')) {
-            return 'ui-vendor'
           }
           // 分析工具
           if (id.includes('node_modules/@vercel/analytics')) {
