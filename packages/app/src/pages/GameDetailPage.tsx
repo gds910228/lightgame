@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { getGameById } from '../services/gameService'
+import { getGameById, getAllGames } from '../services/gameService'
 import { Game } from '../types'
+import SEO from '../components/SEO'
+import Breadcrumb from '../components/Breadcrumb'
 import FavoriteButton from '../components/FavoriteButton'
 import ShareButton from '../components/ShareButton'
 import ToastNotification from '../components/ToastNotification'
@@ -11,14 +13,15 @@ const GameDetailPage = () => {
   const { gameId } = useParams<{ gameId: string }>()
   const { recordGameLoad, recordGamePlay, recordLoadError } = usePerformance()
   const startTimeRef = useRef(Date.now())
-  
+
   const [game, setGame] = useState<Game | null>(null)
+  const [relatedGames, setRelatedGames] = useState<Game[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [isFullScreen, setIsFullScreen] = useState(false)
   const [iframeLoaded, setIframeLoaded] = useState(false)
   const [showToast, setShowToast] = useState(false)
-  
+
   const fullscreenContainerRef = useRef<HTMLDivElement>(null)
   const iframeRef = useRef<HTMLIFrameElement>(null)
   const exitButtonRef = useRef<HTMLButtonElement>(null)
@@ -57,7 +60,33 @@ const GameDetailPage = () => {
       recordGamePlay(gameId);
     }
   }, [gameId, recordGamePlay]);
-  
+
+  // Fetch related games
+  useEffect(() => {
+    const fetchRelatedGames = async () => {
+      if (!game) return
+
+      try {
+        const allGames = await getAllGames()
+
+        // Filter related games by category and exclude current game
+        const gameCategory = Array.isArray(game.category) ? game.category[0] : game.category
+        const related = allGames
+          .filter(g =>
+            g.id !== game.id &&
+            (Array.isArray(g.category) ? g.category.includes(gameCategory) : g.category === gameCategory)
+          )
+          .slice(0, 4) // Get max 4 related games
+
+        setRelatedGames(related)
+      } catch (err) {
+        console.error('Error fetching related games:', err)
+      }
+    }
+
+    fetchRelatedGames()
+  }, [game])
+
   // Handle fullscreen mode
   const enterFullScreen = () => {
     if (!game) return;
@@ -284,6 +313,19 @@ const GameDetailPage = () => {
   
   return (
     <>
+      <SEO
+        title={`${game.title} - Play Free Online | LightGame`}
+        description={`${game.description} Play this ${Array.isArray(game.category) ? game.category[0] : game.category} game online for free. No downloads, no registration required.`}
+        image={game.image}
+        url={`https://games.misitebo.win/game/${game.id}`}
+        type="game"
+        game={{
+          name: game.title,
+          category: Array.isArray(game.category) ? game.category.join(', ') : game.category,
+          description: game.description,
+          thumbnail: game.image
+        }}
+      />
       {showToast && (
         <ToastNotification
           message="Link copied to clipboard!"
@@ -292,12 +334,15 @@ const GameDetailPage = () => {
       )}
       {/* Normal view */}
       <div className={`animate-fade-in ${isFullScreen ? 'hidden' : ''}`}>
+        {/* Breadcrumb */}
+        <Breadcrumb />
+
         {/* Back button */}
         <Link to="/" className="inline-flex items-center text-primary-600 hover:text-primary-700 mb-6 group">
           <i className="fas fa-arrow-left mr-2 transition-transform group-hover:-translate-x-1"></i>
           Back to all games
         </Link>
-        
+
         {/* Game details */}
         <div className="bg-white rounded-xl shadow-md overflow-hidden max-w-6xl mx-auto">
           <div className="lg:flex">
@@ -364,7 +409,46 @@ const GameDetailPage = () => {
           </div>
         </div>
       </div>
-      
+
+      {/* Related Games Section */}
+      {relatedGames.length > 0 && (
+        <div className="mt-12 max-w-6xl mx-auto">
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">
+            <i className="fas fa-gamepad text-primary-500 mr-2"></i>
+            You May Also Like
+          </h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {relatedGames.map((relatedGame) => (
+              <Link
+                key={relatedGame.id}
+                to={`/game/${relatedGame.id}`}
+                className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow group"
+              >
+                <div className="relative h-32 overflow-hidden">
+                  <img
+                    src={relatedGame.image}
+                    alt={relatedGame.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                  <span className="absolute bottom-2 left-2 text-white text-sm font-medium">
+                    {Array.isArray(relatedGame.category) ? relatedGame.category[0] : relatedGame.category}
+                  </span>
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-gray-900 mb-1 group-hover:text-primary-600 transition-colors">
+                    {relatedGame.title}
+                  </h3>
+                  <p className="text-xs text-gray-600 line-clamp-2">
+                    {relatedGame.description}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Fullscreen container */}
       <div 
         ref={fullscreenContainerRef}

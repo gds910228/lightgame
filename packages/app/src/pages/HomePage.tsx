@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import GameCard from '../components/GameCard'
+import SEO from '../components/SEO'
 import { Game } from '../types'
 import { getAllGames, getGamesByCategory, searchGames } from '../services/gameService'
 import { useFavorites } from '../contexts/FavoritesContext'
@@ -59,7 +60,7 @@ const HomePage = () => {
     const categoryParam = params.get('category')
     const searchParam = params.get('search')
     const favoritesParam = params.get('favorites')
-    
+
     if (favoritesParam === 'true') {
       return 'My Favorite Games'
     } else if (searchParam) {
@@ -70,9 +71,46 @@ const HomePage = () => {
       return 'All Games'
     }
   }
-  
+
+  // Generate SEO metadata based on current page state
+  const getSEOMetadata = () => {
+    const params = new URLSearchParams(location.search)
+    const categoryParam = params.get('category')
+    const searchParam = params.get('search')
+    const favoritesParam = params.get('favorites')
+
+    if (favoritesParam === 'true') {
+      return {
+        title: 'My Favorite Games - LightGame',
+        description: 'Your personal collection of favorite games. Save and quickly access your most-loved games on LightGame.'
+      }
+    } else if (searchParam) {
+      return {
+        title: `Search: "${searchParam}" - LightGame`,
+        description: `Search results for "${searchParam}". Find the best free online games matching your interests.`
+      }
+    } else if (categoryParam) {
+      return {
+        title: `${categoryParam} Games - Play Free Online | LightGame`,
+        description: `Play free ${categoryParam} games online. No downloads, no registrations. Instant ${categoryParam} gaming fun!`
+      }
+    } else {
+      return {
+        title: 'LightGame - Quick Games for Quick Breaks',
+        description: 'Play free online games instantly! No downloads, no registrations. 40+ puzzle, action, and arcade games perfect for your break.'
+      }
+    }
+  }
+
+  const seoMetadata = getSEOMetadata()
+
   return (
     <div className="animate-fade-in">
+      <SEO
+        title={seoMetadata.title}
+        description={seoMetadata.description}
+        url={`https://games.misitebo.win/${location.search}`}
+      />
       {/* Hero section (only on main page without filters) */}
       {!location.search && (
         <div className="bg-gradient-to-r from-primary-50 to-secondary-50 -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-10 mb-10 rounded-lg shadow-sm">

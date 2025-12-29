@@ -14,7 +14,13 @@
       "Bash(node scripts/build-games-list.js:*)",
       "Bash(cat:*)",
       "Bash(find:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(dir:*)",
+      "Bash(nul)",
+      "Bash(findstr:*)",
+      "Bash(node -e:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev)"
     ],
     "deny": [],
     "ask": []
