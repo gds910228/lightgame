@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Secret Admirer Quiz - How Many People Have a Crush on You?</title>
+<meta name="keywords" content="secret admirer quiz, crush test, love calculator, personality test" />
+<meta name="description" content="Take this fun quiz to find out how many secret admirers you have! Spin the wheel and discover your love luck." />
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="jQueryRotate.2.2.js"></script>
+<script type="text/javascript" src="jquery.easing.min.js"></script>
+<link rel="stylesheet" href="zp.css" />
+<style>
+#disk{background:url(wenzhangku.gif) no-repeat }
+.share-btn {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  margin: 5px;
+}
+.share-btn:hover {
+  background: #ff5252;
+}
+</style>
+
+<script type="text/javascript">
+var info=new Array()
+info[0]="Admired by everyone around you"
+info[1]="Countless secret admirers"
+info[2]="Admirers could circle the earth N times"
+info[3]="Admired by 5+ people"
+info[4]="Secret admirers are just dreams, don't overthink it"
+info[5]="Admired by 3 people"
+info[6]="Currently have 0 secret admirers"
+info[7]="Admired by 1 person"
+info[8]="Admired by 10+ people"
+info[9]="99 out of 100 people admire you"
+info[10]="No secret admirers, only open admiration"
+info[11]="Admired by 56 people"
+
+function choujiang(){
+	if($("#name").val()==""){
+		alert("Please enter your name");
+		$("#name").focus();
+		return false;
+	}
+
+	// Use JavaScript random instead of PHP
+	var data = Math.floor(Math.random() * 12);
+	var a = data*30+15;
+
+	$("#startbtn").rotate({
+		duration:6000,
+		angle: 0,
+		animateTo:2880+a,
+		easing: $.easing.easeOutSine,
+		callback: function(){
+
+			var infos="According to the quiz, \""+$("#name").val() + "\" is " + info[data] + " recently.";
+			$(document).attr('title',infos+" - Secret Admirer Quiz");
+			var infos="<font color=orange><b>[Quiz Result]</b></font><br />"+infos;
+			$("#tip").html(infos);
+			$("#info").css({display:""});
+		}
+	});
+
+}
+
+function retry(){
+	$("#info").css({display:"none"});
+}
+
+function shareResult() {
+	var resultText = $("#tip").text();
+	var shareUrl = window.location.href;
+
+	if (navigator.share) {
+		navigator.share({
+			title: 'Secret Admirer Quiz',
+			text: resultText,
+			url: shareUrl
+		}).catch(console.error);
+	} else {
+		// Fallback: copy to clipboard
+		var shareText = resultText + " Play now: " + shareUrl;
+		navigator.clipboard.writeText(shareText).then(function() {
+			alert('Result copied to clipboard!');
+		}).catch(function() {
+			// Last resort: select the text
+			prompt('Copy this result:', shareText);
+		});
+	}
+}
+
+</script>
+</head>
+
+<body>
+
+
+
+<div id="main">
+	<h1>Secret Admirer Quiz</h1>
+	<h2>How Many People Have a Crush on You?</h2>
+
+   <div class="demo">
+        <div id="disk"></div>
+        <div id="start"><img src="start.png" id="startbtn" onClick="choujiang()"></div>
+   </div>
+
+   <div class="shuru">Enter your name: <input value="" id="name"></div>
+</div>
+
+<div id="info" style="display:none;">
+	<div id="tip"></div>
+
+	<div class="retry">
+	<button onClick="retry()">Test Again</button>
+	<button onClick="shareResult()" class="share-btn">Share Result</button>
+	<button onClick="location.href='/'">More Games</button>
+	</div>
+
+</div>
+
+
+<div id="footad">
+	</div>
+
+
+<div class="more_test_list" id="more_test">
+<dt><h2>↓ More Fun Games ↓</h2></dt>
+<dd>
+	<a href="/"><li>Back to Homepage</li></a>
+</dd>
+</div>
+
+<footer style="margin-top:10px; font-size:10px; color:#bbb; text-align:center;">
+Privacy Policy: This is a pure static HTML game. We do not collect any user information!
+</footer>
+
+<textarea id="adhtml" style="display:none">
+	<button onClick="location.href='/'">More Games</button>
+	</textarea>
+
+
+<script>
+	infos=$("#adhtml").val();
+	$("#footad").append(infos);
+	</script>
+
+</body>
+</html>

@@ -781,6 +781,33 @@
       "type": "local"
     },
     {
+      "id": "secret-admirer-quiz",
+      "title": "Secret Admirer Quiz",
+      "category": "Personality",
+      "description": "Take this fun personality quiz to discover how many secret admirers you have! Spin the wheel and get a playful prediction about your love life. A lighthearted entertainment game that reveals amusing results about your attractiveness and charm.",
+      "image": "/games/secret-admirer-quiz/icon.png",
+      "cover": "/games/secret-admirer-quiz/icon.png",
+      "controls": "Enter your name and click the START button to spin the wheel. The wheel will rotate and stop at a random result, telling you how many people might have a crush on you. Share your result with friends or try again for a different outcome!",
+      "path": "/games/secret-admirer-quiz/index.html",
+      "type": "local",
+      "tags": [
+        "personality",
+        "quiz",
+        "love",
+        "crush",
+        "test",
+        "fun",
+        "entertainment",
+        "wheel",
+        "casual",
+        "fortune",
+        "humor",
+        "social",
+        "shareable"
+      ],
+      "thumbnail": "icon.png"
+    },
+    {
       "id": "sky-city-flight",
       "title": "Sky City Flight",
       "category": "Action",
