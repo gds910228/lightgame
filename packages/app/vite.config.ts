@@ -24,12 +24,12 @@ export default defineConfig({
       output: {
         // 更细粒度的代码分割
         manualChunks: (id) => {
-          // React核心库
-          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom')) {
+          // React核心库 - 必须在同一个chunk中
+          if (id.includes('node_modules/react') || id.includes('node_modules/react-dom') || id.includes('node_modules/scheduler')) {
             return 'react-vendor'
           }
           // 路由库
-          if (id.includes('node_modules/react-router')) {
+          if (id.includes('node_modules/react-router') || id.includes('node_modules/remix-run')) {
             return 'router-vendor'
           }
           // SEO相关
