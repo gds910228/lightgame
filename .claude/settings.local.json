@@ -20,7 +20,11 @@
       "Bash(findstr:*)",
       "Bash(node -e:*)",
       "Bash(npm install:*)",
-      "Bash(npm run dev)"
+      "Bash(npm run dev)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfix: resolve CSP errors and React ForwardRef issue\n\n- 添加 Google Analytics 域名到 CSP 策略\n- 添加 Google Tag Manager 域名到 CSP 策略\n- 添加 Cloudflare Insights 域名到 CSP 策略\n- 优化 Vite 代码分割，确保 React、React DOM 和 scheduler 在同一 chunk\n- 包含 remix-run 依赖到路由 vendor chunk\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ],
     "deny": [],
     "ask": []

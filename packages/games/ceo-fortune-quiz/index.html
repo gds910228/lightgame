@@ -1,0 +1,121 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>CEO Fortune Quiz - Which Company Will You Lead?</title>
+<meta name="keywords" content="CEO, fortune quiz, personality test, career, company, fortune wheel" />
+<meta name="description" content="Spin the wheel and discover which company you'll become CEO of! A fun personality quiz game." />
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript" src="jQueryRotate.2.2.js"></script>
+<script type="text/javascript" src="jquery.easing.min.js"></script>
+<link rel="stylesheet" href="zp.css" />
+<style>
+#disk{background:url(wenzhangku.gif) no-repeat }
+</style>
+
+<script type="text/javascript">
+var info=new Array()
+info[0]="JD.com (Jingdong)"
+info[1]="Baidu"
+info[2]="Sina"
+info[3]="Yihaodian"
+info[4]="Tencent"
+info[5]="NetEase"
+info[6]="Taobao (Alibaba)"
+info[7]="Sohu"
+info[8]="LaShou"
+info[9]="Jumei"
+info[10]="Meituan"
+info[11]="Youku"
+
+
+function choujiang(){
+	if($("#name").val()==""){
+		alert("Please enter your name");
+		$("#name").focus();
+		return false;
+	}
+
+	// Random result for frontend demo
+	var data = Math.floor(Math.random() * 12);
+	var a = data*30+15;
+	$("#startbtn").rotate({
+		duration:3000,
+		angle: 0,
+		animateTo:1440+a,
+		easing: $.easing.easeOutSine,
+		callback: function(){
+
+			var infos="'"+$("#name").val()+"' will become the CEO of "+info[data]+" in 2025.";
+			$(document).attr('title',infos+" - CEO Fortune Quiz");
+			var infos="<font color=orange><b>[Test Result]</b></font><br />"+infos;
+			$("#tip").html(infos);
+			$("#info").css({display:""});
+		}
+	});
+
+}
+
+function retry(){
+	$("#info").css({display:"none"});
+}
+
+</script>
+</head>
+
+<body>
+
+
+
+<div id="main">
+	<h1>Which Company Will You Become CEO Of?</h1>
+
+
+   <div class="demo">
+        <div id="disk"></div>
+        <div id="start"><img src="start.png" id="startbtn" onClick="choujiang()"></div>
+   </div>
+
+	<div class="shuru">Enter your name: <input value="" id="name"></div>
+
+</div>
+
+<div id="info" style="display:none;">
+	<div id="tip"></div>
+
+	<div class="retry">
+	<button onClick="retry()">Test Again</button>
+	<button onclick="window.location.href='/'">More Games</button>
+	</div>
+
+</div>
+
+
+<div id="footad">
+	</div>
+
+
+<div class="more_test_list" id="more_test">
+<dt><h2>&darr; More Fun Quizzes &darr;</h2></dt>
+<dd><a href="/"><li>Back to Home</li></a></dd>
+</div>
+
+<footer style="margin-top:10px; font-size:10px; color:#bbb; text-align:center;">
+Privacy Policy: This is a pure static HTML page. We do not collect any user information!
+</footer>
+
+<textarea id="adhtml" style="display:none">
+
+<button onclick="window.location.href='/'">More Games</button>
+	</textarea>
+
+
+<script>
+	infos=$("#adhtml").val();
+	$("#footad").append(infos);
+	</script>
+
+</body>
+</html>

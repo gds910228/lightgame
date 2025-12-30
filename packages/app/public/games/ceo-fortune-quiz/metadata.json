@@ -1,0 +1,31 @@
+{
+  "id": "ceo-fortune-quiz",
+  "title": "CEO Fortune Quiz",
+  "category": "Quiz",
+  "description": "Spin the wheel and discover which company you'll become CEO of! Enter your name and test your fortune to see if you'll lead tech giants like Baidu, Tencent, Alibaba, or other major corporations. A fun personality quiz game for entertainment.",
+  "controls": "Enter your name in the input field and click the START button to spin the wheel. Watch it rotate and stop at your fortune result. Click 'Test Again' to try for a different outcome.",
+  "path": "/games/ceo-fortune-quiz/index.html",
+  "type": "local",
+  "image": "/games/ceo-fortune-quiz/icon.png",
+  "thumbnail": "/games/ceo-fortune-quiz/icon.png",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Interactive spinning wheel gameplay",
+    "Multiple company outcomes",
+    "Personalized fortune results",
+    "Simple and fun quiz mechanics"
+  ],
+  "tags": [
+    "quiz",
+    "personality",
+    "fortune",
+    "ceo",
+    "career",
+    "test",
+    "fun",
+    "wheel",
+    "casual",
+    "entertainment"
+  ]
+}
