@@ -35,7 +35,7 @@ const SearchBar = ({ onSearch, compact = false }: SearchBarProps) => {
         <form onSubmit={handleSubmit} className="relative">
           <input
             type="text"
-            placeholder="搜索游戏..."
+            placeholder="Search games..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             autoFocus
@@ -44,6 +44,7 @@ const SearchBar = ({ onSearch, compact = false }: SearchBarProps) => {
           <button
             type="submit"
             className="absolute left-0 top-0 h-full px-3 flex items-center text-primary-600"
+            aria-label="Search"
           >
             <i className="fas fa-search"></i>
           </button>
@@ -84,6 +85,7 @@ const SearchBar = ({ onSearch, compact = false }: SearchBarProps) => {
       <button
         type="submit"
         className="absolute left-0 top-0 h-full px-3 flex items-center text-gray-500 hover:text-primary-600"
+        aria-label="Search"
       >
         <i className="fas fa-search"></i>
       </button>

@@ -119,7 +119,7 @@ const CategoryFilter = ({ onItemClick }: CategoryFilterProps) => {
       <div className="flex justify-end mt-0 md:hidden">
         <span className="text-xs text-gray-400 flex items-center gap-1">
           <i className="fas fa-arrows-alt-h"></i>
-          滑动查看更多
+          Swipe for more
         </span>
       </div>
 
