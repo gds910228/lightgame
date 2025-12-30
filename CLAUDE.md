@@ -24,8 +24,14 @@ LightGame is a frontend-only casual game platform built with React + TypeScript 
 - **scripts/** - Automation scripts for game management
   - `validate-games.js` - Schema validation + iframe embedding checks
   - `sync-games.js` - Sync games from source to public directory
-  - `build-games-list.js` - Generate games.json from metadata
+  - `build-games-list.js` - Proxy to app's build-games-list.js
+  - `watch-games.js` - File watcher for auto sync during development
   - `lib/can-embed.js` - Embedding validation library
+  - `schemas/metadata.schema.json` - JSON Schema for game metadata (draft-07)
+
+- **packages/app/scripts/** - App-specific scripts
+  - `build-games-list.js` - Generate games.json from metadata (ES module)
+  - `optimize-games.cjs` - Image optimization utilities
 
 ### Game Integration System
 
@@ -50,13 +56,29 @@ Games are managed through `metadata.json` files that serve as the single source 
   "category": "Puzzle" | ["Puzzle", "Action"],
   "description": "Game description",
   "controls": "Control instructions",
-  "path": "/games/{id}/index.html",
   "type": "local" | "iframe",
+  // For local games:
+  "path": "/games/{id}/index.html",
   // For iframe games:
   "iframe_url": "https://1games.io/...",
-  "aspectRatio": "16:9"  // optional
+  "aspectRatio": "16:9",
+  // Optional fields:
+  "thumbnail": "./thumbnail.png" | "https://...",
+  "image": "./cover.png" | "https://...",
+  "tags": ["tag1", "tag2"],
+  "author": "Author Name",
+  "version": "1.0.0",
+  "features": ["Feature 1", "Feature 2"]
 }
 ```
+
+**Schema Validation:**
+- Validated by AJV (Another JSON Schema Validator) with draft-07 schema
+- Schema location: `scripts/schemas/metadata.schema.json`
+- Required fields: `id`, `title`, `category`, `description`, `controls`
+- Iframe games must have either `iframe_url` or `embedUrl` pointing to 1games.io
+- Local games must have `index.html` in their directory
+- Image fields support relative paths (normalized during build) or absolute URLs
 
 ### Frontend Architecture
 
@@ -66,23 +88,51 @@ Games are managed through `metadata.json` files that serve as the single source 
 - `components/SearchBar.tsx` - Game search
 - `components/FavoriteButton.tsx` - Favorites functionality (with FavoritesContext)
 - `components/PerformanceDashboard.tsx` - Performance monitoring
+- `components/Layout.tsx` - Main app layout with navigation
 - `pages/HomePage.tsx` - Main game listing page
 - `pages/GameDetailPage.tsx` - Individual game page
-- `services/gameService.ts` - Game data fetching
+- `pages/PrivacyPolicy.tsx` - Privacy policy page
+- `pages/TermsOfService.tsx` - Terms of service page
+- `pages/ContactUs.tsx` - Contact page with EmailJS form
+- `pages/NotFoundPage.tsx` - 404 page
+- `contexts/FavoritesContext.tsx` - Favorites state management
+- `contexts/PerformanceContext.tsx` - Performance monitoring context
+- `services/gameService.ts` - Game data fetching from public/games.json
 - `services/emailService.ts` - EmailJS integration for feedback
 
 **Key Configuration:**
-- `vite.config.ts` - Vite configuration with relative base path, vendor chunk splitting
-- `tailwind.config.js` - Tailwind CSS configuration
-- Uses `@` alias for `packages/app/src/`
+- `vite.config.ts` - Vite configuration with relative base path (`./`)
+  - Uses Vite's default code splitting (manualChunks: undefined) to avoid React ForwardRef errors
+  - `@` alias resolves to `packages/app/src/`
+  - Assets inline limit: 4KB
+  - Build output: `dist/` with hash-based naming
+- `tailwind.config.js` - Tailwind CSS with Autoprefixer
+- TypeScript configuration in `tsconfig.json`
 
 ### Deployment Configuration
 
 **vercel.json:**
 - Build command: `npm run build`
 - Output: `packages/app/dist`
-- SPA routing: All routes redirect to `/index.html`
-- Games served at `/games/:path*` with CSP headers allowing 1games.io iframe embedding
+- SPA routing: All non-game routes redirect to `/index.html`
+- Games served at `/games/:path*` with security headers
+- CSP headers configured for:
+  - Analytics: Google Analytics, Google Tag Manager, Cloudflare Insights
+  - Iframes: Only `https://1games.io` domain allowed
+  - CDN resources: Cloudflare, Google Fonts, cdnjs
+- Headers include: X-Content-Type-Options, X-Frame-Options, CSP
+- Trailing slash behavior: disabled
+
+### Build Flow
+
+The build process follows this sequence:
+1. **Root `npm run build`** triggers:
+2. **`npm run sync-games`** - Syncs games from source to public directory
+3. **`npm run build --workspace=packages/app`** - Runs the app build:
+   - **prebuild hook**: Runs `build-games-list.js` to generate `public/games.json`
+   - **TypeScript compilation**: `tsc` type-checks the code
+   - **Vite build**: Bundles the app to `dist/`
+4. Result: Production-ready build in `packages/app/dist/`
 
 ## Common Commands
 
@@ -120,8 +170,11 @@ npm run sync-games
 # Generate games.json from metadata
 npm run build:games:list
 
-# Watch games directory for changes
+# Watch games directory for changes (auto-triggers validate + sync)
 npm run watch-games
+
+# Optimize game assets (images, thumbnails)
+npm run optimize-games
 ```
 
 ### Linting
@@ -154,19 +207,36 @@ Note: No test framework configured. When adding tests, use Vitest for consistenc
 - Local games: Edit files in `packages/games/{id}/`, then run `npm run sync-games`
 - Iframe games: Update `metadata.json` only
 
-## Cursor Rules (Project-Specific)
+### Troubleshooting
 
-The project includes Cursor IDE rules in `.cursor/rules/`:
+**Iframe Games Not Loading:**
+- Check browser console for X-Frame-Options or CSP errors
+- Run `npm run validate:games` to verify embedding permissions
+- Ensure the iframe URL points to `https://1games.io/...`
+- Verify the game passes preflight checks in `scripts/lib/can-embed.js`
 
-**dev.mdc:** Project Manager role for task breakdown
-- Requires all tasks to be tracked in Markdown task lists (To Do/Doing/Done)
-- Save task progress to `docs/tasks.md`
-- Use todo-style checklists for tracking
+**Build Failures:**
+- TypeScript errors: Check type definitions in `packages/app/src/types/`
+- Missing games: Ensure `npm run sync-games` was run before build
+- Games list issues: Delete `public/games.json` and run `npm run build:games:list`
 
-**pm.mdc:** Full-stack Engineer role
-- Focus on PRD analysis and task decomposition
-- Generate PRDs at `docs/PRD.md`
-- Follow specific output formatting for task lists
+**Development Issues:**
+- Port 3000 in use: The dev server runs on port 3000 by default
+- Hot reload not working: Check that `npm run dev:watch` is running
+- Games not appearing: Verify `metadata.json` is valid and game is synced
+
+**CSP Violations:**
+- Check `vercel.json` headers if adding external resources
+- Ensure all analytics domains are whitelisted
+- For new CDNs, update CSP headers in vercel.json
+
+## Project Management
+
+The project uses task tracking in `docs/tasks.md` for managing game integration and development work. Key patterns:
+- Track tasks in Markdown with To Do/Doing/Done sections
+- Document PRDs at `docs/PRD.md` for larger features
+- Use Chinese for documentation in docs/ directory
+- Reference existing documentation for game classification and SEO optimization
 
 ## CI/CD
 
@@ -212,5 +282,18 @@ The project includes Cursor IDE rules in `.cursor/rules/`:
 - Uses relative base path (`./`) in Vite config for deployment flexibility
 - Games are served from `public/games/` in the built app
 - No user authentication - platform is completely open access
-- Games list is generated dynamically from metadata scans
-- All scripts use CommonJS (`require`) except package/app build scripts (ES modules)
+- Games list is generated dynamically from metadata scans in `packages/games/`
+- All root-level scripts use CommonJS (`require`)
+- App-level scripts in `packages/app/scripts/` use ES modules
+- Context providers wrap the entire app: FavoritesContext and PerformanceContext
+- React Router v6 handles client-side routing
+- Vercel Analytics integrated for production monitoring
+
+## Important Gotchas
+
+- **Always run `npm run sync-games`** before building - games are copied during sync, not during build
+- **Iframe validation blocks builds** - if `validate-games.js` fails, CI will block the PR
+- **Games.json is auto-generated** - never edit manually, always use `npm run build:games:list`
+- **Vite code splitting** - do not set custom manualChunks, it causes React ForwardRef errors
+- **Path aliases** - use `@/` prefix for imports from `src/` directory
+- **Image paths in metadata** - relative paths are normalized during build to `/games/{id}/...`

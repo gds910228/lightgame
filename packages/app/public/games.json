@@ -1067,7 +1067,7 @@
       "path": "/games/time-travel-quiz/index.html",
       "type": "local",
       "image": "/games/time-travel-quiz/icon.png",
-      "thumbnail": "icon.png",
+      "thumbnail": "/games/time-travel-quiz/icon.png",
       "author": "LightGame Team",
       "version": "1.0.0",
       "features": [
