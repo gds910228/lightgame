@@ -1,0 +1,33 @@
+{
+  "id": "time-travel-quiz",
+  "title": "Time Travel Quiz",
+  "category": "Quiz",
+  "description": "Travel back in time and discover who you would be in ancient China! Enter your name and choose your gender to find out which historical figure or ancient personality you would become. Will you be a mighty emperor, a legendary general, a beautiful consort, or a wise scholar? Take this fun personality quiz to unlock your ancient identity!",
+  "controls": "Enter your name in the input field, select your gender (Male/Female), and click the 'Time Travel' button. The game will calculate your result based on your name and reveal your ancient historical persona. Click 'Try Again' to test with different names.",
+  "path": "/games/time-travel-quiz/index.html",
+  "type": "local",
+  "image": "/games/time-travel-quiz/icon.png",
+  "thumbnail": "/games/time-travel-quiz/icon.png",
+  "author": "LightGame Team",
+  "version": "1.0.0",
+  "features": [
+    "Unique name-based algorithm",
+    "31 different historical outcomes",
+    "Male and female character paths",
+    "Beautiful historical artwork",
+    "Fun personality discovery"
+  ],
+  "tags": [
+    "quiz",
+    "personality",
+    "time-travel",
+    "history",
+    "ancient",
+    "chinese",
+    "test",
+    "fun",
+    "casual",
+    "entertainment",
+    "historical"
+  ]
+}
