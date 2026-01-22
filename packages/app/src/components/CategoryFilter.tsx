@@ -100,10 +100,10 @@ const CategoryFilter = ({ onItemClick }: CategoryFilterProps) => {
                 flex-shrink-0 flex items-center gap-2
                 px-4 py-2 rounded-full text-sm font-medium
                 transition-all duration-300 whitespace-nowrap
-                snap-start
+                snap-start border
                 ${activeCategory === category
-                  ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg scale-105'
-                  : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:shadow-md'
+                  ? 'bg-gradient-to-r from-neon-blue to-neon-purple text-white shadow-lg shadow-neon-blue/30 border-neon-blue scale-105'
+                  : 'bg-dark-card text-gray-300 border-dark-border hover:bg-dark-border hover:border-neon-blue/50'
                 }
               `}
               style={{ minHeight: '44px' }}
@@ -117,7 +117,7 @@ const CategoryFilter = ({ onItemClick }: CategoryFilterProps) => {
 
       {/* Mobile scroll indicator */}
       <div className="flex justify-end mt-0 md:hidden">
-        <span className="text-xs text-gray-400 flex items-center gap-1">
+        <span className="text-xs text-gray-500 flex items-center gap-1">
           <i className="fas fa-arrows-alt-h"></i>
           Swipe for more
         </span>
@@ -134,10 +134,10 @@ const CategoryFilter = ({ onItemClick }: CategoryFilterProps) => {
               className={`
                 inline-flex items-center gap-2
                 px-4 py-2 rounded-full text-sm font-medium
-                transition-all duration-300
+                transition-all duration-300 border
                 ${activeCategory === category
-                  ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg scale-105'
-                  : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 hover:shadow-md'
+                  ? 'bg-gradient-to-r from-neon-blue to-neon-purple text-white shadow-lg shadow-neon-blue/30 border-neon-blue scale-105'
+                  : 'bg-dark-card text-gray-300 border-dark-border hover:bg-dark-border hover:border-neon-blue/50'
                 }
               `}
             >

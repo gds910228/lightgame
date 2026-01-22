@@ -30,7 +30,7 @@ const BackToTop = () => {
       onClick={scrollToTop}
       className={`
         fixed bottom-20 sm:bottom-20 right-4 z-40
-        bg-primary-500 text-white
+        bg-gradient-to-br from-neon-blue to-neon-purple text-white
         w-12 h-12 sm:w-14 sm:h-14
         rounded-full shadow-lg
         flex items-center justify-center
@@ -39,7 +39,7 @@ const BackToTop = () => {
           ? 'opacity-100 translate-y-0 scale-100'
           : 'opacity-0 translate-y-10 scale-75 pointer-events-none'
         }
-        hover:bg-primary-600 hover:scale-110
+        hover:shadow-neon-blue hover:scale-110
         active:scale-95
       `}
       aria-label="Back to top"

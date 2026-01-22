@@ -33,16 +33,16 @@ const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       {/* 背景遮罩 */}
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+      <div
+        className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity animate-fade-in"
         onClick={onClose}
         aria-hidden="true"
       ></div>
-      
+
       {/* 模态窗口内容 */}
       <div className="relative min-h-screen flex items-center justify-center p-4">
-        <div 
-          className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-auto"
+        <div
+          className="relative bg-dark-card border border-dark-border rounded-lg shadow-2xl max-w-md w-full mx-auto animate-bounce-in glow-border"
           onClick={e => e.stopPropagation()} // 防止点击内容区域关闭模态窗口
         >
           {children}

@@ -13,34 +13,37 @@ const Footer = () => {
   const closeFeedbackModal = () => setIsModalOpen(false)
   
   return (
-    <footer className="bg-gray-100 py-8 border-t border-gray-200">
+    <footer className="bg-dark-card py-8 border-t border-dark-border">
       <div className="container-custom">
         <div className="flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0">
-            <Link to="/" className="flex items-center">
-              <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center">
-                <i className="fa-solid fa-gamepad text-white text-sm"></i>
+            <Link to="/" className="flex items-center group">
+              <div className="relative w-10 h-10">
+                <div className="absolute inset-0 bg-gradient-to-br from-neon-blue to-neon-purple rounded-lg rotate-45"></div>
+                <div className="absolute inset-1 bg-dark-card rounded-md flex items-center justify-center">
+                  <i className="fa-solid fa-gamepad text-neon-blue text-sm"></i>
+                </div>
               </div>
-              <span className="text-xl font-bold ml-2 text-gray-900">LightGame</span>
+              <span className="text-xl font-bold ml-2 text-white group-hover:text-neon-blue transition-colors">LightGame</span>
             </Link>
-            <p className="text-gray-600 mt-2 text-sm">
-              A beautifully designed, minimalist game sanctuary for busy professionals.
+            <p className="text-gray-400 mt-2 text-sm">
+              A retro-inspired game sanctuary for the modern player.
             </p>
           </div>
-          
+
           <div className="flex flex-col items-center md:items-end">
             <div className="flex gap-4 mb-3">
-              <a href="https://github.com/gds910228" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary-600 transition-colors text-xl" aria-label="GitHub">
+              <a href="https://github.com/gds910228" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-neon-blue transition-colors text-xl" aria-label="GitHub">
                 <i className="fa-brands fa-github"></i>
               </a>
-              <a href="https://x.com/ArcherRealAI" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-primary-600 transition-colors text-xl" aria-label="X (Twitter)">
+              <a href="https://x.com/ArcherRealAI" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-neon-blue transition-colors text-xl" aria-label="X (Twitter)">
                 <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                 </svg>
               </a>
               <button
                 onClick={openFeedbackModal}
-                className="text-gray-500 hover:text-primary-600 transition-colors flex items-center text-xl"
+                className="text-gray-400 hover:text-neon-blue transition-colors flex items-center text-xl"
                 aria-label="Submit Feedback"
               >
                 <i className="fa-solid fa-comment-dots mr-1"></i>
@@ -51,22 +54,22 @@ const Footer = () => {
               &copy; {currentYear} LightGame. All rights reserved.
             </p>
             <div className="flex gap-4 text-xs">
-              <Link to="/privacy-policy" className="text-gray-500 hover:text-primary-600 transition-colors">
+              <Link to="/privacy-policy" className="text-gray-500 hover:text-neon-blue transition-colors">
                 Privacy Policy
               </Link>
-              <span className="text-gray-300">|</span>
-              <Link to="/terms-of-service" className="text-gray-500 hover:text-primary-600 transition-colors">
+              <span className="text-gray-700">|</span>
+              <Link to="/terms-of-service" className="text-gray-500 hover:text-neon-blue transition-colors">
                 Terms of Service
               </Link>
-              <span className="text-gray-300">|</span>
-              <Link to="/contact" className="text-gray-500 hover:text-primary-600 transition-colors">
+              <span className="text-gray-700">|</span>
+              <Link to="/contact" className="text-gray-500 hover:text-neon-blue transition-colors">
                 Contact Us
               </Link>
             </div>
           </div>
         </div>
       </div>
-      
+
       {/* 反馈模态窗口 */}
       <Modal isOpen={isModalOpen} onClose={closeFeedbackModal}>
         <FeedbackForm games={games || []} onClose={closeFeedbackModal} />

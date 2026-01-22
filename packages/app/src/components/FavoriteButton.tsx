@@ -57,10 +57,10 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
           rounded-full
           transition-all duration-200
           hover:scale-110
-          focus:outline-none focus:ring-2 focus:ring-red-300
-          ${isGameFavorite 
-            ? 'text-red-500 hover:text-red-600' 
-            : 'text-gray-400 hover:text-red-500'
+          focus:outline-none focus:ring-2 focus:ring-neon-pink/50
+          ${isGameFavorite
+            ? 'text-neon-pink hover:text-neon-pink/80'
+            : 'text-gray-400 hover:text-neon-pink'
           }
           ${className}
         `}
@@ -92,13 +92,13 @@ const FavoriteButton: React.FC<FavoriteButtonProps> = ({
         <div className="fixed top-4 right-4 z-50 animate-bounce-in">
           <div className={`
             px-4 py-2 rounded-lg shadow-lg text-white text-sm font-medium
-            ${isGameFavorite 
-              ? 'bg-green-500' 
-              : 'bg-gray-500'
+            ${isGameFavorite
+              ? 'bg-neon-green text-dark-bg'
+              : 'bg-dark-card border border-neon-pink/30 text-neon-pink'
             }
           `}>
-            {isGameFavorite 
-              ? 'Game added to favorites!' 
+            {isGameFavorite
+              ? 'Game added to favorites!'
               : 'Game removed from favorites!'
             }
           </div>

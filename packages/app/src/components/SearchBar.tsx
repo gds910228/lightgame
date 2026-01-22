@@ -39,11 +39,11 @@ const SearchBar = ({ onSearch, compact = false }: SearchBarProps) => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             autoFocus
-            className="w-48 sm:w-64 pl-10 pr-10 py-2 rounded-full border-2 border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-300"
+            className="w-48 sm:w-64 pl-10 pr-10 py-2 rounded-full border-2 border-neon-blue bg-dark-bg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-blue/50 focus:shadow-neon-blue"
           />
           <button
             type="submit"
-            className="absolute left-0 top-0 h-full px-3 flex items-center text-primary-600"
+            className="absolute left-0 top-0 h-full px-3 flex items-center text-neon-blue hover:text-neon-purple transition-colors"
             aria-label="Search"
           >
             <i className="fas fa-search"></i>
@@ -52,7 +52,7 @@ const SearchBar = ({ onSearch, compact = false }: SearchBarProps) => {
             <button
               type="button"
               onClick={() => setSearchTerm('')}
-              className="absolute right-0 top-0 h-full px-3 flex items-center text-gray-400 hover:text-gray-600"
+              className="absolute right-0 top-0 h-full px-3 flex items-center text-gray-400 hover:text-gray-300 transition-colors"
             >
               <i className="fas fa-times"></i>
             </button>
@@ -64,10 +64,10 @@ const SearchBar = ({ onSearch, compact = false }: SearchBarProps) => {
     return (
       <button
         onClick={() => setIsExpanded(true)}
-        className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+        className="p-2 rounded-full hover:bg-dark-card transition-colors"
         aria-label="Search"
       >
-        <i className="fas fa-search text-gray-600 text-lg"></i>
+        <i className="fas fa-search text-gray-300 text-lg"></i>
       </button>
     )
   }
@@ -80,11 +80,11 @@ const SearchBar = ({ onSearch, compact = false }: SearchBarProps) => {
         placeholder="Search games..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full pl-10 pr-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-300 focus:border-primary-500"
+        className="w-full pl-10 pr-4 py-2 rounded-full border border-dark-border bg-dark-card text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-neon-blue/50 focus:border-neon-blue transition-all"
       />
       <button
         type="submit"
-        className="absolute left-0 top-0 h-full px-3 flex items-center text-gray-500 hover:text-primary-600"
+        className="absolute left-0 top-0 h-full px-3 flex items-center text-gray-400 hover:text-neon-blue transition-colors"
         aria-label="Search"
       >
         <i className="fas fa-search"></i>

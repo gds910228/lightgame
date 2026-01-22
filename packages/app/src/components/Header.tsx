@@ -42,8 +42,8 @@ const Header = () => {
   return (
     <>
       <header
-        className={`sticky top-0 z-10 bg-white transition-all duration-300 ${
-          isScrolled ? 'shadow-md' : ''
+        className={`sticky top-0 z-10 bg-dark-bg/95 backdrop-blur-md transition-all duration-300 border-b ${
+          isScrolled ? 'border-neon-blue/30 shadow-lg shadow-neon-blue/10' : 'border-transparent'
         }`}
       >
         {/* Mobile Header */}
@@ -51,8 +51,11 @@ const Header = () => {
           <div className="flex items-center justify-between gap-2">
             {/* Logo */}
             <Link to="/" className="flex items-center group flex-shrink-0">
-              <div className="w-8 h-8 rounded-full bg-primary-500 flex items-center justify-center">
-                <i className="fas fa-gamepad text-white text-base"></i>
+              <div className="relative w-10 h-10">
+                <div className="absolute inset-0 bg-gradient-to-br from-neon-blue to-neon-purple rounded-lg rotate-45"></div>
+                <div className="absolute inset-1 bg-dark-bg rounded-md flex items-center justify-center">
+                  <i className="fas fa-gamepad text-neon-blue text-base"></i>
+                </div>
               </div>
             </Link>
 
@@ -62,12 +65,12 @@ const Header = () => {
             {/* Favorites */}
             <button
               onClick={() => navigate('/?favorites=true')}
-              className="relative p-2 rounded-lg hover:bg-gray-100 flex-shrink-0"
+              className="relative p-2 rounded-lg hover:bg-dark-card flex-shrink-0 transition-colors"
               title="View favorites"
             >
-              <i className="fas fa-heart text-red-500 text-lg"></i>
+              <i className="fas fa-heart text-neon-pink text-lg"></i>
               {favoritesCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-neon-pink text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
                   {favoritesCount}
                 </span>
               )}
@@ -76,10 +79,10 @@ const Header = () => {
             {/* Menu button */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 rounded-lg hover:bg-gray-100 flex-shrink-0"
+              className="p-2 rounded-lg hover:bg-dark-card flex-shrink-0 transition-colors"
               aria-label="Open menu"
             >
-              <i className="fas fa-bars text-xl text-gray-700"></i>
+              <i className="fas fa-bars text-xl text-gray-300"></i>
             </button>
           </div>
         </div>
@@ -89,15 +92,18 @@ const Header = () => {
           <div className="flex items-center justify-between gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center group flex-shrink-0">
-              <div className="w-10 h-10 rounded-full bg-primary-500 flex items-center justify-center transition-transform group-hover:scale-110 group-hover:rotate-12">
-                <i className="fas fa-gamepad text-white text-xl"></i>
+              <div className="relative w-12 h-12">
+                <div className="absolute inset-0 bg-gradient-to-br from-neon-blue to-neon-purple rounded-lg rotate-45 transition-transform group-hover:rotate-90 group-hover:scale-110"></div>
+                <div className="absolute inset-1.5 bg-dark-bg rounded-md flex items-center justify-center">
+                  <i className="fas fa-gamepad text-neon-blue text-xl"></i>
+                </div>
               </div>
-              <div className="ml-2">
-                <h1 className="text-2xl font-bold text-gray-900">
-                  <span className="text-primary-500">Light</span>
-                  <span className="text-secondary-500">Game</span>
+              <div className="ml-3">
+                <h1 className="text-2xl font-bold text-white">
+                  <span className="text-neon-blue">LIGHT</span>
+                  <span className="text-neon-pink">GAME</span>
                 </h1>
-                <div className="text-xs text-gray-500 -mt-1">Instant fun, anytime</div>
+                <div className="text-xs text-gray-400 -mt-1">Instant fun, anytime</div>
               </div>
             </Link>
 
@@ -106,13 +112,13 @@ const Header = () => {
               <SearchBar onSearch={handleSearch} />
               <button
                 onClick={() => navigate('/?favorites=true')}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors text-gray-700 hover:text-gray-900 flex-shrink-0"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-card border border-neon-pink/30 hover:bg-dark-border hover:border-neon-pink/50 transition-all flex-shrink-0 group"
                 title="View favorites"
               >
-                <i className="fas fa-heart text-red-500"></i>
-                <span className="font-medium">Favorites</span>
+                <i className="fas fa-heart text-neon-pink group-hover:animate-heart-beat"></i>
+                <span className="font-medium text-gray-300">Favorites</span>
                 {favoritesCount > 0 && (
-                  <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center">
+                  <span className="bg-neon-pink text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center font-bold">
                     {favoritesCount}
                   </span>
                 )}
@@ -130,7 +136,7 @@ const Header = () => {
 
         {/* Mobile: Category filter below header (only on home page) - horizontal scroll */}
         {isHomePage && (
-          <div className="md:hidden border-t border-gray-100">
+          <div className="md:hidden border-t border-dark-border">
             <div className="container-custom py-3">
               <CategoryFilter />
             </div>

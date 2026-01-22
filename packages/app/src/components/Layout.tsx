@@ -27,7 +27,7 @@ const Layout = () => {
       {/* Performance Dashboard Button - Adjusted for mobile */}
       <button
         onClick={() => setIsDashboardOpen(true)}
-        className="fixed bottom-20 sm:bottom-5 right-5 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-colors duration-300 z-50"
+        className="fixed bottom-20 sm:bottom-5 right-5 bg-gradient-to-br from-neon-blue to-neon-purple text-white p-3 rounded-full shadow-lg hover:shadow-neon-blue transition-all duration-300 z-50 hover:scale-110"
         aria-label="Open Performance Dashboard"
       >
         <PerformanceIcon />
