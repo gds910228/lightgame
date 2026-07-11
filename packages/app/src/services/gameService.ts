@@ -7,19 +7,16 @@ let gamesCache: Game[] | null = null;
 const getBaseUrl = (): string => {
   // 本地开发环境
   if (import.meta.env.DEV) {
-    console.log('Running in DEV mode, using empty base URL');
     return '';
   }
-  
+
   // 检查是否在Vercel环境中
   if (typeof window !== 'undefined' && window.location.hostname.includes('vercel.app')) {
     // 使用完整的基础URL，确保游戏资源能正确加载
-    console.log('Running in Vercel environment, using full origin as base URL:', window.location.origin);
     return window.location.origin;
   }
-  
+
   // 其他生产环境 - 使用相对路径
-  console.log('Running in production environment, using empty base URL');
   return '';
 };
 
@@ -34,19 +31,17 @@ export async function getAllGames(): Promise<Game[]> {
   
   try {
     const baseUrl = getBaseUrl();
-    console.log(`Fetching games.json from: ${baseUrl}/games.json`);
-    
+
     const response = await fetch(`${baseUrl}/games.json`);
     if (!response.ok) {
       throw new Error(`Failed to fetch games: ${response.status} ${response.statusText}`);
     }
-    
+
     const jsonData = await response.json();
-    console.log('Fetched games data:', jsonData);
-    
+
     // Extract games array from the JSON structure
     const data: Game[] = jsonData.games || jsonData;
-    
+
     // 处理游戏路径，确保它们包含正确的基础URL
     const processedGames = data.map((game: any) => {
       // Convert the JSON format to our expected Game format
@@ -60,14 +55,7 @@ export async function getAllGames(): Promise<Game[]> {
         path: game.path ? `${baseUrl}${game.path}` : `${baseUrl}/games/${game.id}/index.html`, // Use existing path or construct it
         image: game.image ? `${baseUrl}${game.image}` : `${baseUrl}/images/thumbnails/${game.id}.svg` // Use existing image or construct thumbnail path
       };
-      
-      console.log(`Processed game ${game.id}:`, {
-        originalUrl: game.url,
-        processedPath: processedGame.path,
-        originalThumbnail: game.thumbnail,
-        processedImage: processedGame.image
-      });
-      
+
       return processedGame;
     });
     

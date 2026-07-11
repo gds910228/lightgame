@@ -79,13 +79,9 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
         rating: rating.toString() // 使用用户选择的评分
       };
       
-      console.log('Sending feedback email, params:', templateParams);
-      
       // 发送邮件
       const result = await sendFeedbackEmail(templateParams);
-      
-      console.log('Email sending result:', result);
-      
+
       if (result.success) {
         setSubmitStatus('success');
         reset(); // 重置表单

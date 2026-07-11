@@ -213,7 +213,6 @@ const GameDetailPage = () => {
     if (navigator.share) {
       try {
         await navigator.share(shareData);
-        console.log('Game shared successfully');
       } catch (err) {
         console.error('Share failed:', err);
       }
@@ -270,15 +269,13 @@ const GameDetailPage = () => {
   const handleIframeLoad = () => {
     const loadTime = Date.now() - startTimeRef.current
     recordGameLoad(loadTime)
-    console.log(`iframe loaded in ${loadTime}ms:`, game?.path)
-    
+
     // 尝试访问iframe内容以检查是否成功加载
     try {
       const iframe = iframeRef.current;
       if (iframe && iframe.contentWindow) {
         // 设置iframe为已加载状态
         setIframeLoaded(true);
-        console.log('iframe content window accessible');
       }
     } catch (err) {
       console.error('Error accessing iframe content:', err);
