@@ -1,0 +1,12 @@
+{
+  "id": "laser-defense",
+  "title": "Laser Defense",
+  "category": "Action",
+  "description": "Draw laser lines to defend your base in this fast-paced action game. Test your reflexes as you sketch defenses against incoming threats. How long can you survive?",
+  "controls": "Use your finger or mouse to draw laser lines. Touch and drag to create defenses that block incoming enemies.",
+  "image": "ds/title.jpg",
+  "thumbnail": "static/icon.png",
+  "tags": ["action", "defense", "laser", "arcade", "reflex"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}
