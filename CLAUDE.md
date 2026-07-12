@@ -297,3 +297,15 @@ The project uses task tracking in `docs/tasks.md` for managing game integration 
 - **Vite code splitting** - do not set custom manualChunks, it causes React ForwardRef errors
 - **Path aliases** - use `@/` prefix for imports from `src/` directory
 - **Image paths in metadata** - relative paths are normalized during build to `/games/{id}/...`
+
+## Harness 体系（.harness/）
+
+本项目已落地 Harness 工程化体系（完整 SOP 见 `docs/Harness 落地设计 SOP.md`）。处理任何需求时，按以下分层加载与调度执行：
+
+- **开发任何需求前**，先读 `.harness/agents/application-owner.md`（调度大脑，~235 行），按其中的**十阶段流程**执行：需求分析 → 需求评审 → 编码 → 编码评审 → 测试 → 测试评审 → 推送 → CI → 部署验证 → 用户确认。每阶段有 Entry/Skill/产出/Quality Gate/Rollback，5 个 HITL 确认点必须暂停等人确认。
+- **L1 常驻**（每次会话加载）：`.harness/rules/` 三份规则 —— `工程结构.md`、`项目编码规范.md`、`开发流程规范.md`（每条规则对应一个历史教训，如 manualChunks 必须 undefined、iframe 仅 1games.io）。编码/评审前必读。
+- **L2 阶段触发**（进入对应阶段时加载）：`.harness/skills/` 下 12 个 skill（索引见 `.harness/skills/README.md`）。8 个复用全局 superpowers（`~/.claude/skills/`，用 Skill 工具调原始名如 `brainstorming`），4 个自建（直接读本目录 README）。
+- **L3 按需查询**：`wiki/` 知识库（如 `wiki/项目摸底报告.md`），不主动加载。
+- **变更管理**：每个需求进入阶段 1 时，自动 `cp -r .harness/changes/_template .harness/changes/{类型}-{需求名}-{YYYYMMDD}`，全流程产物写入该目录；`summary.md` 是 SSOT，每阶段完成后立即更新（规范见 `.harness/changes/README.md`）。
+
+**关键铁律**（详见 Rules 与 Agent）：不跳过质量门禁；完成前必须跑命令取证（禁"应该过"）；评审文件版本递增旧版不删；评审轮次超限（需求≤3/编码≤2/测试≤2）升级人工；bug 先 `systematic-debugging` 找根因再修；不在 main 直接提交。
