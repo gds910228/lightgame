@@ -20,7 +20,7 @@
 4. 全部任务完成后,派发 final code-reviewer 审查整体实现
 
 ## 输出
-- 代码改动(提交到隔离分支,见 using-git-worktrees)
+- 代码改动(直接提交 main,见开发流程规范 §2)
 - `.harness/changes/{变更}/coding/coding_report_vN.md` —— 编码报告
 - `.harness/changes/{变更}/coding/review/code_review_vN.md` —— 评审报告
 

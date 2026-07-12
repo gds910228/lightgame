@@ -12,10 +12,10 @@
 | 创建日期 | 2026-07-11 |
 | 需求来源 | 用户:在 packages/games 添加了 jg 游戏源码,要求规范化接入 |
 | 负责人 | Claude |
-| 工作分支 | main(Dry Run,未建 worktree) |
+| 工作分支 | feature/add-laser-defense(本次 Dry Run 实际用分支;规则已调整为 main 直接开发,建议 ff-merge 到 main) |
 | Base SHA | bacdee6 |
-| Head SHA | ae248eb(feature/add-laser-defense,未 push) |
-| 最终状态 | ✅编码+本地门禁全绿+本地提交,待部署验证(9)与验收(10) |
+| Head SHA | 417db69(feature/add-laser-defense,本地提交未 push) |
+| 最终状态 | ✅已交付(游戏测试 OK,用户验收通过) |
 
 ## 2. 需求要点(HITL-1 已确认)
 
@@ -37,10 +37,10 @@
 | 4 | 编码评审 | ⏭ | Dry Run 简化 |
 | 5 | 单元测试 | ⏭ | 无单测框架,跳过(known-gaps) |
 | 6 | 测试评审 | ⏭ | 同上 |
-| 7 | 代码推送 | ✅(本地) | commit ae248eb 在 feature/add-laser-defense,未 push(待用户确认) |
+| 7 | 代码推送 | ✅(本地) | commit 417db69 在 feature/add-laser-defense;规则已改 main 直接开发,建议 ff-merge 到 main |
 | 8 | CI 验证 | ✅(本地) | validate 52 passed/build 退出0/sync 52/一致性OK;lint缺ESLint配置(预存) |
-| 9 | 部署验证 | ⬜ | 待 Vercel 部署 |
-| 10 | 用户确认 | ⬜ | HITL-5 |
+| 9 | 部署验证 | ✅ | 用户确认游戏测试 OK(本地预览通过) |
+| 10 | 用户确认 | ✅ | HITL-5 用户验收通过(游戏测试 OK) |
 
 ## 4. 编码任务清单(阶段3)
 
@@ -69,8 +69,8 @@
 | HITL | 决议 | 日期 |
 |---|---|---|
 | HITL-1 | slug=laser-defense / category=Action / 深度清理+保留按钮行为 | 2026-07-11 |
-| HITL-4 部署参数 | 待:确认 Vercel 部署目标 + 域名 | - |
-| HITL-5 最终交付 | 待:用户验收 | - |
+| HITL-4 部署参数 | Vercel 部署,域名 games.misitebo.win | 2026-07-11 |
+| HITL-5 最终交付 | 用户验收通过(游戏测试 OK) | 2026-07-11 |
 
 ## 7. 教训沉淀(Dry Run 发现,待 patch 进 Rules/wiki)
 
@@ -78,3 +78,4 @@
 2. **lint 门禁形同虚设**:packages/app 缺 ESLint 配置,`npm run lint` 直接报错。Rules/单元门禁里"lint 0 warning"无法执行。→ 需补 .eslintrc 配置(可用 github-actions-generate skill 顺带修复)。
 3. **mv 在 Windows Git Bash 偶发 permission denied**:jg 目录 mv 失败,改用 `git add` + `git mv` 成功。→ 可补进 Rules "Windows 环境操作提示"。
 4. **id=目录名=path 规则有效**:本次严格执行,一致性验证一次通过,印证 Rules 该条的价值。
+5. **分支策略需贴合实际**:Dry Run 按"禁止 main 提交"旧规则建了 feature 分支,但用户反馈本项目直接 main 开发即可。-> 已 patch 进开发流程规范 §2/§4 + Agent + 2个 git skill + CLAUDE.md + 变更模板。教训:Rules 应贴合团队实际工作流,不照搬通用最佳实践。

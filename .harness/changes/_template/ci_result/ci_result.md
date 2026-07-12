@@ -3,7 +3,7 @@
 > 阶段8产出 | unit-test-ci | 防空跑误绿:必须确认步骤实执行 + 游戏数>0
 
 ## 1. 本地门禁(推送前必跑,CI 不兜底)
-> 本项目 PR 阶段 CI 仅跑 validate-games(且仅 games/scripts 变更触发),lint/tsc/build 无 CI 保护。
+> 本项目远程 CI 仅跑 validate-games(且仅 games/scripts 变更触发),lint/tsc/build 无 CI 保护。
 
 | 命令 | 退出码 | 结果 | 证据 |
 |---|---|---|---|
@@ -11,10 +11,10 @@
 | `npm run build` | | 产物存在? | `packages/app/dist/` 列表 |
 | `npm run validate:games` | | 游戏数>0? | (输出 N games) |
 
-**门禁**:三项全真(退出码0 + 产物存在 + 游戏数>0)才可推送。
+**门禁**:三项全真(退出码0 + 产物存在 + 游戏数>0)才可 push main。
 
 ## 2. 远程 CI
-- PR:
+- PR(可选,本项目默认直接 push main 无 PR):
 - 分支:
 - Run ID / 链接:
 

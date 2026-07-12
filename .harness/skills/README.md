@@ -27,8 +27,8 @@ superpowers(v5.0.2,全局安装于 `~/.claude/skills/`)的成熟 skill **不复�
 | unit-test-write | `./unit-test-write/` | 单元测试 | test-driven-development | 编码后 / 改 bug 时写测试 |
 | code-review | `./code-review/` | 代码检查 | requesting-code-review + receiving-code-review | 合并前静态检查 |
 | systematic-debugging | `./systematic-debugging/` | (辅助)调试 | systematic-debugging | 任何 bug / 测试失败 / 异常行为 |
-| using-git-worktrees | `./using-git-worktrees/` | (辅助)分支 | using-git-worktrees | 并行开发隔离 |
-| finishing-a-development-branch | `./finishing-a-development-branch/` | (辅助)交付 | finishing-a-development-branch | 分支合并 / PR |
+| using-git-worktrees | `./using-git-worktrees/` | (辅助)分支 | using-git-worktrees | 并行隔离(可选) |
+| finishing-a-development-branch | `./finishing-a-development-branch/` | (辅助)交付 | finishing-a-development-branch | 提交/push main |
 
 ### B. 复用 + 自建门禁(2 个)
 
@@ -60,7 +60,7 @@ superpowers(v5.0.2,全局安装于 `~/.claude/skills/`)的成熟 skill **不复�
 | 4 | 编码评审 | expert-reviewer + code-review | Critical=0(≤2 轮) |
 | 5 | 单元测试编写 | unit-test-write | 测试存在且失败过 |
 | 6 | 单元测试评审 | expert-reviewer | APPROVED(≤2 轮) |
-| 7 | 代码推送 | using-git-worktrees / finishing-a-development-branch | pushed |
+| 7 | 代码推送 | finishing-a-development-branch | commit+push main |
 | 8 | CI 验证 | unit-test-ci | status=SUCCESS && 产物>0 |
 | 9 | 部署验证 | deploy-verify | 端到端检查通过 |
 | 10 | 用户确认 | (Human-in-the-Loop) | 用户签字 |

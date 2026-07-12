@@ -5,7 +5,7 @@
 
 ## 实现概要
 - 完成任务数:X / N
-- 工作分支:feature/{name}
+- 工作分支:main(直接开发)
 - Base SHA: -> Head SHA:
 
 ## 任务执行记录

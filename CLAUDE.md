@@ -308,4 +308,4 @@ The project uses task tracking in `docs/tasks.md` for managing game integration 
 - **L3 按需查询**：`wiki/` 知识库（如 `wiki/项目摸底报告.md`），不主动加载。
 - **变更管理**：每个需求进入阶段 1 时，自动 `cp -r .harness/changes/_template .harness/changes/{类型}-{需求名}-{YYYYMMDD}`，全流程产物写入该目录；`summary.md` 是 SSOT，每阶段完成后立即更新（规范见 `.harness/changes/README.md`）。
 
-**关键铁律**（详见 Rules 与 Agent）：不跳过质量门禁；完成前必须跑命令取证（禁"应该过"）；评审文件版本递增旧版不删；评审轮次超限（需求≤3/编码≤2/测试≤2）升级人工；bug 先 `systematic-debugging` 找根因再修；不在 main 直接提交。
+**关键铁律**（详见 Rules 与 Agent）：不跳过质量门禁；完成前必须跑命令取证（禁"应该过"）；评审文件版本递增旧版不删；评审轮次超限（需求≤3/编码≤2/测试≤2）升级人工；bug 先 `systematic-debugging` 找根因再修；**直接在 main 开发，本地 validate+build 通过才 push main**（不开分支）。

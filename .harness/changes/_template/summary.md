@@ -1,7 +1,7 @@
 # {变更类型}-{需求名称}-{YYYYMMDD} 变更摘要
 
 > **Single Source of Truth** | 全流程追溯 | 每阶段完成后立即更新本文件
-> 创建日期:YYYY-MM-DD | 负责人: | 关联分支:feature/{name}
+> 创建日期:YYYY-MM-DD | 负责人: | 分支:main(直接开发)
 
 ## 1. 基本信息
 
@@ -12,7 +12,7 @@
 | 创建日期 | YYYY-MM-DD |
 | 需求来源 | (用户原始描述/PRD链接) |
 | 负责人 | |
-| 工作分支 | feature/{name} |
+| 工作分支 | main(直接开发,见开发流程规范 §2) |
 | Base SHA | (编码起点 commit) |
 | Head SHA | (当前 commit) |
 | 最终状态 | 🟡进行中 / ✅已交付 / ❌已回退 / ⏸暂停待人工 |
@@ -28,7 +28,7 @@
 | 4 | 编码评审 | ⬜ | - | 0/2 | review/code_review_vN.md | HITL-3, ≤2轮 |
 | 5 | 单元测试编写 | ⬜ | - | - | test_report.md | |
 | 6 | 单元测试评审 | ⬜ | - | 0/2 | review/test_review_vN.md | ≤2轮 |
-| 7 | 代码推送 | ⬜ | - | - | PR 链接 | |
+| 7 | 代码推送 | ⬜ | - | - | commit+push main | |
 | 8 | CI 验证 | ⬜ | - | - | ci_result.md | |
 | 9 | 部署验证 | ⬜ | - | - | deploy_report.md | HITL-4 |
 | 10 | 用户确认 | ⬜ | - | - | (本文件最终版) | HITL-5 |
