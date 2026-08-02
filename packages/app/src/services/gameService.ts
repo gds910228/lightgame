@@ -1,5 +1,25 @@
 import { Game } from '../types';
 
+// Raw game shape as produced by build-games-list.js (games.json)
+interface RawGameMeta {
+  id?: unknown;
+  title?: unknown;
+  description?: unknown;
+  category?: unknown;
+  controls?: unknown;
+  tags?: unknown;
+  path?: unknown;
+  image?: unknown;
+}
+
+function isString(v: unknown): v is string {
+  return typeof v === 'string';
+}
+
+function toStringArray(v: unknown): string[] {
+  return Array.isArray(v) ? v.filter(isString) : [];
+}
+
 // Cache the games data to avoid repeated fetches
 let gamesCache: Game[] | null = null;
 
@@ -43,20 +63,18 @@ export async function getAllGames(): Promise<Game[]> {
     const data: Game[] = jsonData.games || jsonData;
 
     // 处理游戏路径，确保它们包含正确的基础URL
-    const processedGames = data.map((game: any) => {
-      // Convert the JSON format to our expected Game format
-      const processedGame: Game = {
-        id: game.id,
-        title: game.title,
-        description: game.description,
-        category: game.category,
-        controls: game.controls || 'No control information available',
-        tags: game.tags || [],
-        path: game.path ? `${baseUrl}${game.path}` : `${baseUrl}/games/${game.id}/index.html`, // Use existing path or construct it
-        image: game.image ? `${baseUrl}${game.image}` : `${baseUrl}/images/thumbnails/${game.id}.svg` // Use existing image or construct thumbnail path
+    const processedGames = data.map((raw: RawGameMeta): Game => {
+      const id = isString(raw.id) ? raw.id : '';
+      return {
+        id,
+        title: isString(raw.title) ? raw.title : id,
+        description: isString(raw.description) ? raw.description : '',
+        category: (isString(raw.category) || Array.isArray(raw.category)) ? (raw.category as string | string[]) : 'Uncategorized',
+        controls: isString(raw.controls) ? raw.controls : 'No control information available',
+        tags: toStringArray(raw.tags),
+        path: isString(raw.path) ? `${baseUrl}${raw.path}` : `${baseUrl}/games/${id}/index.html`,
+        image: isString(raw.image) ? `${baseUrl}${raw.image}` : `${baseUrl}/images/thumbnails/${id}.svg`,
       };
-
-      return processedGame;
     });
     
     gamesCache = processedGames;

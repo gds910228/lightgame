@@ -12,7 +12,7 @@ export const initEmailService = () => {
 };
 
 // 发送反馈邮件
-export const sendFeedbackEmail = async (templateParams: any) => {
+export const sendFeedbackEmail = async (templateParams: Record<string, unknown>) => {
   try {
     // 使用环境变量发送邮件
     const response = await emailjs.send(

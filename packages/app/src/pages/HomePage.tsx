@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import GameCard from '../components/GameCard'
 import SEO from '../components/SEO'
+import RecentlyPlayed from '../components/RecentlyPlayed'
 import { Game } from '../types'
 import { getAllGames, getGamesByCategory, searchGames } from '../services/gameService'
 import { useFavorites } from '../contexts/FavoritesContext'
@@ -52,7 +53,7 @@ const HomePage = () => {
     }
     
     fetchGames()
-  }, [location.search])
+  }, [location.search, favorites])
   
   // Determine page title based on search parameters
   const getPageTitle = () => {
@@ -200,6 +201,9 @@ const HomePage = () => {
           </div>
         </div>
       )}
+
+      {/* Recently played (only on unfiltered home) */}
+      {!location.search && <RecentlyPlayed />}
 
       {/* Page title */}
       <h2 className="text-2xl md:text-3xl font-bold mb-8 text-white" id="games-grid">

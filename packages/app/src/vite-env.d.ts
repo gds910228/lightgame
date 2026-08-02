@@ -1,11 +1,4 @@
 /// <reference types="vite/client" />
 
-interface ImportMeta {
-  readonly env: {
-    readonly DEV: boolean;
-    readonly PROD: boolean;
-    readonly MODE: string;
-    readonly BASE_URL: string;
-    readonly [key: string]: any;
-  };
-} 
+// ImportMeta.env is typed by vite/client (ImportMetaEnv).
+// Custom VITE_* vars are accessed via import.meta.env.VITE_FOO (string | undefined).

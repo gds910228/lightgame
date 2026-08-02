@@ -112,6 +112,14 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                   </span>
                 )}
               </Link>
+              <Link
+                to="/achievements"
+                onClick={onClose}
+                className="flex items-center px-4 py-3 rounded-lg hover:bg-dark-border transition-colors"
+              >
+                <i className="fas fa-trophy text-neon-yellow w-6"></i>
+                <span className="ml-3 font-medium text-gray-300">Achievements</span>
+              </Link>
             </nav>
           </div>
 

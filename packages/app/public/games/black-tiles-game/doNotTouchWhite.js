@@ -182,8 +182,25 @@
             gameLoop();
         }
 
+        // LightGame platform integration: report score to parent platform via postMessage
+        function reportToPlatform(kind, payload) {
+            try {
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({
+                        source: 'lightgame',
+                        type: 'lightgame:report',
+                        payload: Object.assign({ kind: kind }, payload || {})
+                    }, '*');
+                }
+            } catch (e) {
+                // platform reporting is optional; never break the game if it fails
+            }
+        }
+
         function gameOver() {
             gameState.mode = 'gameOver';
+            // Report final score to the LightGame platform (best-score tracking + achievements)
+            reportToPlatform('gameOver', { score: gameState.score });
             gameLoop();
         }
 

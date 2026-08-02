@@ -54,6 +54,10 @@ const Footer = () => {
               &copy; {currentYear} LightGame. All rights reserved.
             </p>
             <div className="flex gap-4 text-xs">
+              <Link to="/achievements" className="text-gray-500 hover:text-neon-yellow transition-colors">
+                Achievements
+              </Link>
+              <span className="text-gray-700">|</span>
               <Link to="/privacy-policy" className="text-gray-500 hover:text-neon-blue transition-colors">
                 Privacy Policy
               </Link>

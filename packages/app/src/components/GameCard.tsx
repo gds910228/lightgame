@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Game } from '../types'
 import { useEffect, useRef, useState } from 'react'
 import FavoriteButton from './FavoriteButton'
+import { useProgress } from '../contexts/ProgressContext'
 
 interface GameCardProps {
   game: Game;
@@ -11,6 +12,8 @@ const GameCard = ({ game }: GameCardProps) => {
   const [imageSrc, setImageSrc] = useState<string | undefined>(undefined)
   const [imageError, setImageError] = useState(false)
   const imgRef = useRef<HTMLImageElement>(null)
+  const { getProgress } = useProgress()
+  const progress = getProgress(game.id)
 
   useEffect(() => {
     // Use Intersection Observer for lazy loading
@@ -92,6 +95,14 @@ const GameCard = ({ game }: GameCardProps) => {
             />
           </div>
         </div>
+
+        {/* Played badge */}
+        {progress && progress.playCount > 0 && (
+          <div className="absolute bottom-2 left-2 z-20 bg-neon-green/20 backdrop-blur-sm border border-neon-green/40 px-2 py-0.5 rounded-full text-xs font-medium text-neon-green flex items-center gap-1">
+            <i className="fas fa-check text-[10px]"></i>
+            <span>Played {progress.playCount}×</span>
+          </div>
+        )}
 
         {/* Play overlay with neon effect */}
         <div className="absolute inset-0 bg-black/40 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center pointer-events-none">

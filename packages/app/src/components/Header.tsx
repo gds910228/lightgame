@@ -4,6 +4,7 @@ import SearchBar from './SearchBar'
 import CategoryFilter from './CategoryFilter'
 import MobileMenu from './MobileMenu'
 import { useFavorites } from '../contexts/FavoritesContext'
+import { useAchievements } from '../contexts/AchievementsContext'
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -13,6 +14,7 @@ const Header = () => {
   const isHomePage = location.pathname === '/'
   const { getFavoritesCount } = useFavorites()
   const favoritesCount = getFavoritesCount()
+  const { unlockedCount } = useAchievements()
 
   // Handle scroll effect for header
   useEffect(() => {
@@ -62,6 +64,20 @@ const Header = () => {
             {/* Search button */}
             <SearchBar onSearch={handleSearch} compact />
 
+            {/* Achievements */}
+            <button
+              onClick={() => navigate('/achievements')}
+              className="relative p-2 rounded-lg hover:bg-dark-card flex-shrink-0 transition-colors"
+              title="View achievements"
+            >
+              <i className="fas fa-trophy text-neon-yellow text-lg"></i>
+              {unlockedCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-neon-yellow text-black text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">
+                  {unlockedCount}
+                </span>
+              )}
+            </button>
+
             {/* Favorites */}
             <button
               onClick={() => navigate('/?favorites=true')}
@@ -110,6 +126,19 @@ const Header = () => {
             {/* Search, Categories and Favorites */}
             <div className="flex items-center gap-4 flex-1 justify-end">
               <SearchBar onSearch={handleSearch} />
+              <button
+                onClick={() => navigate('/achievements')}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-card border border-neon-yellow/30 hover:bg-dark-border hover:border-neon-yellow/50 transition-all flex-shrink-0 group"
+                title="View achievements"
+              >
+                <i className="fas fa-trophy text-neon-yellow group-hover:animate-heart-beat"></i>
+                <span className="font-medium text-gray-300">Achievements</span>
+                {unlockedCount > 0 && (
+                  <span className="bg-neon-yellow text-black text-xs px-2 py-1 rounded-full min-w-[20px] text-center font-bold">
+                    {unlockedCount}
+                  </span>
+                )}
+              </button>
               <button
                 onClick={() => navigate('/?favorites=true')}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-card border border-neon-pink/30 hover:bg-dark-border hover:border-neon-pink/50 transition-all flex-shrink-0 group"

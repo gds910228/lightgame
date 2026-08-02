@@ -2,7 +2,12 @@ import { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Game } from '../types';
 import { sendFeedbackEmail } from '../services/emailService';
-import Select from 'react-select';
+import Select, { type StylesConfig } from 'react-select';
+
+interface SelectOption {
+  value: string;
+  label: string;
+}
 
 // 定义表单数据类型
 interface FeedbackFormData {
@@ -105,8 +110,8 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
   };
 
   // 自定义Select样式
-  const customSelectStyles = {
-    control: (provided: any) => ({
+  const customSelectStyles: StylesConfig<SelectOption, false> = {
+    control: (provided) => ({
       ...provided,
       borderColor: '#e5e7eb',
       borderRadius: '0.375rem',
@@ -116,11 +121,11 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
         borderColor: '#d1d5db'
       }
     }),
-    placeholder: (provided: any) => ({
+    placeholder: (provided) => ({
       ...provided,
       color: '#9ca3af'
     }),
-    option: (provided: any, state: any) => ({
+    option: (provided, state) => ({
       ...provided,
       backgroundColor: state.isSelected ? '#3b82f6' : state.isFocused ? '#e5e7eb' : 'white',
       color: state.isSelected ? 'white' : '#374151',
