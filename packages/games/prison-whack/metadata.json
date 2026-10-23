@@ -1,0 +1,12 @@
+{
+  "id": "prison-whack",
+  "title": "Prison Whack",
+  "category": "Action",
+  "description": "The cells have opened in Prison Whack! Convicts are popping up everywhere - tap them back into their cells, spare the innocent ones, and rack up a huge combo in 35 seconds.",
+  "controls": "Tap or click the escaping convicts to send them back to their cells. Avoid tapping innocent characters or you will lose points.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["whack-a-mole", "action", "reflex", "arcade", "timer", "casual"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

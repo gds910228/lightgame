@@ -1,0 +1,12 @@
+{
+  "id": "mummy-maze-escape",
+  "title": "Mummy Maze Escape",
+  "category": "Puzzle",
+  "description": "Guide the explorer through 50 hand-made maze rooms. Plan every move to avoid the patrolling mummy and reach the locked exit door in this classic top-down puzzle.",
+  "controls": "Tap the on-screen arrows to move one tile at a time. Reach the door without the mummy catching you.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["mummy maze", "maze", "puzzle", "escape", "retro", "50 levels"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

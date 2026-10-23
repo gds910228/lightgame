@@ -222,6 +222,27 @@
       "thumbnail": "/games/car-crash-rally/hczz.png"
     },
     {
+      "id": "cash-catch-rush",
+      "title": "Cash Catch Rush",
+      "category": "Arcade",
+      "description": "Cash Catch Rush is a 20-second reflex game: tap the falling banknotes and avoid the bombs. Grab as much cash as you can before time runs out!",
+      "controls": "Tap the banknote tiles as they scroll past. Miss or hit a bomb and the run ends.",
+      "image": "/games/cash-catch-rush/files/caishen.jpg",
+      "thumbnail": "/games/cash-catch-rush/files/caishen.jpg",
+      "tags": [
+        "cash",
+        "money",
+        "reflex",
+        "tapping",
+        "casual",
+        "20 seconds"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/cash-catch-rush/index.html",
+      "type": "local"
+    },
+    {
       "id": "ceo-fortune-quiz",
       "title": "CEO Fortune Quiz",
       "category": "Quiz",
@@ -426,6 +447,27 @@
       "type": "local"
     },
     {
+      "id": "dots-mania",
+      "title": "Dots Mania",
+      "category": "Puzzle",
+      "description": "Connect same-colored dots in Dots Mania. The longer your chain, the higher the multiplier - plan every one of your 20 moves carefully to post a top score.",
+      "controls": "Drag across adjacent dots of the same color to connect them. Longer chains score more points; you have 20 moves per round.",
+      "image": "/games/dots-mania/icon.jpg",
+      "thumbnail": "/games/dots-mania/icon.jpg",
+      "tags": [
+        "dots",
+        "puzzle",
+        "connect",
+        "casual",
+        "logic",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/dots-mania/index.html",
+      "type": "local"
+    },
+    {
       "id": "dragon-rescue-mission",
       "title": "Dragon Rescue Mission",
       "category": "Action",
@@ -444,6 +486,27 @@
       "type": "local"
     },
     {
+      "id": "dream-merge-2048",
+      "title": "Dream Merge 2048",
+      "category": "Puzzle",
+      "description": "Swipe to merge matching tiles and climb the ladder of life goals, from Single Life to Dream Come True in this 2048-style puzzle.",
+      "controls": "Swipe or use arrow keys to move all tiles. Equal tiles merge when they touch. Reach the Dream Come True tile to win.",
+      "image": "/games/dream-merge-2048/icon.png",
+      "thumbnail": "/games/dream-merge-2048/icon.png",
+      "tags": [
+        "2048",
+        "merge",
+        "puzzle",
+        "sliding puzzle",
+        "brain",
+        "casual"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/dream-merge-2048/index.html",
+      "type": "local"
+    },
+    {
       "id": "egyptian-iq-test",
       "title": "Egyptian IQ Test",
       "category": "Puzzle",
@@ -453,6 +516,28 @@
       "type": "local",
       "image": "/games/egyptian-iq-test/logo.png",
       "thumbnail": "/games/egyptian-iq-test/logo.png"
+    },
+    {
+      "id": "face-pair-match",
+      "title": "Face Pair Match",
+      "category": "Puzzle",
+      "description": "Flip cards and match pairs of hilarious faces against the clock in Face Pair Match. Remember every position, clear all the pairs before time runs out, and beat your best score in this fast-paced memory game.",
+      "controls": "Click or tap a card to flip it over. Match two identical faces to keep them open. Find every pair before the 60-second timer runs out.",
+      "image": "/games/face-pair-match/img/icon.png",
+      "thumbnail": "/games/face-pair-match/img/icon.png",
+      "tags": [
+        "memory",
+        "matching",
+        "puzzle",
+        "cards",
+        "brain",
+        "timer",
+        "casual"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/face-pair-match/index.html",
+      "type": "local"
     },
     {
       "id": "fiery-dragon",
@@ -474,6 +559,27 @@
       ],
       "image": "/games/fiery-dragon/logo.JPG",
       "thumbnail": "/games/fiery-dragon/logo.JPG"
+    },
+    {
+      "id": "find-the-different-face",
+      "title": "Find the Different Face",
+      "category": "Puzzle",
+      "description": "Scan a grid of nearly identical faces and tap the one odd face out in Find the Different Face. The grid keeps growing as you speed up - how many will you spot in 60 seconds?",
+      "controls": "Click or tap the single different face in each grid. Find them quickly to build your streak before the timer runs out.",
+      "image": "/games/find-the-different-face/icon.png",
+      "thumbnail": "/games/find-the-different-face/icon.png",
+      "tags": [
+        "puzzle",
+        "observation",
+        "spot-the-difference",
+        "eyesight",
+        "speed",
+        "casual"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/find-the-different-face/index.html",
+      "type": "local"
     },
     {
       "id": "fly-higher-challenge",
@@ -594,6 +700,48 @@
       "thumbnail": "/games/hit-me-game/icon.png"
     },
     {
+      "id": "how-many-hits",
+      "title": "How Many Hits?",
+      "category": "Arcade",
+      "description": "Time your swing perfectly to smack the swinging chain ball with the iron hammer. How many clean hits can you land before you miss?",
+      "controls": "Tap when the ball swings into range to swing the hammer. Perfect timing scores a hit.",
+      "image": "/games/how-many-hits/icon.png",
+      "thumbnail": "/games/how-many-hits/icon.png",
+      "tags": [
+        "timing",
+        "reaction",
+        "chain ball",
+        "arcade",
+        "highscore",
+        "html5 game"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/how-many-hits/index.html",
+      "type": "local"
+    },
+    {
+      "id": "hyper-gunner",
+      "title": "Hyper Gunner",
+      "category": "Action",
+      "description": "Defend Earth in Hyper Gunner, a classic vertical space shooter. Blast waves of alien fighters, survive level after level, and log your miles from home.",
+      "controls": "Move with the arrow keys or A/D, or drag on the touch screen. Fire at the incoming aliens and destroy them all to clear each level.",
+      "image": "/games/hyper-gunner/icon.png",
+      "thumbnail": "/games/hyper-gunner/icon.png",
+      "tags": [
+        "shooter",
+        "space",
+        "action",
+        "retro",
+        "arcade",
+        "alien"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/hyper-gunner/index.html",
+      "type": "local"
+    },
+    {
       "id": "ice-bucket-challenge",
       "title": "Ice Bucket Challenge",
       "category": [
@@ -677,6 +825,27 @@
       "thumbnail": "/games/light-bulb-puzzle/img/icon.png"
     },
     {
+      "id": "lumberjack-tap",
+      "title": "Lumberjack Tap",
+      "category": "Arcade",
+      "description": "Chop the giant tree nonstop in Lumberjack Tap. Switch sides at the perfect moment to dodge incoming branches and keep chopping as fast as you can to set a new record.",
+      "controls": "Tap the left or right side of the screen to switch chopping sides. Dodge the branches and chop as much timber as you can.",
+      "image": "/games/lumberjack-tap/icon.png",
+      "thumbnail": "/games/lumberjack-tap/icon.png",
+      "tags": [
+        "arcade",
+        "reflex",
+        "one-button",
+        "timber",
+        "chopping",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/lumberjack-tap/index.html",
+      "type": "local"
+    },
+    {
       "id": "mind-reader-game",
       "title": "Mind Reader Game",
       "category": "Puzzle",
@@ -697,6 +866,28 @@
       "thumbnail": "/games/mind-reader-game/images/2.jpg"
     },
     {
+      "id": "monster-shooter-rush",
+      "title": "Monster Shooter Rush",
+      "category": "Action",
+      "description": "Fly into battle in Monster Shooter Rush, a vertical arcade shooter. Blast waves of monsters, dodge their counterattacks, and grab coins and power-ups to push your score ever higher.",
+      "controls": "Touch and drag or move the mouse to steer your hero - firing is automatic. Dodge enemy fire, collect bombs and power-ups, and survive as long as you can.",
+      "image": "/games/monster-shooter-rush/icon.png",
+      "thumbnail": "/games/monster-shooter-rush/icon.png",
+      "tags": [
+        "shooter",
+        "action",
+        "arcade",
+        "shmup",
+        "monsters",
+        "coins",
+        "vertical"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/monster-shooter-rush/index.html",
+      "type": "local"
+    },
+    {
       "id": "moon-landing-challenge",
       "title": "Moon Landing Challenge",
       "category": "Action",
@@ -714,6 +905,90 @@
       ],
       "path": "/games/moon-landing-challenge/index.html",
       "thumbnail": "/games/moon-landing-challenge/icon.png",
+      "type": "local"
+    },
+    {
+      "id": "moon-rabbit-jump",
+      "title": "Moon Rabbit Jump",
+      "category": "Arcade",
+      "description": "Moon Rabbit Jump is a rope-launch distance game with a Mid-Autumn twist. Swipe to cut the rope, time your swings and bounce past branches and sky soldiers toward the moon!",
+      "controls": "Swipe the rope at the hand hint to launch. The shorter the rope, the higher the bunny flies. Tap again at the right moment to keep flying.",
+      "image": "/games/moon-rabbit-jump/mmttt.png",
+      "thumbnail": "/games/moon-rabbit-jump/mmttt.png",
+      "tags": [
+        "moon rabbit",
+        "rope launch",
+        "distance",
+        "bunny",
+        "mid autumn",
+        "arcade"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/moon-rabbit-jump/index.html",
+      "type": "local"
+    },
+    {
+      "id": "mummy-maze-escape",
+      "title": "Mummy Maze Escape",
+      "category": "Puzzle",
+      "description": "Guide the explorer through 50 hand-made maze rooms. Plan every move to avoid the patrolling mummy and reach the locked exit door in this classic top-down puzzle.",
+      "controls": "Tap the on-screen arrows to move one tile at a time. Reach the door without the mummy catching you.",
+      "image": "/games/mummy-maze-escape/icon.png",
+      "thumbnail": "/games/mummy-maze-escape/icon.png",
+      "tags": [
+        "mummy maze",
+        "maze",
+        "puzzle",
+        "escape",
+        "retro",
+        "50 levels"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/mummy-maze-escape/index.html",
+      "type": "local"
+    },
+    {
+      "id": "name-duel",
+      "title": "Name Duel",
+      "category": "Casual",
+      "description": "Enter two names and watch them duel with random attacks, charms, crits and lucky comebacks. Every battle tells a ridiculous story - whose name wins?",
+      "controls": "Type two names and press the big button to auto-battle. Tap Play Again for a new matchup.",
+      "image": "/games/name-duel/img/bg1.jpg",
+      "thumbnail": "/games/name-duel/img/bg1.jpg",
+      "tags": [
+        "name battle",
+        "duel",
+        "lucky",
+        "funny",
+        "casual",
+        "party"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/name-duel/index.html",
+      "type": "local"
+    },
+    {
+      "id": "nerve-cat-launch",
+      "title": "Nerve Cat Launch",
+      "category": "Arcade",
+      "description": "Fling the crazy cat as far as you can in Nerve Cat Launch. Time your launch perfectly, keep the cat airborne, and chase a new distance record measured in meters.",
+      "controls": "Tap or click to launch the cat, then keep tapping at the right moments to keep it flying. Travel as far as possible.",
+      "image": "/games/nerve-cat-launch/icon.png",
+      "thumbnail": "/games/nerve-cat-launch/icon.png",
+      "tags": [
+        "arcade",
+        "launch",
+        "distance",
+        "cat",
+        "casual",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/nerve-cat-launch/index.html",
       "type": "local"
     },
     {
@@ -761,6 +1036,48 @@
       ],
       "path": "/games/pacman-classic/index.html",
       "image": "/games/pacman-classic/pacman.svg",
+      "type": "local"
+    },
+    {
+      "id": "peach-catch-frenzy",
+      "title": "Peach Catch Frenzy",
+      "category": "Casual",
+      "description": "Peach Catch Frenzy is a 59-second catching game: move the monkey basket to catch falling peaches, avoid the bombs and chase the red-envelope bonus.",
+      "controls": "Drag the basket with your finger or mouse (arrow keys also work) to catch peaches and dodge bombs.",
+      "image": "/games/peach-catch-frenzy/images/0begin.png",
+      "thumbnail": "/games/peach-catch-frenzy/images/0begin.png",
+      "aspectRatio": "2:3",
+      "tags": [
+        "peach",
+        "catcher",
+        "monkey",
+        "falling objects",
+        "casual",
+        "kids"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/peach-catch-frenzy/index.html",
+      "type": "local"
+    },
+    {
+      "id": "peek-and-pop",
+      "title": "Peek and Pop",
+      "category": "Arcade",
+      "description": "Peek and Pop is a 30-second whack-a-mole reaction game. Pop the peeking faces as they appear, rack up combos and avoid the decoys to beat your friends!",
+      "controls": "Tap the peeking faces in the nine holes. Do not tap the decoy characters.",
+      "image": "/games/peek-and-pop/img/1.jpg",
+      "thumbnail": "/games/peek-and-pop/img/1.jpg",
+      "tags": [
+        "whack a mole",
+        "reaction",
+        "tapping",
+        "casual",
+        "30 seconds"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/peek-and-pop/index.html",
       "type": "local"
     },
     {
@@ -813,6 +1130,68 @@
       "thumbnail": "/games/pink-blue-love-match/cover.svg"
     },
     {
+      "id": "pop-star-tap",
+      "title": "Pop Star Tap",
+      "category": "Arcade",
+      "description": "Pop Star Tap is a 30-second whack-a-mole reaction game. Tap the stars as they peek out of the nine holes, dodge the joke decoys and earn fun ranks!",
+      "controls": "Tap the popping stars in the holes. Avoid the decoy characters or the run ends.",
+      "image": "/games/pop-star-tap/icon.png",
+      "thumbnail": "/games/pop-star-tap/icon.png",
+      "tags": [
+        "whack a mole",
+        "reaction",
+        "tapping",
+        "casual",
+        "30 seconds"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/pop-star-tap/index.html",
+      "type": "local"
+    },
+    {
+      "id": "prison-memory-match",
+      "title": "Prison Memory Match",
+      "category": "Puzzle",
+      "description": "Put your memory to the test in Prison Memory Match. Flip the cards, remember every face, and pair them all up before the 60-second timer runs out.",
+      "controls": "Click or tap two cards to flip them over. Match identical faces to lock in the pair and clear the whole board before time runs out.",
+      "image": "/games/prison-memory-match/icon.jpg",
+      "thumbnail": "/games/prison-memory-match/icon.jpg",
+      "tags": [
+        "memory",
+        "puzzle",
+        "matching",
+        "cards",
+        "brain",
+        "timer"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/prison-memory-match/index.html",
+      "type": "local"
+    },
+    {
+      "id": "prison-whack",
+      "title": "Prison Whack",
+      "category": "Action",
+      "description": "The cells have opened in Prison Whack! Convicts are popping up everywhere - tap them back into their cells, spare the innocent ones, and rack up a huge combo in 35 seconds.",
+      "controls": "Tap or click the escaping convicts to send them back to their cells. Avoid tapping innocent characters or you will lose points.",
+      "image": "/games/prison-whack/icon.png",
+      "thumbnail": "/games/prison-whack/icon.png",
+      "tags": [
+        "whack-a-mole",
+        "action",
+        "reflex",
+        "arcade",
+        "timer",
+        "casual"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/prison-whack/index.html",
+      "type": "local"
+    },
+    {
       "id": "relationship-loyalty-test",
       "title": "Relationship Loyalty Test",
       "category": "Quiz",
@@ -829,6 +1208,91 @@
       ],
       "path": "/games/relationship-loyalty-test/index.html",
       "thumbnail": "/games/relationship-loyalty-test/cggl.jpg",
+      "type": "local"
+    },
+    {
+      "id": "retro-game-tune-quiz",
+      "title": "Retro Game Tune Quiz",
+      "category": "Quiz",
+      "description": "Listen to ten classic retro game tunes and name the game! Score points by recognizing Mario, Contra, Castlevania and more in this nostalgic music quiz.",
+      "controls": "Tap Play the tune, then pick the right answer from four options. 10 points per correct tune.",
+      "image": "/games/retro-game-tune-quiz/Public/upload/6177/53fe872815c9a.jpeg",
+      "thumbnail": "/games/retro-game-tune-quiz/Public/upload/6177/53fe872815c9a.jpeg",
+      "tags": [
+        "retro games",
+        "music quiz",
+        "trivia",
+        "arcade music",
+        "nostalgia"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "notes": "Gameplay references classic game IP names and the bundled MP3s are unlicensed third-party music assets.",
+      "path": "/games/retro-game-tune-quiz/index.html",
+      "type": "local"
+    },
+    {
+      "id": "room-escape-reaction",
+      "title": "Room Escape Reaction",
+      "category": "Arcade",
+      "description": "Room Escape Reaction is a brutal reflex gauntlet. Spot the signal change in each room and tap instantly - clear every level and prove you could dodge bullets.",
+      "controls": "Watch carefully and tap the screen the moment the signal changes. One slow reaction ends the run.",
+      "image": "/games/room-escape-reaction/img/9gloading.png",
+      "thumbnail": "/games/room-escape-reaction/img/9gloading.png",
+      "tags": [
+        "reaction",
+        "reflex",
+        "timing",
+        "room escape",
+        "arcade",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/room-escape-reaction/index.html",
+      "type": "local"
+    },
+    {
+      "id": "save-the-sperm",
+      "title": "Save the Sperm",
+      "category": "Arcade",
+      "description": "Guard the zone and rescue as many falling tadpoles as you can in Save the Sperm. Chain catches into combos, level up wave after wave, and set a brand-new rescue record.",
+      "controls": "Drag in the play area to move the catcher. Catch the falling tadpoles, avoid the enemies, and build combos for bonus points.",
+      "image": "/games/save-the-sperm/icon.png",
+      "thumbnail": "/games/save-the-sperm/icon.png",
+      "tags": [
+        "arcade",
+        "catching",
+        "reflex",
+        "combo",
+        "casual",
+        "rescue"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/save-the-sperm/index.html",
+      "type": "local"
+    },
+    {
+      "id": "sea-treasure-match",
+      "title": "Sea Treasure Match",
+      "category": "Puzzle",
+      "description": "Dive into Sea Treasure Match, a classic match-3 puzzle. Swap sparkling gems to line up three or more, beat the clock, and clear level after level on the ocean floor.",
+      "controls": "Swap two adjacent gems to line up three or more of the same color. Reach the target score before time runs out to advance to the next level.",
+      "image": "/games/sea-treasure-match/kaixinlian.jpg",
+      "thumbnail": "/games/sea-treasure-match/kaixinlian.jpg",
+      "tags": [
+        "match-3",
+        "puzzle",
+        "gems",
+        "casual",
+        "timer",
+        "sea",
+        "classic"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/sea-treasure-match/index.html",
       "type": "local"
     },
     {
@@ -886,6 +1350,50 @@
       "author": "LightGame Team"
     },
     {
+      "id": "skyscraper-stack",
+      "title": "Skyscraper Stack",
+      "category": "Casual",
+      "description": "Time the swinging crane perfectly to stack floors into the sky. Land blocks spot-on for bonus points and beat the world-famous landmarks!",
+      "controls": "Tap when the block is aligned to drop it. Perfect drops keep the tower going.",
+      "image": "/games/skyscraper-stack/icon.png",
+      "thumbnail": "/games/skyscraper-stack/icon.png",
+      "aspectRatio": "2:3",
+      "tags": [
+        "stack",
+        "tower",
+        "timing",
+        "skyscraper",
+        "casual",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/skyscraper-stack/index.html",
+      "type": "local"
+    },
+    {
+      "id": "smartphone-shooter",
+      "title": "Smartphone Shooter",
+      "category": "Arcade",
+      "description": "Phones are flying everywhere in Smartphone Shooter. Take aim and shoot down as many as you can - every hit counts, so make each shot an accurate one.",
+      "controls": "Tap or click the flying phones to shoot them down. Hit as many as you can before time runs out.",
+      "image": "/games/smartphone-shooter/icon.png",
+      "thumbnail": "/games/smartphone-shooter/icon.png",
+      "aspectRatio": "9:16",
+      "tags": [
+        "shooter",
+        "arcade",
+        "tapping",
+        "accuracy",
+        "reflex",
+        "casual"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/smartphone-shooter/index.html",
+      "type": "local"
+    },
+    {
       "id": "snake-arena-multiplayer",
       "title": "Snake Arena",
       "description": "An exciting multiplayer snake game where you compete against other players in real-time. Grow your snake by eating food and avoid colliding with other snakes or walls.",
@@ -930,6 +1438,28 @@
       "controls": "Use Arrow Keys to move the snake. Eat the food to grow longer. Avoid hitting walls and your own tail.",
       "thumbnail": "/games/snake-classic/cover.svg",
       "path": "/games/snake-classic/index.html",
+      "type": "local"
+    },
+    {
+      "id": "soccer-dash",
+      "title": "Soccer Dash",
+      "category": "Sports",
+      "description": "Dribble at full speed in Soccer Dash, a World Cup runner. Weave past cones, grab jerseys and power-ups, then take your best shot against the goalkeeper.",
+      "controls": "Drag with your finger or mouse to steer the dribbling player. Collect power-ups, avoid obstacles, and shoot the ball to score.",
+      "image": "/games/soccer-dash/icon.jpg",
+      "thumbnail": "/games/soccer-dash/icon.jpg",
+      "aspectRatio": "2:3",
+      "tags": [
+        "soccer",
+        "runner",
+        "sports",
+        "world-cup",
+        "dribbling",
+        "arcade"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/soccer-dash/index.html",
       "type": "local"
     },
     {
@@ -1068,6 +1598,27 @@
       "type": "local"
     },
     {
+      "id": "tap-frenzy",
+      "title": "Tap Frenzy",
+      "category": "Arcade",
+      "description": "Tap Frenzy is a 10-second speed tapping challenge. Mash the heart button as fast as you can, beat your best score and earn speed ranks from Turtle to Lightning!",
+      "controls": "Tap the big heart button repeatedly for 10 seconds. More taps means a higher rank.",
+      "image": "/games/tap-frenzy/img/mm.jpg",
+      "thumbnail": "/games/tap-frenzy/img/mm.jpg",
+      "tags": [
+        "tap",
+        "speed test",
+        "reaction",
+        "10 seconds",
+        "casual",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/tap-frenzy/index.html",
+      "type": "local"
+    },
+    {
       "id": "tetris-classic",
       "title": "Tetris",
       "category": "Puzzle",
@@ -1076,6 +1627,70 @@
       "controls": "Use Arrow Left/Right to move, Arrow Down to speed up descent, Arrow Up to rotate, Space to hard drop.",
       "thumbnail": "/games/tetris-classic/cover.svg",
       "path": "/games/tetris-classic/index.html",
+      "type": "local"
+    },
+    {
+      "id": "tickle-frenzy",
+      "title": "Tickle Frenzy",
+      "category": "Arcade",
+      "description": "Tickle Frenzy is a 10-second reaction challenge. Watch the moving feet and tap the matching colored feather button as fast as you can to rack up tickles!",
+      "controls": "Tap the red, yellow or blue feather button that matches the feet's lane as fast as possible for 10 seconds.",
+      "image": "/games/tickle-frenzy/naoyang.jpg",
+      "thumbnail": "/games/tickle-frenzy/naoyang.jpg",
+      "tags": [
+        "tickle",
+        "reaction",
+        "tapping",
+        "10 seconds",
+        "casual",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/tickle-frenzy/index.html",
+      "type": "local"
+    },
+    {
+      "id": "tightrope-walker",
+      "title": "Tightrope Walker",
+      "category": "Arcade",
+      "description": "Tightrope Walker is a nail-biting high-wire timing game. Swing from rope to rope across the sky and chase the longest distance record!",
+      "controls": "Tap to cut the rope and launch. Tap again at the right moment to catch the next rope.",
+      "image": "/games/tightrope-walker/img/9gloading.png",
+      "thumbnail": "/games/tightrope-walker/img/9gloading.png",
+      "tags": [
+        "tightrope",
+        "timing",
+        "rope swing",
+        "arcade",
+        "distance",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/tightrope-walker/index.html",
+      "type": "local"
+    },
+    {
+      "id": "tile-tap-rush",
+      "title": "Tile Tap Rush",
+      "category": "Arcade",
+      "description": "Tap your way through falling tiles in Tile Tap Rush. Only the lowest tile in each column counts - one wrong tap ends the run. How many tiles can you clear in 20 seconds?",
+      "controls": "Tap or click only the lowest tile in the bottom row as it appears. Tapping any other tile ends the run. Score as many correct taps as you can in 20 seconds.",
+      "image": "/games/tile-tap-rush/icon.jpg",
+      "thumbnail": "/games/tile-tap-rush/icon.jpg",
+      "tags": [
+        "arcade",
+        "reflex",
+        "tiles",
+        "tapping",
+        "speed",
+        "challenge",
+        "one-button"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/tile-tap-rush/index.html",
       "type": "local"
     },
     {
@@ -1148,6 +1763,26 @@
       ],
       "thumbnail": "/games/twins-match-up/logo.jpg",
       "image": "/games/twins-match-up/logo.jpg"
+    },
+    {
+      "id": "wildflower-picker",
+      "title": "Wildflower Picker",
+      "category": "Casual",
+      "description": "Stroll through the meadow and pick as many wildflowers as you can in Wildflower Picker. Earn fun titles as your bouquet grows - how many flowers can you gather in one run?",
+      "controls": "Tap or click flowers to pick them. Keep picking within the time limit to earn the best title.",
+      "image": "/games/wildflower-picker/icon.png",
+      "thumbnail": "/games/wildflower-picker/icon.png",
+      "tags": [
+        "casual",
+        "collecting",
+        "flowers",
+        "relaxing",
+        "highscore"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "path": "/games/wildflower-picker/index.html",
+      "type": "local"
     }
   ]
 }

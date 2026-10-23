@@ -1,0 +1,12 @@
+{
+  "id": "wildflower-picker",
+  "title": "Wildflower Picker",
+  "category": "Casual",
+  "description": "Stroll through the meadow and pick as many wildflowers as you can in Wildflower Picker. Earn fun titles as your bouquet grows - how many flowers can you gather in one run?",
+  "controls": "Tap or click flowers to pick them. Keep picking within the time limit to earn the best title.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["casual", "collecting", "flowers", "relaxing", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

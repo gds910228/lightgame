@@ -1,0 +1,12 @@
+{
+  "id": "prison-memory-match",
+  "title": "Prison Memory Match",
+  "category": "Puzzle",
+  "description": "Put your memory to the test in Prison Memory Match. Flip the cards, remember every face, and pair them all up before the 60-second timer runs out.",
+  "controls": "Click or tap two cards to flip them over. Match identical faces to lock in the pair and clear the whole board before time runs out.",
+  "image": "icon.jpg",
+  "thumbnail": "icon.jpg",
+  "tags": ["memory", "puzzle", "matching", "cards", "brain", "timer"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

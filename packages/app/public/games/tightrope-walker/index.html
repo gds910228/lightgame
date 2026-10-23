@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=480,user-scalable=yes,uc-user-scalable=yes,target-densitydpi=high-dpi"/>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="description" content="Tightrope Walker - a high-wire timing game. Cut the rope, time the swing and see how far you can fly without looking down!">
+    <meta name="keywords" content="tightrope, high wire, timing game, rope swing, acrobat, arcade game, html5 game">
+    <script language="javascript" type="text/javascript" src="jj.js"></script>
+    <script language="javascript" type="text/javascript" src="min.js"></script>
+    <title>Tightrope Walker</title>
+<style>
+	body{margin:0px; background-color:#434243; color:#6A6A6A; font-family: Arial, sans-serif;}
+	.bandiv{float:left; width:100%; background-color:#DBD1BB;}
+		.bandiv div{padding:10px; text-align:left;}
+</style>
+</head>
+<body onload="main()" id="0">
+<div style="text-align:center;">
+	<canvas id="jsGameScreen">
+	</canvas>
+</div>
+
+<script>
+// LightGame platform bridge: home + share
+window.shareData = {
+    imgUrl: "./1.png",
+    timeLineLink: window.location.href,
+    tTitle: "Tightrope Walker",
+    tContent: "How far can you fly on a single rope?"
+};
+var myData = { gameid: "tightrope-walker", score: 0 };
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, text: window.shareData.tContent, url: window.location.href }).catch(function(){}); }
+}
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function dp_share(t) { lgShare(t); }
+function show_share(t) { lgShare(t); }
+function showAd() {}
+function hideAd() {}
+function dp_submitScore(m, t) {
+    var score = parseInt(t, 10) || 0;
+    myData.score = score;
+    if (typeof updateShare === 'function') updateShare(score);
+}
+function updateShare(score) {
+    window.shareData.tTitle = "Tightrope Walker - I scored " + score + " points! How far can you get?";
+    document.title = window.shareData.tTitle;
+}
+</script>
+</body>
+</html>

@@ -7,6 +7,8 @@ export interface Game {
   controls: string;
   path: string;
   tags: string[];
+  /** 设计宽高比(如 "2:3"),全屏层据此等比内接,避免竖屏游戏在横屏视口被裁切 */
+  aspectRatio?: string;
 }
 export interface GamesData { games: Game[]; }
 export interface GameProgress {

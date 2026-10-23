@@ -1,0 +1,12 @@
+{
+  "id": "how-many-hits",
+  "title": "How Many Hits?",
+  "category": "Arcade",
+  "description": "Time your swing perfectly to smack the swinging chain ball with the iron hammer. How many clean hits can you land before you miss?",
+  "controls": "Tap when the ball swings into range to swing the hammer. Perfect timing scores a hit.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["timing", "reaction", "chain ball", "arcade", "highscore", "html5 game"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

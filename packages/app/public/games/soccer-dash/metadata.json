@@ -1,0 +1,13 @@
+{
+  "id": "soccer-dash",
+  "title": "Soccer Dash",
+  "category": "Sports",
+  "description": "Dribble at full speed in Soccer Dash, a World Cup runner. Weave past cones, grab jerseys and power-ups, then take your best shot against the goalkeeper.",
+  "controls": "Drag with your finger or mouse to steer the dribbling player. Collect power-ups, avoid obstacles, and shoot the ball to score.",
+  "image": "icon.jpg",
+  "thumbnail": "icon.jpg",
+  "aspectRatio": "2:3",
+  "tags": ["soccer", "runner", "sports", "world-cup", "dribbling", "arcade"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

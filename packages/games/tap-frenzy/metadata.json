@@ -1,0 +1,12 @@
+{
+  "id": "tap-frenzy",
+  "title": "Tap Frenzy",
+  "category": "Arcade",
+  "description": "Tap Frenzy is a 10-second speed tapping challenge. Mash the heart button as fast as you can, beat your best score and earn speed ranks from Turtle to Lightning!",
+  "controls": "Tap the big heart button repeatedly for 10 seconds. More taps means a higher rank.",
+  "image": "img/mm.jpg",
+  "thumbnail": "img/mm.jpg",
+  "tags": ["tap", "speed test", "reaction", "10 seconds", "casual", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

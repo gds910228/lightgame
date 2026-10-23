@@ -1,0 +1,12 @@
+{
+  "id": "peek-and-pop",
+  "title": "Peek and Pop",
+  "category": "Arcade",
+  "description": "Peek and Pop is a 30-second whack-a-mole reaction game. Pop the peeking faces as they appear, rack up combos and avoid the decoys to beat your friends!",
+  "controls": "Tap the peeking faces in the nine holes. Do not tap the decoy characters.",
+  "image": "logo.png",
+  "thumbnail": "logo.png",
+  "tags": ["whack a mole", "reaction", "tapping", "casual", "30 seconds"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

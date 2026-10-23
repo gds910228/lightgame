@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Tap Frenzy</title>
+    <meta name="description" content="Tap Frenzy - how fast can you tap in 10 seconds? Mash the buttons to beat your best score and climb the speed ranks!">
+    <meta name="keywords" content="tap frenzy, tapping game, speed test, reaction game, 10 second challenge, casual game">
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+        body {
+            text-align: center;
+            background: #000000;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        * {
+            -webkit-touch-callout:none;
+            -webkit-user-select:none;
+            -khtml-user-select:none;
+            -moz-user-select:none;
+            -ms-user-select:none;
+            user-select:none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+        #gameDiv {
+            display:inline-block;
+            width:100%;
+            height:100%;
+            margin: 0 auto;
+            background: black;
+            position:relative;
+        }
+        p#timer {
+            color:#fff;
+            font-size:20px;
+        }
+        #result_panel {
+            text-align:center;
+            background-color:rgba(0,0,0,0.5);
+        }
+        #result_panel button {
+            font-size:25px;
+            border-radius:80px;
+            color: #F1C9F2;
+            text-shadow: 0 1px 0 #135069;
+            background: linear-gradient(#46B8FC 0%, #0470A6 100%);
+            border: 1px solid #046E99;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.3);
+            margin-top:20px;
+        }
+        .button {
+          display: inline-block;
+          width: 150px;
+          height:154px;
+          border-radius:80px;
+          font-size:18px;
+          font-weight:bold;
+          color:#fff;
+          margin: 8px;
+        }
+        #reset {
+            background:#F16060;
+            border:0;
+        }
+        #button {
+            width: 150px;
+            height: 154px;
+            border: 0;
+            border-radius: 28px;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+            background: #ec6996 url('knydh.png') center/contain no-repeat;
+            touch-action: manipulation;
+        }
+        #button.active {
+            transform: scale(0.94);
+        }
+        #best {
+            margin-top:20px;color:#fff;font-size:20px;
+        }
+    </style>
+</head>
+<body>
+<div id="gameDiv">
+    <p id="timer">10.00 seconds</p>
+    <div id="result_panel" style="display:none;"></div>
+    <button class="button red" id="button">TAP ME!</button>
+    <div id="best"></div>
+</div>
+<script src="jquery.min.js"></script>
+<script>
+(function(){
+    var initial = 1000,
+        count = initial,
+        state = 0,
+        total = 0,
+        timer,
+        myData = {gameid:"tap-frenzy",score:0};
+    var rankNames = ['Turtle', 'Sloth', 'Steady', 'Speedy', 'Quick Hand', 'Tap Master', 'Tap Machine', 'Lightning'];
+
+    $('#best').html('Best: <span id="bestnum">' + best() + '</span> taps');
+
+    function best() {
+        if (localStorage) {
+            var max = localStorage.getItem("max");
+            if (max) return parseInt(max, 10);
+        }
+        return 0;
+    }
+
+    function rankName(score) {
+        var idx = Math.floor(score / 100);
+        if (idx >= rankNames.length) idx = rankNames.length - 1;
+        return rankNames[idx];
+    }
+
+    function dp_submitScore(score) { if (typeof updateShare === 'function') updateShare(score); }
+    function dp_share(score) { lgShare(score); }
+    function goHome() { lgGoHome(); }
+    function clickMore() { lgGoHome(); }
+
+    function reset() {
+        count = initial;
+        state = 0;
+        total = 0;
+        $('#timer').html('10.00 seconds');
+        $('#result_panel').hide();
+        $('#button').show().html('TAP ME!');
+        $('#bestnum').text(best());
+    }
+
+    function endGame() {
+        state = 0;
+        var max = best();
+        if (total > max) {
+            if (localStorage) localStorage.setItem("max", total);
+        }
+        var name = rankName(total);
+        var mess = total < 100 ? 'Slow and steady wins... eventually.'
+             : total < 200 ? 'Not bad, your fingers are warming up!'
+             : total < 300 ? 'Nice speed! Keep training!'
+             : total < 400 ? 'Incredibly fast hands!'
+             : total < 500 ? 'Blazing fast - almost inhuman!'
+             : 'Are your fingers even human?!';
+        dp_submitScore(total);
+        $('#button').hide();
+        $('#result_panel').show().html(
+            '<div style="color:#fff;font-size:30px;padding-top:20px;">' + total + ' taps</div>' +
+            '<div style="color:#04fece;font-size:22px;">Rank: ' + name + '</div>' +
+            '<div style="color:#fff;font-size:16px;padding:10px 30px;">' + mess + '</div>' +
+            '<button id="reset">Play Again</button>'
+        );
+        $('#reset').on('touchend click', function(e){ e.preventDefault(); reset(); });
+    }
+
+    $('#button').on('touchstart mousedown', function(e){
+        e.preventDefault();
+        if (!state) {
+            state = 1;
+            $('#button').html('');
+            timer = setInterval(function(){
+                count -= 10;
+                $('#timer').html((count / 100).toFixed(2) + ' seconds');
+                if (count <= 0) {
+                    clearInterval(timer);
+                    endGame();
+                }
+            }, 10);
+        }
+        if (state === 1) {
+            total++;
+            var c = $('#button');
+            c.toggleClass('active');
+            setTimeout(function(){ c.toggleClass('active'); }, 30);
+        }
+    });
+})();
+</script>
+<script>
+// LightGame platform bridge: home + share
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, text: 'I tapped ' + (score||'') + ' times in 10 seconds in Tap Frenzy! Can you beat me?', url: window.location.href }).catch(function(){}); }
+}
+function updateShare(score) {
+  document.title = 'Tap Frenzy - I tapped ' + score + ' times in 10 seconds! Can you beat me?';
+}
+</script>
+</body>
+</html>

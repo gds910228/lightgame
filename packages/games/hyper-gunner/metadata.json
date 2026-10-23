@@ -1,0 +1,12 @@
+{
+  "id": "hyper-gunner",
+  "title": "Hyper Gunner",
+  "category": "Action",
+  "description": "Defend Earth in Hyper Gunner, a classic vertical space shooter. Blast waves of alien fighters, survive level after level, and log your miles from home.",
+  "controls": "Move with the arrow keys or A/D, or drag on the touch screen. Fire at the incoming aliens and destroy them all to clear each level.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["shooter", "space", "action", "retro", "arcade", "alien"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

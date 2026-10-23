@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=480,user-scalable=no,uc-user-scalable=no,target-densitydpi=high-dpi"/>
+<meta name="description" content="Room Escape Reaction - a fast reaction gauntlet. Watch the screen and tap the instant the signal changes across every tricky room - can you clear all the levels?">
+<meta name="keywords" content="reaction test, room escape, reflex game, timing, arcade, html5 game">
+<style>
+	body{margin:0; background-color:#434243; color:#6A6A6A; font-family: Arial, Helvetica, sans-serif;}
+</style>
+<script>
+// LightGame platform bridge (play68 naming kept for engine compatibility)
+var HOME_PATH = "/", imgUrl = "icon.png", lineLink = window.location.href;
+var descContent = "Think you have fast reflexes? Prove it!";
+var shareTitle = "Room Escape Reaction";
+var appid = "";
+var myData = { gameid: "room-escape-reaction", score: 0, scoreName: "" };
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, text: descContent, url: window.location.href }).catch(function(){}); }
+}
+function play68_init() { updateShare(0); }
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function play68_submitScore(score) {
+    updateShareScore(score);
+    if (typeof dp_submitScore === 'function') dp_submitScore(score);
+    setTimeout(function () { show_share(); }, 500);
+}
+function updateShareScore(bestScore) {
+    var n = parseInt(bestScore, 10) || 0;
+    myData.score = n;
+    myData.scoreName = "Cleared " + n + " rooms";
+    shareTitle = n > 0
+        ? "Room Escape Reaction - I cleared " + n + " rooms! Can you keep up?"
+        : "Room Escape Reaction - clear the rooms if your reflexes are sharp enough!";
+    document.title = shareTitle;
+}
+function updateShare(bestScore) {
+    imgUrl = "icon.png";
+    lineLink = window.location.href;
+    descContent = "Think you have fast reflexes? Prove it!";
+    appid = '';
+    updateShareScore(bestScore);
+}
+function show_share() { lgShare(myData.score); }
+function shareFriend() { lgShare(myData.score); }
+function shareTimeline() { lgShare(myData.score); }
+function shareWeibo() { lgShare(myData.score); }
+</script>
+<script type="text/javascript" src="jsgamemin.js"></script>
+<script type="text/javascript" src="spaceman.min.js"></script>
+<title>Room Escape Reaction</title>
+</head>
+<body onLoad="main()" id="0">
+<div style="text-align:center;">
+<canvas id="jsGameScreen"></canvas>
+</div>
+</body>
+</html>

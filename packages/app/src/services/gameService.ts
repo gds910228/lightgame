@@ -10,6 +10,7 @@ interface RawGameMeta {
   tags?: unknown;
   path?: unknown;
   image?: unknown;
+  aspectRatio?: unknown;
 }
 
 function isString(v: unknown): v is string {
@@ -74,6 +75,7 @@ export async function getAllGames(): Promise<Game[]> {
         tags: toStringArray(raw.tags),
         path: isString(raw.path) ? `${baseUrl}${raw.path}` : `${baseUrl}/games/${id}/index.html`,
         image: isString(raw.image) ? `${baseUrl}${raw.image}` : `${baseUrl}/images/thumbnails/${id}.svg`,
+        ...(isString(raw.aspectRatio) ? { aspectRatio: raw.aspectRatio } : {}),
       };
     });
     

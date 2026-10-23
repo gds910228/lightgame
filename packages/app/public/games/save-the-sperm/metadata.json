@@ -1,0 +1,12 @@
+{
+  "id": "save-the-sperm",
+  "title": "Save the Sperm",
+  "category": "Arcade",
+  "description": "Guard the zone and rescue as many falling tadpoles as you can in Save the Sperm. Chain catches into combos, level up wave after wave, and set a brand-new rescue record.",
+  "controls": "Drag in the play area to move the catcher. Catch the falling tadpoles, avoid the enemies, and build combos for bonus points.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["arcade", "catching", "reflex", "combo", "casual", "rescue"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "tickle-frenzy",
+  "title": "Tickle Frenzy",
+  "category": "Arcade",
+  "description": "Tickle Frenzy is a 10-second reaction challenge. Watch the moving feet and tap the matching colored feather button as fast as you can to rack up tickles!",
+  "controls": "Tap the red, yellow or blue feather button that matches the feet's lane as fast as possible for 10 seconds.",
+  "image": "naoyang.jpg",
+  "thumbnail": "naoyang.jpg",
+  "tags": ["tickle", "reaction", "tapping", "10 seconds", "casual", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

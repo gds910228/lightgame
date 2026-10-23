@@ -1,0 +1,928 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="viewport"
+			content="width=device-width initial-scale=1.0 maximum-scale=1.0 user-scalable=yes" />
+		<title>Retro Game Tune Quiz</title>
+		<link href="bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet">
+		<link rel="stylesheet" href="Public/fangyan/style.css?m=0711" />
+		<style type="text/css">
+/*    body {
+        background: #000 url(Public/fangyan/bg.jpg) top center no-repeat !important;
+        background-size:100% 100% !important;
+    }*/
+.bg {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: #000 url(Public/upload/6177/53fe872815c9a.jpeg) top center
+		no-repeat !important;
+	background-size: 100% 100% !important;
+}
+
+.addthumb {
+	padding-left: 0;
+	padding-right: 0;
+	height: 50px;
+	overflow: hidden;
+}
+
+.btn-danger {
+	background-color: #f08c86;
+	border-color: #f08c86;
+	color: #fff;
+}
+
+.btn-danger:hover,.btn-danger:focus,.btn-danger:active,.btn-danger.active,.open>.dropdown-toggle.btn-danger
+	{
+	background-color: #f08c86;
+	border-color: #f08c86;
+	color: #fff;
+}
+
+.btn-danger2 {
+	background-color: #5a4c4b;
+	border-color: #5a4c4b;
+	color: #fff;
+}
+
+.buttons2 {
+	padding-top: 5px;
+}
+
+.btn-danger2:hover,.btn-danger2:focus,.btn-danger2:active,.btn-danger2.active,.open>.dropdown-toggle.btn-danger2
+	{
+	background-color: #5a4c4b;
+	border-color: #5a4c4b;
+	color: #fff;
+}
+
+.btn-danger1 {
+	font-size: 22px;
+	padding: 10px;
+}
+
+.btn-success {
+	background-color: #2d892d;
+	border-color: #4cae4c;
+	color: #fff;
+}
+
+.panel {
+	background-color: #fff;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+	margin-bottom: 5px;
+}
+</style>
+	</head>
+	<body>
+		<div class="bg"></div>
+		<script>
+    function play(url){
+
+        var audio = document.createElement('audio');
+        var source = document.createElement('source');
+        source.type = "audio/mpeg";
+        source.type = "audio/mpeg";
+        source.src = url;
+        source.autoplay = "autoplay";
+        source.controls = "controls";
+        audio.appendChild(source);
+        audio.play();
+        $('.btn').hide();
+        $('.stop').show();
+    }
+</script>
+
+
+		<div class="container">
+			<div class="text-center header">
+				<style>
+.header {
+	color: #fff;
+	margin: 0 0 55px;
+}
+</style>
+				<h1 class="bold">
+					Did Your Childhood Vanish?
+				</h1>
+				<p>
+					How good is your retro memory?
+				</p>
+				<div class="avatar1 text-center">
+					<div class="img-circle" id="sicon">
+						<span class="glyphicon glyphicon-pencil"></span>
+					</div>
+				</div>
+			</div>
+			<div id="bd" class="panel">
+				<div id="panel1" class="panel-body">
+					<dl>
+						<dd style="font-size: 18px;">
+							How many classic game tunes do you remember?
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="#result" class="btn btn-danger btn-danger1 btn-block"
+							onclick="return next(0);">Start Quiz</a>
+					</div>
+					<div class="buttons buttons2">
+						<a href="#" onClick="clickMore();"
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/cjml.mp3')" />
+							<p class="stop">
+								1. Who is the hero of this game? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Maradona
+						</li>
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Mario
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Leonardo
+						</li>
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Mushroom Bros
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block"> </a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/tkdz.mp3')" />
+							<p class="stop">
+								2. What is this game called? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Battle City
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Wreck-It Ralph
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Jackal
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Bumper Cars
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/sjl.mp3')" />
+							<p class="stop">
+								3. What is the game name? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Jay Chou
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Nunchaku
+						</li>
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Double Dragon
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Contra
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/mxt.mp3')" />
+							<p class="stop">
+								4. What do you mainly do in this game? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Fight bosses
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Collect coins
+						</li>
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Do acrobatics
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Shoot planes
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/csys.mp3')" />
+							<p class="stop">
+								5. What is the game name? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Battle City
+						</li>
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Jackal
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Little Cars
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Call of Duty
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/hdl.mp3')" />
+							<p class="stop">
+								6. Who inspired these game characters? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Schwarzenegger & Stallone
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Jackie Chan & Jet Li
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Nicolas Cage & Jason Statham
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Pleasant Goat & Big Bad Wolf
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/ssdzz.mp3')" />
+							<p class="stop">
+								7. What is the main character? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Human
+						</li>
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Squirrel
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Rat
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Ninja
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/cdz.mp3')" />
+							<p class="stop">
+								8. What game is this? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Pac-Man
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Kart Racer
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Journey to the West
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Three Kingdoms
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/yzcs.mp3')" />
+							<p class="stop">
+								9. What is the game name? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Flying Dagger Li
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B Kung Fu
+						</li>
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Legend of Kage
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Ninja Turtles
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel2" class="panel-body js_answer" data-type="2"
+					style="display: none;">
+					<dl>
+
+						<dd>
+							<p>
+								<input type="button" value="Play the tune"
+									class="btn btn-success btn-block" id="start"
+									onclick="play('video/cb/3a/56/mp3/20140830/mxd.mp3')" />
+							<p class="stop">
+								10. What game is this? (10 pts)
+							</p>
+						</dd>
+
+					</dl>
+					<ul class="list-group js_group">
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>A Rainbow Bridge
+						</li>
+						<li class="list-group-item" data-score="10"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>B MapleStory
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>C Castlevania
+						</li>
+						<li class="list-group-item" data-score="0"
+							onclick="return toggle(this);">
+							<i class="glyphicon glyphicon-unchecked"></i>D Snickers
+						</li>
+					</ul>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="1"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						0-10 pts: Level 0
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								Wow, that is an impressively low score! Ask a retro-gamer friend - they will know every one of these.
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="2"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						10-20 pts: Level 1
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								You have touched an NES or two. Find a veteran gamer friend to help and you will hit 90!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="3"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						20-30 pts: Level 1
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								You have touched an NES or two. Find a veteran gamer friend to help and you will hit 90!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="4"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						30-40 pts: Level 1
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								You have touched an NES or two. Find a veteran gamer friend to help and you will hit 90!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="5"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						40-50 pts: Level 1
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								You have touched an NES or two. Find a veteran gamer friend to help and you will hit 90!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="6"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						50-60 pts: Level 2
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								A voice inside is shouting about the good old console days. Go back and play the classics you missed!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="7"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						60-70 pts: Level 3
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								A voice inside is shouting about the good old console days. Go back and play the classics you missed!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="8"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						70-80 pts: Level 4
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								A voice inside is shouting about the good old console days. Go back and play the classics you missed!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="9"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						80-90 pts: Level 5
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								You know these classics well, full of childhood memories. Invite an old friend and replay them together!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a
+							href="#" onClick="clickMore();" 
+							class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+				<div id="panel3" class="panel-body js_result" data-id="10"
+					style="display: none;">
+					<h1 class="bold text-danger">
+						Perfect score! Max level!
+					</h1>
+					<hr>
+					<dl>
+						<dt>
+							Analysis:
+						</dt>
+						<dd>
+							<p>
+								You not only know these games, you probably completed them all. A true retro gamer! Round up your childhood friends and celebrate!
+							</p>
+						</dd>
+					</dl>
+					<div class="buttons">
+						<a href="javascript:void(0)" class="btn btn-success btn-block"
+							onclick="dp_share();">Share with friends</a>
+					</div>
+					<div class="buttons buttons2">
+						<a href="#" onClick="clickMore();" class="btn btn-danger btn-danger2 btn-block">More Games</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="footer text-center"
+			style="position: relative; margin-bottom: 20px">
+			<div class="container">
+				<a href="#" onClick="goHome();">More Games</a>
+			</div>
+		</div>
+
+		<div class="loads" style="display: bolck">
+			<i></i>
+		</div>
+		<script src="Public/fangyan/zepto.min.js"></script>
+		<script type="text/javascript">
+    // var audio = new Audio();
+    var total = '10';
+    var tScore = 0;
+    var scoreArr = new Array();
+        scoreArr[0] = 0;
+        scoreArr[1] = 10;
+        scoreArr[2] = 20;
+        scoreArr[3] = 30;
+        scoreArr[4] = 40;
+        scoreArr[5] = 50;
+        scoreArr[6] = 60;
+		scoreArr[7] = 70;
+		scoreArr[8] = 80;
+		scoreArr[9] = 90;
+    function next(t){
+        //console.log(t);
+        $(".panel-body").hide();
+        var $_this = $(".js_answer").eq(t);
+            $_this.show();
+        var type = $_this.attr('data-type');
+        if(type==2){
+            // audio.src = $_this.find('audio').attr('src');
+            // audio.load();
+            // audio.play();
+            $('#sicon').html('<span class="glyphicon glyphicon-headphones"></span>');
+        }
+        else if(type==1){
+            // stop = true;
+            // audio.pause();
+            $('#sicon').html('<span class="glyphicon glyphicon-picture"></span>');
+        }
+        else{
+            // stop = true;
+            // audio.pause();
+            $('#sicon').html('<span class="glyphicon glyphicon-pencil"></span>');
+        }
+    }
+
+    function result(t){
+        console.log("Score "+tScore);
+        dp_submitScore(tScore);
+        $(".panel-body").hide();
+        for (var i = scoreArr.length - 1; i >= 0; i--) {
+            if ( parseInt(t) >= parseInt(scoreArr[i]) ) {
+                console.log("show "+i);
+                $(".js_result").eq(i).show();
+                if(i>(10/2)){
+                    $('#sicon').html('<span class="glyphicon glyphicon-thumbs-up"></span>');
+                }
+                else{
+                    $('#sicon').html('<span class="glyphicon glyphicon-thumbs-down"></span>');
+                }
+                return false;
+            }
+            else{
+                continue;    
+            }
+        };
+    }
+
+    function toggle(t){
+        $(".list-group-item").removeClass('active')
+        var score = $(t).attr("data-score");
+        tScore  = parseInt(tScore) + parseInt(score);
+        $(t).find('i').removeClass('glyphicon-unchecked').addClass('glyphicon-ok');
+        var t = $(".js_answer").index($(t).parents(".js_answer")) + 1;
+		// music show begin
+		$('.btn').show();
+        $('.stop').hide();
+		// music show end
+        if(t == total){
+            result(tScore);
+        }
+        else{
+            setTimeout(function(){next(t);},300);
+        }
+    }
+    Zepto(function($){
+        $('.loads').hide();
+    })
+   
+</script>
+		<script>
+	$("#content img").each(function(){
+		$(this).removeAttr('height');
+		if(($(this).width()+20)>$('#content').innerWidth()){
+			
+			$(this).removeAttr('style').removeAttr('width');
+			$(this).removeAttr('style').attr('width',($('#content').innerWidth()-20));
+		}else{
+			$(this).removeAttr('style').attr('max-width','100%');
+		}
+						   
+	});
+	$("#content2 img").each(function(){
+		$(this).removeAttr('height');
+		if(($(this).width()+20)>$('#content2').innerWidth()){
+			
+			$(this).removeAttr('style').removeAttr('width');
+			$(this).removeAttr('style').attr('width',($('#content2').innerWidth()-20));
+		}else{
+			$(this).removeAttr('style').attr('max-width','100%');
+		}
+						   
+	});
+	</script>
+	<script language=javascript>
+var myData = { gameid: "retro-game-tune-quiz", score: 0 };
+window.shareData = { imgUrl: "share.png", timeLineLink: window.location.href, tTitle: "Retro Game Tune Quiz", tContent: "How many classic game tunes do you remember?" };
+function lgGoHome(){try{if(window.parent&&window.parent!==window){window.parent.location.href='/';}else{window.location.href='/';}}catch(e){window.location.href='/';}}
+function lgShare(score){try{if(window.parent&&window.parent!==window&&typeof window.parent.handleGlobalShare==='function'){window.parent.handleGlobalShare(score);return;}}catch(e){}if(navigator.share){navigator.share({title:document.title,text:'I scored '+score+'/100 in Retro Game Tune Quiz! How many do you know?',url:window.location.href}).catch(function(){});}}
+function goHome(){lgGoHome();}
+function guanzhu(){lgGoHome();}
+function clickMore(){lgGoHome();}
+function dp_share(){ if(typeof lgShare==='function') lgShare(myData.score); }
+function dp_Ranking(){lgGoHome();}
+function showAd(){}
+function hideAd(){}
+function dp_submitScore(score){ myData.score=parseInt(score,10)||0; if(typeof updateShare==='function') updateShare(myData.score); }
+function updateShare(score){ window.shareData.tTitle='Retro Game Tune Quiz - I scored '+score+'/100! Can you beat me?'; document.title=window.shareData.tTitle; }
+function onShareComplete(){}
+</script>
+
+	
+	</body>
+</html>

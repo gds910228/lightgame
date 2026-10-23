@@ -1,0 +1,12 @@
+{
+  "id": "name-duel",
+  "title": "Name Duel",
+  "category": "Casual",
+  "description": "Enter two names and watch them duel with random attacks, charms, crits and lucky comebacks. Every battle tells a ridiculous story - whose name wins?",
+  "controls": "Type two names and press the big button to auto-battle. Tap Play Again for a new matchup.",
+  "image": "img/bg1.jpg",
+  "thumbnail": "img/bg1.jpg",
+  "tags": ["name battle", "duel", "lucky", "funny", "casual", "party"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

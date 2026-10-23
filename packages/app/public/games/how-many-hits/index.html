@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>How Many Hits?</title>
+    <meta name="description" content="How Many Hits? Time your swing and strike the swinging iron ball with the chain. How many clean hits can you score in a row?">
+    <meta name="keywords" content="how many hits, timing game, chain ball, reaction, arcade game, html5 game">
+    <link rel="icon" type="image/x-icon" href="res/favicon.ico"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="yes"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <style>
+        body, canvas, div {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+<body style="padding:0; margin: 0; background: #000;">
+<canvas id="gameCanvas" width="320" height="500"></canvas>
+
+<script src="game.min.js"></script>
+<script>
+// LightGame platform bridge: home + share
+var myData = { gameid: "how-many-hits", score: 0, scoreName: "" };
+window.shareData = {
+    imgUrl: "icon.png",
+    timeLineLink: window.location.href,
+    tTitle: "How Many Hits?",
+    tContent: "How many clean hits can you land on the chain ball?"
+};
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, text: window.shareData.tContent, url: window.location.href }).catch(function(){}); }
+}
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function dp_share() { lgShare(myData.score); }
+function show_share() { lgShare(myData.score); }
+function showAd() {}
+function hideAd() {}
+function dp_submitScore(score) {
+    myData.score = parseInt(score, 10) || 0;
+    myData.scoreName = myData.score + " hits";
+    if (typeof updateShare === 'function') updateShare(myData.score);
+}
+function updateShare(score) {
+    window.shareData.tTitle = "How Many Hits? - I landed " + score + " clean hits! Can you beat me?";
+    document.title = window.shareData.tTitle;
+}
+function onShareComplete(res) {}
+</script>
+</body>
+</html>

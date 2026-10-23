@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Wildflower Picker</title>
+    <meta name="description" content="Wildflower Picker - pick as many wildflowers as you can, but watch out! Some flowers fight back. Beat your friends' scores!" />
+    <meta name="keywords" content="wildflower picker, picking game, flower game, casual game, tapping game, html5 game" />
+    <meta name="viewport" content="width=device-width, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="yes"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <style>
+        body, canvas, div {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+    </style>
+</head>
+<body style="padding:0; margin: 0; background: #000;">
+<canvas id="gameCanvas" width="640" height="1000"></canvas>
+<script src="js/game.min.js?20140825"></script>
+<script>
+// LightGame platform bridge: home + share (replaces legacy share glue)
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, url: window.location.href }).catch(function(){}); }
+}
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function dp_share(score) { lgShare(score); }
+function show_share(score) { lgShare(score); }
+function dp_submitScore(score, title) { if (typeof updateShare === 'function') { updateShare(score, title); } }
+function updateShare(score, title) {
+  var n = parseInt(score, 10);
+  if (isNaN(n)) { n = 0; }
+  var text = "Wildflower Picker - I picked " + n + " wildflowers and earned the rank: " + (title || "Bud Picker") + "! Can you beat me?";
+  document.title = text;
+  window.shareData.tTitle = text;
+  window.shareData.tContent = text;
+}
+window.shareData = {
+  "imgUrl": "share.png",
+  "timeLineLink": window.location.href,
+  "tTitle": "Wildflower Picker",
+  "tContent": "Pick as many wildflowers as you can!"
+};
+</script>
+</body>
+</html>

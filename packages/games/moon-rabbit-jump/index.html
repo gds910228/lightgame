@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta charset="utf-8">
+    <title>Moon Rabbit Jump</title>
+    <meta name="description" content="Moon Rabbit Jump - a Mid-Autumn bunny jumping adventure. Time the rope launch to fly past branches and heavenly soldiers toward the moon!">
+    <meta name="keywords" content="moon rabbit, bunny jump, rope launch, distance game, mid autumn, arcade game, html5 game">
+	<meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <meta name="full-screen" content="true">
+    <meta name="screen-orientation" content="portrait">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="360-fullscreen" content="true">
+
+    <style>
+        body {
+            text-align: center;
+            background: #000000;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        html {
+            -ms-touch-action: none;
+        }
+    </style>
+</head>
+<body style="padding: 0px; border: 0px; margin: 0px;">
+<div style="display:inline-block;width:100%; height:100%;margin: 0 auto; background: black; position:relative;" id="gameDiv">
+    <canvas id="gameCanvas" width="480" height="800" style="width: 480px; height: 800px; background-color: rgb(0, 0, 0);"></canvas>
+</div>
+<script>var document_class = "GameApp";</script>
+<script src="js/egret_loader.js"></script>
+<script src="js/game-min.js"></script>
+
+<script>
+    egret_h5.startGame();
+</script>
+<script>
+// LightGame platform bridge: home + share
+var myData = { gameid: "moon-rabbit-jump", score: 0, scoreName: "" };
+window.shareData = {
+    imgUrl: "mmttt.png",
+    timeLineLink: window.location.href,
+    tTitle: "Moon Rabbit Jump",
+    tContent: "How far can the bunny fly on a single rope?"
+};
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, text: window.shareData.tContent, url: window.location.href }).catch(function(){}); }
+}
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function dp_share() { lgShare(myData.score); }
+function show_share() { lgShare(myData.score); }
+function showAd() {}
+function hideAd() {}
+function dp_submitScore(score) {
+    if (score > 0) {
+        myData.score = parseInt(score, 10);
+        myData.scoreName = myData.score + " m";
+        if (typeof updateShare === 'function') updateShare(myData.score);
+    }
+}
+function updateShare(score) {
+    window.shareData.tTitle = "Moon Rabbit Jump - I flew " + score + " meters! Can you beat me?";
+    document.title = window.shareData.tTitle;
+}
+function onShareComplete(res) {}
+</script>
+</body></html>

@@ -1,0 +1,13 @@
+{
+  "id": "peach-catch-frenzy",
+  "title": "Peach Catch Frenzy",
+  "category": "Casual",
+  "description": "Peach Catch Frenzy is a 59-second catching game: move the monkey basket to catch falling peaches, avoid the bombs and chase the red-envelope bonus.",
+  "controls": "Drag the basket with your finger or mouse (arrow keys also work) to catch peaches and dodge bombs.",
+  "image": "images/island.png",
+  "thumbnail": "images/island.png",
+  "aspectRatio": "2:3",
+  "tags": ["peach", "catcher", "monkey", "falling objects", "casual", "kids"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

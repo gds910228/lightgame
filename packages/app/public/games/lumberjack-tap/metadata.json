@@ -1,0 +1,12 @@
+{
+  "id": "lumberjack-tap",
+  "title": "Lumberjack Tap",
+  "category": "Arcade",
+  "description": "Chop the giant tree nonstop in Lumberjack Tap. Switch sides at the perfect moment to dodge incoming branches and keep chopping as fast as you can to set a new record.",
+  "controls": "Tap the left or right side of the screen to switch chopping sides. Dodge the branches and chop as much timber as you can.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["arcade", "reflex", "one-button", "timber", "chopping", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

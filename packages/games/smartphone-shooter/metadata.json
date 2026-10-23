@@ -1,0 +1,13 @@
+{
+  "id": "smartphone-shooter",
+  "title": "Smartphone Shooter",
+  "category": "Arcade",
+  "description": "Phones are flying everywhere in Smartphone Shooter. Take aim and shoot down as many as you can - every hit counts, so make each shot an accurate one.",
+  "controls": "Tap or click the flying phones to shoot them down. Hit as many as you can before time runs out.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "aspectRatio": "9:16",
+  "tags": ["shooter", "arcade", "tapping", "accuracy", "reflex", "casual"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

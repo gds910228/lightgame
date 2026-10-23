@@ -1,0 +1,12 @@
+{
+  "id": "cash-catch-rush",
+  "title": "Cash Catch Rush",
+  "category": "Arcade",
+  "description": "Cash Catch Rush is a 20-second reflex game: tap the falling banknotes and avoid the bombs. Grab as much cash as you can before time runs out!",
+  "controls": "Tap the banknote tiles as they scroll past. Miss or hit a bomb and the run ends.",
+  "image": "files/caishen.jpg",
+  "thumbnail": "files/caishen.jpg",
+  "tags": ["cash", "money", "reflex", "tapping", "casual", "20 seconds"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

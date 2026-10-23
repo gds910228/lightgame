@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<title>Hyper Gunner</title>
+	<meta name="description" content="Hyper Gunner - defend Earth in this classic vertical space shooter. Blast waves of alien fighters, dodge bombs and clear every level for the high score." />
+	<meta name="keywords" content="hyper gunner, space shooter, alien shooter, arcade shooter, bullet hell, html5 game" />
+	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<link rel="apple-touch-startup-image" href="./library/iphonestartup.png">
+	<link rel="stylesheet" type="text/css" href="./HyperGunner_files/iphone.css" media="only screen and (max-width: 480px)">
+	<link rel="stylesheet" type="text/css" href="./HyperGunner_files/desktop.css" media="screen and (min-width: 481px)">
+	<link rel="apple-touch-icon" href="./library/appleicon.png">
+	<script type="application/x-javascript" src="./HyperGunner_files/jquery-1.6.2.min.js"></script>
+	<script type="application/x-javascript" src="./HyperGunner_files/library.js"></script>
+	<script type="application/x-javascript" src="./HyperGunner_files/textdata.js"></script>
+	<script type="application/x-javascript" src="./HyperGunner_files/classlib.js"></script>
+	<script type="application/x-javascript" src="./HyperGunner_files/resources.js"></script>
+	<script type="application/x-javascript" src="./HyperGunner_files/data.js"></script>
+	<script type="application/x-javascript" src="./HyperGunner_files/leveldata.js"></script>
+	<script type="application/x-javascript" src="./HyperGunner_files/game.js"></script>
+	<script>
+	// LightGame platform bridge: home + share
+	function lgGoHome() {
+	  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+	  catch (e) { window.location.href = '/'; }
+	}
+	function lgShare(score) {
+	  try {
+	    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+	  } catch (e) {}
+	  if (navigator.share) { navigator.share({ title: document.title, url: window.location.href }).catch(function(){}); }
+	}
+	function goHome() { lgGoHome(); }
+	function clickMore() { lgGoHome(); }
+	function dp_Ranking() { lgGoHome(); }
+	function dp_share(score) { lgShare(score); }
+	function show_share(score) { lgShare(score); }
+	function dp_submitScore(score) { if (typeof updateShare === 'function') { updateShare(score); } }
+	function updateShare(score) {
+	  document.title = 'Hyper Gunner - I scored ' + score + ' points defending Earth! Can you beat me?';
+	}
+	</script>
+</head>
+<body onLoad="init();" onkeydown="scanInput(event);" onkeyup="stopMove(event);" style="background-color:#142760;">
+	<div id="container">
+		<canvas width="320" height="480" class="canvas" style="background-image: none; background-color: rgb(20, 39, 96); "></canvas>
+		<div id="banad" style="display: none; "></div>
+		<div id="console" style="display: none; text-align: left; "></div>
+	</div>
+</body>
+</html>

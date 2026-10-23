@@ -1,0 +1,12 @@
+{
+  "id": "pop-star-tap",
+  "title": "Pop Star Tap",
+  "category": "Arcade",
+  "description": "Pop Star Tap is a 30-second whack-a-mole reaction game. Tap the stars as they peek out of the nine holes, dodge the joke decoys and earn fun ranks!",
+  "controls": "Tap the popping stars in the holes. Avoid the decoy characters or the run ends.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["whack a mole", "reaction", "tapping", "casual", "30 seconds"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

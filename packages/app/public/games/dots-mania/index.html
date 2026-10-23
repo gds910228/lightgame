@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="target-densitydpi=320,width=640,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <title>Dots Mania</title>
+    <meta name="description" content="Dots Mania - connect same-colored dots in a single chain. The longer your chain, the higher the multiplier. Beat your best score in 20 moves!" />
+    <meta name="keywords" content="dots mania, connect dots, chain puzzle, color matching, casual game, html5 game" />
+    <link rel="stylesheet" href="css/53/main.css" />
+    <style>
+        body { position: relative; }
+    </style>
+</head>
+<body style="padding: 0px; border: 0px; margin: 0px; position: relative;">
+<div id="gameContainer" style="position: absolute;"> </div>
+<script type="text/javascript" src="js/phaser.min.js"></script>
+<script type="text/javascript" src="js/load.js"></script>
+<script type="text/javascript" src="js/menu.js"></script>
+<script type="text/javascript" src="js/play.js"></script>
+<script type="text/javascript" src="js/end.js"></script>
+<script type="text/javascript" src="js/game.js"></script>
+<script>
+// LightGame platform bridge: home + share
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, text: lgShareText(score), url: window.location.href }).catch(function(){}); }
+}
+function lgShareText(score) {
+  return (score ? 'I scored ' + score + ' in Dots Mania! ' : '') + 'Connect same-colored dots for huge multipliers - can you beat me?';
+}
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function dp_share(score) { lgShare(score); }
+function show_share(score) { lgShare(score); }
+function dp_submitScore(score) { if (typeof updateShare === 'function') { updateShare(score); } }
+function updateShare(score) {
+  document.title = 'Dots Mania - I scored ' + score + '! Can you beat me?';
+}
+document.oncontextmenu = function () { return false; };
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "id": "face-pair-match",
+  "title": "Face Pair Match",
+  "category": "Puzzle",
+  "description": "Flip cards and match pairs of hilarious faces against the clock in Face Pair Match. Remember every position, clear all the pairs before time runs out, and beat your best score in this fast-paced memory game.",
+  "controls": "Click or tap a card to flip it over. Match two identical faces to keep them open. Find every pair before the 60-second timer runs out.",
+  "image": "img/icon.png",
+  "thumbnail": "img/icon.png",
+  "tags": ["memory", "matching", "puzzle", "cards", "brain", "timer", "casual"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

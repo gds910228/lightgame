@@ -1,0 +1,13 @@
+{
+  "id": "retro-game-tune-quiz",
+  "title": "Retro Game Tune Quiz",
+  "category": "Quiz",
+  "description": "Listen to ten classic retro game tunes and name the game! Score points by recognizing Mario, Contra, Castlevania and more in this nostalgic music quiz.",
+  "controls": "Tap Play the tune, then pick the right answer from four options. 10 points per correct tune.",
+  "image": "Public/upload/6177/53fe872815c9a.jpeg",
+  "thumbnail": "Public/upload/6177/53fe872815c9a.jpeg",
+  "tags": ["retro games", "music quiz", "trivia", "arcade music", "nostalgia"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "notes": "Gameplay references classic game IP names and the bundled MP3s are unlicensed third-party music assets."
+}

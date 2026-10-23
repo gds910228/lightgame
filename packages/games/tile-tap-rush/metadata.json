@@ -1,0 +1,12 @@
+{
+  "id": "tile-tap-rush",
+  "title": "Tile Tap Rush",
+  "category": "Arcade",
+  "description": "Tap your way through falling tiles in Tile Tap Rush. Only the lowest tile in each column counts - one wrong tap ends the run. How many tiles can you clear in 20 seconds?",
+  "controls": "Tap or click only the lowest tile in the bottom row as it appears. Tapping any other tile ends the run. Score as many correct taps as you can in 20 seconds.",
+  "image": "icon.jpg",
+  "thumbnail": "icon.jpg",
+  "tags": ["arcade", "reflex", "tiles", "tapping", "speed", "challenge", "one-button"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "nerve-cat-launch",
+  "title": "Nerve Cat Launch",
+  "category": "Arcade",
+  "description": "Fling the crazy cat as far as you can in Nerve Cat Launch. Time your launch perfectly, keep the cat airborne, and chase a new distance record measured in meters.",
+  "controls": "Tap or click to launch the cat, then keep tapping at the right moments to keep it flying. Travel as far as possible.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["arcade", "launch", "distance", "cat", "casual", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

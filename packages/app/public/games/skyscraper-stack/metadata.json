@@ -1,0 +1,13 @@
+{
+  "id": "skyscraper-stack",
+  "title": "Skyscraper Stack",
+  "category": "Casual",
+  "description": "Time the swinging crane perfectly to stack floors into the sky. Land blocks spot-on for bonus points and beat the world-famous landmarks!",
+  "controls": "Tap when the block is aligned to drop it. Perfect drops keep the tower going.",
+  "image": "mtl_bg.jpg",
+  "thumbnail": "mtl_bg.jpg",
+  "aspectRatio": "2:3",
+  "tags": ["stack", "tower", "timing", "skyscraper", "casual", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

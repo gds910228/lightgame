@@ -29,12 +29,17 @@ interface FullscreenDocument extends Document {
 
 function requestFullscreen(el: HTMLElement): void {
   const fe = el as FullscreenElement
+  // Browsers may reject fullscreen (e.g. not granted); swallow it so the
+  // rejection never surfaces as an unhandled promise rejection.
+  const swallow = (p: Promise<void> | undefined | void) => {
+    Promise.resolve(p).catch(() => undefined)
+  }
   if (el.requestFullscreen) {
-    void el.requestFullscreen()
+    swallow(el.requestFullscreen())
   } else if (fe.webkitRequestFullscreen) {
-    void fe.webkitRequestFullscreen()
+    swallow(fe.webkitRequestFullscreen())
   } else if (fe.msRequestFullscreen) {
-    void fe.msRequestFullscreen()
+    swallow(fe.msRequestFullscreen())
   }
 }
 
@@ -52,6 +57,17 @@ function exitFullscreenApi(): void {
   } else if (d.msExitFullscreen) {
     void d.msExitFullscreen()
   }
+}
+
+// Parse "w:h" aspect ratio (e.g. "2:3") into a positive number; null when absent/invalid
+function parseAspectRatio(ratio: string | undefined): number | null {
+  if (!ratio) return null
+  const match = /^(\d+(?:\.\d+)?)\s*:\s*(\d+(?:\.\d+)?)$/.exec(ratio.trim())
+  if (!match) return null
+  const w = parseFloat(match[1])
+  const h = parseFloat(match[2])
+  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) return null
+  return w / h
 }
 
 const GameDetailPage = () => {
@@ -132,6 +148,20 @@ const GameDetailPage = () => {
 
     fetchRelatedGames()
   }, [game])
+
+  // When the game declares an aspectRatio, letterbox the fullscreen iframe to
+  // that ratio. cqw/cqh (container query units, resolved against the fixed
+  // inset-0 container which has containerType 'size') let each min() compare
+  // cross-axis values — plain percentages each resolve to their own axis and
+  // cannot constrain the other one. Games without the field keep w-full h-full.
+  const aspectFitStyle = (() => {
+    const ratio = parseAspectRatio(game?.aspectRatio)
+    if (ratio === null) return undefined
+    return {
+      width: `min(100cqw, calc(100cqh * ${ratio}))`,
+      height: `min(100cqh, calc(100cqw / ${ratio}))`,
+    } as const
+  })()
 
   // Exit fullscreen mode (ends the play session and accrues duration)
   const exitFullScreen = useCallback(() => {
@@ -515,10 +545,12 @@ const GameDetailPage = () => {
         </div>
       )}
 
-      {/* Fullscreen container */}
+      {/* Fullscreen container (container-type:size enables cqw/cqh units for
+          cross-axis constrained letterboxing of the iframe below) */}
       <div
         ref={fullscreenContainerRef}
-        className={`fixed inset-0 bg-black z-50 ${isFullScreen ? 'block' : 'hidden'}`}
+        className={`fixed inset-0 bg-black z-50 ${isFullScreen ? 'flex items-center justify-center' : 'hidden'}`}
+        style={{ containerType: 'size' }}
       >
         {/* Game iframe */}
         {isFullScreen && (
@@ -539,7 +571,7 @@ const GameDetailPage = () => {
               referrerPolicy="no-referrer"
               onLoad={handleIframeLoad}
               onError={handleIframeError}
-              style={{ backgroundColor: '#000' }}
+              style={{ backgroundColor: '#000', ...aspectFitStyle }}
             ></iframe>
 
             {/* Exit button - 使用绝对定位确保始终在最上层 */}

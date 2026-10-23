@@ -1,0 +1,12 @@
+{
+  "id": "monster-shooter-rush",
+  "title": "Monster Shooter Rush",
+  "category": "Action",
+  "description": "Fly into battle in Monster Shooter Rush, a vertical arcade shooter. Blast waves of monsters, dodge their counterattacks, and grab coins and power-ups to push your score ever higher.",
+  "controls": "Touch and drag or move the mouse to steer your hero - firing is automatic. Dodge enemy fire, collect bombs and power-ups, and survive as long as you can.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["shooter", "action", "arcade", "shmup", "monsters", "coins", "vertical"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

@@ -1,0 +1,12 @@
+{
+  "id": "sea-treasure-match",
+  "title": "Sea Treasure Match",
+  "category": "Puzzle",
+  "description": "Dive into Sea Treasure Match, a classic match-3 puzzle. Swap sparkling gems to line up three or more, beat the clock, and clear level after level on the ocean floor.",
+  "controls": "Swap two adjacent gems to line up three or more of the same color. Reach the target score before time runs out to advance to the next level.",
+  "image": "logo.png",
+  "thumbnail": "logo.png",
+  "tags": ["match-3", "puzzle", "gems", "casual", "timer", "sea", "classic"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

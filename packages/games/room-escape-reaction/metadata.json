@@ -1,0 +1,12 @@
+{
+  "id": "room-escape-reaction",
+  "title": "Room Escape Reaction",
+  "category": "Arcade",
+  "description": "Room Escape Reaction is a brutal reflex gauntlet. Spot the signal change in each room and tap instantly - clear every level and prove you could dodge bullets.",
+  "controls": "Watch carefully and tap the screen the moment the signal changes. One slow reaction ends the run.",
+  "image": "1.jpg",
+  "thumbnail": "1.jpg",
+  "tags": ["reaction", "reflex", "timing", "room escape", "arcade", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

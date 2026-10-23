@@ -1,0 +1,12 @@
+{
+  "id": "moon-rabbit-jump",
+  "title": "Moon Rabbit Jump",
+  "category": "Arcade",
+  "description": "Moon Rabbit Jump is a rope-launch distance game with a Mid-Autumn twist. Swipe to cut the rope, time your swings and bounce past branches and sky soldiers toward the moon!",
+  "controls": "Swipe the rope at the hand hint to launch. The shorter the rope, the higher the bunny flies. Tap again at the right moment to keep flying.",
+  "image": "mmttt.png",
+  "thumbnail": "mmttt.png",
+  "tags": ["moon rabbit", "rope launch", "distance", "bunny", "mid autumn", "arcade"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

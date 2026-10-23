@@ -1,0 +1,74 @@
+
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Monster Shooter Rush</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no,target-densitydpi=device-dpi"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <meta name="description" content="Monster Shooter Rush is a fast-paced vertical shooter: blast waves of quirky monsters, grab gold and power-ups, and survive as long as you can to rack up a huge score." />
+    <meta name="keywords" content="monster shooter rush, shooter game, monster game, arcade shooter, action game, casual game" />
+
+    <style>
+        body {
+            text-align: center;
+            background: #000000;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            height: 100%;
+        }
+        html {
+            -ms-touch-action: none;  /*Direct all pointer events to JavaScript code. */
+        }
+    </style>
+    <script src="js/jquery.js"></script>
+</head>
+<body>
+<div style="display:inline-block;width:100%; height:100%;margin: 0 auto; background: black; position:relative;" id="gameDiv">
+    <canvas id="gameCanvas" width="480" height="800" style="background-color: #000000"></canvas>
+</div>
+<script>
+var loli_icon_img = 'images/enemy/enemy0_PList.Dir/black_gui-body.png';
+var loli_background_img = 'images/background/loadingmap.jpg';
+var loli_01_img = 'images/background/01.jpg';
+var loli_img_str = 'images/background/01.jpg hero10.png images/object/bullet_PList.Dir/bullet036.png hero10.json images/enemy/enemy0_PList.Dir/black_gui-body.png images/enemy/enemy0_PList.Dir/black_gui-eye_1.png images/enemy/enemy0_PList.Dir/black_gui-wring_l.png images/object/U_2_PList.Dir/s_gold1.png images/object/U_2_PList.Dir/v_golditem.png images/object/U_2_PList.Dir/v_double.png images/object/U_2_PList.Dir/v_longxi.png images/object/U_2_PList.Dir/v_bomb1.png images/object/U_2_PList.Dir/item_gem.png images/object/U_2_PList.Dir/item_magnet.png images/object/U_2_PList.Dir/item_gem_02.png images/object/U_2_PList.Dir/item_gem_03.png images/object/U_2_PList.Dir/v_cannon.png images/object/U_2_PList.Dir/v_blood.png images/object/U_2_PList.Dir/warn_mark.png images/object/U_2_PList.Dir/warn_line.png images/object/U_2_PList.Dir/rock.png images/object/U_2_PList.Dir/pk_line.png images/object/U_2_PList.Dir/char_s1.png images/progress_monsterBar.png images/progress_monsterBg.png';
+</script>
+<script src="js/loligo-min.js"></script>
+<script>
+    egret_h5.startGame();
+</script>
+<script>
+    // LightGame platform bridge: home + share (replaces legacy platform glue)
+    var lgShareTitle = document.title;
+    var lgLastScore = null;
+    function lgGoHome() {
+        try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+        catch (e) { window.location.href = '/'; }
+    }
+    function lgShare(score) {
+        if (score === undefined || score === null) { score = lgLastScore; }
+        try {
+            if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+        } catch (e) {}
+        if (navigator.share) { navigator.share({ title: lgShareTitle, url: window.location.href }).catch(function(){}); }
+    }
+    function goHome() { lgGoHome(); }
+    function clickMore() { lgGoHome(); }
+    function dp_Ranking() { lgGoHome(); }
+    function dp_share(score) { lgShare(score); }
+    function show_share(score) { lgShare(score); }
+    function dp_submitScore(score) { if (typeof updateShare === 'function') { updateShare(score); } }
+    function updateShare(score) {
+        lgLastScore = score;
+        lgShareTitle = "Monster Shooter Rush - I scored " + score + " points! Can you beat me?";
+    }
+</script>
+</body>
+</html>

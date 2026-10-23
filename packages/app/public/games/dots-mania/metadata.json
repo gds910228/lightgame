@@ -1,0 +1,12 @@
+{
+  "id": "dots-mania",
+  "title": "Dots Mania",
+  "category": "Puzzle",
+  "description": "Connect same-colored dots in Dots Mania. The longer your chain, the higher the multiplier - plan every one of your 20 moves carefully to post a top score.",
+  "controls": "Drag across adjacent dots of the same color to connect them. Longer chains score more points; you have 20 moves per round.",
+  "image": "icon.jpg",
+  "thumbnail": "icon.jpg",
+  "tags": ["dots", "puzzle", "connect", "casual", "logic", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

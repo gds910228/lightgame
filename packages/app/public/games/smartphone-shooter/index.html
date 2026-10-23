@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="-1" />
+<meta http-equiv="Cache-Control" content="no-cache" />
+<meta charset="utf-8">
+<title>Smartphone Shooter</title>
+<meta name="description" content="Smartphone Shooter - take aim and shoot down as many flying smartphones as you can. Every hit counts, so make each shot an accurate one!" />
+<meta name="keywords" content="smartphone shooter, shooting game, arcade game, accuracy game, reflex game, tap game, free html5 game" />
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=0" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="full-screen" content="yes"/>
+<meta name="screen-orientation" content="portrait"/>
+<meta name="x5-fullscreen" content="true"/>
+<meta name="360-fullscreen" content="true"/>
+<link rel="stylesheet" href="css/style.css">
+<script src="js/all-in-one.js"></script>
+<script>
+// LightGame platform bridge: home + share
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, url: window.location.href }).catch(function(){}); }
+}
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function dp_share(score) { lgShare(score); }
+function show_share(score) { lgShare(score); }
+function dp_submitScore(score) { if (typeof updateShare === 'function') { updateShare(score); } }
+function updateShare(score) {
+  var s = parseFloat(score);
+  if (isNaN(s)) { s = 0; }
+  var title = "Smartphone Shooter - I shot " + s + " points' worth of flying phones! Beat that!";
+  document.title = title;
+  window.shareData.tTitle = title;
+  window.shareData.tContent = title;
+}
+window.shareData = {
+  "imgUrl": "share.png",
+  "timeLineLink": window.location.href,
+  "tTitle": "Smartphone Shooter",
+  "tContent": "Shoot down as many flying phones as you can!"
+};
+</script>
+</head>
+<body>
+	<div id="container" class="splash">
+		<canvas id="canvas"><span>Browser does not support the canvas.</span></canvas>
+		<div id="info"></div>
+	</div>
+	<div id="preload"></div>
+	<script src="js/shanku_loading.js"></script>
+</body>
+</html>

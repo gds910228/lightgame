@@ -1,0 +1,12 @@
+{
+  "id": "find-the-different-face",
+  "title": "Find the Different Face",
+  "category": "Puzzle",
+  "description": "Scan a grid of nearly identical faces and tap the one odd face out in Find the Different Face. The grid keeps growing as you speed up - how many will you spot in 60 seconds?",
+  "controls": "Click or tap the single different face in each grid. Find them quickly to build your streak before the timer runs out.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["puzzle", "observation", "spot-the-difference", "eyesight", "speed", "casual"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

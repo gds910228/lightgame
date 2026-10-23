@@ -1,0 +1,12 @@
+{
+  "id": "tightrope-walker",
+  "title": "Tightrope Walker",
+  "category": "Arcade",
+  "description": "Tightrope Walker is a nail-biting high-wire timing game. Swing from rope to rope across the sky and chase the longest distance record!",
+  "controls": "Tap to cut the rope and launch. Tap again at the right moment to catch the next rope.",
+  "image": "img/logo.png",
+  "thumbnail": "img/logo.png",
+  "tags": ["tightrope", "timing", "rope swing", "arcade", "distance", "highscore"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

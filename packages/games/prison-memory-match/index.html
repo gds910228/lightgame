@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1.0" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<title>Prison Memory Match</title>
+	<meta name="description" content="Prison Memory Match is a fun HTML5 card-matching game: flip and pair all the prison cards before the 60-second timer runs out.">
+	<meta name="keywords" content="prison memory match, memory game, card matching, pair matching, html5 game, brain game">
+
+	<link type="text/css" href="css/game_base.css" rel="stylesheet" />
+	<script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
+	<script type="text/javascript" src="js/createjs.min.js"></script>
+	<script type="text/javascript" src="js/jquery.cookie.js"></script>
+
+	<script type="text/javascript" src="js/game_base.js"></script>
+	<script type="text/javascript" src="js/createjs_game.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
+</head>
+<body>
+
+<canvas id="stage">
+		Your browser does not support HTML5. Please use a modern browser.
+		</canvas>
+<script>
+// LightGame platform bridge: home + share (replaces legacy platform glue)
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, url: window.location.href }).catch(function(){}); }
+}
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function dp_share(score) { lgShare(score); }
+function show_share(score) { lgShare(score); }
+function dp_submitScore(score) { if (typeof updateShare === 'function') { updateShare(score); } }
+</script>
+	<script type="text/javascript">
+	function updateShare(score) {
+		document.title = "Prison Memory Match - I matched " + score + " pairs! Dare to challenge me?";
+	}
+	</script>
+</body>
+</html>

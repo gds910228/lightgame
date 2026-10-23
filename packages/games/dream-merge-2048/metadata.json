@@ -1,0 +1,12 @@
+{
+  "id": "dream-merge-2048",
+  "title": "Dream Merge 2048",
+  "category": "Puzzle",
+  "description": "Swipe to merge matching tiles and climb the ladder of life goals, from Single Life to Dream Come True in this 2048-style puzzle.",
+  "controls": "Swipe or use arrow keys to move all tiles. Equal tiles merge when they touch. Reach the Dream Come True tile to win.",
+  "image": "icon.png",
+  "thumbnail": "icon.png",
+  "tags": ["2048", "merge", "puzzle", "sliding puzzle", "brain", "casual"],
+  "author": "LightGame",
+  "version": "1.0.0"
+}

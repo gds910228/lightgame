@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="description" content="Lumberjack Tap is a fast-paced HTML5 arcade game: chop the tree, dodge the branches and beat your high score.">
+<meta name="keywords" content="lumberjack tap, timberman, arcade game, html5 game, reflex game, high score">
+<script language="javascript" type="text/javascript" src="js/jsgamemin.js"></script>
+<script language="javascript" type="text/javascript" src="js/Main.min.js"></script>
+<title>Lumberjack Tap</title>
+    <style>
+        body {
+            text-align: center;
+            background: #000000;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        html {
+            -ms-touch-action: none; /* Direct all pointer events to JavaScript code. */
+        }
+    </style>
+</head>
+<body onload="main()">
+
+<div style="text-align:center;">
+	<canvas id="jsGameScreen"></canvas>
+</div>
+
+<script>
+// LightGame platform bridge: home + share (replaces legacy platform glue)
+function lgGoHome() {
+  try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+  catch (e) { window.location.href = '/'; }
+}
+function lgShare(score) {
+  try {
+    if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+  } catch (e) {}
+  if (navigator.share) { navigator.share({ title: document.title, url: window.location.href }).catch(function(){}); }
+}
+function goHome() { lgGoHome(); }
+function clickMore() { lgGoHome(); }
+function dp_Ranking() { lgGoHome(); }
+function dp_share(score) { lgShare(score); }
+function show_share(score) { lgShare(score); }
+function dp_submitScore(score) { if (typeof updateShare === 'function') { updateShare(score); } }
+</script>
+<script>
+    window.shareData = {};
+    function updateShare(score) {
+        document.title = "I chopped " + score + " times in Lumberjack Tap! Think you can beat me?";
+    }
+    function share(score, rank) {
+        updateShare(score);
+        lgShare(score);
+    }
+</script>
+</body>
+</html>

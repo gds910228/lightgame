@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Save the Sperm</title>
+    <meta name="viewport" content="width=device-width, minimum-scale=1, maximum-scale=1,  initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="description" content="Save the Sperm is a cute arcade catching game: drag to move your catcher, rescue as many falling tadpoles as you can, chain combos and level up wave after wave." />
+    <meta name="keywords" content="save the sperm, catching game, arcade game, reflex game, combo, casual game" />
+    <style>
+        body, canvas, div {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            -khtml-user-select: none;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+        .lis{overflow: hidden;width: 100%;z-index: 99999;position: absolute;top:0;}
+        .lis a{display: block;width:99.9%;color:#ffffff;font-size:14px;text-decoration: none;background:#606783;text-align: center;opacity: 0.5;line-height:30px;font-weight: bold;font-family: Arial, sans-serif}
+        .lis a img{position: relative;top: 1px;}
+    </style>
+    <script type="text/javascript">
+    // LightGame platform bridge: home + share (replaces legacy platform glue)
+    var lgShareTitle = document.title;
+    var lgLastScore = null;
+    function lgGoHome() {
+        try { if (window.parent && window.parent !== window) { window.parent.location.href = '/'; } else { window.location.href = '/'; } }
+        catch (e) { window.location.href = '/'; }
+    }
+    function lgShare(score) {
+        if (score === undefined || score === null) { score = lgLastScore; }
+        try {
+            if (window.parent && window.parent !== window && typeof window.parent.handleGlobalShare === 'function') { window.parent.handleGlobalShare(score); return; }
+        } catch (e) {}
+        if (navigator.share) { navigator.share({ title: lgShareTitle, url: window.location.href }).catch(function(){}); }
+    }
+    function goHome() { lgGoHome(); }
+    function clickMore() { lgGoHome(); }
+    function dp_Ranking() { lgGoHome(); }
+    function dp_share(score) { lgShare(score); }
+    function show_share(score) { lgShare(score); }
+    function dp_submitScore(score) { if (typeof updateShare === 'function') { updateShare(score); } }
+    function updateShare(score) {
+        lgLastScore = score;
+        lgShareTitle = "Save the Sperm - I rescued " + score + " tadpoles! Can you beat me?";
+    }
+    </script>
+</head>
+<body style="padding:0; margin: 0; background: #000;">
+<div class="lis">
+		<div style="float: left;width:50%;"><a style="border-bottom: 3px solid #fd6766;" href="javascript:;" onclick="goHome()">More Games</a></div>
+		<div style="float: left;width:50%;"><a style="width:100%;margin:0;border-bottom: 3px solid #fdcd01;" onclick="location.reload();" href="javascript:;" ><img width="15" src="./vapp/4.png" alt="Restart">Restart</a></div>
+	</div>
+<canvas id="gameCanvas" width="320" height="480"></canvas>
+<div>
+</div>
+<script src="./js/60/game.min.js"></script>
+</body>
+</html>
