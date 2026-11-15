@@ -63,6 +63,10 @@ export class Actor {
       blendPose(this.snap, this.tmp, 1 - this.fade / .12, this.pose);
     } else copyPose(this.tmp, this.pose);
     applyPose(this.rig, this.pose, this.pos, this.facing, dt);
+    // elite name tags: world-space sprites parented to the origin group — re-anchor above the owner
+    if (this.tagSprites) for (let i = 0; i < this.tagSprites.length; i++) {
+      this.tagSprites[i].position.set(this.pos.x, 2.0 * this.scale + .1 + i * .38, this.pos.z);
+    }
     if (this.hitstopT > 0) {  // victim jitters while frozen (skill: 受击方加抖动)
       this.rig.grp.position.x = (Math.random() - .5) * .06; this.rig.grp.position.z = (Math.random() - .5) * .06;
     } else this.rig.grp.position.set(0, 0, 0);

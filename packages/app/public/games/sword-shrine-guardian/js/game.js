@@ -183,8 +183,10 @@ function applyAffix(e, a) {
   const tex = new THREE.CanvasTexture(tagCanvas); tex.colorSpace = THREE.SRGBColorSpace;
   const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
   tag.scale.set(1.0, .35, 1);
-  tag.position.y = 2.0 * e.scale + (e.affix2 ? .38 : 0);
+  // the rig group sits at the scene origin with world-space children: tags must track the owner each frame
+  tag.position.set(e.pos.x, 2.0 * e.scale + .1, e.pos.z);
   e.rig.grp.add(tag);
+  (e.tagSprites = e.tagSprites || []).push(tag);
   if (a.id === 'swift') { e.speed *= 1.4; e.teleT = .7 * .85; }
 }
 // blast zones left by 爆裂 elites: telegraph then erupt
@@ -1442,6 +1444,21 @@ async function autotest() {
     await runChunks(2);
     const ups = Object.keys(p.upgradeCounts).length >= 1 && G.coins() === 5;
     assert('T32 商人三件货（含秘籍随机强化）', offers === 3 && shown && ups, `offers=${offers} shown=${shown} ups=${ups}`);
+  }
+
+  // T33 elite name tags follow their owner (v2.1.3: they used to pile up at the world origin)
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.pos.set(0, 0, 10);
+    const w = G.spawn('walker', V(14, 0, 12));
+    w.state = 'strafe'; w.strafeT = 99; ctx.meleeToken = {};
+    G.applyAffix(w, G.affixes[0]);
+    G.upd(5);
+    const wp = new THREE.Vector3();
+    w.tagSprites[0].getWorldPosition(wp);
+    const near = Math.hypot(wp.x - w.pos.x, wp.z - w.pos.z) < .5;
+    ctx.meleeToken = null; G.clear();
+    assert('T33 词缀名牌跟随敌人本体（不再堆在场地中心）', near, `d=${Math.hypot(wp.x - w.pos.x, wp.z - w.pos.z).toFixed(2)}`);
   }
 
   // T9 teardown: title + muted (skill: 测完切回标题、静音)
