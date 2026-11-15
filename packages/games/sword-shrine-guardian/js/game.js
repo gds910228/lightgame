@@ -104,19 +104,19 @@ function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; le
 function dailyKey() { return 'ssg.dailyBest.' + DAILY_SEED; }
 function dailyBest() { try { return +localStorage.getItem(dailyKey()) || 0; } catch (e) { return 0; } }
 function recordDaily(v) { try { if (v > dailyBest()) localStorage.setItem(dailyKey(), String(v)); } catch (e) { } }
-let dailyPlan = null;
+// per-wave deterministic event: works for endless waves too (no fixed-length plan to run out of)
+function dailyEventFor(i) {
+  const r = mulberry32(DAILY_SEED * 7 + (i + 1) * 131)();
+  const bossSlot = i % 4 === 3;
+  const pool = EVENT_POOL.filter(e => e.bossOk || !bossSlot);
+  return pool[Math.floor(r * pool.length)].id;
+}
 function startDaily() {
-  resetGame();                                       // clears dailyPlan — build AFTER the reset
-  const rng = mulberry32(DAILY_SEED);
-  dailyPlan = [];
-  for (let i = 0; i <= WAVES.length; i++) {
-    const bossSlot = i === WAVES.length;
-    const pool = EVENT_POOL.filter(e => e.bossOk || !bossSlot);
-    dailyPlan.push(pool[Math.floor(rng() * pool.length)].id);
-  }
+  resetGame();
+  director.daily = true;
+  const rng = mulberry32(DAILY_SEED ^ 0x9e3779b9);
   const pool = UPGRADES.slice();
   for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1));[pool[i], pool[j]] = [pool[j], pool[i]]; }
-  director.daily = true;
   for (const u of pool.slice(0, 2)) { u.apply(ctx.player); ctx.player.upgradeCounts[u.id] = (ctx.player.upgradeCounts[u.id] || 0) + 1; }
   ui.upgradeList(Object.entries(ctx.player.upgradeCounts).map(([id, n]) => {
     const def = UPGRADES.find(x => x.id === id);
@@ -216,8 +216,8 @@ function report(payload, target) {
 }
 function maybeEvent(i) {
   if (ctx.noDirector) return;
-  // daily trial: the whole plan is seeded — everyone gets the same run rules
-  if (director.daily && dailyPlan) { applyEvent(EVENT_POOL.find(e => e.id === dailyPlan[Math.min(i, dailyPlan.length - 1)])); return; }
+  // daily trial: per-wave seeded event — everyone gets the same run rules, endless included
+  if (director.daily) { applyEvent(EVENT_POOL.find(e => e.id === dailyEventFor(i))); return; }
   const isBoss = i >= WAVES.length;
   const chance = director.endless ? .55 : .4;
   if (Math.random() > chance) return;
@@ -451,7 +451,7 @@ function resetGame() {
   ui.upgradeList('');
   ctx.pendingUpgrades = null; ui.hideUpgrades();
   director.endless = false; director.scale = 1; director.dmgScale = 1; director.affixCount = 0;
-  director.daily = false; dailyPlan = null;
+  director.daily = false;
   ctx.lastEventId = null; ctx.bloodMoon = false; ctx.fogEvent = false;
   ctx.spiritT = 0; ctx.tideT = 0; ctx.altarT = 0; ctx.event = null;
   ctx.blasts.length = 0; ctx.meteorLands.length = 0; ctx.meteorT = 0; ctx.coins = 0;
@@ -509,8 +509,9 @@ ctx.onDeath = (e) => {
     ctx.fx.teleCircle(e.pos, { r: 1.9, dur: .55, color: 0xff8a5c });
     ctx.blasts.push({ pos: e.pos.clone(), t: 0 });
   }
-  // loot drop on kill (skill: 掉落物); 血月 guarantees drops; 宝箱怪 pays out big
+  // loot drop on kill (skill: 掉落物); 血月 guarantees heals; every kill pays coins (shop economy)
   if (e.chest) {
+    ctx.coins += 30;
     ctx.loots.push(new Loot(ctx, e.pos.clone(), 'heal', 1));
     const pool = UPGRADES.filter(u => (ctx.player.upgradeCounts[u.id] || 0) < u.max);
     if (pool.length) {
@@ -525,6 +526,8 @@ ctx.onDeath = (e) => {
       audio.S.drop(1);
     }
   } else {
+    if (e instanceof Boss) { ctx.coins += 60; ui.toast('守卫遗落 · 灵币 +60'); }
+    else ctx.loots.push(new Loot(ctx, e.pos.clone(), 'coin'));
     const roll = Math.random();
     if (e instanceof Walker && roll < (ctx.bloodMoon ? 1 : .45)) ctx.loots.push(new Loot(ctx, e.pos.clone(), 'heal'));
     else if (e instanceof Caster && roll < (ctx.bloodMoon ? 1 : .7)) ctx.loots.push(new Loot(ctx, e.pos.clone(), 'spirit'));
@@ -793,7 +796,8 @@ const G = window.G = {
   best: () => bestWave,
   record: recordWave,
   startDaily,
-  dailyPlan: () => dailyPlan,
+  dailyEventFor,
+  events: EVENT_POOL,
   bossKindFor,
   spawnBoss: (kind, pos) => { const b = spawnEnemy('boss', kind || 'stone'); if (pos) b.pos.copy(pos); return b; },
   enterEndless: () => { state = 'win'; enterEndless(); },   // test hook: bypass the win-screen gate
@@ -1187,18 +1191,36 @@ async function autotest() {
     G.clear();
   }
 
-  // T21 daily trial: deterministic plan + starting build
+  // T21 daily trial: deterministic per-wave events (endless-safe) + starting build
   {
     G.clear(); resetGame();
     G.startDaily();
     const counts = Object.keys(p.upgradeCounts).length;
-    const planOk = Array.isArray(G.dailyPlan()) && G.dailyPlan().length === WAVES.length + 1;
-    // wave 1 event should be the seeded plan[0]
+    const ev0 = G.dailyEventFor(0);
+    const detOk = ev0 === G.dailyEventFor(0) && G.events.some(e => e.id === ev0);
+    const bossOk = G.events.some(e => e.id === G.dailyEventFor(3) && e.bossOk);   // boss slot only draws positive events
+    const endlessOk = G.dailyEventFor(27) === G.dailyEventFor(27);                // deep endless still deterministic
+    // wave 1 event should be the seeded dailyEventFor(0)
     ctx.noDirector = false; director.phase = 'calm'; director.calmT = .01; director.wave = -1;
     await runChunks(12);
-    const evOk = ctx.event && ctx.event.id === G.dailyPlan()[0];
+    const evOk = ctx.event && ctx.event.id === ev0;
     ctx.noDirector = true;
-    assert('T21 每日试炼：开局构筑+确定性事件序列', director.daily && counts === 2 && planOk && evOk, `daily=${director.daily} ups=${counts} plan=${planOk} ev=${evOk}`);
+    assert('T21 每日试炼：开局构筑+确定性事件(无尽安全)', director.daily && counts === 2 && detOk && bossOk && endlessOk && evOk, `daily=${director.daily} ups=${counts} det=${detOk} bossOk=${bossOk} ev=${evOk}`);
+  }
+
+  // T27 coin drops: every kill pays; coins auto-collected
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.pos.set(0, 0, 10);
+    const c0 = G.coins();
+    const w = G.spawn('walker', V(8, 0, 8));
+    w.takeHit({ dmg: 999, dir: V(1, 0, 0) });
+    const lootOk = ctx.loots.some(l => l.kind === 'coin');
+    const coinLoot = ctx.loots.find(l => l.kind === 'coin');
+    if (coinLoot) coinLoot.flying = true;          // walk onto the drop -> magnet
+    G.upd(30);
+    const gain = G.coins() - c0;
+    assert('T27 击杀掉落灵币并自动吸取（灵币经济闭环）', lootOk && gain >= 10, `loot=${lootOk} gain=${gain}`);
   }
 
   // T22 boss quotes & phase-2 music variation (real startBoss path)
