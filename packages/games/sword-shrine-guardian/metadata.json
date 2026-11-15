@@ -1,0 +1,15 @@
+{
+  "id": "sword-shrine-guardian",
+  "title": "Sword Shrine Guardian",
+  "category": "Action",
+  "description": "A moody isometric 3D action game built with three.js. Take up a spirit blade at a mist-shrouded shrine: read enemy telegraphs, parry to open execution windows, dodge unblockable slams, slash incoming orbs out of the air, and break the stone guardian's posture across a two-phase boss fight. Pick one of three upgrades after every cleared wave to forge your own build.",
+  "controls": "WASD to move. J or left-click to attack (3-hit combo, third hit is heavy). K or right-click to parry — a successful parry opens an execution window; press attack to execute. Space to dodge with invincibility frames. After each wave pick 1 of 3 upgrades (click or press 1/2/3). Touch controls supported on mobile.",
+  "type": "local",
+  "path": "/games/sword-shrine-guardian/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["action", "3d", "boss", "soulslike", "roguelite", "combat"],
+  "author": "LightGame",
+  "version": "1.1.0",
+  "featured": false,
+  "date_added": "2026-11-15"
+}

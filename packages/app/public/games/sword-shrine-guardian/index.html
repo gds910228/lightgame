@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Sword Shrine Guardian</title>
+<style>
+  :root { --ink:#e8e2d4; --gold:#d8b36a; --blood:#b03a2e; }
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body { width:100%; height:100%; overflow:hidden; background:#05070c; touch-action:none; }
+  body { font-family:"Noto Serif SC","Songti SC","STSong","SimSun",serif; color:var(--ink); user-select:none; -webkit-user-select:none; }
+  #app { position:fixed; inset:0; }
+  canvas { display:block; width:100%; height:100%; }
+  /* --- overlays --- */
+  .vig { position:fixed; inset:0; pointer-events:none; z-index:5;
+    background:radial-gradient(ellipse at 50% 46%, transparent 52%, rgba(2,4,9,.42) 82%, rgba(1,2,5,.66) 100%); }
+  #grain { position:fixed; inset:0; pointer-events:none; z-index:5; opacity:.05; }
+  #hurtfx { position:fixed; inset:0; pointer-events:none; z-index:6; opacity:0; transition:opacity .28s;
+    background:radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(150,20,12,.5) 100%); }
+  .layer { position:fixed; inset:0; z-index:10; pointer-events:none; }
+  /* --- HUD --- */
+  #hud { display:none; }
+  #hud.on { display:block; }
+  #phbox { position:absolute; left:22px; bottom:26px; width:min(320px,42vw); }
+  .bar { position:relative; height:15px; background:rgba(8,10,16,.72); border:1px solid rgba(216,179,106,.5);
+    clip-path:polygon(0 0, calc(100% - 9px) 0, 100% 100%, 0 100%); margin-bottom:6px; }
+  .bar .ghost { position:absolute; inset:1px; transform-origin:left; background:rgba(190,60,40,.55); }
+  .bar .fill { position:absolute; inset:1px; transform-origin:left;
+    background:linear-gradient(180deg,#c8452f 0%,#8f2a1c 60%,#6d1d12 100%); box-shadow:0 0 6px rgba(200,69,47,.6); }
+  .bar .edge { position:absolute; top:1px; bottom:1px; width:2px; background:#ffd9c2; }
+  #stbar { height:8px; }
+  #stbar .fill { background:linear-gradient(180deg,#67c6a8 0%,#3e8a72 70%); box-shadow:0 0 5px rgba(103,198,168,.5); }
+  #stbar .ghost { display:none; }
+  /* skills */
+  #skills { position:absolute; right:22px; bottom:26px; display:flex; gap:10px; }
+  .sk { position:relative; width:52px; height:52px; border:1px solid rgba(216,179,106,.55); background:rgba(8,10,16,.66);
+    display:flex; align-items:center; justify-content:center; }
+  .sk canvas { width:38px; height:38px; }
+  .sk .k { position:absolute; right:2px; bottom:0px; font:11px/1.1 ui-monospace,monospace; color:var(--gold); }
+  .sk .cd { position:absolute; inset:0; background:conic-gradient(rgba(0,0,0,.72) var(--p,0%), transparent 0); }
+  .sk.flash { animation:skf .45s; } @keyframes skf { 0%{ box-shadow:0 0 14px rgba(216,179,106,.9);} 100%{ box-shadow:none; } }
+  /* upgrades */
+  #uplist { position:absolute; left:22px; bottom:92px; font-size:12px; letter-spacing:.12em;
+    color:rgba(232,226,212,.78); text-shadow:0 1px 2px #000; display:none; }
+  #upgrades .ut { font-size:clamp(22px,4vw,34px); letter-spacing:.5em; text-indent:.5em; text-shadow:0 2px 14px rgba(0,0,0,.85); }
+  #upgrades .cards { display:flex; gap:18px; margin-top:30px; flex-wrap:wrap; justify-content:center; }
+  .up-card { width:min(210px,27vw); padding:18px 16px; border:1px solid rgba(216,179,106,.6); background:rgba(8,11,17,.85);
+    cursor:pointer; text-align:center; transition:.2s; }
+  .up-card:hover { background:rgba(216,179,106,.14); box-shadow:0 0 16px rgba(216,179,106,.25); transform:translateY(-3px); }
+  .up-card .n { font-size:18px; letter-spacing:.3em; color:var(--gold); }
+  .up-card .d { margin-top:10px; font-size:12.5px; line-height:1.7; color:rgba(232,226,212,.85); letter-spacing:.05em; }
+  .up-card .s { margin-top:8px; font-size:11px; color:rgba(216,179,106,.7); letter-spacing:.2em; min-height:13px; }
+  .up-card .k { margin-top:10px; font-size:11px; color:rgba(232,226,212,.5); letter-spacing:.2em; }
+  #upgrades .uh { margin-top:26px; font-size:12px; letter-spacing:.25em; color:rgba(232,226,212,.55); }
+  /* boss */
+  #bossbar { position:absolute; top:26px; left:50%; transform:translateX(-50%); width:min(560px,72vw); display:none; }
+  #bossbar .nm { text-align:center; font-size:15px; letter-spacing:.45em; color:var(--ink); text-shadow:0 1px 4px #000; margin-bottom:6px; }
+  #bossbar .bar { height:11px; margin:0 auto; clip-path:polygon(9px 0, calc(100% - 9px) 0, 100% 100%, 0 100%);
+    background:linear-gradient(180deg,#9a3126 0%,#5f1a12 100%); box-shadow:0 0 8px rgba(154,49,38,.55); }
+  #bossbar .pbar { height:4px; margin-top:4px; background:rgba(8,10,16,.7); border:1px solid rgba(216,179,106,.35); }
+  #bossbar .pbar .fill { background:linear-gradient(90deg,#d8b36a,#f4e3b8); inset:1px; }
+  /* banner / toast */
+  #banner { position:absolute; top:34%; width:100%; text-align:center; opacity:0; transition:opacity .5s; }
+  #banner .t { font-size:clamp(26px,5vw,44px); letter-spacing:.6em; text-indent:.6em; color:var(--ink); text-shadow:0 2px 14px rgba(0,0,0,.85); }
+  #banner .s { margin-top:8px; font-size:14px; letter-spacing:.3em; color:var(--gold); }
+  #toast { position:absolute; bottom:110px; left:50%; transform:translateX(-50%); font-size:14px; letter-spacing:.2em;
+    color:var(--ink); text-shadow:0 1px 3px #000; opacity:0; transition:opacity .3s; }
+  /* title / end screens */
+  .screen { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    pointer-events:auto; transition:opacity .6s; background:linear-gradient(180deg, rgba(3,5,10,.25) 0%, rgba(3,5,10,.66) 100%); }
+  .screen.hide { opacity:0; pointer-events:none; }
+  #title .nm { font-size:clamp(34px,7vw,64px); letter-spacing:.5em; text-indent:.5em; text-shadow:0 3px 22px rgba(0,0,0,.9); }
+  #title .sub { margin-top:14px; font-size:15px; letter-spacing:.5em; color:var(--gold); }
+  #title .go { margin-top:44px; font-size:17px; letter-spacing:.4em; padding:12px 34px; border:1px solid rgba(216,179,106,.65);
+    color:var(--ink); background:rgba(6,9,15,.5); cursor:pointer; transition:.25s; }
+  #title .go:hover { background:rgba(216,179,106,.16); box-shadow:0 0 18px rgba(216,179,106,.28); }
+  #title .help { margin-top:34px; font-size:12.5px; line-height:2; letter-spacing:.14em; color:rgba(232,226,212,.72); text-align:center; }
+  #title .help b { color:var(--gold); font-weight:600; }
+  #end { display:none; }
+  #end .t { font-size:clamp(30px,6vw,52px); letter-spacing:.5em; text-indent:.5em; text-shadow:0 2px 18px #000; }
+  #end .d { margin-top:12px; font-size:14px; letter-spacing:.25em; color:rgba(232,226,212,.8); }
+  #end .go { margin-top:36px; font-size:15px; letter-spacing:.35em; padding:10px 30px; border:1px solid rgba(216,179,106,.6); cursor:pointer; }
+  /* touch controls */
+  #touch { display:none; }
+  #touch.on { display:block; }
+  #joy { position:absolute; width:112px; height:112px; border-radius:50%; border:1px solid rgba(232,226,212,.3);
+    background:rgba(10,14,20,.3); display:none; }
+  #joyk { position:absolute; width:46px; height:46px; border-radius:50%; background:rgba(216,179,106,.35); left:33px; top:33px; }
+  .tbtn { position:absolute; width:60px; height:60px; border-radius:50%; border:1px solid rgba(216,179,106,.55);
+    background:rgba(8,12,18,.55); color:var(--ink); font-size:12px; letter-spacing:.1em;
+    display:flex; align-items:center; justify-content:center; }
+  #tatk { right:96px; bottom:34px; } #tpry { right:170px; bottom:88px; } #tdsh { right:26px; bottom:104px; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="vig"></div><canvas id="grain"></canvas><div id="hurtfx"></div>
+<div id="hud" class="layer">
+  <div id="phbox">
+    <div class="bar" id="hpbar"><div class="ghost"></div><div class="fill"></div><div class="edge"></div></div>
+    <div class="bar" id="stbar"><div class="fill" style="inset:1px"></div></div>
+  </div>
+  <div id="uplist"></div>
+  <div id="skills"></div>
+  <div id="bossbar"><div class="nm"></div><div class="bar"><div class="fill"></div></div><div class="pbar"><div class="fill" style="position:relative;width:0%"></div></div></div>
+  <div id="banner"><div class="t"></div><div class="s"></div></div>
+  <div id="toast"></div>
+</div>
+<div id="title" class="screen">
+  <div class="nm">剑 祠 守 夜</div>
+  <div class="sub">SWORD SHRINE GUARDIAN</div>
+  <button class="go" id="startbtn">入 祠</button>
+  <div class="help">
+    <b>WASD</b> 移动 · <b>J / 左键</b> 攻击 · <b>K / 右键</b> 格挡弹反 · <b>空格</b> 闪避<br>
+    弹反成功后按下攻击，处决破绽之敌
+  </div>
+</div>
+<div id="end" class="screen">
+  <div class="t"></div><div class="d"></div><button class="go">再 战</button>
+</div>
+<div id="upgrades" class="screen hide">
+  <div class="ut">择 一 而 强</div>
+  <div class="cards"></div>
+  <div class="uh">点击或按 1 / 2 / 3 选择 · 下一波随即来袭</div>
+</div>
+<div id="touch" class="layer">
+  <div id="joy"><div id="joyk"></div></div>
+  <div class="tbtn" id="tatk">攻</div><div class="tbtn" id="tpry">挡</div><div class="tbtn" id="tdsh">避</div>
+</div>
+<script type="module" src="./js/game.js"></script>
+</body>
+</html>
