@@ -10,6 +10,7 @@ export function makeUI() {
   const bossbar = $('bossbar'), bossNm = bossbar.querySelector('.nm'), bossFill = bossbar.querySelector('.bar .fill'), bossPos = bossbar.querySelector('.pbar .fill');
   const hurtfx = $('hurtfx');
   const upgr = $('upgrades'), uplist = $('uplist');
+  let bufftag, coinhud;
   hpGhost.style.transition = 'transform .55s ease .3s';   // delayed damage bar
   hpFill.style.transition = 'transform .12s ease-out';
   stFill.style.transition = 'transform .1s linear';
@@ -79,6 +80,14 @@ export function makeUI() {
     hudHidden() { return !hud.classList.contains('on'); },
     titleBest(text) { document.getElementById('titlebest').textContent = text || ''; },
     waveTag(text) { const w = $('wavetag'); w.textContent = text || ''; w.style.display = text ? 'block' : 'none'; },
+    buffTag(text) {
+      if (!bufftag) { bufftag = document.createElement('div'); bufftag.id = 'bufftag'; hud.appendChild(bufftag); }
+      bufftag.textContent = text || ''; bufftag.style.display = text ? 'block' : 'none';
+    },
+    coinHud(text) {
+      if (!coinhud) { coinhud = document.createElement('div'); coinhud.id = 'coinhud'; hud.appendChild(coinhud); }
+      coinhud.textContent = text;
+    },
     // --- wave-clear upgrade choice ---
     showUpgrades(cards, onPick) {
       const holder = upgr.querySelector('.cards');

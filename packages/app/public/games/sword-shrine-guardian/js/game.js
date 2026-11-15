@@ -7,6 +7,7 @@ import { makeFX } from './fx.js';
 import { makeAudio } from './audio.js';
 import { makeUI } from './ui.js';
 import { Player, Walker, Caster, Boss, Loot, angDiff } from './actors.js';
+import { resolveCollisions, textTag } from './assets.js';
 import { V } from './rig.js';
 
 const DT = 1 / 60;
@@ -41,6 +42,8 @@ const ctx = {
   player: null, enemies: [], projectiles: [], loots: [],
   meleeToken: null, moveDir: V(), parryHeld: false,
   timeScale: 1, slowT: 0, time: 0,
+  coins: 0, blasts: [], meteorLands: [], meteorT: 0,
+  grantBuff,
   shake(a) { world.rig.shake(a); },
   slowmo(scale, dur) { this.timeScale = scale; this.slowT = dur; },
   onDeath: null, onPlayerDeath: null, onBossPhase2: null, onBossDeath: null,
@@ -50,6 +53,7 @@ ctx.player.pos.set(0, 0, 10);
 ctx.player.facing = Math.PI; // face the altar (north, -Z is toward gate; altar at -7.5)
 let state = 'title';
 let stateT = 0;
+reportReady();
 
 // ---- director ----
 const WAVES = [
@@ -82,7 +86,77 @@ const EVENT_POOL = [
   { id: 'tide',   name: '灵 潮', desc: '灵潮涌动：移速 +12%、体力回复翻倍、闪避耗 -8 · 25 秒', weight: 2, bossOk: true },
   { id: 'altar',  name: '恩 赐', desc: '祭坛苏醒：立于光圈内每秒回复生命', weight: 1.5, bossOk: true },
   { id: 'chest',  name: '异 客', desc: '金装客人携赏而来：速斩之！', weight: 1.5, bossOk: false },
+  { id: 'merchant', name: '商 客', desc: '雾中行商停驻片刻 · 携币者速往', weight: 1.2, bossOk: false },
 ];
+
+// ---- elite affixes: rules-bending modifiers on some minions (from wave 2 on) ----
+const AFFIXES = [
+  { id: 'blast', name: '爆裂', color: 0xff8a5c, tag: '#ff8a5c' },
+  { id: 'iron',  name: '铁壁', color: 0x9ab0d8, tag: '#9ab0d8' },
+  { id: 'swift', name: '迅捷', color: 0x8ff0c0, tag: '#8ff0c0' },
+  { id: 'leech', name: '嗜血', color: 0xe06a8a, tag: '#e06a8a' },
+];
+function applyAffix(e, a) {
+  e.affix = a.id;
+  e.rig.mats.trim.color.lerp(new THREE.Color(a.color), .5);
+  const tagCanvas = textTag(a.name, a.tag);
+  const tex = new THREE.CanvasTexture(tagCanvas); tex.colorSpace = THREE.SRGBColorSpace;
+  const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
+  tag.scale.set(1.0, .35, 1);
+  tag.position.y = (e.scale === 1 ? 2.0 : 2.0 * e.scale);
+  e.rig.grp.add(tag);
+  if (a.id === 'swift') { e.speed *= 1.4; e.teleT = .7 * .85; }
+}
+// blast zones left by 爆裂 elites: telegraph then erupt
+function updateBlasts(dt) {
+  for (let i = ctx.blasts.length - 1; i >= 0; i--) {
+    const b = ctx.blasts[i];
+    b.t += dt;
+    if (b.t >= .55) {
+      ctx.fx.ring(b.pos, { r0: .3, r1: 2, color: 0xff8a5c, dur: .35 });
+      ctx.fx.burst(b.pos.clone().add(V(0, .4, 0)), 0xffa070, { n: 9, size: 1, speed: 5 });
+      ctx.audio.S.slam();
+      if (ctx.player.alive && ctx.player.pos.distanceTo(b.pos) < 1.9) ctx.player.receiveProj({ dmg: 14 * (director.dmgScale || 1), vel: ctx.player.pos.clone().sub(b.pos).setY(0).normalize() });
+      ctx.blasts.splice(i, 1);
+    }
+  }
+}
+
+// ---- meteor: a falling spirit-stone that grants a 30s buff ----
+const BUFFS = [
+  { id: 'fervor', name: '狂热', desc: '伤害 +25%' },
+  { id: 'aegis',  name: '金身', desc: '受伤 -30%' },
+  { id: 'gale',   name: '疾风', desc: '移速 +20%' },
+];
+function spawnMeteor(forcePos) {
+  let spot = forcePos;
+  if (!spot) {
+    const a = Math.random() * 6.28, r = Math.sqrt(Math.random()) * 8;
+    spot = ctx.player.pos.clone().add(V(Math.cos(a) * r, 0, Math.sin(a) * r));
+    resolveCollisions(spot, .3, ctx.colliders);
+  }
+  audio.S.meteor();
+  fx.teleCircle(spot, { r: 1.4, dur: .9, color: 0xffd98c });
+  fx.fallMeteor(spot, () => {
+    ctx.meteorLands.push({ pos: spot.clone(), wait: .05 });
+    audio.S.slam();
+  });
+}
+function grantBuff() {
+  const b = BUFFS[Math.random() * BUFFS.length | 0];
+  ctx.player.buff = { id: b.id, name: b.name, until: ctx.time + 30 };
+  ui.toast(b.name + '：' + b.desc + ' · 30 秒');
+  audio.S.drop(1);
+}
+
+// ---- site report bridge (gameMessageProtocol v1): no-op when not embedded ----
+function reportReady() { try { if (window.parent && window.parent !== window) window.parent.postMessage({ source: 'lightgame', type: 'lightgame:ready' }, '*'); } catch (e) { } }
+function report(payload, target) {
+  try {
+    const w = target || (window.parent && window.parent !== window ? window.parent : null);
+    if (w) w.postMessage({ source: 'lightgame', type: 'lightgame:report', payload }, '*');
+  } catch (e) { }
+}
 function maybeEvent(i) {
   if (ctx.noDirector) return;
   const isBoss = i >= WAVES.length;
@@ -182,6 +256,14 @@ function spawnEnemy(kind) {
   if (m !== 1) { e.hp *= m; e.maxHp *= m; }
   e.dmgScale = director.dmgScale || 1;
   if (ctx.fogEvent) e.speed *= .8;                 // 雾隐: enemies slow
+  // elite affix: from wave 2 on, some minions carry a rules-bending modifier
+  if (kind !== 'boss' && director.wave >= 1 && director.affixCount < 2) {
+    const chance = director.endless ? .3 : .22;
+    if (Math.random() < chance) {
+      director.affixCount++;
+      applyAffix(e, AFFIXES[Math.random() * AFFIXES.length | 0]);
+    }
+  }
   ctx.enemies.push(e);
   return e;
 }
@@ -190,6 +272,8 @@ function startWave(i) {
   const isEndless = i >= WAVES.length;
   const def = isEndless ? endlessDef(i) : WAVES[i];
   director.scale = def.scale || 1; director.dmgScale = def.dmgS || 1;
+  director.affixCount = 0;
+  ctx.meteorT = 10 + Math.random() * 6;            // a meteor may fall mid-wave
   if (def.boss) { startBoss(true); return; }
   ui.banner(isEndless ? `第 ${i + 1} 波` : def.label, '歼灭来犯之敌');
   for (let k = 0; k < def.walkers; k++) spawnEnemy('walker');
@@ -222,6 +306,7 @@ function startBoss(endless = false) {
       setTimeout(() => {
         if (state === 'play') {
           state = 'win'; stateT = 0;
+          report({ kind: 'complete', score: WAVES.length + 1 });
           ui.end('夜 尽 天 明', `你守住了剑祠 · 最高波次 ${bestWave}`, true);
           audio.setMusic('explore');
         }
@@ -248,6 +333,7 @@ function advanceDirector(dt) {
       ui.toast('喘息 · 生命回复 +15');
       recordWave(director.wave + 1);
       ui.waveTag(`第 ${director.wave + 2} 波 · 纪录 ${bestWave}`);
+      report({ kind: 'progress', data: { wave: director.wave + 1, endless: director.endless } });
       revertEvent();
       offerUpgrades();
     }
@@ -280,9 +366,10 @@ function resetGame() {
   p.resetProgress();
   ui.upgradeList('');
   ctx.pendingUpgrades = null; ui.hideUpgrades();
-  director.endless = false; director.scale = 1; director.dmgScale = 1;
+  director.endless = false; director.scale = 1; director.dmgScale = 1; director.affixCount = 0;
   ctx.lastEventId = null; ctx.bloodMoon = false; ctx.fogEvent = false;
   ctx.spiritT = 0; ctx.tideT = 0; ctx.altarT = 0; ctx.event = null;
+  ctx.blasts.length = 0; ctx.meteorLands.length = 0; ctx.meteorT = 0; ctx.coins = 0;
   world.setMood('normal');
   ui.waveTag('');
   p.hp = p.maxHp; p.stamina = p.maxStamina; p.alive = true; p.dead = false;
@@ -305,6 +392,7 @@ ctx.onPlayerDeath = () => {
     if (state !== 'play') return;
     state = 'dead'; stateT = 0;
     const newBest = recordWave(director.wave + 1);
+    report({ kind: 'gameOver', score: director.wave + 1, progress: { wave: director.wave + 1, endless: director.endless } });
     const desc = director.endless
       ? `坚守至第 ${director.wave + 1} 波 · 纪录 ${bestWave}${newBest ? ' · 新纪录！' : ''}`
       : `剑祠在夜色中陷落 · 最高波次 ${bestWave}${newBest ? ' · 新纪录！' : ''}`;
@@ -325,6 +413,11 @@ function enterEndless() {
   ui.waveTag(`第 ${director.wave + 2} 波 · 纪录 ${bestWave}`);
 }
 ctx.onDeath = (e) => {
+  // 爆裂 elite: leaves a short-fuse blast zone at the corpse
+  if (e.affix === 'blast') {
+    ctx.fx.teleCircle(e.pos, { r: 1.9, dur: .55, color: 0xff8a5c });
+    ctx.blasts.push({ pos: e.pos.clone(), t: 0 });
+  }
   // loot drop on kill (skill: 掉落物); 血月 guarantees drops; 宝箱怪 pays out big
   if (e.chest) {
     ctx.loots.push(new Loot(ctx, e.pos.clone(), 'heal', 1));
@@ -425,6 +518,17 @@ function update(dt) {
       if (o.pos.length() > 60) o.kill();
     }
     ctx.projectiles = ctx.projectiles.filter(o => o.alive);
+    // --- elite affix blasts / meteor ---
+    updateBlasts(sdt);
+    if (director.phase === 'fight' && !ctx.boss) {
+      ctx.meteorT -= sdt;
+      if (ctx.meteorT <= 0) { ctx.meteorT = 13 + Math.random() * 7; spawnMeteor(); }
+    }
+    for (let i = ctx.meteorLands.length - 1; i >= 0; i--) {
+      const m = ctx.meteorLands[i];
+      m.wait -= sdt;
+      if (m.wait <= 0) { ctx.loots.push(new Loot(ctx, m.pos, 'buff')); ctx.meteorLands.splice(i, 1); }
+    }
     // --- night event timers ---
     if (ctx.spiritT > 0) {
       ctx.spiritT -= dt; ctx.spiritTick = (ctx.spiritTick ?? 3) - dt;
@@ -474,6 +578,8 @@ function update(dt) {
     if (p.dashCdT > 0) p.dashCdT -= dt;
     ui.skillCd(3, p.waveCdT > 0 ? p.waveCdT / (5 * p.mods.waveCdMult) : 0);
     ui.skillCd(4, p.rainCdT > 0 ? p.rainCdT / 9 : 0);
+    ui.buffTag(p.buff ? p.buff.name + ' ' + Math.max(0, Math.ceil(p.buff.until - ctx.time)) + 's' : '');
+    ui.coinHud('灵币 ' + (ctx.coins || 0));
     if (ctx.boss) ui.boss(ctx.boss.alive, '石 祠 守 卫', ctx.boss.hp / ctx.boss.maxHp, ctx.boss.posture / ctx.boss.maxPosture);
     else ui.boss(false);
   } else if (state === 'dead' || state === 'win') {
@@ -577,8 +683,14 @@ const G = window.G = {
   enterEndless: () => { state = 'win'; enterEndless(); },   // test hook: bypass the win-screen gate
   endlessDef,
   forceEvent: (id) => applyEvent(EVENT_POOL.find(e => e.id === id)),
+  affixes: AFFIXES,
   revertEvent,
   spawnChest,
+  applyAffix,
+  spawnMeteor,
+  _report: (payload) => report(payload),   // reads the (rebindable) current report fn
+  setReportTarget: null,   // filled below: lets the autotest intercept postMessage
+  grantBuff,
   shot(name) { world.render(); const url = renderer.domElement.toDataURL('image/png'); window.__SHOTS[name] = url; return url.length; },
   err: () => window.__ERRS,
   setStage(s) { if (s === 'boss' && ctx.boss) { ctx.boss.update(0); } },
@@ -885,6 +997,55 @@ async function autotest() {
     assert('T16 剑雨CD 9s & 剑灵事件自动落剑支援', cdOk && spiritOk, `cd=${p.rainCdT.toFixed(1)} spirit=${spiritOk} dmg=${(hp0 - d.hp).toFixed(0)}`);
   }
 
+  // T17 elite affixes: 铁壁 deflects light slashes (heavies connect); 爆裂 erupts on death
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.invulnT = 0; p.hitstopT = 0; p.state = 'idle'; p.setIdle();
+    p.pos.set(0, 0, 6); p.facing = 0;
+    const w = G.spawn('walker', V(0, 0, 7.6));
+    w.state = 'strafe'; w.strafeT = 99; ctx.meleeToken = {};
+    G.applyAffix(w, G.affixes.find(a => a.id === 'iron'));
+    const hp0 = w.hp;
+    G.act('attack');
+    await runChunks(70);
+    const blocked = w.hp === hp0;
+    w.affix = null;
+    const hp1 = w.hp;
+    G.act('attack');
+    await runChunks(70);
+    const connect = w.hp < hp1;
+    // 爆裂: kill one beside the player, the blast should wound the player
+    p.hp = p.maxHp; p.invulnT = 0;
+    const b = G.spawn('walker', V(0, 0, 7.2));
+    G.applyAffix(b, G.affixes.find(a => a.id === 'blast'));
+    b.takeHit({ dmg: 999, dir: V(1, 0, 0) });
+    await runChunks(45);
+    const blasted = p.hp < p.maxHp;
+    ctx.meleeToken = null; G.clear();
+    assert('T17 铁壁格挡轻击 / 爆裂死亡引爆', blocked && connect && blasted, `blocked=${blocked} connect=${connect} blasted=${blasted}`);
+  }
+
+  // T18 meteor falls and grants a 30s buff
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.buff = null; p.pos.set(0, 0, 6);
+    G.spawnMeteor(p.pos.clone());
+    await runChunks(80);
+    assert('T18 流星坠落授予 30 秒增益', !!p.buff, `buff=${p.buff && p.buff.id}`);
+  }
+
+  // T19 site report protocol: framed postMessage payload delivered
+  {
+    const got = [];
+    const handler = (ev) => { if (ev.data && ev.data.source === 'lightgame') got.push(ev.data); };
+    addEventListener('message', handler);
+    G.setReportTarget(window);
+    G._report({ kind: 'score', score: 5 });
+    await runChunks(2);
+    removeEventListener('message', handler);
+    assert('T19 站点上报协议消息成帧可送达', got.length >= 1 && got[0].payload.kind === 'score', `n=${got.length}`);
+  }
+
   // T9 teardown: title + muted (skill: 测完切回标题、静音)
   {
     G.clear(); resetGame(); G.clear();
@@ -898,6 +1059,9 @@ async function autotest() {
   window.__TEST = { results: TESTS, errors: window.__ERRS, done: true };
   console.log('[T] suite done:', TESTS.filter(t => t.pass).length, '/', TESTS.length);
 }
-if (AUTOTEST) { autotest().catch(e => { window.__TEST = { results: TESTS, errors: [...window.__ERRS, String(e)], done: true, fatal: String(e) }; }); }
+  if (AUTOTEST) { autotest().catch(e => { window.__TEST = { results: TESTS, errors: [...window.__ERRS, String(e)], done: true, fatal: String(e) }; }); }
+
+// autotest bridge for the report protocol: deliver to the same window and capture it
+G.setReportTarget = (w) => { report = (payload) => { try { w.postMessage({ source: 'lightgame', type: 'lightgame:report', payload }, '*'); } catch (e) { } }; };
 
 export { };

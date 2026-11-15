@@ -69,6 +69,15 @@ export class Actor {
   freeze(t) { this.hitstopT = Math.max(this.hitstopT, t); }
   takeHit(info) {
     if (!this.alive) return;
+    // 铁壁: plain light slashes are deflected — answer with heavies, skills or executions
+    if (this.affix === 'iron' && info.weight === 'light') {
+      const cdir = info.dir || V(1, 0, 0);
+      const contact = this.pos.clone().sub(cdir.clone().multiplyScalar(this.radius * .6)); contact.y = 1.2;
+      this.ctx.fx.sparks(contact, cdir.clone().negate(), { n: 4, color: 0xbfd4ff, speed: 4 });
+      this.ctx.fx.dmgNum(this.pos, '格');
+      this.ctx.audio.S.click();
+      return;
+    }
     const { dmg, dir, heavy } = info;
     this.hp -= dmg;
     this.rig.flash(heavy ? 1 : .7);
@@ -116,7 +125,10 @@ export class Player extends Actor {
     this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1, waveSkillDmg: 28, waveCdMult: 1, rainHitDmg: 12, rainMult: 1, rainR: 3.5 };
     this.upgradeCounts = {}; this.waveSpawned = false;
     this.waveCdT = 0; this.rainCdT = 0; this.castKind = null; this.castDone = false; this.rainStrikes = null;
+    this.buff = null;   // timed meteor buff {id, name, until}
   }
+  dmgMult() { return this.mods.dmg * (this.buff && this.buff.id === 'fervor' ? 1.25 : 1); }
+  dmgTakenMult() { return this.mods.dmgTaken * (this.buff && this.buff.id === 'aegis' ? .7 : 1); }
   get busy() { return ['attack', 'dash', 'exec', 'hurt'].includes(this.state) || this.hitstopT > 0; }
   press(action) {
     if (!this.alive) return;
@@ -131,6 +143,7 @@ export class Player extends Actor {
       this.stamina -= cost; this.staminaDelay = .6;
       this.state = 'dash'; this.stateT = 0; this.setClip(this.dashClip()); this.dashCdT = .45 * this.mods.dashCd;
       const d = this.ctx.moveDir; this.dashDir.copy(d.lengthSq() > .01 ? d : V(Math.sin(this.facing), 0, Math.cos(this.facing)));
+      for (let i = 1; i <= 3; i++) this.ctx.fx.ghost(this.pos.clone().addScaledVector(this.dashDir, i * .55), this.facing);   // motion-read streaks
       this.ctx.audio.S.dash(); this.ctx.fx.dust(this.pos, { n: 4, color: 0x7f8ba0 });
       return;
     }
@@ -214,7 +227,7 @@ export class Player extends Actor {
       return 'parried';
     }
     if (this.guardHeld && this.state === 'parry' && info.blockable && this.stamina > 0 && ang < 1.15) {
-      const chip = info.dmg * .2 * this.mods.dmgTaken;
+      const chip = info.dmg * .2 * this.dmgTakenMult();
       this.hp -= chip; this.stamina -= info.dmg * .7; this.staminaDelay = .8;
       this.ctx.fx.sparks(this.pos.clone().add(V(Math.sin(this.facing) * 1.1, 1.1, Math.cos(this.facing) * 1.1)), info.dir, { n: 5, color: 0xbfd4ff, speed: 5 });
       this.ctx.audio.S.click();
@@ -223,7 +236,7 @@ export class Player extends Actor {
       return 'blocked';
     }
     // hurt
-    this.hp -= info.dmg * this.mods.dmgTaken;
+    this.hp -= info.dmg * this.dmgTakenMult();
     this.rig.flash(1);
     this.invulnT = .8; this.state = 'hurt'; this.stateT = 0; this.setClip(makeHurt(1));
     this.parryT = 0; this.counterT = 0;
@@ -239,7 +252,7 @@ export class Player extends Actor {
       this.ctx.slowmo(.4, .22); this.stamina = Math.min(this.maxStamina, this.stamina + 10);
       return false;
     }
-    this.hp -= orb.dmg * this.mods.dmgTaken; this.rig.flash(1);
+    this.hp -= orb.dmg * this.dmgTakenMult(); this.rig.flash(1);
     this.invulnT = .8; this.state = 'hurt'; this.stateT = 0; this.setClip(makeHurt(1));
     this.vel.addScaledVector(orb.vel.clone().setY(0).normalize(), 2.4);
     this.ctx.audio.S.hurt(); this.ctx.ui.hurt(); this.ctx.shake(.2);
@@ -322,6 +335,8 @@ export class Player extends Actor {
     // stamina regen (delayed); 灵潮 doubles it
     if (this.staminaDelay > 0) this.staminaDelay -= dt;
     else this.stamina = Math.min(this.maxStamina, this.stamina + 24 * dt * this.mods.stamRegen * (this.ctx.tideT > 0 ? 2 : 1));
+    // meteor buff expiry
+    if (this.buff && this.ctx.time > this.buff.until) { this.ctx.ui.toast(this.buff.name + ' 结束'); this.buff = null; }
     // timed states
     if (this.parryT > 0) this.parryT -= dt;
     if (this.counterT > 0) {
@@ -343,7 +358,7 @@ export class Player extends Actor {
         if (d.lengthSq() > .01) {
           const tgtFacing = Math.atan2(d.x, d.z);
           this.facing = turnTo(this.facing, tgtFacing, 14 * dt);
-          const sp = this.speed * this.mods.speed * (this.ctx.tideT > 0 ? 1.12 : 1);   // 灵潮: +12% 移速
+          const sp = this.speed * this.mods.speed * (this.ctx.tideT > 0 ? 1.12 : 1) * (this.buff && this.buff.id === 'gale' ? 1.2 : 1);
           this.pos.addScaledVector(d, sp * dt);
           this.walkPhase += dt * sp * 1.9;
           this.setWalk();
@@ -381,7 +396,7 @@ export class Player extends Actor {
             this.waveSpawned = true;
             const fd = V(Math.sin(this.facing), 0, Math.cos(this.facing));
             const orb = this.ctx.fx.orb(this.pos.clone().add(V(fd.x * .8, 1.2, fd.z * .8)), fd.multiplyScalar(13), 0x9fd8ff, { r: .26 });
-            orb.dmg = this.mods.waveDmg * this.mods.dmg; orb.team = 'player';
+            orb.dmg = this.mods.waveDmg * this.dmgMult(); orb.team = 'player'; orb.weight = 'wave';
             this.ctx.projectiles.push(orb);
             this.ctx.audio.S.swing(true);
           }
@@ -393,7 +408,7 @@ export class Player extends Actor {
               this.swingHits.add(e.id);
               const heavy = this.comboIdx === 2;
               const base = heavy ? 34 : (this.comboIdx === 0 ? 14 : 16);
-              e.takeHit({ dmg: base * this.mods.dmg * (heavy ? this.mods.heavy : 1), dir: to.normalize(), heavy, from: this });
+              e.takeHit({ dmg: base * this.dmgMult() * (heavy ? this.mods.heavy : 1), weight: heavy ? 'heavy' : 'light', dir: to.normalize(), heavy, from: this });
               this.freeze(heavy ? .11 : .07); this.hitstopCount++;
               this.ctx.shake(heavy ? .3 : .12);
               if (e.posture !== undefined) { e.posture += heavy ? 14 : 8; }
@@ -431,7 +446,7 @@ export class Player extends Actor {
         }
         if (T >= .16 && T <= .3 && this.execTarget && this.execTarget.alive && !this.execDone) {
           this.execDone = true;
-          this.execTarget.takeHit({ dmg: 45, dir: this.execTarget.pos.clone().sub(this.pos).setY(0).normalize(), heavy: true, from: this, knock: 3 });
+          this.execTarget.takeHit({ dmg: 45 * this.dmgMult(), weight: 'exec', dir: this.execTarget.pos.clone().sub(this.pos).setY(0).normalize(), heavy: true, from: this, knock: 3 });
           if (this.execTarget.posture !== undefined) this.execTarget.posture += 40;
           this.ctx.slowmo(.3, .22);
           this.ctx.fx.slash(this.pos, this.facing, { span: 2.4, rOut: 3.2, rIn: .6, color: 0xffe2a8, dur: .35 });
@@ -450,7 +465,7 @@ export class Player extends Actor {
           this.castDone = true;
           const fd = V(Math.sin(this.facing), 0, Math.cos(this.facing));
           const orb = this.ctx.fx.orb(this.pos.clone().add(V(fd.x * .9, 1.2, fd.z * .9)), fd.multiplyScalar(14), 0xbfe8ff, { r: .34 });
-          orb.dmg = this.mods.waveSkillDmg * this.mods.dmg; orb.team = 'player';
+          orb.dmg = this.mods.waveSkillDmg * this.dmgMult(); orb.team = 'player'; orb.weight = 'wave';
           this.ctx.projectiles.push(orb);
           this.ctx.fx.slash(this.pos, this.facing, { span: 1.2, rOut: 1.7, rIn: .5, color: 0xcfe8ff, dur: .18 });
         }
@@ -476,7 +491,7 @@ export class Player extends Actor {
               for (const e of this.ctx.enemies) {
                 if (!e.alive) continue;
                 if (e.pos.distanceTo(st.pos) < 1.15 + e.radius) {
-                  e.takeHit({ dmg: this.mods.rainHitDmg * this.mods.dmg * this.mods.rainMult, dir: V(Math.sin(this.facing), 0, Math.cos(this.facing)), heavy: false, from: this });
+                  e.takeHit({ dmg: this.mods.rainHitDmg * this.dmgMult() * this.mods.rainMult, weight: 'rain', dir: V(Math.sin(this.facing), 0, Math.cos(this.facing)), heavy: false, from: this });
                   if (e.posture !== undefined) e.posture += 4;
                 }
               }
@@ -582,7 +597,10 @@ export class Walker extends Actor {
           if (dist < 2.6) {
             this.hitDone = true;
             const res = pl.receiveMelee({ dmg: 9 * this.dmgScale, dir: to.clone().normalize(), heavy: false, from: this, blockable: true });
-            if (res === 'hit') this.ctx.shake(.12);
+            if (res === 'hit') {
+              this.ctx.shake(.12);
+              if (this.affix === 'leech') { this.hp = Math.min(this.maxHp, this.hp + 6); this.rig.flash(.5); this.ctx.fx.burst(this.pos.clone().add(V(0, 1.2, 0)), 0xe06a8a, { n: 4, size: .5, speed: 2.5 }); }
+            }
           }
         }
         if (this.stateT >= c.dur * .8) {
@@ -1055,13 +1073,20 @@ export class Boss extends Actor {
 }
 
 // ---------------------------------------------------------------- loot
+const LOOT_STYLE = {
+  heal: { color: 0xe05548, emissive: 0xb03028 },
+  spirit: { color: 0x6fd8b8, emissive: 0x2aa888 },
+  coin: { color: 0xf4d98c, emissive: 0xc8a030 },
+  buff: { color: 0xc79aff, emissive: 0x8a4fd0 },
+};
 export class Loot {
   constructor(ctx, pos, kind, tier = 0) {
     this.ctx = ctx; this.kind = kind; this.tier = tier;
     this.pos = pos.clone(); this.vel = V(rand2(-1.6, 1.6), 5.5, rand2(-1.6, 1.6));
     this.r = .34; this.alive = true; this.flying = false; this.t = 0;
-    const geo = new THREE.OctahedronGeometry(tier ? .3 : .2, 0);
-    const mat = new THREE.MeshStandardMaterial({ color: kind === 'heal' ? 0xe05548 : 0x6fd8b8, emissive: kind === 'heal' ? 0xb03028 : 0x2aa888, emissiveIntensity: 1.6, roughness: .3, flatShading: true });
+    const st = LOOT_STYLE[kind] || LOOT_STYLE.heal;
+    const geo = new THREE.OctahedronGeometry(tier ? .3 : (kind === 'coin' ? .16 : .2), 0);
+    const mat = new THREE.MeshStandardMaterial({ color: st.color, emissive: st.emissive, emissiveIntensity: 1.6, roughness: .3, flatShading: true });
     this.mesh = new THREE.Mesh(geo, mat); this.mesh.castShadow = true;
     ctx.scene.add(this.mesh);
     this.col = ctx.fx.lootCol(() => this.pos, tier);
@@ -1087,9 +1112,11 @@ export class Loot {
     if (!this.alive) return;
     this.alive = false;
     const pl = this.ctx.player;
-    if (this.kind === 'heal') { pl.hp = Math.min(pl.maxHp, pl.hp + 22); this.ctx.ui.toast('伤药 +22'); this.ctx.audio.S.heal(); }
+    if (this.kind === 'heal') { pl.hp = Math.min(pl.maxHp, pl.hp + (this.tier ? 40 : 22)); this.ctx.ui.toast(this.tier ? '灵药 +40' : '伤药 +22'); this.ctx.audio.S.heal(); }
+    else if (this.kind === 'coin') { this.ctx.coins = (this.ctx.coins || 0) + 10; this.ctx.ui.toast('灵币 +10'); this.ctx.audio.S.drop(0); }
+    else if (this.kind === 'buff') { if (this.ctx.grantBuff) this.ctx.grantBuff(); }
     else { pl.stamina = Math.min(pl.maxStamina, pl.stamina + 40); pl.hp = Math.min(pl.maxHp, pl.hp + 6); this.ctx.ui.toast('灵珠 +40 体力'); this.ctx.audio.S.drop(1); }
-    this.ctx.fx.burst(this.pos, this.kind === 'heal' ? 0xff9080 : 0x8ff0d0, { n: 8, size: .8, speed: 4 });
+    this.ctx.fx.burst(this.pos, (LOOT_STYLE[this.kind] || LOOT_STYLE.heal).color, { n: 8, size: .8, speed: 4 });
     this.ctx.scene.remove(this.mesh); this.col.kill();
   }
 }

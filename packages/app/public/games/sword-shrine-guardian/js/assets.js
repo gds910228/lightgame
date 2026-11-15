@@ -201,6 +201,15 @@ export function paintGrain(canvas) {
   g.putImageData(img, 0, 0);
 }
 
+// --- floating name tag above elite enemies (canvas sprite) ---
+export function textTag(text, color = '#ff8a5c') {
+  const c = cv(160, 56), g = c.getContext('2d');
+  g.font = 'bold 30px "Noto Serif SC",serif'; g.textAlign = 'center';
+  g.strokeStyle = 'rgba(0,0,0,.85)'; g.lineWidth = 6;
+  g.strokeText(text, 80, 38); g.fillStyle = color; g.fillText(text, 80, 38);
+  return c;
+}
+
 // --- skill icon glyphs (canvas-drawn, code UI per skill vfx-ui-audio) ---
 export function skillIcon(kind) {
   const S = 76, c = cv(S, S), g = c.getContext('2d');

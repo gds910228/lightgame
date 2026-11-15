@@ -302,6 +302,30 @@ export function makeFX(scene) {
     });
     return e;
   };
+  // --- meteor: bright streak diving to a marked spot; onLand() fires at touchdown ---
+  fx.fallMeteor = (pos, onLand) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(.14, 2.1, .14),
+      new THREE.MeshStandardMaterial({ color: 0xffdca0, emissive: 0xffb060, emissiveIntensity: 2.2, roughness: .3 }));
+    m.position.set(pos.x, 9.5, pos.z); m.rotation.set(-1.15, 0, 0);
+    const e = put(m, 2, (dt) => {
+      m.position.y -= 10.5 * dt;
+      if (m.position.y <= .2) {
+        fx.ring(pos, { r0: .3, r1: 2.2, color: 0xffd98c, dur: .45 });
+        fx.burst(pos.clone().add(V(0, .4, 0)), 0xffcf9e, { n: 10, size: 1.1, speed: 6 });
+        fx.dust(pos, { n: 4, size: 1.4 });
+        if (onLand) onLand();
+        e.t = e.dur;
+      }
+    });
+    return e;
+  };
+  // --- dash afterimage streak (motion read) ---
+  fx.ghost = (pos, facing) => {
+    const mat = new THREE.SpriteMaterial({ map: glows.cyan, color: 0x8fd8ff, transparent: true, opacity: .3, blending: THREE.AdditiveBlending, depthWrite: false });
+    const s = new THREE.Sprite(mat);
+    s.position.set(pos.x, .8, pos.z); s.scale.set(1.1, 1.5, 1);
+    put(s, .22, (dt, l) => { mat.opacity = .3 * (1 - l); });
+  };
   // --- ambient ash drifting in a box that follows the camera ---
   fx.makeAsh = (cam) => {
     const N = 460, geo = new THREE.BufferGeometry();
