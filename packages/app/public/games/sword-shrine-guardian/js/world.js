@@ -129,7 +129,8 @@ export function makeWorld(renderer) {
   // --- camera rig: iso angle, narrow zoom, focus leash, occluder fade ---
   const CAM_YAW = Math.PI * .18, CAM_DIST = 15.5;
   const rig = {
-    focus: V(), shakeT: 0, shakeAmp: 0,
+    focus: V(), shakeT: 0, shakeAmp: 0, fovT: 0,
+    fovKick() { rig.fovT = .3; },
     update(dt, playerPos, enemies, time) {
       // focus: midpoint toward biggest threat, leashed to <= 3.5m from player (skill: 焦点加缰绳)
       let tgt = playerPos.clone();
@@ -149,6 +150,10 @@ export function makeWorld(renderer) {
       const cy = dist * .82;
       camera.position.set(cx, cy, cz);
       camera.lookAt(rig.focus.x, 1.1, rig.focus.z);
+      // execution zoom punch-in (returns smoothly)
+      if (rig.fovT > 0) { rig.fovT -= dt; const k = Math.max(0, rig.fovT / .3); camera.fov = 40 - 7 * k * k; }
+      else camera.fov = 40;
+      camera.updateProjectionMatrix();
       // shake
       if (rig.shakeT > 0) {
         rig.shakeT -= dt;

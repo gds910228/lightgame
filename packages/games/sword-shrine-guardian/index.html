@@ -17,6 +17,11 @@
   #grain { position:fixed; inset:0; pointer-events:none; z-index:5; opacity:.05; }
   #hurtfx { position:fixed; inset:0; pointer-events:none; z-index:6; opacity:0; transition:opacity .28s;
     background:radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(150,20,12,.5) 100%); }
+  #impactfx { position:fixed; inset:0; pointer-events:none; z-index:6; opacity:0; transition:opacity .18s;
+    background:radial-gradient(ellipse at 50% 50%, transparent 58%, rgba(4,5,9,.72) 100%); }
+  #bossquote { position:fixed; bottom:130px; left:0; right:0; text-align:center; z-index:11; pointer-events:none;
+    font-size:15px; letter-spacing:.3em; color:rgba(232,226,212,.92); text-shadow:0 1px 5px #000;
+    opacity:0; transition:opacity .5s; }
   .layer { position:fixed; inset:0; z-index:10; pointer-events:none; }
   /* --- HUD --- */
   #hud { display:none; }
@@ -85,6 +90,9 @@
   #end .go2 { display:none; }
   #title .go { margin-top:44px; font-size:17px; letter-spacing:.4em; padding:12px 34px; border:1px solid rgba(216,179,106,.65);
     color:var(--ink); background:rgba(6,9,15,.5); cursor:pointer; transition:.25s; }
+  #title .btns { display:flex; gap:14px; margin-top:44px; }
+  #title .btns .go { margin-top:0; }
+  #title .btns .go.alt { font-size:14px; padding:12px 22px; letter-spacing:.3em; }
   #title .go:hover { background:rgba(216,179,106,.16); box-shadow:0 0 18px rgba(216,179,106,.28); }
   #title .help { margin-top:34px; font-size:12.5px; line-height:2; letter-spacing:.14em; color:rgba(232,226,212,.72); text-align:center; }
   #title .help b { color:var(--gold); font-weight:600; }
@@ -108,7 +116,8 @@
 </head>
 <body>
 <div id="app"></div>
-<div class="vig"></div><canvas id="grain"></canvas><div id="hurtfx"></div>
+<div class="vig"></div><canvas id="grain"></canvas><div id="hurtfx"></div><div id="impactfx"></div>
+<div id="bossquote"></div>
 <div id="hud" class="layer">
   <div id="phbox">
     <div class="bar" id="hpbar"><div class="ghost"></div><div class="fill"></div><div class="edge"></div></div>
@@ -125,7 +134,10 @@
   <div class="nm">剑 祠 守 夜</div>
   <div class="sub">SWORD SHRINE GUARDIAN</div>
   <div class="best" id="titlebest"></div>
-  <button class="go" id="startbtn">入 祠</button>
+  <div class="btns">
+    <button class="go" id="startbtn">入 祠</button>
+    <button class="go alt" id="dailybtn">每 日 试 炼</button>
+  </div>
   <div class="help">
     <b>WASD</b> 移动 · <b>J / 左键</b> 攻击 · <b>K / 右键</b> 格挡弹反 · <b>空格</b> 闪避<br>
     <b>L</b> 剑气斩 · <b>U</b> 剑雨 · 弹反成功后按下攻击，处决破绽之敌

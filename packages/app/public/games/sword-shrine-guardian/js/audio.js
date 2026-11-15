@@ -123,7 +123,7 @@ export function makeAudio() {
   function startMusic(state) {
     if (!ensure() || state === musicState) return; resume();
     musicState = state;
-    for (const k of ['explore', 'combat', 'boss']) {
+    for (const k of ['explore', 'combat', 'boss', 'boss2']) {
       if (!stateGain[k]) { stateGain[k] = ctx.createGain(); stateGain[k].gain.value = 0; stateGain[k].connect(musG); }
       stateGain[k].gain.setTargetAtTime(k === state ? 1 : 0, ctx.currentTime, .6);   // crossfade ~1.5s
     }
@@ -160,6 +160,14 @@ export function makeAudio() {
           if (s16 % 4 === 0) drum('boss', .42);
           if (s16 === 12) drum('boss', .3);
           if (s16 % 2 === 0 && Math.random() < .7) play('boss', noteHz(root + 24 + sc[(step16 / 2 | 0) % sc.length]), .4, .1, 'square');
+        } else if (state === 'boss2') {
+          // phase-2 variation: the boss layers add a high-register running arpeggio
+          if (s16 % 8 === 0) play('boss2', noteHz(root), 1.8, .18, 'sawtooth');
+          if (s16 % 8 === 3) play('boss2', noteHz(root + 7), 1.4, .12, 'sawtooth');
+          if (s16 % 4 === 0) drum('boss2', .5);
+          if (s16 === 6 || s16 === 14) drum('boss2', .26);
+          if (s16 % 2 === 0) play('boss2', noteHz(root + 24 + sc[(step16 / 2 | 0) % sc.length]), .4, .1, 'square');
+          if (s16 % 2 === 1) play('boss2', noteHz(root + 36 + sc[(step16 / 2 | 0) % sc.length]), .22, .09, 'triangle');   // high sparkle
         }
         next += .125;                                        // 120bpm 16ths
         musTimer = setTimeout(seq, Math.max(0, (next - ctx.currentTime - .02) * 1000));
@@ -186,6 +194,7 @@ export function makeAudio() {
 
   return {
     S, startMusic, stopMusic, startAmbient,
+    get state() { return musicState; },
     setMusic(state) { if (state) startMusic(state); else stopMusic(); },
     mute(m) {
       muted = m;

@@ -80,6 +80,18 @@ export function makeUI() {
     hudHidden() { return !hud.classList.contains('on'); },
     titleBest(text) { document.getElementById('titlebest').textContent = text || ''; },
     waveTag(text) { const w = $('wavetag'); w.textContent = text || ''; w.style.display = text ? 'block' : 'none'; },
+    bossQuote(text) {
+      const q = $('bossquote');
+      q.textContent = text; q.style.opacity = 1;
+      clearTimeout(api._quoteTimer);
+      api._quoteTimer = setTimeout(() => q.style.opacity = 0, 2800);
+    },
+    impact() {
+      const el = $('impactfx');
+      el.style.opacity = .55;
+      clearTimeout(api._impactTimer);
+      api._impactTimer = setTimeout(() => el.style.opacity = 0, 130);
+    },
     buffTag(text) {
       if (!bufftag) { bufftag = document.createElement('div'); bufftag.id = 'bufftag'; hud.appendChild(bufftag); }
       bufftag.textContent = text || ''; bufftag.style.display = text ? 'block' : 'none';

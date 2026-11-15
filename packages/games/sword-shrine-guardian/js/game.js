@@ -43,6 +43,7 @@ const ctx = {
   meleeToken: null, moveDir: V(), parryHeld: false,
   timeScale: 1, slowT: 0, time: 0,
   coins: 0, blasts: [], meteorLands: [], meteorT: 0,
+  fireZones: [], fovKick: () => world.rig.fovKick(),
   grantBuff,
   shake(a) { world.rig.shake(a); },
   slowmo(scale, dur) { this.timeScale = scale; this.slowT = dur; },
@@ -69,6 +70,35 @@ function loadBest() { try { return +localStorage.getItem(BEST_KEY) || 0; } catch
 function saveBest(v) { try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) { } }
 let bestWave = loadBest();
 function recordWave(v) { if (v > bestWave) { bestWave = v; saveBest(bestWave); ui.titleBest(`最高波次 ${bestWave}`); return true; } return false; }
+
+// ---- daily trial: same seed for everyone on the same calendar day ----
+const DAILY_SEED = (() => { const d = new Date(); return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); })();
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+function dailyKey() { return 'ssg.dailyBest.' + DAILY_SEED; }
+function dailyBest() { try { return +localStorage.getItem(dailyKey()) || 0; } catch (e) { return 0; } }
+function recordDaily(v) { try { if (v > dailyBest()) localStorage.setItem(dailyKey(), String(v)); } catch (e) { } }
+let dailyPlan = null;
+function startDaily() {
+  resetGame();                                       // clears dailyPlan — build AFTER the reset
+  const rng = mulberry32(DAILY_SEED);
+  dailyPlan = [];
+  for (let i = 0; i <= WAVES.length; i++) {
+    const bossSlot = i === WAVES.length;
+    const pool = EVENT_POOL.filter(e => e.bossOk || !bossSlot);
+    dailyPlan.push(pool[Math.floor(rng() * pool.length)].id);
+  }
+  const pool = UPGRADES.slice();
+  for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(rng() * (i + 1));[pool[i], pool[j]] = [pool[j], pool[i]]; }
+  director.daily = true;
+  for (const u of pool.slice(0, 2)) { u.apply(ctx.player); ctx.player.upgradeCounts[u.id] = (ctx.player.upgradeCounts[u.id] || 0) + 1; }
+  ui.upgradeList(Object.entries(ctx.player.upgradeCounts).map(([id, n]) => {
+    const def = UPGRADES.find(x => x.id === id);
+    return def ? def.name.replace(/ /g, '') + '×' + n : '';
+  }).filter(Boolean).join('　'));
+  state = 'play'; stateT = 0; ui.hud();
+  director.phase = 'calm'; director.calmT = 1.4; director.wave = -1;
+  ui.toast('每日试炼 · 今日事件顺序全场一致');
+}
 function endlessDef(i) {
   // every 4th endless wave is a boss; each full cycle scales enemies up
   const cyc = Math.max(0, Math.floor(i / 4) - 1), k = i % 4;
@@ -159,6 +189,8 @@ function report(payload, target) {
 }
 function maybeEvent(i) {
   if (ctx.noDirector) return;
+  // daily trial: the whole plan is seeded — everyone gets the same run rules
+  if (director.daily && dailyPlan) { applyEvent(EVENT_POOL.find(e => e.id === dailyPlan[Math.min(i, dailyPlan.length - 1)])); return; }
   const isBoss = i >= WAVES.length;
   const chance = director.endless ? .55 : .4;
   if (Math.random() > chance) return;
@@ -249,9 +281,11 @@ function spawnPoint(minDistFromPlayer = 6) {
   }
   return V(12, 0, 0);
 }
-function spawnEnemy(kind) {
+function spawnEnemy(kind, bossKind) {
   const p = spawnPoint();
-  const e = kind === 'walker' ? new Walker(ctx, p) : kind === 'caster' ? new Caster(ctx, p) : new Boss(ctx, p);
+  const e = kind === 'walker' ? new Walker(ctx, p)
+    : kind === 'caster' ? new Caster(ctx, p)
+    : new Boss(ctx, p, bossKind || 'stone');
   const m = director.scale || 1;
   if (m !== 1) { e.hp *= m; e.maxHp *= m; }
   e.dmgScale = director.dmgScale || 1;
@@ -282,20 +316,33 @@ function startWave(i) {
   ui.waveTag(`第 ${i + 1} 波 · 纪录 ${bestWave}`);
   maybeEvent(i);                                   // a night event may spice this wave
 }
+function bossKindFor(waveIdx, endless) {
+  const cyc = Math.floor(waveIdx / 4) - 1;
+  return (!endless || cyc % 2 === 0) ? 'stone' : 'lantern';
+}
+const BOSS_LINES = {
+  stone: { spawn: '石躯承夜，我是唯一的看守。', rage: '炉火……未曾熄灭。', death: '守夜……至此为止。' },
+  lantern: { spawn: '灯火所照，皆为吾疆。', rage: '看啊，万千灯火！', death: '灯灭……夜阑……' },
+};
 function startBoss(endless = false) {
   director.phase = 'boss';
   if (!endless) director.wave = WAVES.length;
-  const b = spawnEnemy('boss');
+  const kind = bossKindFor(director.wave, endless);
+  const b = spawnEnemy('boss', kind);
   b.pos.copy(endless ? spawnPoint(9) : V(0, 0, -7.5 - 6));
   b.facing = Math.atan2(ctx.player.pos.x - b.pos.x, ctx.player.pos.z - b.pos.z);
   ctx.boss = b;
-  ui.banner(endless ? '守 卫 再 临' : '守 卫 苏 醒', endless ? '更强的守卫睁开了眼' : '石祠的守护者睁开了眼');
+  const lines = BOSS_LINES[kind];
+  ui.banner(endless ? '守 卫 再 临' : '守 卫 苏 醒', lines.spawn, 3);
+  ui.bossQuote(lines.spawn);
   audio.setMusic('boss');
   audio.S.roar();
   ui.waveTag(`第 ${director.wave + 1} 波 · 纪录 ${bestWave}`);
-  ctx.onBossPhase2 = () => { ui.banner('守 卫 之 怒', '石躯灼热，动作更快'); };
+  ctx.onSummon = () => { spawnEnemy('walker'); spawnEnemy('walker'); ui.toast('提灯鬼召来帮手'); };
+  ctx.onBossPhase2 = () => { ui.banner('守 卫 之 怒', lines.rage, 2.6); ui.bossQuote(lines.rage); audio.setMusic('boss2'); };
   ctx.onBossDeath = () => {
     ctx.slowmo(.35, 1.2);
+    ui.bossQuote(lines.death);
     recordWave(director.wave + 1);
     if (director.endless) {
       audio.S.win();
@@ -367,9 +414,12 @@ function resetGame() {
   ui.upgradeList('');
   ctx.pendingUpgrades = null; ui.hideUpgrades();
   director.endless = false; director.scale = 1; director.dmgScale = 1; director.affixCount = 0;
+  director.daily = false; dailyPlan = null;
   ctx.lastEventId = null; ctx.bloodMoon = false; ctx.fogEvent = false;
   ctx.spiritT = 0; ctx.tideT = 0; ctx.altarT = 0; ctx.event = null;
   ctx.blasts.length = 0; ctx.meteorLands.length = 0; ctx.meteorT = 0; ctx.coins = 0;
+  for (const z of ctx.fireZones) z.fx.kill();
+  ctx.fireZones.length = 0; ctx.onSummon = null;
   world.setMood('normal');
   ui.waveTag('');
   p.hp = p.maxHp; p.stamina = p.maxStamina; p.alive = true; p.dead = false;
@@ -392,10 +442,12 @@ ctx.onPlayerDeath = () => {
     if (state !== 'play') return;
     state = 'dead'; stateT = 0;
     const newBest = recordWave(director.wave + 1);
+    recordDaily(director.wave + 1);
     report({ kind: 'gameOver', score: director.wave + 1, progress: { wave: director.wave + 1, endless: director.endless } });
+    const dailyLine = director.daily ? ` · 今日试炼 ${Math.max(director.wave + 1, dailyBest())}` : '';
     const desc = director.endless
-      ? `坚守至第 ${director.wave + 1} 波 · 纪录 ${bestWave}${newBest ? ' · 新纪录！' : ''}`
-      : `剑祠在夜色中陷落 · 最高波次 ${bestWave}${newBest ? ' · 新纪录！' : ''}`;
+      ? `坚守至第 ${director.wave + 1} 波 · 纪录 ${bestWave}${newBest ? ' · 新纪录！' : ''}${dailyLine}`
+      : `剑祠在夜色中陷落 · 最高波次 ${bestWave}${newBest ? ' · 新纪录！' : ''}${dailyLine}`;
     ui.end('身 死 祠 破', desc, false);
   }, 1400);
 };
@@ -564,10 +616,21 @@ function update(dt) {
       const e = ctx.enemies[i];
       if (!e.alive && e.deadT > 1.8) { ctx.scene.remove(e.rig.grp); ctx.enemies.splice(i, 1); }
     }
-    // music state
-    if (ctx.enemies.some(e => e instanceof Boss && e.alive)) audio.setMusic('boss');
+    // music state (boss phase 2 gets the intensified layer)
+    const liveBoss = ctx.enemies.find(e => e instanceof Boss && e.alive);
+    if (liveBoss) audio.setMusic(liveBoss.phase === 2 ? 'boss2' : 'boss');
     else if (ctx.enemies.some(e => e.alive)) audio.setMusic('combat');
     else audio.setMusic('explore');
+    // burning ground zones (提灯鬼)
+    for (let i = ctx.fireZones.length - 1; i >= 0; i--) {
+      const z = ctx.fireZones[i];
+      if (ctx.time > z.until) { z.fx.kill(); ctx.fireZones.splice(i, 1); continue; }
+      z.tick = (z.tick || 0) - sdt;
+      if (z.tick <= 0) {
+        z.tick = .5;
+        if (p.alive && p.pos.distanceTo(z.pos) < 2.2) p.burnTick(4 * (director.dmgScale || 1));
+      }
+    }
     // HUD
     const pmax = p.maxHp;
     ui.hp(p.hp / pmax, p._ghost === undefined ? p.hp / pmax : p._ghost / pmax);
@@ -580,7 +643,7 @@ function update(dt) {
     ui.skillCd(4, p.rainCdT > 0 ? p.rainCdT / 9 : 0);
     ui.buffTag(p.buff ? p.buff.name + ' ' + Math.max(0, Math.ceil(p.buff.until - ctx.time)) + 's' : '');
     ui.coinHud('灵币 ' + (ctx.coins || 0));
-    if (ctx.boss) ui.boss(ctx.boss.alive, '石 祠 守 卫', ctx.boss.hp / ctx.boss.maxHp, ctx.boss.posture / ctx.boss.maxPosture);
+    if (ctx.boss) ui.boss(ctx.boss.alive, ctx.boss.displayName, ctx.boss.hp / ctx.boss.maxHp, ctx.boss.posture / ctx.boss.maxPosture);
     else ui.boss(false);
   } else if (state === 'dead' || state === 'win') {
     // keep death/victory animations playing after the round ends
@@ -621,11 +684,16 @@ addEventListener('resize', () => world.resize());
 
 // ---- title / start ----
 ui.title();
-ui.titleBest(bestWave > 0 ? `最高波次 ${bestWave}` : '');
+ui.titleBest(`最高波次 ${bestWave}${dailyBest() > 0 ? ' · 今日试炼 ' + dailyBest() : ''}`);
 document.getElementById('startbtn').addEventListener('click', () => {
   audio.mute(false); audio.setMusic('explore'); audio.startAmbient();
   audio.S.click();
   resetGame();
+});
+document.getElementById('dailybtn').addEventListener('click', () => {
+  audio.mute(false); audio.setMusic('explore'); audio.startAmbient();
+  audio.S.click();
+  startDaily();
 });
 document.getElementById('end').querySelector('.go').addEventListener('click', () => {
   audio.S.click();
@@ -680,6 +748,10 @@ const G = window.G = {
   counts: () => ctx.player.upgradeCounts,
   best: () => bestWave,
   record: recordWave,
+  startDaily,
+  dailyPlan: () => dailyPlan,
+  bossKindFor,
+  spawnBoss: (kind, pos) => { const b = spawnEnemy('boss', kind || 'stone'); if (pos) b.pos.copy(pos); return b; },
   enterEndless: () => { state = 'win'; enterEndless(); },   // test hook: bypass the win-screen gate
   endlessDef,
   forceEvent: (id) => applyEvent(EVENT_POOL.find(e => e.id === id)),
@@ -1044,6 +1116,78 @@ async function autotest() {
     await runChunks(2);
     removeEventListener('message', handler);
     assert('T19 站点上报协议消息成帧可送达', got.length >= 1 && got[0].payload.kind === 'score', `n=${got.length}`);
+  }
+
+  // T20 lantern boss: volley projectiles, burning zone, endless rotation math
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.invulnT = 0; p.hitstopT = 0; p.state = 'idle'; p.setIdle();
+    p.pos.set(0, 0, 6); p.facing = Math.PI;
+    const b = G.spawnBoss('lantern', V(0, 0, -4));
+    b.state = 'volley'; b.stateT = 0; b.volleyCount = 0; b.volleyT = .3;
+    await runChunks(70);
+    const volleyOk = ctx.projectiles.length >= 1 && b.displayName === '提 灯 鬼';
+    // burning zone: force-cast one at the player's feet
+    b.burnTarget = p.pos.clone(); b.state = 'burn'; b.stateT = 0; b.burnDone = false;
+    const hp0 = p.hp;
+    await runChunks(120);                          // zone lands at 1.2s then ticks
+    const burnOk = ctx.fireZones.length >= 1 && p.hp < hp0;
+    ctx.fireZones.forEach(z => z.fx.kill()); ctx.fireZones.length = 0;
+    const rotOk = G.bossKindFor(7, true) === 'stone' && G.bossKindFor(11, true) === 'lantern';
+    assert('T20 提灯鬼弹幕/燃烧地带/无尽轮换', volleyOk && burnOk && rotOk, `volley=${volleyOk} burn=${burnOk} rot=${rotOk}`);
+    G.clear();
+  }
+
+  // T21 daily trial: deterministic plan + starting build
+  {
+    G.clear(); resetGame();
+    G.startDaily();
+    const counts = Object.keys(p.upgradeCounts).length;
+    const planOk = Array.isArray(G.dailyPlan()) && G.dailyPlan().length === WAVES.length + 1;
+    // wave 1 event should be the seeded plan[0]
+    ctx.noDirector = false; director.phase = 'calm'; director.calmT = .01; director.wave = -1;
+    await runChunks(12);
+    const evOk = ctx.event && ctx.event.id === G.dailyPlan()[0];
+    ctx.noDirector = true;
+    assert('T21 每日试炼：开局构筑+确定性事件序列', director.daily && counts === 2 && planOk && evOk, `daily=${director.daily} ups=${counts} plan=${planOk} ev=${evOk}`);
+  }
+
+  // T22 boss quotes & phase-2 music variation (real startBoss path)
+  {
+    G.clear(); resetGame(); ctx.noDirector = false;
+    G.stage('boss');                                   // calm .01 -> startBoss, which speaks the spawn line
+    await runChunks(15);
+    const b = ctx.boss;
+    const q0 = document.getElementById('bossquote').textContent;
+    if (b) { b.hp = b.maxHp * .51; b.takeHit({ dmg: 12, dir: V(0, 0, 1) }); }
+    await runChunks(6);
+    const music = audio.state;
+    const q2 = document.getElementById('bossquote').textContent;
+    ctx.noDirector = true;
+    assert('T22 Boss 台词字幕 + 二阶段配乐变奏', !!b && q0.length > 0 && q2.length > 0 && music === 'boss2', `boss=${!!b} music=${music} q0=${q0.length} q2=${q2.length}`);
+    G.clear(); resetGame();
+  }
+
+  // T23 feel pack: execution zoom kick + heavy impact vignette
+  {
+    G.clear(); resetGame(); ctx.noDirector = true;   // keep the director quiet: only the test dummy fights
+    p.invulnT = 0; p.hitstopT = 0; p.state = 'idle'; p.setIdle();
+    p.pos.set(0, 0, 6); p.facing = 0;
+    const d = G.spawn('walker', V(0, 0, 7.4));
+    d.state = 'strafe'; d.strafeT = 99; ctx.meleeToken = {};
+    // drive into combo 3 (heavy) → impact vignette fires
+    G.act('attack'); await runChunks(50);
+    G.act('attack'); await runChunks(50);
+    const fovBefore = world.camera.fov;
+    G.act('attack');
+    await runChunks(60);                             // heavy hit lands at ~.44s into the swing
+    const impactSeen = parseFloat(document.getElementById('impactfx').style.opacity) > 0;
+    const heavyHit = d.hp < d.maxHp - 30;
+    ctx.fovKick();
+    G.upd(8);
+    const zoomOk = world.camera.fov < 38;
+    ctx.meleeToken = null; G.clear(); resetGame();
+    assert('T23 手感包：重击边缘脉冲 + 处决镜头推近', impactSeen && heavyHit && zoomOk, `impact=${impactSeen} heavy=${heavyHit} fov=${world.camera.fov.toFixed(1)}`);
   }
 
   // T9 teardown: title + muted (skill: 测完切回标题、静音)

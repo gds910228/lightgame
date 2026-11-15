@@ -205,6 +205,7 @@ export class Player extends Actor {
     this.setClip(this.curClip);
     if (t) t._counterMark = false;
     this.execTarget = t; this.execDone = false;
+    this.ctx.fovKick && this.ctx.fovKick();   // slight zoom punch-in for the finisher
     this.facing = Math.atan2(t.pos.x - this.pos.x, t.pos.z - this.pos.z);
     this.ctx.audio.S.exec();
     this.counterT = 0; this.counterTarget = null;
@@ -260,6 +261,12 @@ export class Player extends Actor {
     return true;
   }
   receiveShockwave() { return this.receiveProj({ dmg: 22, vel: this.pos.clone().multiplyScalar(2).normalize() }); }
+  burnTick(dmg) {   // burning-ground damage over time: no stagger, no i-frame lockout
+    if (!this.alive || this.invulnT > 0) return;
+    this.hp -= dmg * this.dmgTakenMult();
+    this.rig.flash(.5);
+    if (this.hp <= 0) this.dieP();
+  }
   dieP() { if (!this.alive) return; this.hp = 0; this.alive = false; this.state = 'dead'; this.setClip(makeDead(1)); this.ctx.onPlayerDeath && this.ctx.onPlayerDeath(); }
   resetProgress() {  // fresh run: clear all upgrade modifiers
     this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1, waveSkillDmg: 28, waveCdMult: 1, rainHitDmg: 12, rainMult: 1, rainR: 3.5 };
@@ -411,6 +418,7 @@ export class Player extends Actor {
               e.takeHit({ dmg: base * this.dmgMult() * (heavy ? this.mods.heavy : 1), weight: heavy ? 'heavy' : 'light', dir: to.normalize(), heavy, from: this });
               this.freeze(heavy ? .11 : .07); this.hitstopCount++;
               this.ctx.shake(heavy ? .3 : .12);
+              if (heavy) this.ctx.ui.impact();   // heavy-hit edge vignette pulse
               if (e.posture !== undefined) { e.posture += heavy ? 14 : 8; }
               if (this.mods.lifesteal > 0) this.hp = Math.min(this.maxHp, this.hp + this.mods.lifesteal);
             }
@@ -782,11 +790,18 @@ export class Caster extends Actor {
   }
 }
 
-// ---------------------------------------------------------------- boss: stone shrine guardian
+// ---------------------------------------------------------------- boss: stone shrine guardian / lantern ghost
 export class Boss extends Actor {
-  constructor(ctx, pos) {
-    super(ctx, { radius: 1.05, hp: 380, speed: 2.7, scale: 2.2, team: 'enemy',
-      rigCfg: { scale: 2.2, colors: { cloth: 0x565e6e, trim: 0x3d4452, skin: 0x6e7889 }, weapon: null, thick: .16 } });
+  constructor(ctx, pos, type = 'stone') {
+    const lantern = type === 'lantern';
+    super(ctx, {
+      radius: lantern ? 1.0 : 1.05, hp: lantern ? 360 : 380, speed: lantern ? 2.9 : 2.7, scale: lantern ? 2.0 : 2.2, team: 'enemy',
+      rigCfg: lantern
+        ? { scale: 2.0, colors: { cloth: 0x5a3a3e, trim: 0x8a4a30, skin: 0xd8b36a }, weapon: 'staff', thick: .15 }
+        : { scale: 2.2, colors: { cloth: 0x565e6e, trim: 0x3d4452, skin: 0x6e7889 }, weapon: null, thick: .16 }
+    });
+    this.type = type;
+    this.displayName = lantern ? '提 灯 鬼' : '石 祠 守 卫';
     this.pos.copy(pos);
     this.state = 'idle'; this.stateT = 0;
     this.phase = 1; this.posture = 0; this.maxPosture = 100;
@@ -794,6 +809,8 @@ export class Boss extends Actor {
     this.ringR = -1; this.ringHitDone = false;
     this.lines = null; this.roared = false;
     this.decayT = 0;
+    this.volleyCount = 0; this.volleyT = 0;
+    this.summoned = false;
   }
   spd() { return this.phase === 2 ? .72 : 1; }   // phase 2: faster windups
   onParried() {
@@ -818,6 +835,11 @@ export class Boss extends Actor {
       this.ctx.ui.boss(true, undefined, undefined, this.posture / this.maxPosture);
       this.ctx.onBossPhase2 && this.ctx.onBossPhase2();
       this.speed = 3.3;
+    }
+    // 提灯鬼: calls for help once after raging
+    if (this.type === 'lantern' && this.phase === 2 && !this.summoned && this.alive) {
+      this.summoned = true;
+      this.ctx.onSummon && this.ctx.onSummon();
     }
     // posture stagger
     if (this.posture >= 100 && this.state !== 'stagger' && this.alive) {
@@ -894,6 +916,31 @@ export class Boss extends Actor {
         if (this.stateT >= 1.5 / this.spd()) { this.state = 'idle'; this.thinkT = .6; }
         break;
       }
+      case 'volley': {
+        this.facing = turnTo(this.facing, toAng, 3 * dt);
+        this.volleyT -= dt;
+        const target = this.phase === 2 ? 5 : 3;
+        if (this.volleyCount < target && this.volleyT <= 0) {
+          this.volleyT = .35; this.volleyCount++;
+          const dir = to.clone().normalize();
+          const orb = this.ctx.fx.orb(this.pos.clone().add(V(Math.sin(this.facing) * 1.2, 1.9, Math.cos(this.facing) * 1.2)), dir.multiplyScalar(9), 0xffb28a, { r: .26 });
+          orb.dmg = 8 * this.dmgScale; orb.team = 'enemy';
+          this.ctx.projectiles.push(orb);
+          this.ctx.audio.S.cast();
+        }
+        if (this.volleyCount >= target && this.stateT >= .6 + target * .35) { this.state = 'idle'; this.thinkT = this.phase === 2 ? .8 : 1.1; }
+        break;
+      }
+      case 'burn': {
+        if (!this.burnDone && this.stateT >= 1.2) {
+          this.burnDone = true;
+          this.ctx.fireZones.push({ pos: this.burnTarget.clone(), until: this.ctx.time + 5, fx: this.ctx.fx.teleCircle(this.burnTarget, { r: 2.2, dur: 5, color: 0xff9d5c }), tick: 0 });
+          this.ctx.fx.ring(this.burnTarget, { r0: .4, r1: 2.6, color: 0xffa06a, dur: .4 });
+          this.ctx.audio.S.slam();
+        }
+        if (this.stateT >= 1.6) { this.burnDone = false; this.state = 'idle'; this.thinkT = 1.0; }
+        break;
+      }
       case 'ring': {
         if (!this.ringFired && this.stateT >= .6) {
           this.ringFired = true;
@@ -954,6 +1001,7 @@ export class Boss extends Actor {
     const pl = this.ctx.player;
     const roll = Math.random();
     this.stateT = 0;
+    if (this.type === 'lantern') { this.pickLantern(roll); return; }
     if (this.phase === 1) {
       if (roll < .55 || !this._slamOk()) {
         this.comboStep = 0; this.curSwing = this.swingR(); this.setClip(this.curSwing);
@@ -979,6 +1027,27 @@ export class Boss extends Actor {
       } else {
         this.state = 'eruption'; this.lines = null; this.setClip(this.castClip());
       }
+    }
+    void pl;
+  }
+  pickLantern(roll) {
+    const pl = this.ctx.player;
+    const dist = pl.pos.distanceTo(this.pos);
+    if (roll < .42 || dist > 12) {          // 三连/五连火球弹幕
+      this.state = 'volley'; this.stateT = 0;
+      this.volleyCount = 0; this.volleyT = .3;
+      this.setClip(this.castClip()); this.castClip().loop = true;
+      this.ctx.audio.S.cast();
+    } else if (roll < .78) {                // 燃烧地带
+      this.state = 'burn'; this.stateT = 0;
+      this.burnTarget = pl.pos.clone();
+      this.setClip(this.castClip());
+      this.ctx.fx.teleCircle(this.burnTarget, { r: 2.2, dur: 1.2, color: 0xff9d5c });
+      this.ctx.audio.S.tele();
+    } else {                                // 近战横扫
+      this.comboStep = 0; this.curSwing = this.swingR(); this.setClip(this.curSwing);
+      this.state = 'combo'; this.hitDone = false;
+      this.ctx.audio.S.swing(true);
     }
     void pl;
   }
