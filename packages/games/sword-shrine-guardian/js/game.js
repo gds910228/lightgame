@@ -73,6 +73,59 @@ function endlessDef(i) {
   return { walkers: comps[k][0], casters: comps[k][1], scale: 1 + cyc * .18, dmgS: 1 + cyc * .1 };
 }
 
+// ---- random night events: spice for normal late waves and endless alike ----
+const ALTAR_POS = V(0, 0, -7.5);
+const EVENT_POOL = [
+  { id: 'blood',  name: '血 月', desc: '血月当空：敌人伤害 +25%，击杀必掉回复', weight: 2,   bossOk: false },
+  { id: 'fog',    name: '雾 隐', desc: '浓雾蔽目：视野大减，敌人迟缓 20%', weight: 2,   bossOk: false },
+  { id: 'spirit', name: '剑 灵', desc: '剑灵显圣：周期落剑斩向最近的敌人 · 18 秒', weight: 2,  bossOk: true },
+  { id: 'tide',   name: '灵 潮', desc: '灵潮涌动：移速 +12%、体力回复翻倍、闪避耗 -8 · 25 秒', weight: 2, bossOk: true },
+  { id: 'altar',  name: '恩 赐', desc: '祭坛苏醒：立于光圈内每秒回复生命', weight: 1.5, bossOk: true },
+  { id: 'chest',  name: '异 客', desc: '金装客人携赏而来：速斩之！', weight: 1.5, bossOk: false },
+];
+function maybeEvent(i) {
+  if (ctx.noDirector) return;
+  const isBoss = i >= WAVES.length;
+  const chance = director.endless ? .55 : .4;
+  if (Math.random() > chance) return;
+  let pool = EVENT_POOL.filter(e => e.id !== ctx.lastEventId);
+  if (isBoss) pool = pool.filter(e => e.bossOk);
+  if (!pool.length) return;
+  const total = pool.reduce((s, e) => s + e.weight, 0);
+  let roll = Math.random() * total;
+  for (const ev of pool) { roll -= ev.weight; if (roll <= 0) { applyEvent(ev); return; } }
+}
+function applyEvent(ev) {
+  ctx.lastEventId = ev.id;
+  ctx.event = ev;
+  ui.banner(ev.name, ev.desc, 2.6);
+  audio.S.drop(1);
+  if (ev.id === 'blood') { director.dmgScale *= 1.25; ctx.bloodMoon = true; world.setMood('blood'); }
+  else if (ev.id === 'fog') { ctx.fogEvent = true; world.setMood('fog'); }
+  else if (ev.id === 'spirit') { ctx.spiritT = 18; ctx.spiritTick = 3; }
+  else if (ev.id === 'tide') { ctx.tideT = 25; ctx.player._counterMark = true; fx.counterRing(ctx.player); }
+  else if (ev.id === 'altar') { ctx.altarT = 1; ctx.altarRing = fx.teleCircle(ALTAR_POS, { r: 3.6, dur: 999, color: 0x9fe8ff }); }
+  else if (ev.id === 'chest') { spawnChest(); }
+}
+function revertEvent() {
+  if (!ctx.event) return;
+  const id = ctx.event.id;
+  if (id === 'blood') { director.dmgScale /= 1.25; ctx.bloodMoon = false; world.setMood('normal'); }
+  else if (id === 'fog') { ctx.fogEvent = false; world.setMood('normal'); }
+  else if (id === 'spirit') ctx.spiritT = 0;
+  else if (id === 'tide') { ctx.tideT = 0; ctx.player._counterMark = false; }
+  else if (id === 'altar') { ctx.altarT = 0; if (ctx.altarRing) { ctx.altarRing.kill(); ctx.altarRing = null; } }
+  ctx.event = null;
+}
+function spawnChest() {
+  const e = spawnEnemy('walker');
+  e.chest = true; e.passive = true;
+  e.hp = e.maxHp = 22; e.speed = 5.2;
+  e.rig.mats.cloth.color.setHex(0xd8b36a); e.rig.mats.trim.color.setHex(0xf4e3b8); e.rig.mats.skin.color.setHex(0xffe9b8);
+  e.state = 'strafe'; e.strafeT = 1e9;
+  return e;
+}
+
 // ---- upgrade pool: offered 3-at-a-time after each cleared wave (roguelite-lite) ----
 const UPGRADES = [
   { id: 'atk',   name: '锋 锐', desc: '攻击伤害 +15%', max: 5, apply(p) { p.mods.dmg += .15; } },
@@ -128,6 +181,7 @@ function spawnEnemy(kind) {
   const m = director.scale || 1;
   if (m !== 1) { e.hp *= m; e.maxHp *= m; }
   e.dmgScale = director.dmgScale || 1;
+  if (ctx.fogEvent) e.speed *= .8;                 // 雾隐: enemies slow
   ctx.enemies.push(e);
   return e;
 }
@@ -142,6 +196,7 @@ function startWave(i) {
   for (let k = 0; k < def.casters; k++) spawnEnemy('caster');
   audio.setMusic('combat');
   ui.waveTag(`第 ${i + 1} 波 · 纪录 ${bestWave}`);
+  maybeEvent(i);                                   // a night event may spice this wave
 }
 function startBoss(endless = false) {
   director.phase = 'boss';
@@ -193,6 +248,7 @@ function advanceDirector(dt) {
       ui.toast('喘息 · 生命回复 +15');
       recordWave(director.wave + 1);
       ui.waveTag(`第 ${director.wave + 2} 波 · 纪录 ${bestWave}`);
+      revertEvent();
       offerUpgrades();
     }
   }
@@ -208,6 +264,7 @@ function jumpStage(s) {
   state = 'play'; ui.hud();
 }
 function clearAll() {
+  revertEvent();
   for (const e of ctx.enemies) ctx.scene.remove(e.rig.grp);
   ctx.enemies.length = 0;
   for (const o of ctx.projectiles) o.kill();
@@ -224,6 +281,9 @@ function resetGame() {
   ui.upgradeList('');
   ctx.pendingUpgrades = null; ui.hideUpgrades();
   director.endless = false; director.scale = 1; director.dmgScale = 1;
+  ctx.lastEventId = null; ctx.bloodMoon = false; ctx.fogEvent = false;
+  ctx.spiritT = 0; ctx.tideT = 0; ctx.altarT = 0; ctx.event = null;
+  world.setMood('normal');
   ui.waveTag('');
   p.hp = p.maxHp; p.stamina = p.maxStamina; p.alive = true; p.dead = false;
   p.state = 'idle'; p.stateT = 0; p.invulnT = 0; p.hitstopT = 0;
@@ -265,10 +325,26 @@ function enterEndless() {
   ui.waveTag(`第 ${director.wave + 2} 波 · 纪录 ${bestWave}`);
 }
 ctx.onDeath = (e) => {
-  // loot drop on kill (skill: 掉落物)
-  const roll = Math.random();
-  if (e instanceof Walker && roll < .45) ctx.loots.push(new Loot(ctx, e.pos.clone(), 'heal'));
-  else if (e instanceof Caster && roll < .7) ctx.loots.push(new Loot(ctx, e.pos.clone(), 'spirit'));
+  // loot drop on kill (skill: 掉落物); 血月 guarantees drops; 宝箱怪 pays out big
+  if (e.chest) {
+    ctx.loots.push(new Loot(ctx, e.pos.clone(), 'heal', 1));
+    const pool = UPGRADES.filter(u => (ctx.player.upgradeCounts[u.id] || 0) < u.max);
+    if (pool.length) {
+      const u = pool[Math.random() * pool.length | 0];
+      u.apply(ctx.player);
+      ctx.player.upgradeCounts[u.id] = (ctx.player.upgradeCounts[u.id] || 0) + 1;
+      ui.toast('宝箱赏赐：' + u.name.replace(/ /g, ''));
+      ui.upgradeList(Object.entries(ctx.player.upgradeCounts).map(([id, n]) => {
+        const def = UPGRADES.find(x => x.id === id);
+        return def ? def.name.replace(/ /g, '') + '×' + n : '';
+      }).filter(Boolean).join('　'));
+      audio.S.drop(1);
+    }
+  } else {
+    const roll = Math.random();
+    if (e instanceof Walker && roll < (ctx.bloodMoon ? 1 : .45)) ctx.loots.push(new Loot(ctx, e.pos.clone(), 'heal'));
+    else if (e instanceof Caster && roll < (ctx.bloodMoon ? 1 : .7)) ctx.loots.push(new Loot(ctx, e.pos.clone(), 'spirit'));
+  }
   if (ctx.meleeToken === e) ctx.meleeToken = null;
 };
 
@@ -349,6 +425,33 @@ function update(dt) {
       if (o.pos.length() > 60) o.kill();
     }
     ctx.projectiles = ctx.projectiles.filter(o => o.alive);
+    // --- night event timers ---
+    if (ctx.spiritT > 0) {
+      ctx.spiritT -= dt; ctx.spiritTick = (ctx.spiritTick ?? 3) - dt;
+      if (ctx.spiritTick <= 0) {
+        ctx.spiritTick = 3;
+        const targets = ctx.enemies.filter(e => e.alive).sort((a, b) => a.pos.distanceTo(p.pos) - b.pos.distanceTo(p.pos));
+        if (targets.length) {
+          const t = targets[0];
+          fx.fallBlade(t.pos.clone()); audio.S.rainHit();
+          t.takeHit({ dmg: 16 * p.mods.dmg, dir: V(Math.sin(ctx.time * 2), 0, Math.cos(ctx.time * 2)), heavy: false, from: p });
+          if (t.posture !== undefined) t.posture += 5;
+        }
+      }
+      if (ctx.spiritT <= 0) ui.toast('剑灵离去');
+    }
+    if (ctx.tideT > 0) {
+      ctx.tideT -= dt;
+      if (ctx.tideT <= 0) { ctx.tideT = 0; p._counterMark = false; ui.toast('灵潮退去'); }
+    }
+    if (ctx.altarT > 0 && p.alive) {
+      ctx.altarHeal = (ctx.altarHeal || 0) + dt;
+      if (p.pos.distanceTo(ALTAR_POS) < 3.6 && ctx.altarHeal >= 1) {
+        ctx.altarHeal -= 1;
+        p.hp = Math.min(p.maxHp, p.hp + 3);
+        fx.burst(p.pos.clone().add(V(0, 1, 0)), 0x9fe8ff, { n: 3, size: .5, speed: 2 });
+      }
+    }
     for (const l of ctx.loots) l.update(sdt);
     ctx.loots = ctx.loots.filter(l => l.alive);
     advanceDirector(sdt);
@@ -370,7 +473,7 @@ function update(dt) {
     ui.skillCd(2, p.dashCdT > 0 ? p.dashCdT / .45 : 0);
     if (p.dashCdT > 0) p.dashCdT -= dt;
     ui.skillCd(3, p.waveCdT > 0 ? p.waveCdT / (5 * p.mods.waveCdMult) : 0);
-    ui.skillCd(4, p.rainCdT > 0 ? p.rainCdT / 14 : 0);
+    ui.skillCd(4, p.rainCdT > 0 ? p.rainCdT / 9 : 0);
     if (ctx.boss) ui.boss(ctx.boss.alive, '石 祠 守 卫', ctx.boss.hp / ctx.boss.maxHp, ctx.boss.posture / ctx.boss.maxPosture);
     else ui.boss(false);
   } else if (state === 'dead' || state === 'win') {
@@ -473,6 +576,9 @@ const G = window.G = {
   record: recordWave,
   enterEndless: () => { state = 'win'; enterEndless(); },   // test hook: bypass the win-screen gate
   endlessDef,
+  forceEvent: (id) => applyEvent(EVENT_POOL.find(e => e.id === id)),
+  revertEvent,
+  spawnChest,
   shot(name) { world.render(); const url = renderer.domElement.toDataURL('image/png'); window.__SHOTS[name] = url; return url.length; },
   err: () => window.__ERRS,
   setStage(s) { if (s === 'boss' && ctx.boss) { ctx.boss.update(0); } },
@@ -742,6 +848,41 @@ async function autotest() {
     const rainHit = d2.hp < hp1 && p.rainCdT > 0;
     assert('T14 L 剑气斩 & U 剑雨 both deal damage and start cooldowns', waveHit && rainHit, `wave=${waveHit} rain=${rainHit} dmgW=${(hp0 - d1.hp).toFixed(0)} dmgR=${(hp1 - d2.hp).toFixed(0)}`);
     ctx.meleeToken = null; ctx.noDirector = true; G.clear();
+  }
+
+  // T15 night events: blood moon applies & reverts; chest pays out an upgrade + big heal
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    director.wave = 0; director.phase = 'fight';
+    G.forceEvent('blood');
+    const bloodOk = Math.abs(director.dmgScale - 1.25) < 1e-6 && ctx.bloodMoon === true && world.scene.fog.color.getHexString() === '1c0a0c';
+    // chest: spawn + kill -> guaranteed tier heal + a random upgrade granted
+    const c = G.spawnChest();
+    const loot0 = ctx.loots.length;
+    c.takeHit({ dmg: 999, dir: V(1, 0, 0) });
+    G.upd(5);
+    const chestOk = ctx.loots.length > loot0 && Object.keys(p.upgradeCounts).length === 1;
+    G.revertEvent();
+    const backOk = Math.abs(director.dmgScale - 1) < 1e-6 && !ctx.bloodMoon && world.scene.fog.color.getHexString() === '0a0f18';
+    assert('T15 血月事件生效/还原 + 宝箱怪赏赐', bloodOk && chestOk && backOk, `blood=${bloodOk} chest=${chestOk} back=${backOk}`);
+  }
+
+  // T16 剑雨 CD 9s & 剑灵 event auto-strikes the nearest enemy
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.invulnT = 0; p.hitstopT = 0; p.state = 'idle'; p.setIdle();
+    p.pos.set(0, 0, 6); p.facing = 0;
+    G.press('KeyU');
+    G.upd(5);
+    const cdOk = Math.abs(p.rainCdT - 9) < .3;
+    G.forceEvent('spirit');
+    const d = G.spawn('walker', V(0, 0, 8));
+    d.state = 'strafe'; d.strafeT = 99; ctx.meleeToken = {};
+    const hp0 = d.hp;
+    await runChunks(210);                            // spirit ticks at ~3s
+    const spiritOk = d.hp < hp0;
+    ctx.meleeToken = null; G.clear(); G.revertEvent();
+    assert('T16 剑雨CD 9s & 剑灵事件自动落剑支援', cdOk && spiritOk, `cd=${p.rainCdT.toFixed(1)} spirit=${spiritOk} dmg=${(hp0 - d.hp).toFixed(0)}`);
   }
 
   // T9 teardown: title + muted (skill: 测完切回标题、静音)

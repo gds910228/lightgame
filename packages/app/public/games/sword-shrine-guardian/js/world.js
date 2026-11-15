@@ -116,6 +116,13 @@ export function makeWorld(renderer) {
       camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
       renderer.setSize(innerWidth, innerHeight);
       rtScene.setSize(innerWidth, innerHeight); rtA.setSize(innerWidth >> 1, innerHeight >> 1); rtB.setSize(innerWidth >> 1, innerHeight >> 1);
+    },
+    // night mood for random events: blood moon / thick fog / normal
+    setMood(name) {
+      const f = scene.fog;
+      if (name === 'blood') { f.color.setHex(0x1c0a0c); f.density = .032; hemi.intensity = .8; moon.color.setHex(0xd88a7a); moon.intensity = 1.0; }
+      else if (name === 'fog') { f.color.setHex(0x12151c); f.density = .055; hemi.intensity = .75; moon.color.setHex(0x9db4d8); moon.intensity = .9; }
+      else { f.color.setHex(0x0a0f18); f.density = .028; hemi.intensity = .95; moon.color.setHex(0xa9c0e0); moon.intensity = 1.25; }
     }
   };
 

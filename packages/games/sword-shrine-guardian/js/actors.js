@@ -126,8 +126,9 @@ export class Player extends Actor {
   startAction(action) {
     if (action === 'attack') { this.startAttack(); return; }
     if (action === 'dash') {
-      if (this.stamina < this.mods.dashCost || this.state === 'dash') return;
-      this.stamina -= this.mods.dashCost; this.staminaDelay = .6;
+      const cost = this.mods.dashCost - (this.ctx.tideT > 0 ? 8 : 0);   // 灵潮: 闪避消耗 -8
+      if (this.stamina < cost || this.state === 'dash') return;
+      this.stamina -= cost; this.staminaDelay = .6;
       this.state = 'dash'; this.stateT = 0; this.setClip(this.dashClip()); this.dashCdT = .45 * this.mods.dashCd;
       const d = this.ctx.moveDir; this.dashDir.copy(d.lengthSq() > .01 ? d : V(Math.sin(this.facing), 0, Math.cos(this.facing)));
       this.ctx.audio.S.dash(); this.ctx.fx.dust(this.pos, { n: 4, color: 0x7f8ba0 });
@@ -149,7 +150,7 @@ export class Player extends Actor {
     }
     if (action === 'rain') {
       if (this.rainCdT > 0 || this.state === 'dash') return;
-      this.rainCdT = 14;
+      this.rainCdT = 9;
       this.state = 'cast'; this.castKind = 'rain'; this.castDone = false; this.rainStrikes = null; this.stateT = 0;
       this.setClip(this.rainCastClip());
       this.ctx.audio.S.rainCast();
@@ -318,9 +319,9 @@ export class Player extends Actor {
     if (this.rainCdT > 0) this.rainCdT -= dt;
     if (this.bufT > 0) { this.bufT -= dt; if (this.bufT <= 0) this.buf = null; }
     if (this.hitstopT > 0) { this.hitstopT -= dt; this.hitstopCount++; this.poseStep(dt, 0); return; }
-    // stamina regen (delayed)
+    // stamina regen (delayed); 灵潮 doubles it
     if (this.staminaDelay > 0) this.staminaDelay -= dt;
-    else this.stamina = Math.min(this.maxStamina, this.stamina + 24 * dt * this.mods.stamRegen);
+    else this.stamina = Math.min(this.maxStamina, this.stamina + 24 * dt * this.mods.stamRegen * (this.ctx.tideT > 0 ? 2 : 1));
     // timed states
     if (this.parryT > 0) this.parryT -= dt;
     if (this.counterT > 0) {
@@ -342,7 +343,7 @@ export class Player extends Actor {
         if (d.lengthSq() > .01) {
           const tgtFacing = Math.atan2(d.x, d.z);
           this.facing = turnTo(this.facing, tgtFacing, 14 * dt);
-          const sp = this.speed * this.mods.speed;
+          const sp = this.speed * this.mods.speed * (this.ctx.tideT > 0 ? 1.12 : 1);   // 灵潮: +12% 移速
           this.pos.addScaledVector(d, sp * dt);
           this.walkPhase += dt * sp * 1.9;
           this.setWalk();
@@ -546,6 +547,12 @@ export class Walker extends Actor {
         break;
       }
       case 'strafe': {
+        if (this.passive) {   // 宝箱怪: flee from the player, never fights
+          this.facing = turnTo(this.facing, toAng + Math.PI, 8 * dt);
+          this.pos.addScaledVector(to.clone().normalize().multiplyScalar(-1), 4.6 * dt);
+          this.walkPhase += dt * 6.4; this.setWalk();
+          break;
+        }
         this.facing = turnTo(this.facing, toAng, 10 * dt);
         this.strafeT -= dt;
         const side = V(Math.cos(this.facing), 0, -Math.sin(this.facing)).multiplyScalar(this.strafeDir);
@@ -553,7 +560,7 @@ export class Walker extends Actor {
         const mv = side.multiplyScalar(1.6).add(radial).clampLength(0, 2.4);
         this.pos.addScaledVector(mv, dt);
         this.walkPhase += dt * 3.2; this.setWalk();
-        if (!this.ctx.meleeToken && dist < 3.2) { this.ctx.meleeToken = this; this.state = 'telegraph'; this.stateT = 0; this.ctx.fx.teleSector(this.pos, toAng, { span: 1.7, r: 2.9, dur: .55 }); this.ctx.audio.S.tele(); }
+        if (!this.passive && !this.ctx.meleeToken && dist < 3.2) { this.ctx.meleeToken = this; this.state = 'telegraph'; this.stateT = 0; this.ctx.fx.teleSector(this.pos, toAng, { span: 1.7, r: 2.9, dur: .7 }); this.ctx.audio.S.tele(); }
         else if (this.strafeT <= 0) { this.strafeT = rand2(1, 2.2); this.strafeDir *= -1; if (dist > 4.5) this.state = 'chase'; }
         break;
       }
