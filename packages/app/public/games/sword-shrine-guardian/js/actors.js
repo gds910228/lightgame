@@ -177,9 +177,19 @@ export class Player extends Actor {
       if (this.rainCdT > 0 || this.state === 'dash') return;
       this.rainCdT = 9;
       this.state = 'cast'; this.castKind = 'rain'; this.castDone = false; this.rainStrikes = null; this.stateT = 0;
-      // 剑气合击: raining right after a sword-qi hit doubles the falling blades
+      // 剑气合击: raining right after a sword-qi hit doubles the falling blades — big flashy trigger
       this.rainCombo = this.ctx.time - (this.ctx.waveHitT || -9) < 1.5;
-      if (this.rainCombo) { this.ctx.ui.banner('剑 气 合 击', '落剑翻倍', 1.3); this.ctx.audio.S.drop(1); }
+      if (this.rainCombo) {
+        this.ctx.ui.banner('剑 气 合 击', '落剑翻倍', 1.3);
+        this.ctx.fx.ring(this.pos, { r0: .5, r1: 7, color: 0xffd98c, dur: .8, w: .3 });       // golden shockwave
+        this.ctx.fx.ring(this.pos, { r0: .3, r1: 4.5, color: 0xfff2c8, dur: .6, w: .25 });    // white inner flare
+        this.ctx.fx.burst(this.pos.clone().add(V(0, 1.2, 0)), 0xffe2a8, { n: 18, size: 1.4, speed: 8 });
+        this.ctx.fx.ghost(this.pos, this.facing);
+        this.ctx.slowmo(.45, .5);                    // dramatic beat
+        this.ctx.shake(.35);
+        this.ctx.ui.impact();                        // edge vignette pulse
+        this.ctx.audio.S.exec();                     // loud finishing chime
+      }
       this.setClip(this.rainCastClip());
       this.ctx.audio.S.rainCast();
       return;
@@ -377,6 +387,7 @@ export class Player extends Actor {
     if (this.comboT > 0) this.comboT -= dt;
     if (this.waveCdT > 0) this.waveCdT -= dt;
     if (this.rainCdT > 0) this.rainCdT -= dt;
+    if (this.strikeCdT > 0) this.strikeCdT -= dt;   // 瞬步斩 CD 递减（此前缺失导致只能用一次）
     if (this.bufT > 0) { this.bufT -= dt; if (this.bufT <= 0) this.buf = null; }
     if (this.hitstopT > 0) { this.hitstopT -= dt; this.hitstopCount++; this.poseStep(dt, 0); return; }
     // stamina regen (delayed); 灵潮 doubles it
@@ -567,7 +578,7 @@ export class Player extends Actor {
           for (const st of this.rainStrikes || []) {
             if (!st.done && this.stateT >= st.t) {
               st.done = true;
-              this.ctx.fx.fallBlade(st.pos);
+              this.ctx.fx.fallBlade(st.pos, this.rainCombo);   // combo: golden landing flash
               this.ctx.audio.S.rainHit();
               for (const e of this.ctx.enemies) {
                 if (!e.alive) continue;

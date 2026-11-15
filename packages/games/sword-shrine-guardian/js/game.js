@@ -1404,9 +1404,11 @@ async function autotest() {
     await runChunks(30);
     const tele = p.pos.distanceTo(pos0) > 1;
     const hit = d.hp < hp0;
-    const cd = p.strikeCdT > 0;
+    const cd0 = p.strikeCdT;
+    await runChunks(120);                            // 2s: cooldown must tick down (v2.1.2 fix)
+    const decays = cd0 > p.strikeCdT && p.strikeCdT > 5.5;
     ctx.meleeToken = null; G.clear();
-    assert('T30 瞬步斩：瞬移+背刺伤害+冷却', tele && hit && cd, `tele=${tele} hit=${hit} cd=${cd}`);
+    assert('T30 瞬步斩：瞬移+背刺+冷却且正常递减', tele && hit && cd0 > 0 && decays, `tele=${tele} hit=${hit} cd0=${cd0.toFixed(1)} now=${p.strikeCdT.toFixed(1)}`);
   }
 
   // T31 剑气合击: raining within 1.5s of a sword-qi hit doubles the blades
@@ -1422,8 +1424,9 @@ async function autotest() {
     G.press('KeyU');                                // rain inside the combo window
     await runChunks(25);
     const comboOk = p.rainCombo === true && p.rainStrikes && p.rainStrikes.length === 10;
+    const flash = ctx.timeScale < 1;                // slow-mo beat fires on the combo trigger
     ctx.meleeToken = null; G.clear();
-    assert('T31 剑气合击：剑气命中后剑雨翻倍', opened && comboOk, `opened=${opened} combo=${p.rainCombo} n=${p.rainStrikes && p.rainStrikes.length}`);
+    assert('T31 剑气合击：剑气命中后剑雨翻倍+演出慢动作', opened && comboOk && flash, `opened=${opened} combo=${p.rainCombo} n=${p.rainStrikes && p.rainStrikes.length} flash=${flash}`);
   }
 
   // T32 merchant now sells the secret scroll (random upgrade) alongside goods
