@@ -326,7 +326,7 @@ export function makeFX(scene) {
     s.position.set(pos.x, .8, pos.z); s.scale.set(1.1, 1.5, 1);
     put(s, .22, (dt, l) => { mat.opacity = .3 * (1 - l); });
   };
-  // --- ambient ash drifting in a box that follows the camera ---
+  // --- ambient ash drifting in a box that follows the camera; setStyle() re-skins it per zone ---
   fx.makeAsh = (cam) => {
     const N = 460, geo = new THREE.BufferGeometry();
     const P = new Float32Array(N * 3), Vv = new Float32Array(N);
@@ -337,17 +337,31 @@ export function makeFX(scene) {
     geo.setAttribute('position', new THREE.BufferAttribute(P, 3));
     const mat = new THREE.PointsMaterial({ map: glows.pale, color: 0xaab2c4, size: .16, transparent: true, opacity: .5, depthWrite: false, blending: THREE.AdditiveBlending });
     const pts = new THREE.Points(geo, mat); scene.add(pts);
-    return { pts, update(dt) {
-      const c = cam.position, arr = geo.attributes.position.array;
-      for (let i = 0; i < N; i++) {
-        arr[i * 3 + 1] -= Vv[i] * dt;
-        arr[i * 3] += Math.sin(e2.t * .8 + i) * dt * .18;
-        if (arr[i * 3 + 1] < 0) { arr[i * 3 + 1] = 10 + Math.random() * 3; arr[i * 3] = c.x + (Math.random() - .5) * 44; arr[i * 3 + 2] = c.z + (Math.random() - .5) * 44; }
-        if (Math.abs(arr[i * 3] - c.x) > 24) arr[i * 3] = c.x + (Math.random() - .5) * 44;
-        if (Math.abs(arr[i * 3 + 2] - c.z) > 24) arr[i * 3 + 2] = c.z + (Math.random() - .5) * 44;
-      }
-      geo.attributes.position.needsUpdate = true;
-    } };
+    let mode = 'fall';
+    const api = { pts,
+      setStyle(o) { mat.color.setHex(o.color); mat.size = o.size; mode = o.mode; },
+      update(dt) {
+        const c = cam.position, arr = geo.attributes.position.array;
+        for (let i = 0; i < N; i++) {
+          if (mode === 'rise') {           // 萤火泽: motes drift upward and wander
+            arr[i * 3 + 1] += Vv[i] * dt * .55;
+            arr[i * 3] += Math.sin(e2.t * 1.3 + i * 2.1) * dt * .5;
+            if (arr[i * 3 + 1] > 11) { arr[i * 3 + 1] = .2; arr[i * 3] = c.x + (Math.random() - .5) * 44; arr[i * 3 + 2] = c.z + (Math.random() - .5) * 44; }
+          } else if (mode === 'snow') {    // 雪庭: slow drifting flakes
+            arr[i * 3 + 1] -= Vv[i] * dt * .55;
+            arr[i * 3] += Math.sin(e2.t * .8 + i) * dt * .45;
+            if (arr[i * 3 + 1] < 0) { arr[i * 3 + 1] = 10 + Math.random() * 3; arr[i * 3] = c.x + (Math.random() - .5) * 44; arr[i * 3 + 2] = c.z + (Math.random() - .5) * 44; }
+          } else {                         // 夜祠: ash falls
+            arr[i * 3 + 1] -= Vv[i] * dt;
+            arr[i * 3] += Math.sin(e2.t * .8 + i) * dt * .18;
+            if (arr[i * 3 + 1] < 0) { arr[i * 3 + 1] = 10 + Math.random() * 3; arr[i * 3] = c.x + (Math.random() - .5) * 44; arr[i * 3 + 2] = c.z + (Math.random() - .5) * 44; }
+          }
+          if (Math.abs(arr[i * 3] - c.x) > 24) arr[i * 3] = c.x + (Math.random() - .5) * 44;
+          if (Math.abs(arr[i * 3 + 2] - c.z) > 24) arr[i * 3 + 2] = c.z + (Math.random() - .5) * 44;
+        }
+        geo.attributes.position.needsUpdate = true;
+      } };
+    return api;
   };
   return fx;
 }

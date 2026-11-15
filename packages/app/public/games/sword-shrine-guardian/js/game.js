@@ -52,9 +52,36 @@ const ctx = {
 ctx.player = new Player(ctx);
 ctx.player.pos.set(0, 0, 10);
 ctx.player.facing = Math.PI; // face the altar (north, -Z is toward gate; altar at -7.5)
+world.ash = ash;
 let state = 'title';
 let stateT = 0;
 reportReady();
+
+// ---- inter-wave shop (灵币 economy) ----
+const SHOP_ITEMS = [
+  { id: 'heal',  name: '伤 药', desc: '立即回复 40 生命', price: 25 },
+  { id: 'brew',  name: '灵 酿', desc: '体力回满，回复 10 生命', price: 15 },
+  { id: 'forge', name: '重 铸', desc: '攻击伤害永久 +8%', price: 60 },
+];
+function buyShopItem(id) {
+  const it = SHOP_ITEMS.find(s => s.id === id);
+  if (!it) return false;
+  if ((ctx.coins || 0) < it.price) { ui.toast('灵币不足'); audio.S.click(); return false; }
+  ctx.coins -= it.price;
+  if (id === 'heal') ctx.player.hp = Math.min(ctx.player.maxHp, ctx.player.hp + 40);
+  else if (id === 'brew') { ctx.player.stamina = ctx.player.maxStamina; ctx.player.hp = Math.min(ctx.player.maxHp, ctx.player.hp + 10); }
+  else if (id === 'forge') ctx.player.mods.dmg += .08;
+  ui.refreshShopCoins(ctx.coins);
+  ui.toast(it.name.replace(/ /g, '') + ' 已购');
+  audio.S.drop(1);
+  return true;
+}
+// endless zone rotation: each full cycle beyond the first re-skins the shrine grounds
+function zoneFor(i) {
+  const cyc = Math.floor(i / 4) - 1;
+  if (cyc < 1) return 'night';
+  return ['snow', 'firefly', 'night'][(cyc - 1) % 3];
+}
 
 // ---- director ----
 const WAVES = [
@@ -211,6 +238,15 @@ function applyEvent(ev) {
   else if (ev.id === 'spirit') { ctx.spiritT = 18; ctx.spiritTick = 3; }
   else if (ev.id === 'tide') { ctx.tideT = 25; ctx.player._counterMark = true; fx.counterRing(ctx.player); }
   else if (ev.id === 'altar') { ctx.altarT = 1; ctx.altarRing = fx.teleCircle(ALTAR_POS, { r: 3.6, dur: 999, color: 0x9fe8ff }); }
+  else if (ev.id === 'merchant') {
+    // fog-borne peddler: two timed coin offers near the player
+    const spot = ctx.player.pos.clone().add(V((Math.random() - .5) * 6, 0, (Math.random() - .5) * 6));
+    resolveCollisions(spot, .5, ctx.colliders);
+    ctx.merchantSpot = spot;
+    ctx.merchantRing = fx.teleCircle(spot, { r: 1.6, dur: 14, color: 0xffd98c });
+    ctx.merchantUntil = ctx.time + 13;
+    ui.showMerchant(ctx.coins, SHOP_ITEMS.slice(0, 2).map(s => ({ id: s.id, name: s.name, desc: s.desc, price: s.price })), buyShopItem);
+  }
   else if (ev.id === 'chest') { spawnChest(); }
 }
 function revertEvent() {
@@ -254,8 +290,8 @@ function offerUpgrades() {
   for (let i = pool.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0;[pool[i], pool[j]] = [pool[j], pool[i]]; }
   ctx.pendingUpgrades = pool.slice(0, 3);
   director.phase = 'choose';
-  ui.showUpgrades(ctx.pendingUpgrades.map(u => ({ name: u.name, desc: u.desc, stacks: p.upgradeCounts[u.id] || 0 })), pickUpgrade);
-  ui.banner('择 一 而 强', '点击或按 1 / 2 / 3', 2.2);
+  ui.showUpgrades(ctx.pendingUpgrades.map(u => ({ name: u.name, desc: u.desc, stacks: p.upgradeCounts[u.id] || 0 })), pickUpgrade, { coins: ctx.coins || 0, items: SHOP_ITEMS, onBuy: buyShopItem });
+  ui.banner('择 一 而 强', '点击或按 1 / 2 / 3 · 灵币可在下方商铺消费', 2.4);
 }
 function pickUpgrade(i) {
   const u = ctx.pendingUpgrades && ctx.pendingUpgrades[i];
@@ -310,6 +346,7 @@ function startWave(i) {
   ctx.meteorT = 10 + Math.random() * 6;            // a meteor may fall mid-wave
   if (def.boss) { startBoss(true); return; }
   ui.banner(isEndless ? `第 ${i + 1} 波` : def.label, '歼灭来犯之敌');
+  if (isEndless) world.setZone(zoneFor(i));        // endless rotates the grounds each cycle
   for (let k = 0; k < def.walkers; k++) spawnEnemy('walker');
   for (let k = 0; k < def.casters; k++) spawnEnemy('caster');
   audio.setMusic('combat');
@@ -420,7 +457,9 @@ function resetGame() {
   ctx.blasts.length = 0; ctx.meteorLands.length = 0; ctx.meteorT = 0; ctx.coins = 0;
   for (const z of ctx.fireZones) z.fx.kill();
   ctx.fireZones.length = 0; ctx.onSummon = null;
-  world.setMood('normal');
+  ctx.merchantUntil = 0; if (ctx.merchantRing) { ctx.merchantRing.kill(); ctx.merchantRing = null; }
+  ui.closeMerchant();
+  world.setMood('normal'); world.setZone('night');
   ui.waveTag('');
   p.hp = p.maxHp; p.stamina = p.maxStamina; p.alive = true; p.dead = false;
   p.state = 'idle'; p.stateT = 0; p.invulnT = 0; p.hitstopT = 0;
@@ -580,6 +619,11 @@ function update(dt) {
       const m = ctx.meteorLands[i];
       m.wait -= sdt;
       if (m.wait <= 0) { ctx.loots.push(new Loot(ctx, m.pos, 'buff')); ctx.meteorLands.splice(i, 1); }
+    }
+    // merchant peddler lingers a while, then departs
+    if (ctx.merchantUntil > 0) {
+      ui.merchantLeft(Math.max(0, Math.ceil(ctx.merchantUntil - ctx.time)) + ' 秒后离去 · 灵币 ' + (ctx.coins || 0));
+      if (ctx.time > ctx.merchantUntil) { ui.closeMerchant(); ctx.merchantUntil = 0; if (ctx.merchantRing) { ctx.merchantRing.kill(); ctx.merchantRing = null; } ui.toast('商人隐入雾中'); }
     }
     // --- night event timers ---
     if (ctx.spiritT > 0) {
@@ -756,6 +800,11 @@ const G = window.G = {
   endlessDef,
   forceEvent: (id) => applyEvent(EVENT_POOL.find(e => e.id === id)),
   affixes: AFFIXES,
+  coins: () => ctx.coins,
+  addCoins: (n) => { ctx.coins = (ctx.coins || 0) + n; },
+  buyShopItem,
+  setZone: (z) => world.setZone(z),
+  zoneFor,
   revertEvent,
   spawnChest,
   applyAffix,
@@ -1188,6 +1237,52 @@ async function autotest() {
     const zoomOk = world.camera.fov < 38;
     ctx.meleeToken = null; G.clear(); resetGame();
     assert('T23 手感包：重击边缘脉冲 + 处决镜头推近', impactSeen && heavyHit && zoomOk, `impact=${impactSeen} heavy=${heavyHit} fov=${world.camera.fov.toFixed(1)}`);
+  }
+
+  // T24 coin shop: purchases apply, coins deduct, unaffordable items refuse
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.hp = 80; p.mods.dmg = 1;
+    G.addCoins(100);
+    const c0 = G.coins();
+    const b1 = G.buyShopItem('heal');              // 25 -> +40 hp
+    const healOk = b1 && p.hp === 120 && G.coins() === c0 - 25;
+    const b2 = G.buyShopItem('forge');             // 60 -> dmg +.08
+    const forgeOk = b2 && Math.abs(p.mods.dmg - 1.08) < 1e-9 && G.coins() === c0 - 85;
+    G.addCoins(-G.coins());                        // empty the purse
+    const refuse = !G.buyShopItem('brew');
+    assert('T24 波间商店：购买生效/扣币/余额不足拒绝', healOk && forgeOk && refuse, `heal=${healOk} forge=${forgeOk} refuse=${refuse}`);
+  }
+
+  // T25 merchant event: timed panel opens, purchase works, auto-departs
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.hp = 60; G.addCoins(50);
+    G.forceEvent('merchant');
+    await runChunks(3);
+    const shown = document.getElementById('merchant').style.display === 'block';
+    const hp0 = p.hp;
+    const buyBtn = document.querySelector('#merchant .mitem');
+    buyBtn.click();                                 // first offer: 伤药 25币
+    await runChunks(2);
+    const healOk = p.hp === hp0 + 40 && G.coins() === 25;
+    ctx.merchantUntil = ctx.time + .05;             // rush the departure
+    await runChunks(12);
+    const gone = document.getElementById('merchant').style.display === 'none';
+    assert('T25 神秘商人：面板开启/购买生效/限时离去', shown && healOk && gone, `shown=${shown} heal=${healOk} gone=${gone}`);
+  }
+
+  // T26 endless zone rotation: snow & firefly re-skin the grounds
+  {
+    G.clear(); resetGame(); ctx.noDirector = true;
+    const nightHex = world.scene.fog.color.getHexString();
+    G.setZone('snow');
+    const snowOk = world.scene.fog.color.getHexString() === '1a2230' && G.zoneFor(8) === 'snow';
+    G.setZone('firefly');
+    const flyOk = world.scene.fog.color.getHexString() === '0c1a14' && G.zoneFor(12) === 'firefly';
+    G.setZone('night');
+    const backOk = world.scene.fog.color.getHexString() === nightHex;
+    assert('T26 场景轮换：雪庭/萤火泽变色与轮换数学', snowOk && flyOk && backOk, `snow=${snowOk} fly=${flyOk} back=${backOk}`);
   }
 
   // T9 teardown: title + muted (skill: 测完切回标题、静音)

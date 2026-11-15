@@ -61,6 +61,24 @@
   .up-card .s { margin-top:8px; font-size:11px; color:rgba(216,179,106,.7); letter-spacing:.2em; min-height:13px; }
   .up-card .k { margin-top:10px; font-size:11px; color:rgba(232,226,212,.5); letter-spacing:.2em; }
   #upgrades .uh { margin-top:26px; font-size:12px; letter-spacing:.25em; color:rgba(232,226,212,.55); }
+  .shoprow { display:flex; gap:12px; margin-top:24px; justify-content:center; flex-wrap:wrap; }
+  .shop-coins { width:100%; text-align:center; font-size:13px; letter-spacing:.2em; color:#f4d98c; margin-bottom:2px; }
+  .shop-item { width:168px; padding:10px 8px; border:1px dashed rgba(216,179,106,.55); background:rgba(8,11,17,.8); cursor:pointer; text-align:center; transition:.2s; }
+  .shop-item:hover { background:rgba(216,179,106,.12); }
+  .shop-item .n { font-size:14px; letter-spacing:.2em; color:var(--gold); }
+  .shop-item .d { margin-top:4px; font-size:11px; color:rgba(232,226,212,.8); }
+  .shop-item .p { margin-top:4px; font-size:12px; color:#f4d98c; }
+  .shop-item.off { opacity:.35; pointer-events:none; }
+  #merchant { position:fixed; bottom:150px; left:50%; transform:translateX(-50%); z-index:12; width:min(420px,92vw);
+    background:rgba(8,11,17,.92); border:1px solid rgba(216,179,106,.6); padding:14px 16px 12px; display:none; pointer-events:auto; }
+  #merchant .mt { text-align:center; font-size:15px; letter-spacing:.4em; color:var(--gold); }
+  #merchant .moffers { display:flex; gap:10px; margin-top:10px; justify-content:center; }
+  #merchant .moffers .mitem { flex:1; padding:8px; border:1px dashed rgba(216,179,106,.5); cursor:pointer; text-align:center; }
+  #merchant .moffers .mitem:hover { background:rgba(216,179,106,.12); }
+  #merchant .moffers .mitem .n { font-size:13px; color:var(--gold); letter-spacing:.2em; }
+  #merchant .moffers .mitem .d { font-size:11px; margin-top:3px; color:rgba(232,226,212,.8); }
+  #merchant .moffers .mitem .p { font-size:11px; margin-top:3px; color:#f4d98c; }
+  #merchant .mleft { margin-top:8px; text-align:center; font-size:11px; letter-spacing:.2em; color:rgba(232,226,212,.6); }
   /* boss */
   #bossbar { position:absolute; top:26px; left:50%; transform:translateX(-50%); width:min(560px,72vw); display:none; }
   #bossbar .nm { text-align:center; font-size:15px; letter-spacing:.45em; color:var(--ink); text-shadow:0 1px 4px #000; margin-bottom:6px; }
@@ -150,13 +168,20 @@
 <div id="upgrades" class="screen hide">
   <div class="ut">择 一 而 强</div>
   <div class="cards"></div>
+  <div class="shoprow" style="display:none"></div>
   <div class="uh">点击或按 1 / 2 / 3 选择 · 下一波随即来袭</div>
+</div>
+<div id="merchant">
+  <div class="mt">雾 中 行 商</div>
+  <div class="moffers"></div>
+  <div class="mleft"></div>
 </div>
 <div id="touch" class="layer">
   <div id="joy"><div id="joyk"></div></div>
   <div class="tbtn" id="tatk">攻</div><div class="tbtn" id="tpry">挡</div><div class="tbtn" id="tdsh">避</div>
   <div class="tbtn small" id="tskl">气</div><div class="tbtn small" id="tsku">雨</div>
 </div>
+<script>window.__BOOTERR = []; window.addEventListener('error', function (e) { window.__BOOTERR.push(String((e && e.error && e.error.stack) || e.message)); });</script>
 <script type="module" src="./js/game.js"></script>
 </body>
 </html>

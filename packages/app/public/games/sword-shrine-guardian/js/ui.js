@@ -92,6 +92,30 @@ export function makeUI() {
       clearTimeout(api._impactTimer);
       api._impactTimer = setTimeout(() => el.style.opacity = 0, 130);
     },
+    // --- fog merchant: timed two-offer panel, non-blocking ---
+    showMerchant(coins, offers, onBuy) {
+      const m = $('merchant');
+      const holder = m.querySelector('.moffers');
+      holder.innerHTML = '';
+      offers.forEach(it => {
+        const el = document.createElement('div'); el.className = 'mitem';
+        el.innerHTML = `<div class="n">${it.name}</div><div class="d">${it.desc}</div><div class="p">${it.price} 币</div>`;
+        el.addEventListener('click', () => { if (onBuy(it.id)) api.refreshMerchantCoins(coins); });
+        holder.appendChild(el);
+      });
+      m.style.display = 'block';
+    },
+    refreshMerchantCoins(coins) {
+      const m = $('merchant');
+      m.querySelectorAll('.mitem').forEach(el => {
+        const price = +(el.querySelector('.p').textContent.match(/\d+/) || [0])[0];
+        el.style.opacity = coins < price ? .4 : 1;
+      });
+      const left = m.querySelector('.mleft');
+      left.textContent = left.textContent.replace(/灵币 \d+/, '灵币 ' + coins);
+    },
+    closeMerchant() { $('merchant').style.display = 'none'; },
+    merchantLeft(text) { const m = $('merchant'); if (m.style.display !== 'none') m.querySelector('.mleft').textContent = text; },
     buffTag(text) {
       if (!bufftag) { bufftag = document.createElement('div'); bufftag.id = 'bufftag'; hud.appendChild(bufftag); }
       bufftag.textContent = text || ''; bufftag.style.display = text ? 'block' : 'none';
@@ -100,8 +124,8 @@ export function makeUI() {
       if (!coinhud) { coinhud = document.createElement('div'); coinhud.id = 'coinhud'; hud.appendChild(coinhud); }
       coinhud.textContent = text;
     },
-    // --- wave-clear upgrade choice ---
-    showUpgrades(cards, onPick) {
+    // --- wave-clear upgrade choice (+ optional coin shop row) ---
+    showUpgrades(cards, onPick, shop) {
       const holder = upgr.querySelector('.cards');
       holder.innerHTML = '';
       cards.forEach((c, i) => {
@@ -110,7 +134,30 @@ export function makeUI() {
         el.addEventListener('click', () => onPick(i));
         holder.appendChild(el);
       });
+      // shop row
+      let row = upgr.querySelector('.shoprow');
+      if (shop && shop.items) {
+        if (!row) { row = document.createElement('div'); row.className = 'shoprow'; upgr.appendChild(row); }
+        row.innerHTML = '';
+        const coinLine = document.createElement('div'); coinLine.className = 'shop-coins';
+        row.appendChild(coinLine);
+        shop.items.forEach(it => {
+          const el = document.createElement('div'); el.className = 'shop-item'; el.dataset.price = it.price;
+          el.innerHTML = `<div class="n">${it.name}</div><div class="d">${it.desc}</div><div class="p">${it.price} 币</div>`;
+          el.addEventListener('click', () => shop.onBuy(it.id));
+          row.appendChild(el);
+        });
+        api.refreshShopCoins(shop.coins);
+        row.style.display = 'flex';
+      } else if (row) row.style.display = 'none';
       upgr.classList.remove('hide');
+    },
+    refreshShopCoins(coins) {
+      upgr.querySelectorAll('.shop-item').forEach(el => {
+        el.classList.toggle('off', coins < +el.dataset.price);
+      });
+      const line = upgr.querySelector('.shop-coins');
+      if (line) line.textContent = '灵币 ' + coins;
     },
     hideUpgrades() { upgr.classList.add('hide'); },
     upgradeList(text) { uplist.textContent = text; uplist.style.display = text ? 'block' : 'none'; },

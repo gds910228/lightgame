@@ -122,8 +122,18 @@ export function makeWorld(renderer) {
       const f = scene.fog;
       if (name === 'blood') { f.color.setHex(0x1c0a0c); f.density = .032; hemi.intensity = .8; moon.color.setHex(0xd88a7a); moon.intensity = 1.0; }
       else if (name === 'fog') { f.color.setHex(0x12151c); f.density = .055; hemi.intensity = .75; moon.color.setHex(0x9db4d8); moon.intensity = .9; }
+      else if (name === 'snow') { f.color.setHex(0x1a2230); f.density = .032; hemi.intensity = 1.05; moon.color.setHex(0xa9c0e0); moon.intensity = 1.25; }
+      else if (name === 'firefly') { f.color.setHex(0x0c1a14); f.density = .03; hemi.intensity = .85; moon.color.setHex(0x9fd8b8); moon.intensity = 1.0; }
       else { f.color.setHex(0x0a0f18); f.density = .028; hemi.intensity = .95; moon.color.setHex(0xa9c0e0); moon.intensity = 1.25; }
-    }
+      if (this.ash) this.ash.setStyle(name === 'snow' ? { color: 0xe8ecf4, size: .2, mode: 'snow' }
+        : name === 'firefly' ? { color: 0x9fffcc, size: .15, mode: 'rise' }
+        : { color: 0xaab2c4, size: .16, mode: 'fall' });
+      if (name === 'snow') mats.ground.color.setHex(0xdfe6f2);
+      else if (name === 'firefly') mats.ground.color.setHex(0x9fc8b4);
+      else mats.ground.color.setHex(0xb8bcc8);
+    },
+    // zone rotation (endless): re-skin the grounds; delegates to the mood table
+    setZone(name) { this.setMood(name); }
   };
 
   // --- camera rig: iso angle, narrow zoom, focus leash, occluder fade ---
