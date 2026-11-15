@@ -217,6 +217,14 @@ export function skillIcon(kind) {
   } else if (kind === 'dash') {
     for (let i = 0; i < 3; i++) { g.globalAlpha = .45 + i * .27; g.beginPath(); g.moveTo(14 + i * 12, 26); g.quadraticCurveTo(30 + i * 10, 38, 14 + i * 12, 50); g.stroke(); }
     g.globalAlpha = 1; g.beginPath(); g.arc(56, 38, 6, 0, 7); g.stroke();
+  } else if (kind === 'wave') {
+    g.beginPath(); g.arc(22, 38, 15, -2.0, 1.7); g.stroke();                 // release arc
+    g.beginPath(); g.moveTo(42, 32); g.lineTo(60, 38); g.lineTo(42, 44); g.stroke();   // flying wave
+    g.beginPath(); g.moveTo(46, 26); g.lineTo(54, 26); g.moveTo(46, 50); g.lineTo(54, 50); g.stroke(); // speed lines
+  } else if (kind === 'rain') {
+    for (const [x, y] of [[26, 14], [38, 22], [50, 14]]) { g.beginPath(); g.moveTo(x, y); g.lineTo(x - 4, y + 14); g.stroke(); }
+    g.beginPath(); g.moveTo(20, 50); g.lineTo(56, 50); g.stroke();           // ground line
+    g.beginPath(); g.moveTo(28, 58); g.lineTo(38, 50); g.lineTo(48, 58); g.stroke();
   }
   return c;
 }

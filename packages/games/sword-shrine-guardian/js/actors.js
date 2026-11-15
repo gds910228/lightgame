@@ -113,8 +113,9 @@ export class Player extends Actor {
     this.stepTimer = 0; this.walkPhase = 0;
     this.dashCdT = 0; this._ghost = this.hp;
     // upgrade modifiers (see UPGRADES pool in game.js); resetProgress() restores defaults
-    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 25, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1 };
+    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1, waveSkillDmg: 28, waveCdMult: 1, rainHitDmg: 12, rainMult: 1, rainR: 3.5 };
     this.upgradeCounts = {}; this.waveSpawned = false;
+    this.waveCdT = 0; this.rainCdT = 0; this.castKind = null; this.castDone = false; this.rainStrikes = null;
   }
   get busy() { return ['attack', 'dash', 'exec', 'hurt'].includes(this.state) || this.hitstopT > 0; }
   press(action) {
@@ -136,6 +137,22 @@ export class Player extends Actor {
       if (this.state === 'dash') return;
       this.state = 'parry'; this.stateT = 0; this.parryT = .24 + this.mods.parryWin; this.guardHeld = true;
       this.setClip(this.parryClip());
+      return;
+    }
+    if (action === 'wave') {
+      if (this.waveCdT > 0 || this.state === 'dash') return;
+      this.waveCdT = 5 * this.mods.waveCdMult;
+      this.state = 'cast'; this.castKind = 'wave'; this.castDone = false; this.stateT = 0;
+      this.setClip(this.waveCastClip());
+      this.ctx.audio.S.waveCast();
+      return;
+    }
+    if (action === 'rain') {
+      if (this.rainCdT > 0 || this.state === 'dash') return;
+      this.rainCdT = 14;
+      this.state = 'cast'; this.castKind = 'rain'; this.castDone = false; this.rainStrikes = null; this.stateT = 0;
+      this.setClip(this.rainCastClip());
+      this.ctx.audio.S.rainCast();
     }
   }
   startAttack() {
@@ -231,8 +248,9 @@ export class Player extends Actor {
   receiveShockwave() { return this.receiveProj({ dmg: 22, vel: this.pos.clone().multiplyScalar(2).normalize() }); }
   dieP() { if (!this.alive) return; this.hp = 0; this.alive = false; this.state = 'dead'; this.setClip(makeDead(1)); this.ctx.onPlayerDeath && this.ctx.onPlayerDeath(); }
   resetProgress() {  // fresh run: clear all upgrade modifiers
-    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1 };
+    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1, waveSkillDmg: 28, waveCdMult: 1, rainHitDmg: 12, rainMult: 1, rainR: 3.5 };
     this.upgradeCounts = {};
+    this.waveCdT = 0; this.rainCdT = 0;
     this.maxHp = 130; this.hp = 130; this._ghost = 130;
     this.maxStamina = 100; this.stamina = 100;
   }
@@ -246,6 +264,22 @@ export class Player extends Actor {
       { t: .32, p: P(s, { hip: [.18 * s, .86 * s, .42 * s], handR: [.55 * s, -.4 * s, .5 * s], swordDir: [.8, -.45, .8], hipYaw: .58 }) },
       { t: .55, p: b }
     ], .55);
+  }
+  waveCastClip() {   // sword thrust straight ahead
+    const s = 1, b = stanceOf(s);
+    return clip([
+      { t: 0, p: P(s, { hip: [0, .88 * s, -.04 * s], handR: [-.5 * s, -.35 * s, -.1 * s], swordDir: [-.9, .2, -.3], hipYaw: -.2 }) },
+      { t: .12, p: P(s, { hip: [.05 * s, .86 * s, .2 * s], handR: [.05 * s, -.3 * s, .6 * s], swordDir: [.05, .15, 1], hipYaw: .25 }) },
+      { t: .3, p: b }
+    ], .3);
+  }
+  rainCastClip() {   // both arms raised to call the blades down
+    const s = 1, b = stanceOf(s);
+    return clip([
+      { t: 0, p: b },
+      { t: .15, p: P(s, { hip: [0, 1.0 * s, 0], handR: [-.45 * s, .4 * s, -.15 * s], handL: [.4 * s, .42 * s, -.15 * s], swordDir: [-.2, 1, -.2], hintR: [-1, -.2, 0], hintL: [1, -.2, 0] }) },
+      { t: .4, p: b }
+    ], .4);
   }
   get atkClips() {
     const s = 1, b = stanceOf(s);
@@ -280,6 +314,8 @@ export class Player extends Actor {
     this.stateT += dt; this.clipT += dt;
     if (this.invulnT > 0) this.invulnT -= dt;
     if (this.comboT > 0) this.comboT -= dt;
+    if (this.waveCdT > 0) this.waveCdT -= dt;
+    if (this.rainCdT > 0) this.rainCdT -= dt;
     if (this.bufT > 0) { this.bufT -= dt; if (this.bufT <= 0) this.buf = null; }
     if (this.hitstopT > 0) { this.hitstopT -= dt; this.hitstopCount++; this.poseStep(dt, 0); return; }
     // stamina regen (delayed)
@@ -405,6 +441,51 @@ export class Player extends Actor {
       }
       case 'hurt': {
         if (this.stateT >= .35) { this.state = 'idle'; this.setIdle(); }
+        break;
+      }
+      case 'cast': {
+        // L 剑气斩: release a flying wave; U 剑雨: schedule smart strikes around the player
+        if (this.castKind === 'wave' && !this.castDone && this.stateT >= .12) {
+          this.castDone = true;
+          const fd = V(Math.sin(this.facing), 0, Math.cos(this.facing));
+          const orb = this.ctx.fx.orb(this.pos.clone().add(V(fd.x * .9, 1.2, fd.z * .9)), fd.multiplyScalar(14), 0xbfe8ff, { r: .34 });
+          orb.dmg = this.mods.waveSkillDmg * this.mods.dmg; orb.team = 'player';
+          this.ctx.projectiles.push(orb);
+          this.ctx.fx.slash(this.pos, this.facing, { span: 1.2, rOut: 1.7, rIn: .5, color: 0xcfe8ff, dur: .18 });
+        }
+        if (this.castKind === 'rain') {
+          if (!this.castDone && this.stateT >= .15) {
+            this.castDone = true;
+            this.rainStrikes = [];
+            const targets = this.ctx.enemies.filter(e => e.alive && e.pos.distanceTo(this.pos) < this.mods.rainR + 1.5)
+              .sort((a, b) => a.pos.distanceTo(this.pos) - b.pos.distanceTo(this.pos));
+            for (let i = 0; i < 6; i++) {
+              let spot;
+              if (i < targets.length) spot = targets[i].pos.clone().add(V((Math.random() - .5) * .6, 0, (Math.random() - .5) * .6));
+              else { const a = Math.random() * 6.28, r = Math.sqrt(Math.random()) * this.mods.rainR; spot = this.pos.clone().add(V(Math.cos(a) * r, 0, Math.sin(a) * r)); }
+              this.rainStrikes.push({ t: this.stateT + .12 + i * .11, pos: spot, done: false });
+            }
+            this.ctx.fx.teleCircle(this.pos, { r: this.mods.rainR, dur: .85, color: 0x9fd8ff });
+          }
+          for (const st of this.rainStrikes || []) {
+            if (!st.done && this.stateT >= st.t) {
+              st.done = true;
+              this.ctx.fx.fallBlade(st.pos);
+              this.ctx.audio.S.rainHit();
+              for (const e of this.ctx.enemies) {
+                if (!e.alive) continue;
+                if (e.pos.distanceTo(st.pos) < 1.15 + e.radius) {
+                  e.takeHit({ dmg: this.mods.rainHitDmg * this.mods.dmg * this.mods.rainMult, dir: V(Math.sin(this.facing), 0, Math.cos(this.facing)), heavy: false, from: this });
+                  if (e.posture !== undefined) e.posture += 4;
+                }
+              }
+            }
+          }
+        }
+        if (this.stateT >= (this.castKind === 'wave' ? .3 : .4)) {
+          this.state = 'idle'; this.castKind = null; this.setIdle();
+          if (this.buf) { const a = this.buf; this.buf = null; this.startAction(a); }
+        }
         break;
       }
       case 'dead': break;

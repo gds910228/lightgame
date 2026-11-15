@@ -286,6 +286,22 @@ export function makeFX(scene) {
       put(s, .3 + Math.random() * .2, (dt, l) => { s.position.addScaledVector(v, dt); mat.opacity = 1 - l; s.scale.multiplyScalar(1 - dt * 1.4); });
     }
   };
+  // --- falling sword for 剑雨: dives from above, bursts into a small ring on landing ---
+  fx.fallBlade = (pos) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(.09, 1.3, .09),
+      new THREE.MeshStandardMaterial({ color: 0xcfd6e4, emissive: 0x8fd8ff, emissiveIntensity: 1.7, roughness: .3, metalness: .6 }));
+    m.position.set(pos.x + (Math.random() - .5) * .3, 5.4, pos.z + (Math.random() - .5) * .3);
+    m.rotation.set(-.95 + Math.random() * .35, Math.random() * 6.28, .2);
+    const e = put(m, 2, (dt) => {
+      m.position.y -= 21 * dt;
+      if (m.position.y <= .14) {
+        fx.ring(pos, { r0: .15, r1: 1.3, color: 0xaee6ff, dur: .3 });
+        fx.dust(pos, { n: 2, size: .7 });
+        e.t = e.dur;
+      }
+    });
+    return e;
+  };
   // --- ambient ash drifting in a box that follows the camera ---
   fx.makeAsh = (cam) => {
     const N = 460, geo = new THREE.BufferGeometry();

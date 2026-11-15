@@ -107,6 +107,9 @@ export function makeAudio() {
       tone({ f: 90, f2: 40, type: 'sine', dur: .35, vol: .7, delay: .05 });
       tone({ f: 1200, f2: 300, type: 'sawtooth', dur: .22, vol: .18 });
     },
+    waveCast() { if (!ensure()) return; noise({ dur: .22, vol: .42, f: 600, f2: 2600, q: 1.2 }); tone({ f: 480, f2: 1050, type: 'sine', dur: .16, vol: .2 }); },
+    rainHit() { if (!ensure()) return; tone({ f: 1350 * pv(), type: 'triangle', dur: .08, vol: .24 }); noise({ dur: .05, vol: .18, f: 2100, f2: 800, q: 1 }); },
+    rainCast() { if (!ensure()) return; tone({ f: 700, f2: 1500, type: 'sine', dur: .5, vol: .16 }); noise({ dur: .4, vol: .12, f: 1600, f2: 600, q: 1.4 }); },
     click() { if (!ensure()) return; tone({ f: 720, type: 'triangle', dur: .06, vol: .15 }); },
     guardBreak() { if (!ensure()) return; tone({ f: 200, f2: 60, type: 'square', dur: .3, vol: .3 }); noise({ dur: .25, vol: .3, f: 900, f2: 200, q: 1 }); },
     win() { if (!ensure()) return; [12, 19, 24, 31].forEach((s, i) => tone({ f: noteHz(s), type: 'sine', dur: .8, vol: .2, delay: i * .16 })); },

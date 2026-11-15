@@ -97,7 +97,9 @@
   .tbtn { position:absolute; width:60px; height:60px; border-radius:50%; border:1px solid rgba(216,179,106,.55);
     background:rgba(8,12,18,.55); color:var(--ink); font-size:12px; letter-spacing:.1em;
     display:flex; align-items:center; justify-content:center; }
+  .tbtn.small { width:52px; height:52px; font-size:11px; opacity:.92; }
   #tatk { right:96px; bottom:34px; } #tpry { right:170px; bottom:88px; } #tdsh { right:26px; bottom:104px; }
+  #tskl { right:26px; bottom:34px; } #tsku { right:96px; bottom:110px; }
 </style>
 </head>
 <body>
@@ -122,7 +124,7 @@
   <button class="go" id="startbtn">入 祠</button>
   <div class="help">
     <b>WASD</b> 移动 · <b>J / 左键</b> 攻击 · <b>K / 右键</b> 格挡弹反 · <b>空格</b> 闪避<br>
-    弹反成功后按下攻击，处决破绽之敌
+    <b>L</b> 剑气斩 · <b>U</b> 剑雨 · 弹反成功后按下攻击，处决破绽之敌
   </div>
 </div>
 <div id="end" class="screen">
@@ -137,6 +139,7 @@
 <div id="touch" class="layer">
   <div id="joy"><div id="joyk"></div></div>
   <div class="tbtn" id="tatk">攻</div><div class="tbtn" id="tpry">挡</div><div class="tbtn" id="tdsh">避</div>
+  <div class="tbtn small" id="tskl">气</div><div class="tbtn small" id="tsku">雨</div>
 </div>
 <script type="module" src="./js/game.js"></script>
 </body>

@@ -1601,8 +1601,8 @@
       "id": "sword-shrine-guardian",
       "title": "Sword Shrine Guardian",
       "category": "Action",
-      "description": "A moody isometric 3D action game built with three.js. Take up a spirit blade at a mist-shrouded shrine: read enemy telegraphs, parry to open execution windows, dodge unblockable slams, and break the stone guardian's posture across a two-phase boss fight. Pick one of three upgrades after every cleared wave to forge your own build — then keep holding the shrine in endless mode and chase your best-wave record.",
-      "controls": "WASD to move. J or left-click to attack (3-hit combo, third hit is heavy). K or right-click to parry — a successful parry opens an execution window; press attack to execute. Space to dodge with invincibility frames. After each wave pick 1 of 3 upgrades (click or press 1/2/3). Clear the boss to unlock endless mode. Touch controls supported on mobile.",
+      "description": "A moody isometric 3D action game built with three.js. Take up a spirit blade at a mist-shrouded shrine: read enemy telegraphs, parry to open execution windows, dodge unblockable slams, unleash flying sword qi and a blade rain storm, and break the stone guardian's posture across a two-phase boss fight. Pick one of three upgrades after every cleared wave to forge your own build — then keep holding the shrine in endless mode and chase your best-wave record.",
+      "controls": "WASD to move. J or left-click to attack (3-hit combo, third hit is heavy). K or right-click to parry — a successful parry opens an execution window; press attack to execute. Space to dodge with invincibility frames. L: flying sword qi. U: blade rain AoE. After each wave pick 1 of 3 upgrades (click or press 1/2/3). Clear the boss to unlock endless mode. Touch controls supported on mobile.",
       "type": "local",
       "path": "/games/sword-shrine-guardian/index.html",
       "thumbnail": "/games/sword-shrine-guardian/thumbnail.jpg",
@@ -1616,7 +1616,7 @@
         "combat"
       ],
       "author": "LightGame",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "featured": false,
       "date_added": "2026-11-15",
       "image": "/games/sword-shrine-guardian/thumbnail.jpg"

@@ -18,7 +18,7 @@ export function makeUI() {
   paintGrain($('grain'));
 
   // skill icons
-  const skDefs = [['attack', 'J'], ['parry', 'K'], ['dash', '␣']];
+  const skDefs = [['attack', 'J'], ['parry', 'K'], ['dash', '␣'], ['wave', 'L'], ['rain', 'U']];
   const skEls = skDefs.map(([kind, key]) => {
     const el = document.createElement('div'); el.className = 'sk';
     el.appendChild(skillIcon(kind));
@@ -71,7 +71,8 @@ export function makeUI() {
       const e = $('end'); e.style.display = 'flex';
       e.querySelector('.t').textContent = title;
       e.querySelector('.d').textContent = desc;
-      e.querySelector('.go2').style.display = endlessBtn ? '' : 'none';
+      // 'block', NOT '': the stylesheet defaults .go2 to display:none, so '' would restore the hidden state
+      e.querySelector('.go2').style.display = endlessBtn ? 'block' : 'none';
       hud.classList.remove('on');
     },
     hideEnd() { $('end').style.display = 'none'; },

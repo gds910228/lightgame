@@ -85,6 +85,8 @@ const UPGRADES = [
   { id: 'stam',  name: '气 海', desc: '体力上限 +30，回复速度 +20%', max: 4, apply(p) { p.maxStamina += 30; p.stamina = Math.min(p.maxStamina, p.stamina + 20); p.mods.stamRegen *= 1.2; } },
   { id: 'parry', name: '听 风', desc: '弹反窗口 +0.08s，反击窗口 +0.25s', max: 3, apply(p) { p.mods.parryWin += .08; p.mods.counterWin += .25; } },
   { id: 'heavy', name: '崩 山', desc: '重击伤害 +25%', max: 4, apply(p) { p.mods.heavy += .25; } },
+  { id: 'sqi',   name: '气 斩', desc: '剑气斩（L）伤害 +40%，冷却 -15%', max: 3, apply(p) { p.mods.waveSkillDmg = Math.round(p.mods.waveSkillDmg * 1.4); p.mods.waveCdMult *= .85; } },
+  { id: 'srain', name: '剑 雨', desc: '剑雨（U）每道伤害 +30%，落剑范围 +0.5', max: 3, apply(p) { p.mods.rainHitDmg = Math.round(p.mods.rainHitDmg * 1.3); p.mods.rainMult *= 1.3; p.mods.rainR += .5; } },
 ];
 function offerUpgrades() {
   const p = ctx.player;
@@ -277,6 +279,8 @@ function processInput() {
     if (c === 'KeyJ') ctx.player.press('attack');
     else if (c === 'Space') ctx.player.press('dash');
     else if (c === 'KeyK') ctx.player.press('parry');
+    else if (c === 'KeyL') ctx.player.press('wave');
+    else if (c === 'KeyU') ctx.player.press('rain');
     else if (c === 'Digit1' || c === 'Numpad1') { if (director.phase === 'choose') pickUpgrade(0); }
     else if (c === 'Digit2' || c === 'Numpad2') { if (director.phase === 'choose') pickUpgrade(1); }
     else if (c === 'Digit3' || c === 'Numpad3') { if (director.phase === 'choose') pickUpgrade(2); }
@@ -365,6 +369,8 @@ function update(dt) {
     ui.stamina(p.stamina / p.maxStamina);
     ui.skillCd(2, p.dashCdT > 0 ? p.dashCdT / .45 : 0);
     if (p.dashCdT > 0) p.dashCdT -= dt;
+    ui.skillCd(3, p.waveCdT > 0 ? p.waveCdT / (5 * p.mods.waveCdMult) : 0);
+    ui.skillCd(4, p.rainCdT > 0 ? p.rainCdT / 14 : 0);
     if (ctx.boss) ui.boss(ctx.boss.alive, '石 祠 守 卫', ctx.boss.hp / ctx.boss.maxHp, ctx.boss.posture / ctx.boss.maxPosture);
     else ui.boss(false);
   } else if (state === 'dead' || state === 'win') {
@@ -700,6 +706,42 @@ async function autotest() {
     const waveOk = director.phase === 'fight' && alive === 3 && document.getElementById('wavetag').textContent.includes('第 5 波');
     assert('T12 record persists & endless entry spawns wave 5', recOk && entered && waveOk, `best=${G.best()} entered=${entered} alive=${alive} tag=${document.getElementById('wavetag').textContent}`);
     ctx.noDirector = true; G.clear();
+  }
+
+  // T13 win screen shows the endless button and it actually enters endless mode
+  {
+    G.clear(); resetGame();
+    state = 'win';
+    ui.end('夜 尽 天 明', 'test', true);
+    const go2 = document.querySelector('#end .go2');
+    const visible = getComputedStyle(go2).display !== 'none' && go2.offsetParent !== null;
+    go2.click();                                       // bound handler -> enterEndless
+    await runChunks(3);
+    const entered = director.endless && state === 'play';
+    assert('T13 win screen offers endless mode & enters it', visible && entered, `visible=${visible} endless=${director.endless} state=${state}`);
+  }
+
+  // T14 new skills: L 剑气斩 flying wave & U 剑雨 smart strikes both land
+  {
+    G.clear(); resetGame(); ctx.noDirector = true;
+    p.invulnT = 0; p.hitstopT = 0; p.state = 'idle'; p.setIdle();
+    p.pos.set(0, 0, 6); p.facing = 0;
+    // wave: dummy 4m ahead
+    const d1 = G.spawn('walker', V(0, 0, 10));
+    d1.state = 'strafe'; d1.strafeT = 99; ctx.meleeToken = {};
+    const hp0 = d1.hp;
+    G.press('KeyL');
+    await runChunks(40);
+    const waveHit = d1.hp < hp0 && p.waveCdT > 0;
+    // rain: dummy beside the player, smart targeting aims strikes at it
+    const d2 = G.spawn('walker', V(.9, 0, 6.9));
+    d2.state = 'strafe'; d2.strafeT = 99;
+    const hp1 = d2.hp;
+    G.press('KeyU');
+    await runChunks(60);
+    const rainHit = d2.hp < hp1 && p.rainCdT > 0;
+    assert('T14 L 剑气斩 & U 剑雨 both deal damage and start cooldowns', waveHit && rainHit, `wave=${waveHit} rain=${rainHit} dmgW=${(hp0 - d1.hp).toFixed(0)} dmgR=${(hp1 - d2.hp).toFixed(0)}`);
+    ctx.meleeToken = null; ctx.noDirector = true; G.clear();
   }
 
   // T9 teardown: title + muted (skill: 测完切回标题、静音)
