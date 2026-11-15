@@ -35,6 +35,7 @@ export class Actor {
     this.pos = V(); this.vel = V(); this.facing = 0;
     this.radius = cfg.radius; this.hp = cfg.hp; this.maxHp = cfg.hp;
     this.team = cfg.team; this.alive = true; this.speed = cfg.speed || 3;
+    this.dmgScale = 1;                       // endless-mode damage multiplier (waves scale it)
     this.hitstopT = 0; this.invulnT = 0; this.flashV = 1;
     this.anim = { type: 'idle' }; this.clipT = 0; this.fade = 0;
     this.pose = basePose(cfg.scale); this.snap = basePose(cfg.scale); this.tmp = basePose(cfg.scale);
@@ -98,7 +99,7 @@ export class Actor {
 // ---------------------------------------------------------------- player
 export class Player extends Actor {
   constructor(ctx) {
-    super(ctx, { radius: .42, hp: 100, speed: 5.2, scale: 1, team: 'player',
+    super(ctx, { radius: .42, hp: 130, speed: 5.2, scale: 1, team: 'player',
       rigCfg: { scale: 1, colors: { cloth: 0x2e3a52, trim: 0x8a94ad, skin: 0xc8a888 }, weapon: 'sword', thick: .1 } });
     this.stamina = 100; this.maxStamina = 100; this.staminaDelay = 0;
     this.state = 'idle'; this.stateT = 0;
@@ -206,7 +207,7 @@ export class Player extends Actor {
     // hurt
     this.hp -= info.dmg * this.mods.dmgTaken;
     this.rig.flash(1);
-    this.invulnT = .6; this.state = 'hurt'; this.stateT = 0; this.setClip(makeHurt(1));
+    this.invulnT = .8; this.state = 'hurt'; this.stateT = 0; this.setClip(makeHurt(1));
     this.parryT = 0; this.counterT = 0;
     this.vel.addScaledVector(info.dir, info.heavy ? 4.5 : 2.8);
     this.ctx.audio.S.hurt(); this.ctx.ui.hurt(); this.ctx.shake(info.heavy ? .35 : .2);
@@ -221,7 +222,7 @@ export class Player extends Actor {
       return false;
     }
     this.hp -= orb.dmg * this.mods.dmgTaken; this.rig.flash(1);
-    this.invulnT = .6; this.state = 'hurt'; this.stateT = 0; this.setClip(makeHurt(1));
+    this.invulnT = .8; this.state = 'hurt'; this.stateT = 0; this.setClip(makeHurt(1));
     this.vel.addScaledVector(orb.vel.clone().setY(0).normalize(), 2.4);
     this.ctx.audio.S.hurt(); this.ctx.ui.hurt(); this.ctx.shake(.2);
     if (this.hp <= 0) this.dieP();
@@ -230,9 +231,9 @@ export class Player extends Actor {
   receiveShockwave() { return this.receiveProj({ dmg: 22, vel: this.pos.clone().multiplyScalar(2).normalize() }); }
   dieP() { if (!this.alive) return; this.hp = 0; this.alive = false; this.state = 'dead'; this.setClip(makeDead(1)); this.ctx.onPlayerDeath && this.ctx.onPlayerDeath(); }
   resetProgress() {  // fresh run: clear all upgrade modifiers
-    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 25, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1 };
+    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1 };
     this.upgradeCounts = {};
-    this.maxHp = 100; this.hp = 100; this._ghost = 100;
+    this.maxHp = 130; this.hp = 130; this._ghost = 130;
     this.maxStamina = 100; this.stamina = 100;
   }
   dashClip() { const s = 1; return clip([{ t: 0, p: P(s, { hip: [0, .6 * s, 0], neck: [0, .34 * s, .12 * s], handR: [-.3 * s, -.3 * s, .3 * s], handL: [.3 * s, -.32 * s, .3 * s], footL: [.5 * s, -.22 * s], footR: [-.5 * s, .2 * s] }) }], .34); }
@@ -457,7 +458,7 @@ export class Walker extends Actor {
             this.state = 'telegraph'; this.stateT = 0;
             this.facing = toAng;
             this.comboNext = Math.random() < .4;
-            this.ctx.fx.teleSector(this.pos, toAng, { span: 1.7, r: 2.9, dur: .55 });
+            this.ctx.fx.teleSector(this.pos, toAng, { span: 1.7, r: 2.9, dur: .7 });
             this.ctx.audio.S.tele();
           } else { this.state = 'strafe'; this.stateT = 0; }
         }
@@ -478,7 +479,7 @@ export class Walker extends Actor {
       case 'telegraph': {
         this.facing = turnTo(this.facing, toAng, 4 * dt);
         this.setIdle();
-        if (this.stateT >= .55) {
+        if (this.stateT >= .7) {
           this.state = 'strike'; this.stateT = 0;
           this.setClip(this.atkClip);
           this.ctx.audio.S.swing(false);
@@ -492,7 +493,7 @@ export class Walker extends Actor {
         if (!this.hitDone && this.stateT >= c.hitFrom && this.stateT <= c.hitTo) {
           if (dist < 2.6) {
             this.hitDone = true;
-            const res = pl.receiveMelee({ dmg: 12, dir: to.clone().normalize(), heavy: false, from: this, blockable: true });
+            const res = pl.receiveMelee({ dmg: 9 * this.dmgScale, dir: to.clone().normalize(), heavy: false, from: this, blockable: true });
             if (res === 'hit') this.ctx.shake(.12);
           }
         }
@@ -507,7 +508,7 @@ export class Walker extends Actor {
         if (!this.hitDone && this.stateT >= c.hitFrom && this.stateT <= c.hitTo) {
           if (dist < 2.6) {
             this.hitDone = true;
-            pl.receiveMelee({ dmg: 10, dir: to.clone().normalize(), heavy: false, from: this, blockable: true });
+            pl.receiveMelee({ dmg: 7 * this.dmgScale, dir: to.clone().normalize(), heavy: false, from: this, blockable: true });
           }
         }
         if (this.stateT >= c.dur * .85) { this.state = 'recover'; this.stateT = 0; }
@@ -607,11 +608,11 @@ export class Caster extends Actor {
       case 'cast': {
         this.facing = turnTo(this.facing, toAng, 3 * dt);
         if (!this.nextIsAoe) {
-          if (!this.orbFired && this.stateT >= .85) {
+          if (!this.orbFired && this.stateT >= .95) {
             this.orbFired = true;
             const dir = to.clone().normalize();
             const orb = this.ctx.fx.orb(this.pos.clone().add(V(Math.sin(this.facing) * .6, 1.35, Math.cos(this.facing) * .6)), dir.multiplyScalar(8.5), 0x7fe0c8);
-            orb.dmg = 14; orb.team = 'enemy';
+            orb.dmg = 10 * this.dmgScale; orb.team = 'enemy';
             this.ctx.projectiles.push(orb);
           }
           if (this.stateT >= 1.15) { this.state = 'strafe'; this.stateT = 0; this.castCd = rand2(2.4, 3.4); this.nextIsAoe = !this.nextIsAoe; }
@@ -619,7 +620,7 @@ export class Caster extends Actor {
           if (!this.aoeDone && this.stateT >= .1) {
             this.aoeDone = true;
             const target = pl.pos.clone();
-            this.ctx.fx.teleCircle(target, { r: 2.3, dur: 1.0 });
+            this.ctx.fx.teleCircle(target, { r: 2.3, dur: 1.15 });
             this.aoeTarget = target; this.aoeT = 0;
             this.state = 'aoe'; this.stateT = 0;
             this.ctx.audio.S.tele();
@@ -630,16 +631,16 @@ export class Caster extends Actor {
       }
       case 'aoe': {
         this.aoeT = (this.aoeT || 0) + dt;
-        if (this.aoeT >= 1.0) {
+          if (this.aoeT >= 1.15) {
           const d = pl.pos.distanceTo(this.aoeTarget);
-          if (d < 2.4 && pl.alive) pl.receiveProj({ dmg: 16, vel: pl.pos.clone().sub(this.aoeTarget).setY(0).normalize() });
+          if (d < 2.4 && pl.alive) pl.receiveProj({ dmg: 12 * this.dmgScale, vel: pl.pos.clone().sub(this.aoeTarget).setY(0).normalize() });
           this.ctx.fx.ring(this.aoeTarget, { r0: .4, r1: 2.6, color: 0xffa06a, dur: .4 });
           this.ctx.fx.burst(this.aoeTarget.clone().add(V(0, .5, 0)), 0xffb070, { n: 10, size: 1, speed: 5 });
           this.ctx.audio.S.slam();
           if (pl.pos.distanceTo(this.aoeTarget) < 3.2) this.ctx.shake(.25);
           this.aoeT = -99; // done
         }
-        if (this.stateT >= 1.15) { this.state = 'strafe'; this.stateT = 0; this.castCd = rand2(2.6, 3.6); this.nextIsAoe = !this.nextIsAoe; }
+        if (this.stateT >= 1.3) { this.state = 'strafe'; this.stateT = 0; this.castCd = rand2(2.6, 3.6); this.nextIsAoe = !this.nextIsAoe; }
         break;
       }
       case 'stagger': {
@@ -678,7 +679,7 @@ export class Caster extends Actor {
 // ---------------------------------------------------------------- boss: stone shrine guardian
 export class Boss extends Actor {
   constructor(ctx, pos) {
-    super(ctx, { radius: 1.05, hp: 420, speed: 2.7, scale: 2.2, team: 'enemy',
+    super(ctx, { radius: 1.05, hp: 380, speed: 2.7, scale: 2.2, team: 'enemy',
       rigCfg: { scale: 2.2, colors: { cloth: 0x565e6e, trim: 0x3d4452, skin: 0x6e7889 }, weapon: null, thick: .16 } });
     this.pos.copy(pos);
     this.state = 'idle'; this.stateT = 0;
@@ -748,7 +749,7 @@ export class Boss extends Actor {
           this.hitDone = true;
           const reach = 3.6;
           if (dist < reach && Math.abs(angDiff(this.facing, toAng)) < 1.2) {
-            pl.receiveMelee({ dmg: 18, dir: to.clone().normalize(), heavy: true, from: this, blockable: true });
+            pl.receiveMelee({ dmg: 14 * this.dmgScale, dir: to.clone().normalize(), heavy: true, from: this, blockable: true });
           }
         }
         if (this.stateT >= c.dur * this.spd()) {
@@ -776,7 +777,7 @@ export class Boss extends Actor {
           const d = pl.pos.distanceTo(this.pos);
           if (!this.ringHitDone && Math.abs(d - this.ringR) < .75 && this.ringR > 1.6) {
             this.ringHitDone = true;
-            pl.receiveProj({ dmg: 22, vel: pl.pos.clone().sub(this.pos).setY(0).normalize() });
+            pl.receiveProj({ dmg: 16 * this.dmgScale, vel: pl.pos.clone().sub(this.pos).setY(0).normalize() });
           }
           if (this.ringR > 8) this.ringR = -1;
         }
@@ -793,7 +794,7 @@ export class Boss extends Actor {
           for (let i = 0; i < 12; i++) {
             const a = i / 12 * TAU;
             const orb = this.ctx.fx.orb(this.pos.clone().add(V(Math.sin(a) * 1.4, 1.6, Math.cos(a) * 1.4)), V(Math.sin(a), 0, Math.cos(a)).multiplyScalar(7), 0xffb28a, { r: .2 });
-            orb.dmg = 12; orb.team = 'enemy';
+            orb.dmg = 9 * this.dmgScale; orb.team = 'enemy';
             this.ctx.projectiles.push(orb);
           }
           this.ctx.audio.S.cast();
@@ -824,7 +825,7 @@ export class Boss extends Actor {
               const rel = pl.pos.clone().sub(this.pos);
               const along = rel.dot(L.dir);
               const perp = rel.clone().addScaledVector(L.dir, -along).length();
-              if (along > 0 && along < 15 && perp < 1.1 && pl.alive) pl.receiveProj({ dmg: 20, vel: L.dir.clone() });
+              if (along > 0 && along < 15 && perp < 1.1 && pl.alive) pl.receiveProj({ dmg: 15 * this.dmgScale, vel: L.dir.clone() });
             }
           }
         }

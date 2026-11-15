@@ -67,15 +67,17 @@ export function makeUI() {
       hurtfx.style.opacity = .85;
       setTimeout(() => hurtfx.style.opacity = 0, 130);
     },
-    end(title, desc) {
+    end(title, desc, endlessBtn = false) {
       const e = $('end'); e.style.display = 'flex';
       e.querySelector('.t').textContent = title;
       e.querySelector('.d').textContent = desc;
-      e.querySelector('.go').textContent = '再 战';
+      e.querySelector('.go2').style.display = endlessBtn ? '' : 'none';
       hud.classList.remove('on');
     },
     hideEnd() { $('end').style.display = 'none'; },
     hudHidden() { return !hud.classList.contains('on'); },
+    titleBest(text) { document.getElementById('titlebest').textContent = text || ''; },
+    waveTag(text) { const w = $('wavetag'); w.textContent = text || ''; w.style.display = text ? 'block' : 'none'; },
     // --- wave-clear upgrade choice ---
     showUpgrades(cards, onPick) {
       const holder = upgr.querySelector('.cards');

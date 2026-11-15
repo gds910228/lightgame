@@ -55,9 +55,23 @@ let stateT = 0;
 const WAVES = [
   { walkers: 3, casters: 0, label: '第 一 波' },
   { walkers: 2, casters: 1, label: '第 二 波' },
-  { walkers: 3, casters: 2, label: '第 三 波' },
+  { walkers: 2, casters: 2, label: '第 三 波' },
 ];
-const director = { wave: -1, phase: 'calm', calmT: 1.2, bossSpawned: false };
+const director = { wave: -1, phase: 'calm', calmT: 1.2, bossSpawned: false, endless: false, scale: 1, dmgScale: 1 };
+
+// ---- best-wave record (localStorage; wrapped — iframes may deny storage) ----
+const BEST_KEY = 'ssg.bestWave';
+function loadBest() { try { return +localStorage.getItem(BEST_KEY) || 0; } catch (e) { return 0; } }
+function saveBest(v) { try { localStorage.setItem(BEST_KEY, String(v)); } catch (e) { } }
+let bestWave = loadBest();
+function recordWave(v) { if (v > bestWave) { bestWave = v; saveBest(bestWave); ui.titleBest(`最高波次 ${bestWave}`); return true; } return false; }
+function endlessDef(i) {
+  // every 4th endless wave is a boss; each full cycle scales enemies up
+  const cyc = Math.max(0, Math.floor(i / 4) - 1), k = i % 4;
+  if (k === 3) return { boss: true, scale: 1 + cyc * .5, dmgS: 1 + cyc * .12 };
+  const comps = [[3, 0], [2, 1], [3, 2]];
+  return { walkers: comps[k][0], casters: comps[k][1], scale: 1 + cyc * .18, dmgS: 1 + cyc * .1 };
+}
 
 // ---- upgrade pool: offered 3-at-a-time after each cleared wave (roguelite-lite) ----
 const UPGRADES = [
@@ -108,31 +122,54 @@ function spawnPoint(minDistFromPlayer = 6) {
 }
 function spawnEnemy(kind) {
   const p = spawnPoint();
-  const e = kind === 'walker' ? new Walker(ctx, p) : new Caster(ctx, p);
+  const e = kind === 'walker' ? new Walker(ctx, p) : kind === 'caster' ? new Caster(ctx, p) : new Boss(ctx, p);
+  const m = director.scale || 1;
+  if (m !== 1) { e.hp *= m; e.maxHp *= m; }
+  e.dmgScale = director.dmgScale || 1;
   ctx.enemies.push(e);
   return e;
 }
 function startWave(i) {
   director.wave = i; director.phase = 'fight';
-  const w = WAVES[i];
-  ui.banner(w.label, '歼灭来犯之敌');
-  for (let k = 0; k < w.walkers; k++) spawnEnemy('walker');
-  for (let k = 0; k < w.casters; k++) spawnEnemy('caster');
+  const isEndless = i >= WAVES.length;
+  const def = isEndless ? endlessDef(i) : WAVES[i];
+  director.scale = def.scale || 1; director.dmgScale = def.dmgS || 1;
+  if (def.boss) { startBoss(true); return; }
+  ui.banner(isEndless ? `第 ${i + 1} 波` : def.label, '歼灭来犯之敌');
+  for (let k = 0; k < def.walkers; k++) spawnEnemy('walker');
+  for (let k = 0; k < def.casters; k++) spawnEnemy('caster');
   audio.setMusic('combat');
+  ui.waveTag(`第 ${i + 1} 波 · 纪录 ${bestWave}`);
 }
-function startBoss() {
+function startBoss(endless = false) {
   director.phase = 'boss';
-  const b = new Boss(ctx, V(0, 0, -7.5 - 6));
-  b.facing = 0;
-  ctx.enemies.push(b); ctx.boss = b;
-  ui.banner('守 卫 苏 醒', '石祠的守护者睁开了眼');
+  if (!endless) director.wave = WAVES.length;
+  const b = spawnEnemy('boss');
+  b.pos.copy(endless ? spawnPoint(9) : V(0, 0, -7.5 - 6));
+  b.facing = Math.atan2(ctx.player.pos.x - b.pos.x, ctx.player.pos.z - b.pos.z);
+  ctx.boss = b;
+  ui.banner(endless ? '守 卫 再 临' : '守 卫 苏 醒', endless ? '更强的守卫睁开了眼' : '石祠的守护者睁开了眼');
   audio.setMusic('boss');
   audio.S.roar();
+  ui.waveTag(`第 ${director.wave + 1} 波 · 纪录 ${bestWave}`);
   ctx.onBossPhase2 = () => { ui.banner('守 卫 之 怒', '石躯灼热，动作更快'); };
   ctx.onBossDeath = () => {
     ctx.slowmo(.35, 1.2);
-    audio.S.win();
-    setTimeout(() => { if (state === 'play') { state = 'win'; stateT = 0; ui.end('夜 尽 天 明', '你守住了剑祠'); audio.setMusic('explore'); } }, 2200);
+    recordWave(director.wave + 1);
+    if (director.endless) {
+      audio.S.win();
+      ui.banner('守 卫 陨 落', '坚守仍要继续');
+      director.phase = 'calm'; director.calmT = 2.4;
+      ui.waveTag(`第 ${director.wave + 2} 波 · 纪录 ${bestWave}`);
+    } else {
+      setTimeout(() => {
+        if (state === 'play') {
+          state = 'win'; stateT = 0;
+          ui.end('夜 尽 天 明', `你守住了剑祠 · 最高波次 ${bestWave}`, true);
+          audio.setMusic('explore');
+        }
+      }, 2200);
+    }
   };
 }
 function advanceDirector(dt) {
@@ -140,16 +177,20 @@ function advanceDirector(dt) {
   if (director.phase === 'calm') {
     director.calmT -= dt;
     if (director.calmT <= 0) {
-      if (director.wave + 1 < WAVES.length) startWave(director.wave + 1);
-      else if (!director.bossSpawned) { director.bossSpawned = true; startBoss(); }
+      const next = director.wave + 1;
+      if (next < WAVES.length) startWave(next);
+      else if (!director.endless) { if (!director.bossSpawned) { director.bossSpawned = true; startBoss(false); } }
+      else startWave(next);                                    // endless: waves and bosses cycle forever
     }
   } else if (director.phase === 'fight') {
     const alive = ctx.enemies.some(e => e.alive);
     if (!alive && ctx.enemies.length) {
-      // wave cleared: small heal, then the three-choice upgrade offer
+      // wave cleared: heal, record progress, then the three-choice upgrade offer
       ctx.enemies.length = 0; // corpses already removed by cleanup loop
-      ctx.player.hp = Math.min(ctx.player.maxHp, ctx.player.hp + 8);
-      ui.toast('喘息 · 生命回复 +8');
+      ctx.player.hp = Math.min(ctx.player.maxHp, ctx.player.hp + 15);
+      ui.toast('喘息 · 生命回复 +15');
+      recordWave(director.wave + 1);
+      ui.waveTag(`第 ${director.wave + 2} 波 · 纪录 ${bestWave}`);
       offerUpgrades();
     }
   }
@@ -180,6 +221,8 @@ function resetGame() {
   p.resetProgress();
   ui.upgradeList('');
   ctx.pendingUpgrades = null; ui.hideUpgrades();
+  director.endless = false; director.scale = 1; director.dmgScale = 1;
+  ui.waveTag('');
   p.hp = p.maxHp; p.stamina = p.maxStamina; p.alive = true; p.dead = false;
   p.state = 'idle'; p.stateT = 0; p.invulnT = 0; p.hitstopT = 0;
   p.counterT = 0; p.counterTarget = null; p.parryT = 0; p.guardHeld = false;
@@ -196,8 +239,29 @@ function resetGame() {
 }
 ctx.onPlayerDeath = () => {
   audio.S.dead();
-  setTimeout(() => { if (state === 'play') { state = 'dead'; stateT = 0; ui.end('身 死 祠 破', '剑祠在夜色中陷落'); } }, 1400);
+  setTimeout(() => {
+    if (state !== 'play') return;
+    state = 'dead'; stateT = 0;
+    const newBest = recordWave(director.wave + 1);
+    const desc = director.endless
+      ? `坚守至第 ${director.wave + 1} 波 · 纪录 ${bestWave}${newBest ? ' · 新纪录！' : ''}`
+      : `剑祠在夜色中陷落 · 最高波次 ${bestWave}${newBest ? ' · 新纪录！' : ''}`;
+    ui.end('身 死 祠 破', desc, false);
+  }, 1400);
 };
+// after the boss falls, keep holding the shrine: waves cycle forever, every 4th spawns a stronger guardian
+function enterEndless() {
+  if (state !== 'win') return;
+  director.endless = true;
+  director.bossSpawned = true;
+  clearAll();
+  ui.hideEnd(); ui.hud();
+  state = 'play'; stateT = 0;
+  director.phase = 'calm'; director.calmT = 1.6;
+  ui.toast('无尽坚守开始 · 每波之间仍可择强化');
+  audio.setMusic('explore');
+  ui.waveTag(`第 ${director.wave + 2} 波 · 纪录 ${bestWave}`);
+}
 ctx.onDeath = (e) => {
   // loot drop on kill (skill: 掉落物)
   const roll = Math.random();
@@ -342,6 +406,7 @@ addEventListener('resize', () => world.resize());
 
 // ---- title / start ----
 ui.title();
+ui.titleBest(bestWave > 0 ? `最高波次 ${bestWave}` : '');
 document.getElementById('startbtn').addEventListener('click', () => {
   audio.mute(false); audio.setMusic('explore'); audio.startAmbient();
   audio.S.click();
@@ -350,6 +415,10 @@ document.getElementById('startbtn').addEventListener('click', () => {
 document.getElementById('end').querySelector('.go').addEventListener('click', () => {
   audio.S.click();
   resetGame();
+});
+document.getElementById('end').querySelector('.go2').addEventListener('click', () => {
+  audio.S.click();
+  enterEndless();
 });
 if (SHOW) {
   state = 'show'; ui.title(); ui.showTitle(false); ui.showHud(false);
@@ -394,6 +463,10 @@ const G = window.G = {
   pick: pickUpgrade,
   pending: () => ctx.pendingUpgrades,
   counts: () => ctx.player.upgradeCounts,
+  best: () => bestWave,
+  record: recordWave,
+  enterEndless: () => { state = 'win'; enterEndless(); },   // test hook: bypass the win-screen gate
+  endlessDef,
   shot(name) { world.render(); const url = renderer.domElement.toDataURL('image/png'); window.__SHOTS[name] = url; return url.length; },
   err: () => window.__ERRS,
   setStage(s) { if (s === 'boss' && ctx.boss) { ctx.boss.update(0); } },
@@ -598,6 +671,34 @@ async function autotest() {
     const overlayGone = document.getElementById('upgrades').classList.contains('hide');
     const resumed = director.phase === 'calm';
     assert('T10 wave-clear offers 3 upgrades; pick applies & resumes', choosing && cards === 3 && picked && overlayGone && resumed, `cards=${cards} choosing=${choosing} picked=${picked} gone=${overlayGone} phase=${director.phase}`);
+    ctx.noDirector = true; G.clear();
+  }
+
+  // T11 difficulty defaults & endless scaling math
+  {
+    p.resetProgress();                                 // T10 applied an upgrade; assert on the pristine baseline
+    const w = G.spawn('walker', V(6, 0, 8));
+    const dOk = p.maxHp === 130 && w.dmgScale === 1 && w.hp === 46;
+    const d4 = G.endlessDef(4), d7 = G.endlessDef(7), d11 = G.endlessDef(11);
+    const defOk = d4.walkers === 3 && d4.scale === 1 && d7.boss === true && d7.scale === 1 && d11.boss === true && d11.scale === 1.5;
+    G.clear();
+    assert('T11 difficulty defaults (HP130) & endless cycle scaling', dOk && defOk, `hp=${p.maxHp} d4w=${d4.walkers} d11s=${d11.scale}`);
+  }
+
+  // T12 best-wave record + endless entry + first endless wave
+  {
+    G.clear(); ctx.noDirector = true;
+    const b0 = G.best();
+    const isNew = G.record(b0 + 3);
+    const recOk = isNew && G.best() === b0 + 3;
+    G.enterEndless();                                  // test hook: sets state 'win' then enters
+    director.wave = WAVES.length;                      // real flow: startBoss set this before the win screen
+    const entered = director.endless && state === 'play';
+    ctx.noDirector = false; director.calmT = .05;
+    await runChunks(30);
+    const alive = ctx.enemies.filter(e => e.alive).length;
+    const waveOk = director.phase === 'fight' && alive === 3 && document.getElementById('wavetag').textContent.includes('第 5 波');
+    assert('T12 record persists & endless entry spawns wave 5', recOk && entered && waveOk, `best=${G.best()} entered=${entered} alive=${alive} tag=${document.getElementById('wavetag').textContent}`);
     ctx.noDirector = true; G.clear();
   }
 

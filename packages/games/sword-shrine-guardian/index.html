@@ -71,6 +71,14 @@
   .screen.hide { opacity:0; pointer-events:none; }
   #title .nm { font-size:clamp(34px,7vw,64px); letter-spacing:.5em; text-indent:.5em; text-shadow:0 3px 22px rgba(0,0,0,.9); }
   #title .sub { margin-top:14px; font-size:15px; letter-spacing:.5em; color:var(--gold); }
+  #title .best { margin-top:10px; font-size:13px; letter-spacing:.3em; color:var(--gold); min-height:16px; opacity:.9; }
+  #wavetag { position:absolute; top:24px; right:22px; font-size:13px; letter-spacing:.2em;
+    color:rgba(232,226,212,.82); text-shadow:0 1px 3px #000; }
+  #end .btns { display:flex; gap:14px; margin-top:36px; }
+  #end .go, #end .go2 { font-size:15px; letter-spacing:.35em; padding:10px 30px; border:1px solid rgba(216,179,106,.6);
+    cursor:pointer; color:var(--ink); background:rgba(6,9,15,.5); transition:.25s; }
+  #end .go:hover, #end .go2:hover { background:rgba(216,179,106,.16); box-shadow:0 0 18px rgba(216,179,106,.28); }
+  #end .go2 { display:none; }
   #title .go { margin-top:44px; font-size:17px; letter-spacing:.4em; padding:12px 34px; border:1px solid rgba(216,179,106,.65);
     color:var(--ink); background:rgba(6,9,15,.5); cursor:pointer; transition:.25s; }
   #title .go:hover { background:rgba(216,179,106,.16); box-shadow:0 0 18px rgba(216,179,106,.28); }
@@ -101,6 +109,7 @@
     <div class="bar" id="stbar"><div class="fill" style="inset:1px"></div></div>
   </div>
   <div id="uplist"></div>
+  <div id="wavetag"></div>
   <div id="skills"></div>
   <div id="bossbar"><div class="nm"></div><div class="bar"><div class="fill"></div></div><div class="pbar"><div class="fill" style="position:relative;width:0%"></div></div></div>
   <div id="banner"><div class="t"></div><div class="s"></div></div>
@@ -109,6 +118,7 @@
 <div id="title" class="screen">
   <div class="nm">剑 祠 守 夜</div>
   <div class="sub">SWORD SHRINE GUARDIAN</div>
+  <div class="best" id="titlebest"></div>
   <button class="go" id="startbtn">入 祠</button>
   <div class="help">
     <b>WASD</b> 移动 · <b>J / 左键</b> 攻击 · <b>K / 右键</b> 格挡弹反 · <b>空格</b> 闪避<br>
@@ -116,7 +126,8 @@
   </div>
 </div>
 <div id="end" class="screen">
-  <div class="t"></div><div class="d"></div><button class="go">再 战</button>
+  <div class="t"></div><div class="d"></div>
+  <div class="btns"><button class="go">再 战</button><button class="go2">无尽坚守</button></div>
 </div>
 <div id="upgrades" class="screen hide">
   <div class="ut">择 一 而 强</div>
