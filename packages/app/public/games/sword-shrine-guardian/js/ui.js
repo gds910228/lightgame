@@ -19,7 +19,7 @@ export function makeUI() {
   paintGrain($('grain'));
 
   // skill icons
-  const skDefs = [['attack', 'J'], ['parry', 'K'], ['dash', '␣'], ['wave', 'L'], ['rain', 'U']];
+  const skDefs = [['attack', 'J'], ['parry', 'K'], ['dash', '␣'], ['wave', 'L'], ['rain', 'U'], ['strike', 'E']];
   const skEls = skDefs.map(([kind, key]) => {
     const el = document.createElement('div'); el.className = 'sk';
     el.appendChild(skillIcon(kind));

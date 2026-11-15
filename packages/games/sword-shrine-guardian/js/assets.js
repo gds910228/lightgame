@@ -234,6 +234,10 @@ export function skillIcon(kind) {
     for (const [x, y] of [[26, 14], [38, 22], [50, 14]]) { g.beginPath(); g.moveTo(x, y); g.lineTo(x - 4, y + 14); g.stroke(); }
     g.beginPath(); g.moveTo(20, 50); g.lineTo(56, 50); g.stroke();           // ground line
     g.beginPath(); g.moveTo(28, 58); g.lineTo(38, 50); g.lineTo(48, 58); g.stroke();
+  } else if (kind === 'strike') {
+    g.beginPath(); g.moveTo(20, 54); g.lineTo(40, 54); g.stroke();           // departure mark
+    g.beginPath(); g.moveTo(30, 54); g.lineTo(44, 26); g.lineTo(58, 40); g.stroke();  // blink arc
+    g.beginPath(); g.moveTo(50, 22); g.lineTo(58, 26); g.lineTo(54, 34); g.stroke();  // blade flash
   }
   return c;
 }

@@ -63,7 +63,28 @@ const SHOP_ITEMS = [
   { id: 'brew',  name: '灵 酿', desc: '体力回满，回复 10 生命', price: 15 },
   { id: 'forge', name: '重 铸', desc: '攻击伤害永久 +8%', price: 60 },
 ];
+function grantRandomUpgrade() {
+  const p = ctx.player;
+  const pool = UPGRADES.filter(u => (p.upgradeCounts[u.id] || 0) < u.max);
+  if (!pool.length) return false;
+  const u = pool[Math.random() * pool.length | 0];
+  u.apply(p);
+  p.upgradeCounts[u.id] = (p.upgradeCounts[u.id] || 0) + 1;
+  ui.toast('秘籍习得：' + u.name.replace(/ /g, ''));
+  ui.upgradeList(Object.entries(p.upgradeCounts).map(([id, n]) => {
+    const def = UPGRADES.find(x => x.id === id);
+    return def ? def.name.replace(/ /g, '') + '×' + n : '';
+  }).filter(Boolean).join('　'));
+  audio.S.drop(1);
+  return true;
+}
 function buyShopItem(id) {
+  if (id === 'secret') {
+    if ((ctx.coins || 0) < 45) { ui.toast('灵币不足'); audio.S.click(); return false; }
+    ctx.coins -= 45;
+    if (!grantRandomUpgrade()) ctx.coins += 45;   // pool exhausted: refund
+    return true;
+  }
   const it = SHOP_ITEMS.find(s => s.id === id);
   if (!it) return false;
   if ((ctx.coins || 0) < it.price) { ui.toast('灵币不足'); audio.S.click(); return false; }
@@ -152,15 +173,17 @@ const AFFIXES = [
   { id: 'iron',  name: '铁壁', color: 0x9ab0d8, tag: '#9ab0d8' },
   { id: 'swift', name: '迅捷', color: 0x8ff0c0, tag: '#8ff0c0' },
   { id: 'leech', name: '嗜血', color: 0xe06a8a, tag: '#e06a8a' },
+  { id: 'frost', name: '冰霜', color: 0x9fd8ff, tag: '#bfe4ff', late: true },
+  { id: 'thorn', name: '荆棘', color: 0xc8a0ff, tag: '#d8b3ff', late: true },
 ];
 function applyAffix(e, a) {
-  e.affix = a.id;
-  e.rig.mats.trim.color.lerp(new THREE.Color(a.color), .5);
+  if (!e.affix) e.affix = a.id; else if (!e.affix2 && e.affix !== a.id) e.affix2 = a.id; else return;
+  e.rig.mats.trim.color.lerp(new THREE.Color(a.color), .4);
   const tagCanvas = textTag(a.name, a.tag);
   const tex = new THREE.CanvasTexture(tagCanvas); tex.colorSpace = THREE.SRGBColorSpace;
   const tag = new THREE.Sprite(new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false }));
   tag.scale.set(1.0, .35, 1);
-  tag.position.y = (e.scale === 1 ? 2.0 : 2.0 * e.scale);
+  tag.position.y = 2.0 * e.scale + (e.affix2 ? .38 : 0);
   e.rig.grp.add(tag);
   if (a.id === 'swift') { e.speed *= 1.4; e.teleT = .7 * .85; }
 }
@@ -226,26 +249,37 @@ function maybeEvent(i) {
   if (!pool.length) return;
   const total = pool.reduce((s, e) => s + e.weight, 0);
   let roll = Math.random() * total;
-  for (const ev of pool) { roll -= ev.weight; if (roll <= 0) { applyEvent(ev); return; } }
+  for (const ev of pool) { roll -= ev.weight; if (roll <= 0) { applyEvent(ev); break; } }
+  // deep endless: a second event may stack on top — rules collide in surprising ways
+  ctx.event2 = null;
+  if (director.endless && i >= 16 && Math.random() < .5) {
+    const rest = EVENT_POOL.filter(e => e.id !== (ctx.event && ctx.event.id) && (isBoss ? e.bossOk : true) && e.id !== ctx.lastEventId);
+    if (rest.length) { const ev2 = rest[Math.random() * rest.length | 0]; applyEvent(ev2, true); ctx.event2 = ev2; }
+  }
 }
-function applyEvent(ev) {
+function applyEvent(ev, quiet = false) {
   ctx.lastEventId = ev.id;
   ctx.event = ev;
-  ui.banner(ev.name, ev.desc, 2.6);
-  audio.S.drop(1);
+  if (quiet) ui.toast(ev.name + '：' + ev.desc);
+  else { ui.banner(ev.name, ev.desc, 2.6); audio.S.drop(1); }
   if (ev.id === 'blood') { director.dmgScale *= 1.25; ctx.bloodMoon = true; world.setMood('blood'); }
   else if (ev.id === 'fog') { ctx.fogEvent = true; world.setMood('fog'); }
   else if (ev.id === 'spirit') { ctx.spiritT = 18; ctx.spiritTick = 3; }
   else if (ev.id === 'tide') { ctx.tideT = 25; ctx.player._counterMark = true; fx.counterRing(ctx.player); }
   else if (ev.id === 'altar') { ctx.altarT = 1; ctx.altarRing = fx.teleCircle(ALTAR_POS, { r: 3.6, dur: 999, color: 0x9fe8ff }); }
   else if (ev.id === 'merchant') {
-    // fog-borne peddler: two timed coin offers near the player
+    // fog-borne peddler: three timed coin offers near the player, one of them a random-secret
     const spot = ctx.player.pos.clone().add(V((Math.random() - .5) * 6, 0, (Math.random() - .5) * 6));
     resolveCollisions(spot, .5, ctx.colliders);
     ctx.merchantSpot = spot;
     ctx.merchantRing = fx.teleCircle(spot, { r: 1.6, dur: 14, color: 0xffd98c });
     ctx.merchantUntil = ctx.time + 13;
-    ui.showMerchant(ctx.coins, SHOP_ITEMS.slice(0, 2).map(s => ({ id: s.id, name: s.name, desc: s.desc, price: s.price })), buyShopItem);
+    const others = SHOP_ITEMS.filter(s => s.id !== 'heal').slice(0, 1).concat([SHOP_ITEMS[0]]);
+    ui.showMerchant(ctx.coins, [
+      { id: 'secret', name: '秘 籍', desc: '随机强化 +1 层', price: 45 },
+      { id: others[0].id, name: others[0].name, desc: others[0].desc, price: others[0].price },
+      { id: others[1].id, name: others[1].name, desc: others[1].desc, price: others[1].price },
+    ], buyShopItem);
   }
   else if (ev.id === 'chest') { spawnChest(); }
 }
@@ -257,7 +291,7 @@ function revertEvent() {
   else if (id === 'spirit') ctx.spiritT = 0;
   else if (id === 'tide') { ctx.tideT = 0; ctx.player._counterMark = false; }
   else if (id === 'altar') { ctx.altarT = 0; if (ctx.altarRing) { ctx.altarRing.kill(); ctx.altarRing = null; } }
-  ctx.event = null;
+  ctx.event = null; ctx.event2 = null;
 }
 function spawnChest() {
   const e = spawnEnemy('walker');
@@ -270,18 +304,21 @@ function spawnChest() {
 
 // ---- upgrade pool: offered 3-at-a-time after each cleared wave (roguelite-lite) ----
 const UPGRADES = [
-  { id: 'atk',   name: '锋 锐', desc: '攻击伤害 +15%', max: 5, apply(p) { p.mods.dmg += .15; } },
-  { id: 'hp',    name: '罡 体', desc: '生命上限 +25，并立即回复 25', max: 5, apply(p) { p.maxHp += 25; p.hp = Math.min(p.maxHp, p.hp + 25); } },
+  { id: 'atk',   name: '锋 锐', desc: '攻击伤害 +15%', max: 8, apply(p) { p.mods.dmg += .15; } },
+  { id: 'hp',    name: '罡 体', desc: '生命上限 +25，并立即回复 25', max: 8, apply(p) { p.maxHp += 25; p.hp = Math.min(p.maxHp, p.hp + 25); } },
   { id: 'spd',   name: '疾 风', desc: '移动速度 +10%', max: 4, apply(p) { p.mods.speed += .1; } },
   { id: 'wave',  name: '剑 气 弹', desc: '重击第三段放出飞行剑气，再次选择提升伤害', max: 3, apply(p) { if (p.mods.swordWave === 0) p.mods.swordWave = 1; else p.mods.waveDmg += 10; } },
   { id: 'leech', name: '汲 血', desc: '每次命中回复 1.5 生命', max: 4, apply(p) { p.mods.lifesteal += 1.5; } },
   { id: 'dash',  name: '流 影', desc: '闪避消耗 -5，冷却 -25%', max: 3, apply(p) { p.mods.dashCost = Math.max(10, p.mods.dashCost - 5); p.mods.dashCd *= .75; } },
   { id: 'tough', name: '韧 皮', desc: '受到的伤害 -12%', max: 4, apply(p) { p.mods.dmgTaken = Math.max(.4, p.mods.dmgTaken * .88); } },
   { id: 'stam',  name: '气 海', desc: '体力上限 +30，回复速度 +20%', max: 4, apply(p) { p.maxStamina += 30; p.stamina = Math.min(p.maxStamina, p.stamina + 20); p.mods.stamRegen *= 1.2; } },
-  { id: 'parry', name: '听 风', desc: '弹反窗口 +0.08s，反击窗口 +0.25s', max: 3, apply(p) { p.mods.parryWin += .08; p.mods.counterWin += .25; } },
-  { id: 'heavy', name: '崩 山', desc: '重击伤害 +25%', max: 4, apply(p) { p.mods.heavy += .25; } },
-  { id: 'sqi',   name: '气 斩', desc: '剑气斩（L）伤害 +40%，冷却 -15%', max: 3, apply(p) { p.mods.waveSkillDmg = Math.round(p.mods.waveSkillDmg * 1.4); p.mods.waveCdMult *= .85; } },
-  { id: 'srain', name: '剑 雨', desc: '剑雨（U）每道伤害 +30%，落剑范围 +0.5', max: 3, apply(p) { p.mods.rainHitDmg = Math.round(p.mods.rainHitDmg * 1.3); p.mods.rainMult *= 1.3; p.mods.rainR += .5; } },
+  { id: 'parry', name: '听 风', desc: '弹反窗口 +0.08s，反击窗口 +0.25s', max: 5, apply(p) { p.mods.parryWin += .08; p.mods.counterWin += .25; } },
+  { id: 'heavy', name: '崩 山', desc: '重击伤害 +25%', max: 6, apply(p) { p.mods.heavy += .25; } },
+  { id: 'sqi',   name: '气 斩', desc: '剑气斩（L）伤害 +40%，冷却 -15%', max: 6, apply(p) { p.mods.waveSkillDmg = Math.round(p.mods.waveSkillDmg * 1.4); p.mods.waveCdMult *= .85; } },
+  { id: 'srain', name: '剑 雨', desc: '剑雨（U）每道伤害 +30%，落剑范围 +0.5', max: 6, apply(p) { p.mods.rainHitDmg = Math.round(p.mods.rainHitDmg * 1.3); p.mods.rainMult *= 1.3; p.mods.rainR += .5; } },
+  { id: 'dbl',   name: '迅 影', desc: '闪避后 1 秒内可再次闪避，消耗减半', max: 1, apply(p) { p.mods.dbl = 1; } },
+  { id: 'exec',  name: '破 军', desc: '处决伤害 +30%，处决回复 10 生命', max: 3, apply(p) { p.mods.execBonus += .3; p.mods.execHeal += 10; } },
+  { id: 'shadow',name: '剑 影', desc: '剑气斩（L）额外放出一道剑气', max: 2, apply(p) { p.mods.shadow += 1; } },
 ];
 function offerUpgrades() {
   const p = ctx.player;
@@ -326,12 +363,15 @@ function spawnEnemy(kind, bossKind) {
   if (m !== 1) { e.hp *= m; e.maxHp *= m; }
   e.dmgScale = director.dmgScale || 1;
   if (ctx.fogEvent) e.speed *= .8;                 // 雾隐: enemies slow
-  // elite affix: from wave 2 on, some minions carry a rules-bending modifier
+  // elite affix: from wave 2 on, some minions carry a rules-bending modifier; deep waves may stack two
   if (kind !== 'boss' && director.wave >= 1 && director.affixCount < 2) {
-    const chance = director.endless ? .3 : .22;
+    const deep = director.endless && director.wave >= 16;
+    const chance = director.endless ? (deep ? .45 : .3) : .22;
     if (Math.random() < chance) {
       director.affixCount++;
-      applyAffix(e, AFFIXES[Math.random() * AFFIXES.length | 0]);
+      const pool = AFFIXES.filter(a => !a.late || director.wave >= 10 || director.endless);
+      applyAffix(e, pool[Math.random() * pool.length | 0]);
+      if (deep && Math.random() < .12) applyAffix(e, pool[Math.random() * pool.length | 0]);   // twin affixes
     }
   }
   ctx.enemies.push(e);
@@ -505,7 +545,7 @@ function enterEndless() {
 }
 ctx.onDeath = (e) => {
   // 爆裂 elite: leaves a short-fuse blast zone at the corpse
-  if (e.affix === 'blast') {
+  if (e.affix === 'blast' || e.affix2 === 'blast') {
     ctx.fx.teleCircle(e.pos, { r: 1.9, dur: .55, color: 0xff8a5c });
     ctx.blasts.push({ pos: e.pos.clone(), t: 0 });
   }
@@ -544,6 +584,7 @@ function processInput() {
     else if (c === 'KeyK') ctx.player.press('parry');
     else if (c === 'KeyL') ctx.player.press('wave');
     else if (c === 'KeyU') ctx.player.press('rain');
+    else if (c === 'KeyE') ctx.player.press('strike');
     else if (c === 'Digit1' || c === 'Numpad1') { if (director.phase === 'choose') pickUpgrade(0); }
     else if (c === 'Digit2' || c === 'Numpad2') { if (director.phase === 'choose') pickUpgrade(1); }
     else if (c === 'Digit3' || c === 'Numpad3') { if (director.phase === 'choose') pickUpgrade(2); }
@@ -596,18 +637,21 @@ function update(dt) {
         for (const e of ctx.enemies) {
           if (!e.alive) continue;
           if (o.pos.distanceTo(e.pos.clone().add(V(0, 1, 0))) < .8 + e.radius) {
-            e.takeHit({ dmg: o.dmg, dir: o.vel.clone().setY(0).normalize(), heavy: false, from: p, knock: 1.5 });
+            e.takeHit({ dmg: o.dmg, weight: o.weight || 'wave', dir: o.vel.clone().setY(0).normalize(), heavy: false, from: p, knock: 1.5 });
             if (e.posture !== undefined) e.posture += 6;
+            ctx.waveHitT = ctx.time;                     // 剑气合击 window opens
             o.kill();
             fx.burst(o.pos, 0xaef0ff, { n: 7, size: .9, speed: 4 });
             audio.S.orbBreak();
             break;
           }
         }
-      } else if (o.pos.distanceTo(p.pos.clone().add(V(0, 1, 0))) < .62) {
+      } else if (o.pos.distanceTo(p.pos.clone().add(V(0, 1, 0))) < .62 + (o.r || .2)) {
+        // hitbox includes the orb radius: the visual halo is much wider than .62, shots looked like they passed through
         p.receiveProj(o);
         o.kill();
         fx.burst(o.pos, 0x8fe8cc, { n: 6, size: .8, speed: 3.5 });
+        if (o.frost) p.frostT = 1.2;
       }
       if (o.pos.length() > 60) o.kill();
     }
@@ -688,6 +732,7 @@ function update(dt) {
     if (p.dashCdT > 0) p.dashCdT -= dt;
     ui.skillCd(3, p.waveCdT > 0 ? p.waveCdT / (5 * p.mods.waveCdMult) : 0);
     ui.skillCd(4, p.rainCdT > 0 ? p.rainCdT / 9 : 0);
+    ui.skillCd(5, p.strikeCdT > 0 ? p.strikeCdT / 8 : 0);
     ui.buffTag(p.buff ? p.buff.name + ' ' + Math.max(0, Math.ceil(p.buff.until - ctx.time)) + 's' : '');
     ui.coinHud('灵币 ' + (ctx.coins || 0));
     if (ctx.boss) ui.boss(ctx.boss.alive, ctx.boss.displayName, ctx.boss.hp / ctx.boss.maxHp, ctx.boss.posture / ctx.boss.maxPosture);
@@ -803,6 +848,7 @@ const G = window.G = {
   enterEndless: () => { state = 'win'; enterEndless(); },   // test hook: bypass the win-screen gate
   endlessDef,
   forceEvent: (id) => applyEvent(EVENT_POOL.find(e => e.id === id)),
+  maybeEvent,
   affixes: AFFIXES,
   coins: () => ctx.coins,
   addCoins: (n) => { ctx.coins = (ctx.coins || 0) + n; },
@@ -1284,8 +1330,8 @@ async function autotest() {
     await runChunks(3);
     const shown = document.getElementById('merchant').style.display === 'block';
     const hp0 = p.hp;
-    const buyBtn = document.querySelector('#merchant .mitem');
-    buyBtn.click();                                 // first offer: 伤药 25币
+    const buyBtn = [...document.querySelectorAll('#merchant .mitem')].find(el => el.textContent.includes('伤'));
+    buyBtn.click();                                 // 伤药 25币: +40 hp
     await runChunks(2);
     const healOk = p.hp === hp0 + 40 && G.coins() === 25;
     ctx.merchantUntil = ctx.time + .05;             // rush the departure
@@ -1305,6 +1351,94 @@ async function autotest() {
     G.setZone('night');
     const backOk = world.scene.fog.color.getHexString() === nightHex;
     assert('T26 场景轮换：雪庭/萤火泽变色与轮换数学', snowOk && flyOk && backOk, `snow=${snowOk} fly=${flyOk} back=${backOk}`);
+  }
+
+  // T28 frost chill & thorn reflect (deep affixes)
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.invulnT = 0; p.hitstopT = 0; p.state = 'idle'; p.setIdle();
+    p.pos.set(0, 0, 6); p.facing = 0;
+    const w = G.spawn('walker', V(0, 0, 7.6));
+    w.state = 'strafe'; w.strafeT = 99; ctx.meleeToken = {};
+    G.applyAffix(w, G.affixes.find(a => a.id === 'frost'));
+    w.state = 'strike'; w.setClip(w.atkClip); w.stateT = .28; w.hitDone = false;
+    await runChunks(12);                             // strike impact at clip .42
+    const frostOk = p.frostT > 0;
+    p.hp = p.maxHp; p.invulnT = 0;
+    w.passive = true; w.state = 'strafe'; w.strafeT = 1e9;   // disarm the frost walker for the thorn phase
+    const t = G.spawn('walker', V(0, 0, 7.2));
+    G.applyAffix(t, G.affixes.find(a => a.id === 'thorn'));
+    t.state = 'strafe'; t.strafeT = 99;
+    const php0 = p.hp, thp0 = t.hp;
+    G.act('attack');
+    await runChunks(50);
+    const thornOk = p.hp < php0 && t.hp < thp0;    // both wounded: thorns sting back
+    ctx.meleeToken = null; G.clear();
+    assert('T28 冰霜减速 / 荆棘反伤', frostOk && thornOk, `frost=${frostOk} thorn=${thornOk}`);
+  }
+
+  // T29 deep endless: twin affixes on one elite + stacked double events
+  {
+    G.clear(); resetGame(); p.resetProgress();
+    ctx.noDirector = false;                          // the double-event path runs inside the director rules
+    director.endless = true; director.wave = 20;
+    const w = G.spawn('walker', V(6, 0, 6));
+    G.applyAffix(w, G.affixes.find(a => a.id === 'blast'));
+    G.applyAffix(w, G.affixes.find(a => a.id === 'swift'));
+    const dual = w.affix === 'blast' && w.affix2 === 'swift';
+    let stacked = false;
+    for (let i = 0; i < 40 && !stacked; i++) { G.revertEvent(); G.maybeEvent(20); if (ctx.event2) stacked = true; await nap(); }
+    G.revertEvent(); G.clear();
+    assert('T29 深无尽：双词缀 + 双事件叠加', dual && stacked, `dual=${dual} stacked=${stacked}`);
+  }
+
+  // T30 瞬步斩: blink behind the nearest enemy and cut
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.invulnT = 0; p.hitstopT = 0; p.state = 'idle'; p.setIdle();
+    p.pos.set(0, 0, 6); p.facing = 0;
+    const d = G.spawn('walker', V(6, 0, 6));
+    d.state = 'strafe'; d.strafeT = 99; ctx.meleeToken = {};
+    const hp0 = d.hp, pos0 = p.pos.clone();
+    G.press('KeyE');
+    await runChunks(30);
+    const tele = p.pos.distanceTo(pos0) > 1;
+    const hit = d.hp < hp0;
+    const cd = p.strikeCdT > 0;
+    ctx.meleeToken = null; G.clear();
+    assert('T30 瞬步斩：瞬移+背刺伤害+冷却', tele && hit && cd, `tele=${tele} hit=${hit} cd=${cd}`);
+  }
+
+  // T31 剑气合击: raining within 1.5s of a sword-qi hit doubles the blades
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    p.invulnT = 0; p.hitstopT = 0; p.state = 'idle'; p.setIdle();
+    p.pos.set(0, 0, 6); p.facing = 0;
+    const d = G.spawn('walker', V(0, 0, 10));
+    d.state = 'strafe'; d.strafeT = 99; ctx.meleeToken = {};
+    G.press('KeyL');                                // sword qi flies, hits → waveHitT opens
+    await runChunks(45);
+    const opened = !!ctx.waveHitT;
+    G.press('KeyU');                                // rain inside the combo window
+    await runChunks(25);
+    const comboOk = p.rainCombo === true && p.rainStrikes && p.rainStrikes.length === 10;
+    ctx.meleeToken = null; G.clear();
+    assert('T31 剑气合击：剑气命中后剑雨翻倍', opened && comboOk, `opened=${opened} combo=${p.rainCombo} n=${p.rainStrikes && p.rainStrikes.length}`);
+  }
+
+  // T32 merchant now sells the secret scroll (random upgrade) alongside goods
+  {
+    G.clear(); resetGame(); ctx.noDirector = true; p.resetProgress();
+    G.addCoins(50);
+    G.forceEvent('merchant');
+    await runChunks(3);
+    const offers = document.querySelectorAll('#merchant .mitem').length;
+    const secretBtn = [...document.querySelectorAll('#merchant .mitem')].find(el => el.textContent.includes('秘'));
+    const shown = document.getElementById('merchant').style.display === 'block';
+    if (secretBtn) secretBtn.click();
+    await runChunks(2);
+    const ups = Object.keys(p.upgradeCounts).length >= 1 && G.coins() === 5;
+    assert('T32 商人三件货（含秘籍随机强化）', offers === 3 && shown && ups, `offers=${offers} shown=${shown} ups=${ups}`);
   }
 
   // T9 teardown: title + muted (skill: 测完切回标题、静音)

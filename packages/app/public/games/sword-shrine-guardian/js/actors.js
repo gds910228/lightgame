@@ -29,6 +29,7 @@ function makeDead(s) {
 }
 
 let UID = 0;
+const hasAff = (e, id) => e.affix === id || e.affix2 === id;   // dual-affix elites check both slots
 export class Actor {
   constructor(ctx, cfg) {
     this.ctx = ctx; this.id = ++UID;
@@ -70,7 +71,7 @@ export class Actor {
   takeHit(info) {
     if (!this.alive) return;
     // 铁壁: plain light slashes are deflected — answer with heavies, skills or executions
-    if (this.affix === 'iron' && info.weight === 'light') {
+    if (hasAff(this, 'iron') && info.weight === 'light') {
       const cdir = info.dir || V(1, 0, 0);
       const contact = this.pos.clone().sub(cdir.clone().multiplyScalar(this.radius * .6)); contact.y = 1.2;
       this.ctx.fx.sparks(contact, cdir.clone().negate(), { n: 4, color: 0xbfd4ff, speed: 4 });
@@ -79,6 +80,7 @@ export class Actor {
       return;
     }
     const { dmg, dir, heavy } = info;
+    const wasMelee = info.weight === 'light' || info.weight === 'heavy';
     this.hp -= dmg;
     this.rig.flash(heavy ? 1 : .7);
     this.freeze(heavy ? .11 : .07);
@@ -89,6 +91,10 @@ export class Actor {
     // knockback tiers (skill: 击退和硬直分级)
     const kb = heavy ? 5 : info.knock ?? 2.2;
     this.vel.addScaledVector(dir, kb);
+    // 荆棘: melee swings against it sting back
+    if (hasAff(this, 'thorn') && wasMelee && info.from === this.ctx.player && this.ctx.player.alive) {
+      this.ctx.player.burnTick(info.dmg * .3);
+    }
     if (this.onHurt) this.onHurt(heavy);   // interrupts AI (skill: 打断)
   }
   die() {
@@ -122,10 +128,12 @@ export class Player extends Actor {
     this.stepTimer = 0; this.walkPhase = 0;
     this.dashCdT = 0; this._ghost = this.hp;
     // upgrade modifiers (see UPGRADES pool in game.js); resetProgress() restores defaults
-    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1, waveSkillDmg: 28, waveCdMult: 1, rainHitDmg: 12, rainMult: 1, rainR: 3.5 };
+    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1, waveSkillDmg: 28, waveCdMult: 1, rainHitDmg: 12, rainMult: 1, rainR: 3.5, execBonus: 0, execHeal: 0, shadow: 0, dbl: 0 };
     this.upgradeCounts = {}; this.waveSpawned = false;
     this.waveCdT = 0; this.rainCdT = 0; this.castKind = null; this.castDone = false; this.rainStrikes = null;
+    this.strikeCdT = 0; this.strikeTarget = null;
     this.buff = null;   // timed meteor buff {id, name, until}
+    this.frostT = 0; this.dashChainT = 0;
   }
   dmgMult() { return this.mods.dmg * (this.buff && this.buff.id === 'fervor' ? 1.25 : 1); }
   dmgTakenMult() { return this.mods.dmgTaken * (this.buff && this.buff.id === 'aegis' ? .7 : 1); }
@@ -138,8 +146,12 @@ export class Player extends Actor {
   startAction(action) {
     if (action === 'attack') { this.startAttack(); return; }
     if (action === 'dash') {
-      const cost = this.mods.dashCost - (this.ctx.tideT > 0 ? 8 : 0);   // 灵潮: 闪避消耗 -8
-      if (this.stamina < cost || this.state === 'dash') return;
+      // 迅影: within 1s of a dash a second dash is allowed at half cost, even mid-roll
+      const chain = this.mods.dbl && this.dashChainT > 0;
+      const cost = (this.mods.dashCost - (this.ctx.tideT > 0 ? 8 : 0)) * (chain ? .5 : 1);
+      if (this.stamina < cost) return;
+      if (this.state === 'dash' && !chain) return;
+      if (chain) this.dashChainT = 0;
       this.stamina -= cost; this.staminaDelay = .6;
       this.state = 'dash'; this.stateT = 0; this.setClip(this.dashClip()); this.dashCdT = .45 * this.mods.dashCd;
       const d = this.ctx.moveDir; this.dashDir.copy(d.lengthSq() > .01 ? d : V(Math.sin(this.facing), 0, Math.cos(this.facing)));
@@ -165,8 +177,36 @@ export class Player extends Actor {
       if (this.rainCdT > 0 || this.state === 'dash') return;
       this.rainCdT = 9;
       this.state = 'cast'; this.castKind = 'rain'; this.castDone = false; this.rainStrikes = null; this.stateT = 0;
+      // 剑气合击: raining right after a sword-qi hit doubles the falling blades
+      this.rainCombo = this.ctx.time - (this.ctx.waveHitT || -9) < 1.5;
+      if (this.rainCombo) { this.ctx.ui.banner('剑 气 合 击', '落剑翻倍', 1.3); this.ctx.audio.S.drop(1); }
       this.setClip(this.rainCastClip());
       this.ctx.audio.S.rainCast();
+      return;
+    }
+    if (action === 'strike') {
+      // 瞬步斩: blink behind the nearest enemy and cut — brief i-frames on arrival
+      if (this.strikeCdT > 0 || this.state === 'dash') return;
+      let best = null, bd = 1e9;
+      for (const e of this.ctx.enemies) {
+        if (!e.alive) continue;
+        const d2 = e.pos.distanceTo(this.pos);
+        if (d2 < 9 && d2 < bd) { bd = d2; best = e; }
+      }
+      if (!best) { this.ctx.ui.toast('附近无敌'); return; }
+      this.strikeCdT = 8;
+      this.state = 'cast'; this.castKind = 'strike'; this.castDone = false; this.stateT = 0;
+      this.strikeTarget = best;
+      const behind = best.pos.clone().add(V(Math.sin(best.facing), 0, Math.cos(best.facing)).multiplyScalar(-1.15));
+      resolveCollisions(behind, this.radius, this.ctx.colliders);
+      this.pos.copy(behind);
+      this.facing = Math.atan2(best.pos.x - this.pos.x, best.pos.z - this.pos.z);
+      this.invulnT = Math.max(this.invulnT, .45);
+      this.ctx.fx.ghost(this.pos, this.facing);
+      this.ctx.fx.dust(this.pos, { n: 3, size: .8 });
+      this.ctx.audio.S.dash();
+      this.setClip(this.waveCastClip());
+      return;
     }
   }
   startAttack() {
@@ -269,9 +309,9 @@ export class Player extends Actor {
   }
   dieP() { if (!this.alive) return; this.hp = 0; this.alive = false; this.state = 'dead'; this.setClip(makeDead(1)); this.ctx.onPlayerDeath && this.ctx.onPlayerDeath(); }
   resetProgress() {  // fresh run: clear all upgrade modifiers
-    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1, waveSkillDmg: 28, waveCdMult: 1, rainHitDmg: 12, rainMult: 1, rainR: 3.5 };
+    this.mods = { dmg: 1, heavy: 1, speed: 1, lifesteal: 0, dmgTaken: 1, dashCd: 1, dashCost: 22, parryWin: 0, counterWin: 0, swordWave: 0, waveDmg: 18, stamRegen: 1, waveSkillDmg: 28, waveCdMult: 1, rainHitDmg: 12, rainMult: 1, rainR: 3.5, execBonus: 0, execHeal: 0, shadow: 0, dbl: 0 };
     this.upgradeCounts = {};
-    this.waveCdT = 0; this.rainCdT = 0;
+    this.waveCdT = 0; this.rainCdT = 0; this.strikeCdT = 0; this.frostT = 0; this.dashChainT = 0;
     this.maxHp = 130; this.hp = 130; this._ghost = 130;
     this.maxStamina = 100; this.stamina = 100;
   }
@@ -342,8 +382,10 @@ export class Player extends Actor {
     // stamina regen (delayed); 灵潮 doubles it
     if (this.staminaDelay > 0) this.staminaDelay -= dt;
     else this.stamina = Math.min(this.maxStamina, this.stamina + 24 * dt * this.mods.stamRegen * (this.ctx.tideT > 0 ? 2 : 1));
-    // meteor buff expiry
+    // meteor buff expiry; frost chill decay; dash-chain window
     if (this.buff && this.ctx.time > this.buff.until) { this.ctx.ui.toast(this.buff.name + ' 结束'); this.buff = null; }
+    if (this.frostT > 0) this.frostT -= dt;
+    if (this.dashChainT > 0) this.dashChainT -= dt;
     // timed states
     if (this.parryT > 0) this.parryT -= dt;
     if (this.counterT > 0) {
@@ -365,7 +407,7 @@ export class Player extends Actor {
         if (d.lengthSq() > .01) {
           const tgtFacing = Math.atan2(d.x, d.z);
           this.facing = turnTo(this.facing, tgtFacing, 14 * dt);
-          const sp = this.speed * this.mods.speed * (this.ctx.tideT > 0 ? 1.12 : 1) * (this.buff && this.buff.id === 'gale' ? 1.2 : 1);
+          const sp = this.speed * this.mods.speed * (this.ctx.tideT > 0 ? 1.12 : 1) * (this.buff && this.buff.id === 'gale' ? 1.2 : 1) * (this.frostT > 0 ? .7 : 1);
           this.pos.addScaledVector(d, sp * dt);
           this.walkPhase += dt * sp * 1.9;
           this.setWalk();
@@ -437,6 +479,7 @@ export class Player extends Actor {
         }
         if (T >= c.dur) {
           this.state = 'idle'; this.comboT = .9; this.setIdle();
+          if (this.mods.dbl) this.dashChainT = 1;    // 迅影: dash window opens as the swing ends
           if (this.buf) { const a = this.buf; this.buf = null; this.startAction(a); }
         }
         break;
@@ -454,7 +497,8 @@ export class Player extends Actor {
         }
         if (T >= .16 && T <= .3 && this.execTarget && this.execTarget.alive && !this.execDone) {
           this.execDone = true;
-          this.execTarget.takeHit({ dmg: 45 * this.dmgMult(), weight: 'exec', dir: this.execTarget.pos.clone().sub(this.pos).setY(0).normalize(), heavy: true, from: this, knock: 3 });
+          this.execTarget.takeHit({ dmg: 45 * this.dmgMult() * (1 + this.mods.execBonus), weight: 'exec', dir: this.execTarget.pos.clone().sub(this.pos).setY(0).normalize(), heavy: true, from: this, knock: 3 });
+          if (this.mods.execHeal > 0) this.hp = Math.min(this.maxHp, this.hp + this.mods.execHeal);
           if (this.execTarget.posture !== undefined) this.execTarget.posture += 40;
           this.ctx.slowmo(.3, .22);
           this.ctx.fx.slash(this.pos, this.facing, { span: 2.4, rOut: 3.2, rIn: .6, color: 0xffe2a8, dur: .35 });
@@ -468,26 +512,55 @@ export class Player extends Actor {
         break;
       }
       case 'cast': {
-        // L 剑气斩: release a flying wave; U 剑雨: schedule smart strikes around the player
+        // L 剑气斩: aim-assisted flying wave (shadow upgrade adds a second blade); U 剑雨: smart strikes
         if (this.castKind === 'wave' && !this.castDone && this.stateT >= .12) {
           this.castDone = true;
-          const fd = V(Math.sin(this.facing), 0, Math.cos(this.facing));
-          const orb = this.ctx.fx.orb(this.pos.clone().add(V(fd.x * .9, 1.2, fd.z * .9)), fd.multiplyScalar(14), 0xbfe8ff, { r: .34 });
-          orb.dmg = this.mods.waveSkillDmg * this.dmgMult(); orb.team = 'player'; orb.weight = 'wave';
-          this.ctx.projectiles.push(orb);
+          let dir = V(Math.sin(this.facing), 0, Math.cos(this.facing));
+          // aim assist: snap to the nearest enemy inside a ~40° cone of where we face
+          let best = null, bd = 1e9;
+          for (const e of this.ctx.enemies) {
+            if (!e.alive) continue;
+            const to = e.pos.clone().sub(this.pos).setY(0);
+            const d = to.length();
+            if (d > 9) continue;
+            const ang = Math.abs(angDiff(this.facing, Math.atan2(to.x, to.z)));
+            if (ang < .7 && d < bd) { bd = d; best = to.normalize(); }
+          }
+          if (best) dir = best;
+          this.facing = Math.atan2(dir.x, dir.z);
+          const fire = (angOff) => {
+            const fd = dir.clone().applyAxisAngle(V(0, 1, 0), angOff);
+            const orb = this.ctx.fx.orb(this.pos.clone().add(V(fd.x * .9, 1.2, fd.z * .9)), fd.multiplyScalar(14), 0xbfe8ff, { r: .34 });
+            orb.dmg = this.mods.waveSkillDmg * this.dmgMult(); orb.team = 'player'; orb.weight = 'wave';
+            this.ctx.projectiles.push(orb);
+          };
+          fire(0);
+          if (this.mods.shadow >= 1) fire(.21);
+          if (this.mods.shadow >= 2) fire(-.21);
           this.ctx.fx.slash(this.pos, this.facing, { span: 1.2, rOut: 1.7, rIn: .5, color: 0xcfe8ff, dur: .18 });
+        }
+        if (this.castKind === 'strike' && !this.castDone && this.stateT >= .12) {
+          this.castDone = true;
+          const t = this.strikeTarget;
+          if (t && t.alive) {
+            t.takeHit({ dmg: 25 * this.dmgMult(), weight: 'heavy', dir: t.pos.clone().sub(this.pos).setY(0).normalize(), heavy: true, from: this, knock: 3 });
+            if (t.posture !== undefined) t.posture += 10;
+            this.ctx.fx.slash(this.pos, this.facing, { span: 2.2, rOut: 2.4, rIn: .6, color: 0xcfe8ff, dur: .25 });
+            this.ctx.shake(.2);
+          }
         }
         if (this.castKind === 'rain') {
           if (!this.castDone && this.stateT >= .15) {
             this.castDone = true;
             this.rainStrikes = [];
+            const count = this.rainCombo ? 10 : 6;
             const targets = this.ctx.enemies.filter(e => e.alive && e.pos.distanceTo(this.pos) < this.mods.rainR + 1.5)
               .sort((a, b) => a.pos.distanceTo(this.pos) - b.pos.distanceTo(this.pos));
-            for (let i = 0; i < 6; i++) {
+            for (let i = 0; i < count; i++) {
               let spot;
               if (i < targets.length) spot = targets[i].pos.clone().add(V((Math.random() - .5) * .6, 0, (Math.random() - .5) * .6));
               else { const a = Math.random() * 6.28, r = Math.sqrt(Math.random()) * this.mods.rainR; spot = this.pos.clone().add(V(Math.cos(a) * r, 0, Math.sin(a) * r)); }
-              this.rainStrikes.push({ t: this.stateT + .12 + i * .11, pos: spot, done: false });
+              this.rainStrikes.push({ t: this.stateT + .12 + i * .1, pos: spot, done: false });
             }
             this.ctx.fx.teleCircle(this.pos, { r: this.mods.rainR, dur: .85, color: 0x9fd8ff });
           }
@@ -506,7 +579,7 @@ export class Player extends Actor {
             }
           }
         }
-        if (this.stateT >= (this.castKind === 'wave' ? .3 : .4)) {
+        if (this.stateT >= (this.castKind === 'rain' ? .4 : .3)) {
           this.state = 'idle'; this.castKind = null; this.setIdle();
           if (this.buf) { const a = this.buf; this.buf = null; this.startAction(a); }
         }
@@ -607,7 +680,8 @@ export class Walker extends Actor {
             const res = pl.receiveMelee({ dmg: 9 * this.dmgScale, dir: to.clone().normalize(), heavy: false, from: this, blockable: true });
             if (res === 'hit') {
               this.ctx.shake(.12);
-              if (this.affix === 'leech') { this.hp = Math.min(this.maxHp, this.hp + 6); this.rig.flash(.5); this.ctx.fx.burst(this.pos.clone().add(V(0, 1.2, 0)), 0xe06a8a, { n: 4, size: .5, speed: 2.5 }); }
+              if (hasAff(this, 'leech')) { this.hp = Math.min(this.maxHp, this.hp + 6); this.rig.flash(.5); this.ctx.fx.burst(this.pos.clone().add(V(0, 1.2, 0)), 0xe06a8a, { n: 4, size: .5, speed: 2.5 }); }
+              if (hasAff(this, 'frost')) { pl.frostT = 1.2; this.ctx.fx.burst(pl.pos.clone().add(V(0, 1, 0)), 0x9fd8ff, { n: 4, size: .5, speed: 2 }); }
             }
           }
         }
@@ -895,19 +969,19 @@ export class Boss extends Actor {
         if (!this.slamStarted && T >= 1.05) {
           this.slamStarted = true;
           this.ctx.audio.S.slam(); this.ctx.shake(.55);
-          this.ctx.fx.ring(this.pos, { r0: 1.2, r1: 7.5, color: 0xffc9a0, dur: .55, w: .2 });
+          this.ctx.fx.ring(this.pos, { r0: 1.2, r1: 10, color: 0xffc9a0, dur: .68, w: .2 });
           this.ctx.fx.burst(this.pos.clone().add(V(0, .6, 0)), 0xffcf9e, { n: 12, size: 1.8, speed: 7 });
           this.ctx.fx.dust(this.pos, { n: 6, size: 2.2 });
           this.ringR = 1.2; this.ringHitDone = false;
         }
         if (this.ringR > 0) {
-          this.ringR += 11.5 * dt;
+          this.ringR += 13.5 * dt;
           const d = pl.pos.distanceTo(this.pos);
-          if (!this.ringHitDone && Math.abs(d - this.ringR) < .75 && this.ringR > 1.6) {
+          if (!this.ringHitDone && Math.abs(d - this.ringR) < .8 && this.ringR > 1.6) {
             this.ringHitDone = true;
             pl.receiveProj({ dmg: 16 * this.dmgScale, vel: pl.pos.clone().sub(this.pos).setY(0).normalize() });
           }
-          if (this.ringR > 8) this.ringR = -1;
+          if (this.ringR > 10) this.ringR = -1;
         }
         if (T >= 1.9) { this.slamStarted = false; this.ringR = -1; this.state = 'idle'; this.thinkT = this.phase === 2 ? .8 : 1.2; }
         break;

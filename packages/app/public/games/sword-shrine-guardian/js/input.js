@@ -63,5 +63,5 @@ export function initTouch(onBtn) {
     const up = () => { if (hold) keys.delete(code); onBtn && onBtn(code, false); };
     for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) el.addEventListener(ev, up);
   };
-  bind('tatk', 'KeyJ'); bind('tpry', 'KeyK', true); bind('tdsh', 'Space'); bind('tskl', 'KeyL'); bind('tsku', 'KeyU');
+  bind('tatk', 'KeyJ'); bind('tpry', 'KeyK', true); bind('tdsh', 'Space'); bind('tskl', 'KeyL'); bind('tsku', 'KeyU'); bind('tstp', 'KeyE');
 }

@@ -3,13 +3,13 @@
   "title": "Sword Shrine Guardian",
   "category": "Action",
   "description": "A moody isometric 3D action game built with three.js. Take up a spirit blade at a mist-shrouded shrine: read enemy telegraphs, parry to open execution windows, dodge unblockable slams, unleash flying sword qi and a blade rain storm, and break the stone guardians' posture across two-phase boss fights. Elite affixes, random night events, falling meteors, fog merchants and a coin shop rewrite the rules wave by wave — forge your build, hold the shrine through rotating grounds in endless mode, and chase your best-wave record.",
-  "controls": "WASD to move. J or left-click to attack (3-hit combo, third hit is heavy). K or right-click to parry — a successful parry opens an execution window; press attack to execute. Space to dodge with invincibility frames. L: flying sword qi. U: blade rain AoE. After each wave pick 1 of 3 upgrades and spend coins in the shop. Watch for random night events each wave. Clear the boss to unlock endless mode. Touch controls supported on mobile.",
+  "controls": "WASD to move. J or left-click to attack (3-hit combo, third hit is heavy). K or right-click to parry — a successful parry opens an execution window; press attack to execute. Space to dodge (chainable with 迅影). L: sword qi (aim-assisted). U: blade rain AoE — chain after a qi hit for 剑气合击. E: blink strike. After each wave pick 1 of 3 upgrades and spend coins in the shop. Watch for random night events — deep waves stack two. Clear the boss to unlock endless mode. Touch controls supported on mobile.",
   "type": "local",
   "path": "/games/sword-shrine-guardian/index.html",
   "thumbnail": "./thumbnail.jpg",
   "tags": ["action", "3d", "boss", "soulslike", "roguelite", "endless", "combat"],
   "author": "LightGame",
-  "version": "2.0.1",
+  "version": "2.1.1",
   "featured": false,
   "date_added": "2026-11-15"
 }
