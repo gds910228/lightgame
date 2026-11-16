@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>Starfall Bulwark 坠星壁垒</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#0d0b1e;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .panel{background:rgba(18,12,28,.82);border:1px solid rgba(255,215,122,.22);border-radius:10px;backdrop-filter:blur(3px)}
+
+  /* top-left hud */
+  #hud{position:fixed;left:14px;top:12px;z-index:10;color:#e8dcc8;display:flex;flex-direction:column;gap:7px;pointer-events:none}
+  #corebar{display:flex;align-items:center;gap:8px}
+  #corebar .gem{font-size:20px;color:#6fe8d8;filter:drop-shadow(0 0 6px #2ec9b8)}
+  #coretrack{width:190px;height:14px;background:rgba(8,6,16,.8);border:1px solid rgba(111,232,216,.3);border-radius:7px;overflow:hidden}
+  #corefill{height:100%;width:100%;border-radius:6px;transition:width .25s}
+  #corenum{font-size:12px;color:#9fd8d0;min-width:40px}
+  #essence{font-size:17px;color:#ffd77a;text-shadow:0 0 8px rgba(255,180,80,.5)}
+  #wavetag{font-size:14px;color:#d8c8e8}
+  #preview{font-size:11px;color:#a898c0;max-width:280px;line-height:1.35}
+  #besttag{font-size:11px;color:#c8a86a}
+  #epop{position:fixed;left:150px;top:70px;font-size:15px;color:#ffd77a;opacity:0;z-index:11;pointer-events:none;text-shadow:0 0 8px rgba(255,190,90,.8)}
+  #epop.pop{animation:epop 1s ease-out}
+  @keyframes epop{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-26px)}}
+
+  /* boss bar */
+  #bossbar{position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(480px,60vw);display:none;z-index:10;pointer-events:none}
+  #bossname{font-size:13px;color:#f0c8b0;text-align:center;letter-spacing:3px;margin-bottom:4px;text-shadow:0 0 6px rgba(220,90,60,.6)}
+  #bosstrack{height:12px;background:rgba(10,6,10,.85);border:1px solid rgba(230,120,80,.4);border-radius:6px;overflow:hidden}
+  #bossfill{height:100%;width:100%;background:linear-gradient(90deg,#c94a2e,#e88a5f);transition:width .2s}
+
+  /* top-right buttons */
+  #tr{position:fixed;right:14px;top:12px;z-index:12;display:flex;gap:8px;align-items:flex-start}
+  #tr button{width:40px;height:40px;border-radius:9px;border:1px solid rgba(255,215,122,.3);background:rgba(18,12,28,.85);color:#ffd77a;font-size:16px;cursor:pointer}
+  #tr button.on{background:rgba(90,60,20,.9)}
+  #bestwrap{position:fixed;right:14px;top:58px;z-index:10;color:#c8a86a;font-size:12px;text-align:right;pointer-events:none}
+
+  /* call wave */
+  #callbtn{position:fixed;bottom:118px;left:50%;transform:translateX(-50%);z-index:12;display:none;padding:10px 26px;font-size:16px;color:#0e0a18;background:linear-gradient(180deg,#ffd77a,#e8a84f);border:none;border-radius:22px;cursor:pointer;letter-spacing:2px;box-shadow:0 0 18px rgba(255,190,90,.45)}
+  #callbtn.bonus{animation:pulse 1.2s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 12px rgba(255,190,90,.35)}50%{box-shadow:0 0 26px rgba(255,200,100,.75)}}
+
+  /* build cards */
+  #cardwrap{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:12;text-align:center;pointer-events:none}
+  #cardeh{font-size:12px;color:#a898c0;margin-bottom:6px;text-shadow:0 1px 4px #000}
+  #cards{display:none;gap:9px;pointer-events:auto;justify-content:center}
+  #cards.on{display:flex}
+  .card{position:relative;width:78px;padding:9px 4px 7px;background:rgba(18,12,28,.9);border:1px solid rgba(255,215,122,.25);border-radius:10px;cursor:pointer;text-align:center;transition:transform .12s,border-color .12s}
+  .card:hover{transform:translateY(-3px);border-color:rgba(255,215,122,.7)}
+  .card.dim{opacity:.38;pointer-events:none}
+  .card .glyph{font-size:21px}
+  .card .cn{font-size:12px;color:#e8dcc8;margin-top:2px}
+  .card .cc{font-size:11px;color:#ffd77a}
+  .card .ck{position:absolute;left:5px;top:4px;font-size:10px;color:#8a7aa0}
+
+  /* tower panel */
+  #tpanel{position:fixed;right:14px;top:96px;z-index:12;width:210px;padding:12px;display:none;color:#e8dcc8;pointer-events:auto}
+  #tpname{font-size:15px;color:#ffd77a;margin-bottom:6px}
+  #tpstats{font-size:12px;color:#c8bca8;line-height:1.5}
+  #tpeh{font-size:11px;color:#8fc8bc;margin:6px 0 10px}
+  #tpanel button{display:block;width:100%;margin-top:8px;padding:8px;border-radius:8px;border:1px solid rgba(255,215,122,.35);background:rgba(50,36,20,.85);color:#ffd77a;font-size:13px;cursor:pointer}
+  #tpanel button.off{opacity:.45;pointer-events:none}
+  #tpx{position:absolute;right:8px;top:8px;width:22px;height:22px;padding:0!important;background:none!important;border:none!important;color:#8a7aa0;font-size:14px}
+
+  /* banner / toast / flash */
+  #banner{position:fixed;top:26%;left:50%;transform:translate(-50%,-50%);z-index:14;text-align:center;opacity:0;transition:opacity .3s;pointer-events:none}
+  #banner.on{opacity:1}
+  #banner .bmain{font-size:30px;color:#ffe0a8;letter-spacing:8px;text-shadow:0 0 18px rgba(255,180,80,.7),0 2px 8px #000}
+  #banner .bsub{font-size:14px;color:#c8b090;margin-top:8px;letter-spacing:2px;text-shadow:0 1px 6px #000}
+  #toast{position:fixed;bottom:170px;left:50%;transform:translateX(-50%);z-index:14;background:rgba(18,12,28,.9);border:1px solid rgba(255,215,122,.3);color:#e8dcc8;font-size:13px;padding:8px 18px;border-radius:18px;opacity:0;transition:opacity .25s;pointer-events:none}
+  #toast.on{opacity:1}
+  #flash{position:fixed;inset:0;z-index:9;pointer-events:none;background:radial-gradient(ellipse at center,transparent 55%,rgba(200,30,30,.5));opacity:0}
+  #flash.on{animation:fl .5s ease-out}
+  @keyframes fl{0%{opacity:1}100%{opacity:0}}
+
+  /* draft overlay */
+  #draft{position:fixed;inset:0;z-index:20;display:none;background:rgba(8,5,16,.6);flex-direction:column;align-items:center;justify-content:center;gap:18px}
+  #draft .dtitle{font-size:22px;color:#ffe0a8;letter-spacing:6px;text-shadow:0 0 14px rgba(255,190,90,.6)}
+  #draft .dcards{display:flex;gap:16px}
+  .dcard{width:180px;padding:18px 14px;background:rgba(24,16,38,.95);border:1px solid rgba(255,215,122,.4);border-radius:14px;text-align:center;cursor:pointer;transition:transform .15s,border-color .15s}
+  .dcard:hover{transform:translateY(-5px);border-color:#ffd77a;box-shadow:0 0 24px rgba(255,190,90,.3)}
+  .dcard .dg{font-size:30px;color:#ffd77a}
+  .dcard .dn{font-size:16px;color:#ffe8c8;margin:8px 0 6px}
+  .dcard .dd{font-size:12px;color:#a898b8;line-height:1.5}
+  .dcard .dk{margin-top:10px;font-size:11px;color:#8a7aa0}
+
+  /* title & end */
+  #title,#end{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 38%,rgba(30,16,44,.55),rgba(8,5,16,.92));text-align:center}
+  #title h1{font-size:52px;color:#ffe0a8;letter-spacing:14px;margin:0;text-shadow:0 0 26px rgba(255,180,80,.55),0 3px 10px #000}
+  #title h2{font-size:15px;color:#8fc8bc;letter-spacing:6px;margin:10px 0 22px;font-weight:normal}
+  #titlebest{font-size:14px;color:#c8a86a;margin-bottom:26px}
+  .btns{display:flex;gap:14px}
+  #startbtn,#go,#go2{padding:13px 44px;font-size:18px;letter-spacing:4px;border:none;border-radius:26px;cursor:pointer;background:linear-gradient(180deg,#ffd77a,#e8a84f);color:#14101e;box-shadow:0 0 22px rgba(255,190,90,.4)}
+  #go2{display:none;background:linear-gradient(180deg,#7fe8d8,#3aa898);color:#0e161a;box-shadow:0 0 22px rgba(90,220,200,.4)}
+  #end{display:none}
+  #endh{font-size:44px;color:#ffe0a8;letter-spacing:10px;margin:0;text-shadow:0 0 20px rgba(255,180,80,.5)}
+  #endd{font-size:15px;color:#c8b8a0;margin:16px 0 26px}
+
+  /* touch */
+  #touch{display:none}
+  #touch.on{display:block}
+  #touch .tbtn{position:fixed;z-index:15;width:52px;height:52px;border-radius:50%;background:rgba(18,12,28,.75);border:1px solid rgba(255,215,122,.35);color:#ffd77a;font-size:12px;display:flex;align-items:center;justify-content:center;pointer-events:auto}
+  #twave{right:80px;bottom:24px;width:64px!important;height:64px!important;font-size:13px!important}
+  #tspeed{right:150px;bottom:30px}
+  #tpause{right:150px;bottom:96px}
+  #tb1,#tb2,#tb3,#tb4,#tb5{right:18px}
+  #tb1{bottom:104px}#tb2{bottom:160px}#tb3{bottom:216px}#tb4{bottom:272px}#tb5{bottom:328px}
+
+  @media (max-width:720px){
+    #title h1{font-size:34px;letter-spacing:8px}
+    .card{width:60px}
+    #preview{max-width:180px}
+    #coretrack{width:130px}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud">
+  <div id="corebar"><span class="gem">◆</span><div id="coretrack"><div id="corefill"></div></div><span id="corenum">20/20</span></div>
+  <div id="essence">✦ 0</div>
+  <div id="wavetag">第 0 / 10 波</div>
+  <div id="preview"></div>
+  <div id="besttag"></div>
+</div>
+<div id="epop"></div>
+
+<div id="bossbar"><div id="bossname"></div><div id="bosstrack"><div id="bossfill"></div></div></div>
+
+<div id="tr">
+  <button id="mutebtn" title="静音">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+  <button id="speedbtn" title="变速 (F)">1×</button>
+</div>
+<div id="bestwrap"></div>
+
+<button id="callbtn">▶ 召唤下一波</button>
+
+<div id="cardwrap"><div id="cardeh">点击发光石台建造</div><div id="cards"></div></div>
+
+<div id="tpanel" class="panel">
+  <button id="tpx">✕</button>
+  <div id="tpname"></div>
+  <div id="tpstats"></div>
+  <div id="tpeh"></div>
+  <button id="tpup">升级</button>
+  <button id="tpsell">出售</button>
+</div>
+
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+<div id="flash"></div>
+
+<div id="draft"><div class="dtitle"></div><div class="dcards"></div></div>
+
+<div id="title">
+  <h1>坠星壁垒</h1>
+  <h2>STARFALL BULWARK · 塔防坚守</h2>
+  <div id="titlebest"></div>
+  <div class="btns"><button id="startbtn">入 守</button></div>
+</div>
+
+<div id="end">
+  <h1 id="endh"></h1>
+  <div id="endd"></div>
+  <div class="btns"><button id="go">重整旗鼓</button><button id="go2">无尽坚守</button></div>
+</div>
+
+<div id="touch">
+  <div class="tbtn" id="twave">召唤</div>
+  <div class="tbtn" id="tspeed">变速</div>
+  <div class="tbtn" id="tpause">暂停</div>
+  <div class="tbtn" id="tb1">弩</div>
+  <div class="tbtn" id="tb2">霜</div>
+  <div class="tbtn" id="tb3">雷</div>
+  <div class="tbtn" id="tb4">炮</div>
+  <div class="tbtn" id="tb5">镜</div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>
