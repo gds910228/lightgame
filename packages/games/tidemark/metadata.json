@@ -1,0 +1,15 @@
+{
+  "id": "tidemark",
+  "title": "Tidemark",
+  "category": "Strategy",
+  "description": "Classic turn-based strategy in the spirit of Advance Wars: build, capture and push the front with 33 land, sea and air units, 29 commanders each with a battle-turning power, and a 27-mission campaign. Every attack shows its odds first — damage forecast, counterattacks and unit matchups — while tech trees, ratings and score records reward careful play. Open-source (MIT) game by CocoSgt, integrated under the MIT license. Supports 10 languages, mouse, touch, keyboard and gamepad.",
+  "controls": "Click or tap to select units, move and attack — damage odds are previewed before you commit. Keyboard shortcuts available in-game; touch and gamepad supported. Build units in your factories/ports/airports, capture cities and buildings for income, and destroy or capture the enemy HQ to win.",
+  "type": "local",
+  "path": "/games/tidemark/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["strategy", "turn-based", "tactics", "war", "pixel-art", "campaign", "multi-language"],
+  "author": "CocoSgt",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-16"
+}
