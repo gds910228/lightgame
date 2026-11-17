@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Nebula Run 星窟狂奔</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#0b0820;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .panel{background:rgba(14,10,34,.82);border:1px solid rgba(122,240,255,.22);border-radius:10px;backdrop-filter:blur(3px)}
+
+  /* top-left hud */
+  #hud{position:fixed;left:14px;top:12px;z-index:10;color:#dfe8ff;display:flex;flex-direction:column;gap:5px;pointer-events:none}
+  #score{font-size:30px;font-weight:700;color:#7af0ff;text-shadow:0 0 14px rgba(60,200,255,.55);letter-spacing:1px}
+  #best{font-size:12px;color:#8a90c8}
+  #dist{font-size:15px;color:#a8b4f0}
+  #mult{font-size:17px;color:#ffd166;text-shadow:0 0 10px rgba(255,190,80,.5)}
+  #shield{font-size:13px;color:#8af0c8}
+  #hint{font-size:11px;color:#7880b0;max-width:250px;line-height:1.4}
+
+  /* top-right buttons */
+  #tr{position:fixed;right:14px;top:12px;z-index:12;display:flex;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:9px;border:1px solid rgba(122,240,255,.3);background:rgba(14,10,34,.85);color:#7af0ff;font-size:16px;cursor:pointer}
+  #tr button.on{background:rgba(30,60,90,.9)}
+
+  /* banners / toast */
+  #banner{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%);z-index:14;text-align:center;pointer-events:none;opacity:0;transition:opacity .22s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:36px;font-weight:700;color:#ffe9a8;text-shadow:0 0 20px rgba(255,180,60,.8),0 2px 6px #000;letter-spacing:5px}
+  #banner .bsub{font-size:14px;color:#c8d0f8;margin-top:6px;text-shadow:0 1px 4px #000}
+  #toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:14;background:rgba(14,10,34,.9);border:1px solid rgba(122,240,255,.35);color:#dfe8ff;font-size:13px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none}
+  #toast.show{opacity:1}
+
+  /* title / end */
+  #title,#end{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 32%,rgba(40,30,90,.92),rgba(8,6,24,.97));color:#dfe8ff;text-align:center}
+  #title h1{margin:0;font-size:52px;letter-spacing:10px;color:#7af0ff;text-shadow:0 0 26px rgba(80,200,255,.6)}
+  #title h2{margin:0;font-size:15px;font-weight:400;color:#8890c8;letter-spacing:6px}
+  #title .howto{max-width:440px;font-size:13.5px;line-height:1.95;color:#b0bce8;margin:8px 18px}
+  #titlebest{font-size:13px;color:#ffd166}
+  .btns{display:flex;gap:14px;margin-top:8px}
+  .btns button{padding:13px 42px;font-size:19px;letter-spacing:5px;color:#081430;background:linear-gradient(180deg,#7af0ff,#38a8e8);border:none;border-radius:26px;cursor:pointer;box-shadow:0 4px 18px rgba(60,180,255,.45)}
+  .btns button:active{transform:translateY(2px)}
+  .btns button.ghost{background:rgba(30,40,80,.9);color:#7af0ff;border:1px solid rgba(122,240,255,.4);box-shadow:none}
+  #end{display:none}
+  #end h1{margin:0;font-size:40px;letter-spacing:8px;color:#7af0ff}
+  #endd{font-size:15px;line-height:2;color:#c0ccf0;white-space:pre-line}
+  .hide{display:none!important}
+
+  /* touch controls */
+  #touch{position:fixed;inset:0;z-index:15;display:none;pointer-events:none}
+  #touch.on{display:block}
+  .tzone{position:absolute;bottom:0;height:38%;pointer-events:auto;display:flex;align-items:flex-end;justify-content:center;font-size:15px;color:rgba(200,220,255,.55);padding-bottom:26px}
+  #tleft{left:0;width:26%;background:linear-gradient(180deg,transparent,rgba(60,80,180,.12))}
+  #tright{right:0;width:26%;background:linear-gradient(180deg,transparent,rgba(60,80,180,.12))}
+  #tjump{left:26%;width:24%;background:linear-gradient(180deg,transparent,rgba(40,200,160,.10))}
+  #tslide{left:50%;width:24%;background:linear-gradient(180deg,transparent,rgba(255,140,60,.10))}
+
+  @media (max-width:540px){
+    #title h1{font-size:34px;letter-spacing:6px}
+    #score{font-size:24px}
+    #hint{display:none}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud">
+  <div id="score">0</div>
+  <div id="best">纪录 0</div>
+  <div id="dist">0 m</div>
+  <div id="mult">倍率 ×1</div>
+  <div id="shield">护盾 ✓</div>
+  <div id="hint">A/D 或 ←/→ 切道 · W/↑/空格 跳(长按跳更高) · S/↓ 铲滑 · 穿过光门吃倍率 · 贴脸闪避有惊喜</div>
+</div>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+</div>
+
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="title">
+  <h1>星窟狂奔</h1>
+  <h2>NEBULA RUN · 深空跑酷</h2>
+  <div class="howto">
+    在星窟残轨上狂奔：切道躲避、跳跃与铲滑越过障碍<br>
+    穿过 蓝×2 / 金×3 / 紫×5 光门提高倍率<br>
+    贴脸擦过障碍触发「惊险」+50 与瞬间慢动作<br>
+    护盾抵挡一次撞击，每 1200m 补给一面
+  </div>
+  <div id="titlebest"></div>
+  <div class="btns"><button id="startbtn">开 始</button></div>
+</div>
+
+<div id="end">
+  <h1 id="endh">坠落星渊</h1>
+  <div id="endd"></div>
+  <div class="btns"><button id="go">再跑一次</button><button id="go2" class="ghost">回标题</button></div>
+</div>
+
+<div id="touch">
+  <div class="tzone" id="tleft">◀ 切道</div>
+  <div class="tzone" id="tjump">▲ 跳</div>
+  <div class="tzone" id="tslide">▼ 铲滑</div>
+  <div class="tzone" id="tright">切道 ▶</div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

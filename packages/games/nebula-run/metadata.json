@@ -1,0 +1,15 @@
+{
+  "id": "nebula-run",
+  "title": "Nebula Run 星窟狂奔",
+  "category": "Action,Runner",
+  "description": "A neon 3-lane 3D endless runner through a star cavern! Sprint down a crumbling nebula track, switch lanes, leap with held-charge jumps and slide under energy beams. Slip past obstacles by a hair to trigger slow-motion near-miss bonuses, blast through blue ×2 / gold ×3 / purple ×5 multiplier gates, and ride glowing tunnel sections every 500m with music shifts. A shield absorbs one crash and resupplies every 1200m. How far can you run before the void takes you?",
+  "controls": "A/D or ←/→ to switch lanes, W/↑/Space to jump (hold for a higher jump), S/↓ to slide under beams. Pass through the tri-color gates for score multipliers, graze past obstacles for near-miss bonuses. P pauses, M mutes. Touch zones provided on mobile.",
+  "type": "local",
+  "path": "/games/nebula-run/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["runner", "endless", "3d", "action", "lanes", "multiplier", "near-miss"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-17"
+}
