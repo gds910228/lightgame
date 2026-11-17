@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Prism Paths 光路迷阵</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#0b0d18;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .panel{background:rgba(14,16,32,.88);border:1px solid rgba(140,220,255,.25);border-radius:12px;backdrop-filter:blur(3px)}
+
+  #hud{position:fixed;left:14px;top:12px;z-index:10;color:#dfe8ff;display:flex;flex-direction:column;gap:3px;pointer-events:none}
+  #lvtag{font-size:18px;font-weight:700;color:#8ad8ff}
+  #best{font-size:12px;color:#8a90b8}
+  #moves{font-size:13px;color:#c0c8f0}
+  #targethint{font-size:12px;color:#9ab0d8;max-width:230px;line-height:1.4}
+
+  #tr{position:fixed;right:14px;top:12px;z-index:12;display:flex;gap:8px}
+  #tr button{min-width:40px;height:40px;border-radius:9px;border:1px solid rgba(140,220,255,.3);background:rgba(14,16,32,.88);color:#8ad8ff;font-size:15px;cursor:pointer;padding:0 10px}
+  #tr button.on{background:rgba(30,60,90,.9)}
+
+  #banner{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%);z-index:14;text-align:center;pointer-events:none;opacity:0;transition:opacity .2s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:34px;font-weight:700;color:#baf0ff;text-shadow:0 0 20px rgba(120,200,255,.8),0 2px 6px #000;letter-spacing:5px}
+  #banner .bsub{font-size:14px;color:#a8b8d8;margin-top:6px;text-shadow:0 1px 4px #000}
+  #toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);z-index:14;background:rgba(14,16,32,.92);border:1px solid rgba(140,220,255,.35);color:#dfe8ff;font-size:13px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none}
+  #toast.show{opacity:1}
+
+  /* level select overlay */
+  #select{position:fixed;inset:0;z-index:20;display:none;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:46px;background:radial-gradient(ellipse at 50% 20%,rgba(24,30,58,.95),rgba(8,10,22,.98));color:#dfe8ff;overflow:auto}
+  #select.on{display:flex}
+  #select h1{margin:0 0 4px;font-size:34px;letter-spacing:8px;color:#8ad8ff}
+  #select .sub{font-size:13px;color:#8a90b8;margin-bottom:14px}
+  .chap{width:min(560px,92vw);margin-bottom:18px}
+  .chap .ct{font-size:15px;color:#c0d8ff;margin:10px 0 8px;letter-spacing:2px}
+  .lgrid{display:grid;grid-template-columns:repeat(10,1fr);gap:8px}
+  .lbtn{position:relative;padding:9px 0;text-align:center;border-radius:10px;border:1px solid rgba(140,220,255,.22);background:rgba(22,28,54,.85);color:#dfe8ff;font-size:14px;cursor:pointer}
+  .lbtn .stars{position:absolute;bottom:1px;left:0;right:0;font-size:9px;color:#ffd166;letter-spacing:1px}
+  .lbtn.locked{opacity:.32;pointer-events:none}
+  .lbtn.done{border-color:rgba(255,209,102,.5)}
+
+  /* title / end */
+  #title,#end{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:13px;background:radial-gradient(ellipse at 50% 30%,rgba(28,36,72,.94),rgba(8,10,22,.97));color:#dfe8ff;text-align:center}
+  #title h1{margin:0;font-size:48px;letter-spacing:9px;color:#8ad8ff;text-shadow:0 0 26px rgba(90,170,255,.6)}
+  #title h2{margin:0;font-size:14px;font-weight:400;color:#8a90b8;letter-spacing:6px}
+  #title .howto{max-width:450px;font-size:13.5px;line-height:1.95;color:#b0bcdf;margin:8px 18px}
+  #titlebest{font-size:13px;color:#ffd166}
+  .btns{display:flex;gap:14px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+  .btns button{padding:12px 36px;font-size:18px;letter-spacing:4px;color:#0a1024;background:linear-gradient(180deg,#b0e4ff,#4a8ee8);border:none;border-radius:24px;cursor:pointer;box-shadow:0 4px 16px rgba(90,150,255,.4)}
+  .btns button:active{transform:translateY(2px)}
+  .btns button.ghost{background:rgba(30,40,72,.9);color:#8ad8ff;border:1px solid rgba(140,220,255,.4);box-shadow:none}
+  #end{display:none}
+  #end h1{margin:0;font-size:38px;letter-spacing:8px;color:#8ad8ff}
+  #endd{font-size:15px;line-height:2;color:#c0cce8;white-space:pre-line}
+  .hide{display:none!important}
+
+  @media (max-width:540px){
+    #title h1{font-size:32px;letter-spacing:5px}
+    .lgrid{grid-template-columns:repeat(6,1fr)}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud">
+  <div id="lvtag">第 1 关</div>
+  <div id="best">星 0</div>
+  <div id="moves">步数 0 / par 0</div>
+  <div id="targethint">点亮所有对应颜色的水晶</div>
+</div>
+
+<div id="tr">
+  <button id="undobtn" title="撤销 (Z)">撤销</button>
+  <button id="resetbtn" title="重置 (R)">重置</button>
+  <button id="selectbtn" title="选关">选关</button>
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+</div>
+
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="select">
+  <h1>选 关</h1>
+  <div class="sub" id="selbest"></div>
+  <div id="chaplist"></div>
+  <div class="btns"><button id="selback">返回</button></div>
+</div>
+
+<div id="title">
+  <h1>光路迷阵</h1>
+  <h2>PRISM PATHS · 激光折射解谜</h2>
+  <div class="howto">
+    旋转镜面与棱镜，把激光引导到同色水晶上<br>
+    棱镜分光一路为二 · 滤色镜只放行同色 · 冰镜折射一次即消融<br>
+    步数不超过 par 拿三星，集星解锁后续章节<br>
+    30 关三章，全部点亮征服光路！
+  </div>
+  <div id="titlebest"></div>
+  <div class="btns"><button id="startbtn">开始解谜</button><button id="contbtn" class="ghost">继续上次</button></div>
+</div>
+
+<div id="end">
+  <h1 id="endh">光路贯通！</h1>
+  <div id="endd"></div>
+  <div class="btns"><button id="go">再玩一轮</button><button id="go2" class="ghost">回标题</button></div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>
