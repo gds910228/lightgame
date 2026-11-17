@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Rhythm Starlane 节奏星轨</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#060918;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+
+  /* song progress bar */
+  #songbarwrap{position:fixed;top:0;left:0;right:0;height:4px;z-index:15;background:rgba(255,255,255,.08)}
+  #songbar{height:100%;width:0;background:linear-gradient(90deg,#35e0d2,#a86cff,#ff6ca8)}
+
+  /* top hud */
+  #hud{position:fixed;left:16px;top:12px;z-index:10;color:#dfe6ff;pointer-events:none}
+  #score{font-size:34px;font-weight:700;color:#fff;text-shadow:0 0 14px rgba(120,160,255,.8);letter-spacing:1px;line-height:1.1}
+  #acc{font-size:13px;color:#9fb2e8;margin-top:2px}
+  #songname{font-size:12px;color:#7e8fc4;margin-top:2px;max-width:320px}
+
+  /* top-right buttons */
+  #tr{position:fixed;right:12px;top:14px;z-index:16;display:flex;flex-direction:column;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:10px;border:1px solid rgba(140,170,255,.3);background:rgba(14,20,48,.85);color:#bfd0ff;font-size:15px;cursor:pointer}
+  #tr button.on{background:rgba(60,80,160,.9)}
+
+  /* touch pad: 4 vertical zones */
+  #pad{position:fixed;inset:0;z-index:5;display:flex}
+  #pad.hide{display:none}
+  .padzone{flex:1}
+
+  /* banner / toast */
+  #banner{position:fixed;left:50%;top:27%;transform:translate(-50%,-50%);z-index:14;text-align:center;pointer-events:none;opacity:0;transition:opacity .25s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:36px;font-weight:700;color:#ffe9a8;text-shadow:0 0 18px rgba(255,180,60,.8),0 2px 6px #000;letter-spacing:4px}
+  #banner .bsub{font-size:14px;color:#c8d4ff;margin-top:6px;text-shadow:0 1px 4px #000}
+  #toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:14;background:rgba(10,16,40,.92);border:1px solid rgba(140,170,255,.35);color:#dfe6ff;font-size:13px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none}
+  #toast.show{opacity:1}
+
+  /* select / end overlays */
+  #select,#end{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(ellipse at 50% 25%,rgba(28,38,88,.94),rgba(6,9,24,.97));color:#dfe6ff;text-align:center}
+  #select h1{margin:0;font-size:46px;letter-spacing:10px;color:#fff;text-shadow:0 0 24px rgba(90,140,255,.7)}
+  #select h2{margin:0;font-size:14px;font-weight:400;color:#8fa0d8;letter-spacing:6px}
+  .howto{font-size:13px;color:#9fb2e8}
+  #songlist{display:flex;flex-direction:column;gap:10px;margin:6px 0;width:min(440px,92vw)}
+  .songcard{border:1px solid rgba(140,170,255,.25);border-radius:12px;padding:10px 16px;background:rgba(14,20,48,.75);cursor:pointer;text-align:left;transition:border-color .15s,transform .15s}
+  .songcard.sel{border-color:#ffc85c;box-shadow:0 0 14px rgba(255,200,92,.25);transform:translateX(4px)}
+  .sc-name{font-size:19px;font-weight:700;color:#fff}
+  .sc-en{font-size:11px;color:#8fa0d8;letter-spacing:2px}
+  .sc-theme{font-size:12.5px;color:#bfd0ff;margin-top:2px}
+  .sc-meta{font-size:11px;color:#7e8fc4;margin-top:2px}
+  #diffrow{display:flex;gap:10px}
+  .diffbtn{padding:9px 22px;font-size:15px;letter-spacing:2px;border-radius:20px;border:1px solid rgba(140,170,255,.35);background:rgba(14,20,48,.85);color:#bfd0ff;cursor:pointer}
+  .diffbtn.sel{background:linear-gradient(180deg,#35e0d2,#2a9fc4);color:#04202a;font-weight:700;border-color:transparent}
+  #selbest{font-size:12.5px;color:#e8c98a;min-height:18px}
+  .btns{display:flex;gap:14px;margin-top:6px}
+  .btns button{padding:12px 40px;font-size:18px;letter-spacing:5px;color:#04202a;background:linear-gradient(180deg,#59e6d8,#2a9fc4);border:none;border-radius:24px;cursor:pointer;box-shadow:0 4px 18px rgba(53,224,210,.35)}
+  .btns button:active{transform:translateY(2px)}
+  .btns button.ghost{background:rgba(24,34,72,.9);color:#bfd0ff;border:1px solid rgba(140,170,255,.4);box-shadow:none}
+  #end{display:none}
+  #endgrade{font-size:84px;font-weight:800;line-height:1;text-shadow:0 0 30px currentColor;font-family:system-ui,sans-serif}
+  #endh{margin:0;font-size:30px;letter-spacing:6px;color:#fff}
+  #endd{font-size:14.5px;line-height:2;color:#bfd0ff;white-space:pre-line}
+  .hide{display:none!important}
+
+  @media (max-width:540px){
+    #select h1{font-size:34px;letter-spacing:6px}
+    #score{font-size:26px}
+    #endgrade{font-size:64px}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="songbarwrap"><div id="songbar"></div></div>
+<div id="hud">
+  <div id="score">0</div>
+  <div id="acc">准确率 —</div>
+  <div id="songname"></div>
+</div>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+  <button id="quitbtn" title="结束曲目 (Esc)">✕</button>
+</div>
+
+<div id="pad" class="hide">
+  <div class="padzone" data-lane="0"></div>
+  <div class="padzone" data-lane="1"></div>
+  <div class="padzone" data-lane="2"></div>
+  <div class="padzone" data-lane="3"></div>
+</div>
+
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="select">
+  <h1>节奏星轨</h1>
+  <h2>RHYTHM STARLANE · 星轨协奏</h2>
+  <div class="howto">D F J K 四键下落 · 触屏四分区点按 · P 暂停 · M 静音</div>
+  <div id="songlist">
+    <div class="songcard sel" data-idx="0">
+      <div class="sc-name">霓虹脉动</div>
+      <div class="sc-en">NEON PULSE</div>
+      <div class="sc-theme">赛博夜城 · 电子疾走</div>
+      <div class="sc-meta">128 BPM · 约78秒 · 四四拍稳定脉冲</div>
+    </div>
+    <div class="songcard" data-idx="1">
+      <div class="sc-name">星尘漫游</div>
+      <div class="sc-en">STARDUST DRIFT</div>
+      <div class="sc-theme">深空星云 · 梦境慢舞</div>
+      <div class="sc-meta">96 BPM · 约73秒 · 慢拍抒情留白</div>
+    </div>
+    <div class="songcard" data-idx="2">
+      <div class="sc-name">超频引擎</div>
+      <div class="sc-en">OVERDRIVE ENGINE</div>
+      <div class="sc-theme">机械核心 · 高速爆发</div>
+      <div class="sc-meta">160 BPM · 约69秒 · 十六分音高速连打</div>
+    </div>
+  </div>
+  <div id="diffrow">
+    <button class="diffbtn" data-diff="E" title="稀疏谱面 · 慢速下落">E 轻松</button>
+    <button class="diffbtn sel" data-diff="N" title="标准密度 · 中速下落">N 普通</button>
+    <button class="diffbtn" data-diff="H" title="全密谱面 · 快速下落">H 高难</button>
+  </div>
+  <div id="selbest"></div>
+  <div class="btns"><button id="startbtn">开 始</button></div>
+</div>
+
+<div id="end">
+  <div id="endgrade">S</div>
+  <h1 id="endh">曲目完成！</h1>
+  <div id="endd"></div>
+  <div class="btns"><button id="go">再来一曲</button><button id="go2" class="ghost">回选曲</button></div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>
