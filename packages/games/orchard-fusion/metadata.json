@@ -1,0 +1,15 @@
+{
+  "id": "orchard-fusion",
+  "title": "Orchard Fusion 果园大合成",
+  "category": "Puzzle,Physics",
+  "description": "A juicy Suika-style merge puzzle! Drop fruits into the orchard jar — identical fruits fuse into the next tier when they touch, chaining combos for multiplied scores. Grow your fruit from cherry all the way to a celebratory watermelon that clears small fruits for bonus points. One more drop could be one line too many: fruits resting above the danger line for 2 seconds end the run. Simple to learn, endlessly replayable, with satisfying physics, pop effects and a soothing synth soundtrack.",
+  "controls": "Move with mouse (or touch-drag), release / tap to drop the fruit. Identical fruits merge on contact — chain merges in one drop for combo multipliers up to ×5. Press X or tap the Next box to swap current and next fruit (once per drop). P pauses, M mutes. Fruits resting above the red danger line for 2 seconds end the run.",
+  "type": "local",
+  "path": "/games/orchard-fusion/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["merge", "suika", "physics", "puzzle", "casual", "combo", "fruit"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-17"
+}
