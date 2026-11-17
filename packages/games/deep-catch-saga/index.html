@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Deep Catch Saga 深海垂钓记</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#0b1c30;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .hide{display:none!important}
+
+  /* ---- wood + parchment theme ---- */
+  .wood{background:linear-gradient(180deg,#7c5628,#5c3d1c);border:2px solid #8a6432;border-radius:12px;box-shadow:0 3px 10px rgba(0,10,20,.45),inset 0 1px 0 rgba(255,220,160,.25)}
+  .parch{background:linear-gradient(180deg,#f7ebc9,#ecd9a8);border:3px solid #6e4a24;border-radius:14px;box-shadow:0 8px 26px rgba(0,8,16,.55);color:#4a3418}
+
+  /* top hud */
+  #hud{position:fixed;left:0;right:0;top:0;z-index:10;display:flex;justify-content:space-between;align-items:flex-start;padding:10px 14px;pointer-events:none;color:#ffe9c8}
+  #lbox{display:flex;flex-direction:column;gap:3px}
+  #score{font-size:26px;font-weight:700;color:#ffd77a;text-shadow:0 2px 8px rgba(10,40,60,.7);letter-spacing:1px}
+  #coins,#dexpct,#depth{font-size:12.5px;color:#e8d8b8;text-shadow:0 1px 4px rgba(10,30,50,.8)}
+
+  /* top-right buttons */
+  #tr{position:fixed;right:10px;top:10px;z-index:12;display:flex;flex-direction:column;gap:8px}
+  #tr button{width:42px;height:42px;border-radius:10px;border:1px solid rgba(255,214,140,.35);background:rgba(60,40,18,.88);color:#ffd77a;font-size:17px;cursor:pointer;pointer-events:auto}
+  #tr button.on{background:rgba(110,70,26,.95)}
+
+  /* hint & reel button */
+  #hint{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:10;font-size:13px;color:#ffe9c8;background:rgba(24,16,8,.72);border:1px solid rgba(255,214,140,.3);padding:7px 16px;border-radius:18px;pointer-events:none;white-space:nowrap;max-width:94vw;overflow:hidden;text-overflow:ellipsis}
+  #reelbtn{position:fixed;left:50%;bottom:52px;transform:translateX(-50%);z-index:11;display:none;align-items:center;justify-content:center;width:120px;height:52px;font-size:19px;letter-spacing:3px;color:#3c2a10;background:linear-gradient(180deg,#ffd77a,#e8a84f);border:none;border-radius:14px;cursor:pointer;box-shadow:0 4px 16px rgba(230,150,50,.5)}
+  #reelbtn:active{transform:translateX(-50%) translateY(2px)}
+
+  #banner{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%);z-index:14;text-align:center;pointer-events:none;opacity:0;transition:opacity .25s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:32px;font-weight:700;color:#ffe9a8;text-shadow:0 0 18px rgba(255,180,60,.8),0 2px 6px #000;letter-spacing:4px}
+  #banner .bsub{font-size:14px;color:#e8cfa0;margin-top:6px;text-shadow:0 1px 4px #000}
+  #toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%);z-index:14;background:rgba(20,12,6,.9);border:1px solid rgba(255,214,140,.35);color:#ffe9c8;font-size:13px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none}
+  #toast.show{opacity:1}
+
+  /* title screen (dock) */
+  #title{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(ellipse at 50% 26%,rgba(38,74,110,.88),rgba(8,20,36,.95));color:#ffe9c8;text-align:center}
+  #title h1{margin:0;font-size:50px;letter-spacing:10px;color:#ffd77a;text-shadow:0 0 24px rgba(90,180,220,.55)}
+  #title h2{margin:0;font-size:14px;font-weight:400;color:#a8c8dc;letter-spacing:5px}
+  #title .howto{max-width:440px;font-size:13.5px;line-height:1.95;color:#d8e4ec;margin:8px 18px}
+  #titlebest{font-size:13px;color:#ffd77a}
+  .btns{display:flex;gap:14px;margin-top:8px}
+  .btns button{padding:13px 44px;font-size:19px;letter-spacing:5px;color:#2b1a0c;background:linear-gradient(180deg,#ffd77a,#e8a84f);border:none;border-radius:26px;cursor:pointer;box-shadow:0 4px 18px rgba(230,150,50,.45)}
+  .btns button:active{transform:translateY(2px)}
+
+  /* panels */
+  .panel{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);z-index:22;width:min(540px,94vw);max-height:88vh;display:flex;flex-direction:column;padding:14px 16px}
+  .phead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .phead h1{margin:0;font-size:20px;letter-spacing:4px;color:#5c3d1c}
+  .phead .x{width:32px;height:32px;border-radius:8px;border:1px solid #6e4a24;background:#e8d0a0;color:#5c3d1c;font-size:15px;cursor:pointer}
+
+  /* dex */
+  #dexbarwrap{background:#d8c090;border-radius:8px;height:14px;overflow:hidden;border:1px solid #a88c58;margin:2px 0 8px}
+  #dexbar{height:100%;width:0;background:linear-gradient(90deg,#58b8f0,#ffd44e);transition:width .4s}
+  #dexstat{font-size:12.5px;color:#6e5430;margin-bottom:8px}
+  #dexgrid{overflow-y:auto;padding-right:4px}
+  .lhead{font-size:13px;font-weight:700;color:#5c3d1c;background:linear-gradient(180deg,#e2c890,#d0b070);border:1px solid #a88c58;border-radius:7px;padding:4px 10px;margin:8px 0 6px}
+  .lrow{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+  .fcell{background:rgba(255,248,230,.55);border:1px solid #c8a868;border-radius:8px;padding:3px 2px;text-align:center;min-height:88px}
+  .fcell.got{background:#fdf4d8;border-color:#e8a83c;box-shadow:0 0 8px rgba(255,200,90,.4)}
+  .fcell canvas{width:100%;height:52px;display:block}
+  .fname{font-size:10px;line-height:1.2;color:#4a3418;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+  .fwtxt{font-size:9.5px;color:#8a6c3c}
+
+  /* shop */
+  #shopcoins{font-size:14px;font-weight:700;color:#a8721c}
+  .srow{display:flex;justify-content:space-between;align-items:center;background:rgba(255,248,230,.55);border:1px solid #c8a868;border-radius:10px;padding:8px 10px;margin-bottom:8px}
+  .sinfo b{font-size:15px;color:#4a3418;display:block}
+  .sinfo span{font-size:11.5px;color:#8a6c3c}
+  .sright{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .pips{display:flex;gap:4px}
+  .pips i{width:14px;height:8px;border-radius:3px;background:#d0b880;border:1px solid #a88c58;display:block}
+  .pips i.on{background:#58b8f0;border-color:#2a78b8}
+  .sright button{padding:6px 14px;font-size:13px;color:#3c2a10;background:linear-gradient(180deg,#ffd77a,#e8a84f);border:none;border-radius:10px;cursor:pointer}
+  .sright button.max{background:#c8b080;color:#7a5c2c}
+  .sright button:disabled{opacity:.55;cursor:default}
+
+  /* catch card */
+  #rescard{width:min(330px,88vw);align-items:center;text-align:center;padding:16px 18px}
+  #rescv{width:280px;height:150px}
+  #resname{font-size:24px;font-weight:700;color:#5c3d1c;letter-spacing:2px;margin-top:4px}
+  #resq{font-size:12px;color:#2c1e08;padding:2px 12px;border-radius:12px;margin-top:4px}
+  #resinfo{font-size:14px;color:#6e5430;margin:8px 0 12px}
+
+  @media (max-width:540px){
+    #title h1{font-size:36px;letter-spacing:6px}
+    #score{font-size:22px}
+    #hint{font-size:11px;bottom:10px}
+    #reelbtn{bottom:46px}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud">
+  <div id="lbox">
+    <div id="score">0</div>
+    <div id="coins">🪙 0</div>
+    <div id="dexpct">图鉴 0.0%</div>
+    <div id="depth">深度 0m · 码头</div>
+  </div>
+</div>
+
+<div id="tr">
+  <button id="dexbtn" title="图鉴 (B)">📖</button>
+  <button id="shopbtn" title="船坞升级 (U)">🛠</button>
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+</div>
+
+<div id="reelbtn">⬆ 收杆</div>
+<div id="hint"></div>
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="title">
+  <h1>深海垂钓记</h1>
+  <h2>DEEP CATCH SAGA · 三段式海钓</h2>
+  <div class="howto">
+    第一段 蓄力抛竿：指针停在中心区抛得最远<br>
+    第二段 下沉引导：左右避开礁石与水母，越深鱼越稀有<br>
+    第三段 拉杆博弈：鱼挣扎时松手，平稳时按住收线<br>
+    集齐 42 种鱼填满图鉴，金币升级你的船坞！
+  </div>
+  <div id="titlebest"></div>
+  <div class="btns"><button id="startbtn">开 始 垂 钓</button></div>
+</div>
+
+<div id="dexpanel" class="panel parch hide">
+  <div class="phead"><h1>📖 图鉴 · 鱼类收集</h1><button class="x" id="dexclose">✕</button></div>
+  <div id="dexbarwrap"><div id="dexbar"></div></div>
+  <div id="dexstat"></div>
+  <div id="dexgrid"></div>
+</div>
+
+<div id="shoppanel" class="panel parch hide">
+  <div class="phead"><h1>🛠 船坞升级</h1><button class="x" id="shopclose">✕</button></div>
+  <div id="shopcoins">金币 0</div>
+  <div id="shoprows" style="margin-top:8px;overflow-y:auto"></div>
+</div>
+
+<div id="rescard" class="panel parch hide">
+  <canvas id="rescv" width="280" height="150"></canvas>
+  <div id="resname"></div>
+  <div id="resq"></div>
+  <div id="resinfo"></div>
+  <div class="btns"><button id="resbtn" style="padding:10px 34px;font-size:16px">继续垂钓</button></div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

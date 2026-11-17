@@ -1,0 +1,15 @@
+{
+  "id": "danmaku-shrine",
+  "title": "Danmaku Shrine 弹幕魔境",
+  "category": "Action,Shmup",
+  "description": "A vertical bullet-hell boss rush through a haunted shrine! Four yokai bosses each guard two phases of dense rotating spell cards. Your hitbox is a tiny 2.5px dot — hold Shift for precision focus mode and weave through curtains of glowing danmaku. Graze bullets for bonus points and fill the extend meter for extra bombs, bomb-clear overwhelming patterns, and either outlast the spell timer to capture it or blast the boss down for kill bonuses. Survive all four bosses to suppress the realm!",
+  "controls": "Arrow keys / WASD to move, hold Shift for slow focus mode (shows your hitbox), X to bomb (clears all bullets, 3 charges + extends from graze meter). Player shots are automatic. P pauses, M mutes. Touch: drag pad to move, focus and bomb buttons on the right.",
+  "type": "local",
+  "path": "/games/danmaku-shrine/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["bullet-hell", "danmaku", "shmup", "boss-rush", "graze", "action"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-17"
+}

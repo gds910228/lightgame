@@ -1,0 +1,15 @@
+{
+  "id": "deep-catch-saga",
+  "title": "Deep Catch Saga 深海垂钓记",
+  "category": "Casual,Sim",
+  "description": "A relaxing three-stage fishing saga with a 42-fish collection book! Charge and release your cast to aim for the deep, steer your hook past rocks and jellyfish as it sinks through six depth layers, then win the tension tug-of-war: hold to reel when the fish is calm, let go while it struggles, or the line snaps after three bursts. Deeper water hides rarer catches — from common sprats in the shallows all the way to legendary crowned monsters of the abyss, each drawn procedurally with its own colors, patterns and glow. Fill the picture dex for milestone coin rewards, spend coins on boat upgrades (sink speed, tension tolerance, rarity luck, magnet assist), and chase your best single-catch record. Cozy synth soundtrack, day-night sky, touch-friendly controls, no fail state — just you and the sea.",
+  "controls": "Stage 1 — press Space or tap to stop the swinging needle; stopping near the center casts farther and unlocks deeper water. Stage 2 — steer the hook with A/D (or hold the left/right half of the screen); hold Space, S or the reel button to pull the line back up early; touching rocks reels you in, jellyfish stun you for 0.8s. Stage 3 — hold Space or the screen to reel while the fish is calm, release while it struggles; three tension bursts snap the line. B opens the fish dex, U opens boat upgrades, P pauses, M mutes.",
+  "type": "local",
+  "path": "/games/deep-catch-saga/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["fishing", "collection", "casual", "sim", "dex", "upgrade", "ocean"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-18"
+}
