@@ -1,0 +1,15 @@
+{
+  "id": "hive-io",
+  "title": "Hive IO 蜂巢大作战",
+  "category": "Arcade,IO",
+  "description": "A 3D snake-io battle in a glowing flower meadow! Guide your queen bee to devour nectar orbs and grow longer, boost-sprint to cut off rivals, and trap smaller bees with your body — head-on duels kill the smaller bee and scatter its body into juicy nectar. 12 AI bees with three personalities (gluttons, hunters, wanderers) hunt and flee in real time. Rich flower patches hold extra nectar but hide venomous thorns. Cross the 100-length threshold to be crowned — or crash into the thorn hedge trying!",
+  "controls": "Move the mouse (or drag on touch) to steer your bee; hold left click / Space to boost (consumes length and drops nectar behind you). Head-on: the smaller bee dies. Never hit another bee's body with your head. P pauses, M mutes.",
+  "type": "local",
+  "path": "/games/hive-io/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["io", "snake", "3d", "arcade", "arena", "ai", "boost"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-17"
+}

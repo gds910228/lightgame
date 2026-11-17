@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Hive IO 蜂巢大作战</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#12331e;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .panel{background:rgba(16,34,20,.85);border:1px solid rgba(255,214,100,.28);border-radius:10px;backdrop-filter:blur(3px)}
+
+  /* top-left hud */
+  #hud{position:fixed;left:14px;top:12px;z-index:10;color:#e8f2d8;display:flex;flex-direction:column;gap:4px;pointer-events:none}
+  #score{font-size:26px;font-weight:700;color:#ffd166;text-shadow:0 0 12px rgba(255,190,60,.5)}
+  #best{font-size:12px;color:#a8c090}
+  #length{font-size:14px;color:#c8e0a8}
+  #kills{font-size:13px;color:#e8a8a0}
+
+  /* leaderboard */
+  #lb{position:fixed;right:14px;top:12px;z-index:10;padding:10px 14px;min-width:168px;color:#e8f2d8;font-size:12.5px;line-height:1.75;pointer-events:none}
+  #lb .row{display:flex;justify-content:space-between;gap:10px}
+  #lb .me{color:#ffd166;font-weight:700}
+  #lb .title{font-size:11px;color:#9ab888;letter-spacing:2px;margin-bottom:3px}
+
+  /* top-right under lb */
+  #tr{position:fixed;right:14px;top:212px;z-index:12;display:flex;flex-direction:column;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:9px;border:1px solid rgba(255,214,100,.3);background:rgba(16,34,20,.85);color:#ffd166;font-size:15px;cursor:pointer}
+  #tr button.on{background:rgba(70,90,30,.9)}
+
+  /* boost hint */
+  #boostbar{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:10;color:#c8e0a8;font-size:12px;pointer-events:none;text-align:center;text-shadow:0 1px 4px #000}
+
+  #banner{position:fixed;left:50%;top:26%;transform:translate(-50%,-50%);z-index:14;text-align:center;pointer-events:none;opacity:0;transition:opacity .22s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:34px;font-weight:700;color:#ffe9a8;text-shadow:0 0 18px rgba(255,180,60,.8),0 2px 6px #000;letter-spacing:4px}
+  #banner .bsub{font-size:14px;color:#d0e8b8;margin-top:6px;text-shadow:0 1px 4px #000}
+  #toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%);z-index:14;background:rgba(16,34,20,.9);border:1px solid rgba(255,214,100,.35);color:#e8f2d8;font-size:13px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none}
+  #toast.show{opacity:1}
+
+  #title,#end{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 30%,rgba(30,60,34,.92),rgba(10,22,12,.97));color:#e8f2d8;text-align:center}
+  #title h1{margin:0;font-size:52px;letter-spacing:10px;color:#ffd166;text-shadow:0 0 26px rgba(255,190,60,.55)}
+  #title h2{margin:0;font-size:15px;font-weight:400;color:#9ab888;letter-spacing:6px}
+  #title .howto{max-width:440px;font-size:13.5px;line-height:1.95;color:#c0d8a8;margin:8px 18px}
+  #titlebest{font-size:13px;color:#ffd166}
+  .btns{display:flex;gap:14px;margin-top:8px}
+  .btns button{padding:13px 42px;font-size:19px;letter-spacing:5px;color:#14260a;background:linear-gradient(180deg,#ffe07a,#e8a838);border:none;border-radius:26px;cursor:pointer;box-shadow:0 4px 18px rgba(230,160,50,.45)}
+  .btns button:active{transform:translateY(2px)}
+  .btns button.ghost{background:rgba(40,60,26,.9);color:#ffd166;border:1px solid rgba(255,214,100,.4);box-shadow:none}
+  #end{display:none}
+  #end h1{margin:0;font-size:40px;letter-spacing:8px;color:#ffd166}
+  #endd{font-size:15px;line-height:2;color:#c8e0b0;white-space:pre-line}
+  .hide{display:none!important}
+
+  @media (max-width:540px){
+    #title h1{font-size:34px;letter-spacing:6px}
+    #score{font-size:22px}
+    #lb{min-width:130px;font-size:11px}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud">
+  <div id="score">0</div>
+  <div id="best">纪录 0</div>
+  <div id="length">体长 3</div>
+  <div id="kills">吞噬 0</div>
+</div>
+
+<div id="lb" class="panel">
+  <div class="title">蜂 群 排 行</div>
+  <div id="lbrows"></div>
+</div>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+</div>
+
+<div id="boostbar">按住左键 / 双指 或 空格 加速冲刺（消耗体长）· 撞死比你大的蜂会反噬</div>
+
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="title">
+  <h1>蜂巢大作战</h1>
+  <h2>HIVE IO · 花田吞噬</h2>
+  <div class="howto">
+    鼠标/手指引导你的蜂王前进，吃花蜜球变长变强<br>
+    加速冲刺消耗体长，用身体截杀比您小的蜂群<br>
+    头部相撞：体型小的一方阵亡化作蜜珠<br>
+    花丛蜜多但有毒刺，贪食有风险！
+  </div>
+  <div id="titlebest"></div>
+  <div class="btns"><button id="startbtn">进 场</button></div>
+</div>
+
+<div id="end">
+  <h1 id="endh">蜂王陨落</h1>
+  <div id="endd"></div>
+  <div class="btns"><button id="go">再战一场</button><button id="go2" class="ghost">回标题</button></div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>
