@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Sling Siege 弹弓拆塔记</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#241a30;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .panel{background:rgba(30,20,42,.9);border:1px solid rgba(255,214,140,.3);border-radius:12px;backdrop-filter:blur(3px)}
+
+  /* top-left hud */
+  #hud{position:fixed;left:14px;top:12px;z-index:10;color:#f2e8d0;display:flex;flex-direction:column;gap:3px;pointer-events:none}
+  #lvtag{font-size:17px;font-weight:700;color:#ffd77a;text-shadow:0 2px 6px rgba(20,10,30,.7)}
+  #score{font-size:26px;font-weight:700;color:#ffe9c8;text-shadow:0 2px 8px rgba(120,60,10,.6)}
+  #enemies{font-size:12px;color:#e8b898}
+
+  /* top-right buttons */
+  #tr{position:fixed;right:12px;top:12px;z-index:12;display:flex;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,214,140,.3);background:rgba(30,20,42,.85);color:#ffd77a;font-size:16px;cursor:pointer}
+  #tr button.on{background:rgba(110,70,26,.9)}
+
+  /* ammo selector */
+  #ammo{position:fixed;left:14px;bottom:14px;z-index:12;display:flex;gap:8px}
+  #ammo button{min-width:74px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,214,140,.3);background:rgba(30,20,42,.85);color:#ffe9c8;font-size:12px;cursor:pointer;text-align:left}
+  #ammo button .cnt{float:right;font-size:15px;font-weight:700;color:#ffd77a}
+  #ammo button.on{background:rgba(120,74,26,.92);border-color:#ffd77a}
+  #ammo button.empty{opacity:.42}
+
+  #banner{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%);z-index:14;text-align:center;pointer-events:none;opacity:0;transition:opacity .25s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:36px;font-weight:700;color:#ffe9a8;text-shadow:0 0 18px rgba(255,180,60,.8),0 2px 6px #000;letter-spacing:4px}
+  #banner .bsub{font-size:14px;color:#e8cfa0;margin-top:6px;text-shadow:0 1px 4px #000}
+
+  #toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:14;background:rgba(20,12,28,.9);border:1px solid rgba(255,214,140,.35);color:#ffe9c8;font-size:13px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;max-width:86%;text-align:center}
+  #toast.show{opacity:1}
+
+  /* overlays */
+  #title,#end,#pausep{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 30%,rgba(70,40,80,.92),rgba(24,14,34,.97));color:#ffe9c8;text-align:center}
+  #title h1{margin:0;font-size:52px;letter-spacing:10px;color:#ffd77a;text-shadow:0 0 24px rgba(255,170,60,.55)}
+  #title h2{margin:0;font-size:15px;font-weight:400;color:#c8a8c8;letter-spacing:6px}
+  #title .howto{max-width:460px;font-size:13.5px;line-height:1.9;color:#d8c8d8;margin:10px 18px}
+  #titlebest{font-size:13px;color:#e8b878}
+  .btns{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;justify-content:center}
+  .btns button{padding:13px 42px;font-size:19px;letter-spacing:5px;color:#2b1a0c;background:linear-gradient(180deg,#ffd77a,#e8a84f);border:none;border-radius:26px;cursor:pointer;box-shadow:0 4px 18px rgba(230,150,50,.45)}
+  .btns button:active{transform:translateY(2px)}
+  .btns button.ghost{background:rgba(60,40,70,.9);color:#ffd77a;border:1px solid rgba(255,214,140,.4);box-shadow:none}
+  #end,#pausep{display:none}
+  #end h1,#pausep h1{margin:0;font-size:40px;letter-spacing:8px;color:#ffd77a}
+  #endstars{display:flex;gap:10px;font-size:44px;line-height:1;margin:4px 0}
+  #endstars .st{color:#5a4a6a;transform:scale(1)}
+  #endstars .st.on{color:#ffd34d;text-shadow:0 0 16px rgba(255,190,60,.9);animation:starpop .5s cubic-bezier(.2,1.6,.4,1) both}
+  @keyframes starpop{0%{transform:scale(0) rotate(-40deg)}70%{transform:scale(1.45) rotate(8deg)}100%{transform:scale(1) rotate(0)}}
+  #endd{font-size:15px;line-height:2;color:#e8d0c8;white-space:pre-line}
+  #pausep h1{letter-spacing:10px}
+  .hide{display:none!important}
+
+  /* level select */
+  #select{position:fixed;inset:0;z-index:22;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:radial-gradient(ellipse at 50% 25%,rgba(70,40,80,.94),rgba(24,14,34,.98));color:#ffe9c8;overflow-y:auto;padding:20px 0}
+  #select h1{margin:2px 0 0;font-size:30px;letter-spacing:8px;color:#ffd77a}
+  #selbest{font-size:13px;color:#c8a8c8}
+  #chaplist{display:flex;flex-direction:column;gap:8px;max-width:640px;width:92%}
+  .chaphead{font-size:14px;color:#e8b878;letter-spacing:3px;margin-top:6px;text-align:left;padding-left:6px}
+  .chaphead.chaplock{color:#8a6a9a}
+  #chaplist{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .chaphead{grid-column:1 / -1}
+  .lvlbtn{padding:8px 4px 7px;border-radius:10px;border:1px solid rgba(255,214,140,.3);background:rgba(40,26,56,.9);color:#ffe9c8;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.25}
+  .lvlbtn b{font-size:18px;color:#ffd77a}
+  .lvlbtn i{font-size:11px;font-style:normal;color:#ffcf5a;letter-spacing:1px}
+  .lvlbtn em{font-size:10px;font-style:normal;color:#b898b8;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lvlbtn.lock{opacity:.38;cursor:default}
+  .lvlbtn:not(.lock):hover{border-color:#ffd77a;background:rgba(80,50,90,.95)}
+
+  @media (max-width:540px){
+    #title h1{font-size:36px;letter-spacing:6px}
+    #score{font-size:22px}
+    #ammo button{min-width:60px;font-size:11px}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud">
+  <div id="lvtag">第 1 关</div>
+  <div id="score">0</div>
+  <div id="enemies">敌 ×0</div>
+</div>
+
+<div id="tr">
+  <button id="retrybtn" title="重试本关 (R)">↻</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+</div>
+
+<div id="ammo">
+  <button id="am-ball">1 石球<span class="cnt">0</span></button>
+  <button id="am-tnt">2 炸药<span class="cnt">0</span></button>
+  <button id="am-tri">3 三连珠<span class="cnt">0</span></button>
+</div>
+
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="title">
+  <h1>弹弓拆塔记</h1>
+  <h2>SLING SIEGE · 黄昏攻城</h2>
+  <div class="howto">
+    按住屏幕向后拖拽瞄准，松手发射（虚线为弹道预测）<br>
+    木易裂、石坚硬、玻璃脆——砸塌结构压垮绿皮守卫<br>
+    炸药会爆炸并引燃同伴，三连珠一次三向齐发<br>
+    用弹越少星越多，收集星星解锁新章节！
+  </div>
+  <div id="titlebest"></div>
+  <div class="btns"><button id="startbtn">开 始</button><button id="selectbtn" class="ghost">选 关</button></div>
+</div>
+
+<div id="select" class="hide">
+  <h1>选择关卡</h1>
+  <div id="selbest"></div>
+  <div id="chaplist"></div>
+  <div class="btns"><button id="selback" class="ghost">回标题</button></div>
+</div>
+
+<div id="end">
+  <h1 id="endh">过关！</h1>
+  <div id="endstars"></div>
+  <div id="endd"></div>
+  <div class="btns"><button id="nextbtn">下一关</button><button id="endretry" class="ghost">重 试</button><button id="endmenu" class="ghost">选 关</button></div>
+</div>
+
+<div id="pausep">
+  <h1>已暂停</h1>
+  <div class="btns"><button id="resumebtn">继 续</button><button id="pauseretry" class="ghost">重 试</button><button id="pausemenu" class="ghost">选 关</button></div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

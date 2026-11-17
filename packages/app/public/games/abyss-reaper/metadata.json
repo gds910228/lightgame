@@ -1,0 +1,15 @@
+{
+  "id": "abyss-reaper",
+  "title": "Abyss Reaper 暗渊割草者",
+  "category": "Action,Roguelite",
+  "description": "A survivors-like horde roguelite in the abyss! Steer the bone-white reaper with WASD while your weapons auto-target and shred endless waves of blood-red horrors. Collect XP crystals, pick from three upgrades each level, and evolve a maxed weapon into its true form when its matching passive reaches level 3 — the Blood Moon Great Scythe, Plague Mire and more. Elites arrive every 90 seconds, the Ultimate Death Boss descends at 10 minutes with five bullet waves and deadly charges, and surviving 15 minutes triggers the Reaper's victory. Dodge, reap, evolve, and outlast the abyss.",
+  "controls": "Move with WASD / arrow keys, or drag the on-screen virtual joystick on touch. Weapons fire automatically at nearby enemies. Collect green XP crystals to level up and choose 1 of 3 upgrades (keys 1/2/3 or click). Max a weapon to level 8 and raise its linked passive to 3+ to unlock its evolution. Grab drumsticks to heal and magnets to vacuum every crystal. P pauses, M mutes. Survive 15 minutes and defeat the Death Boss to win.",
+  "type": "local",
+  "path": "/games/abyss-reaper/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["survivors", "roguelite", "horde", "action", "evolution", "boss", "auto-attack"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-18"
+}

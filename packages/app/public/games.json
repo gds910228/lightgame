@@ -1423,6 +1423,30 @@
       "type": "local"
     },
     {
+      "id": "rhythm-starlane",
+      "title": "Rhythm Starlane 节奏星轨",
+      "category": "Music,Rhythm",
+      "description": "A 4-key falling-note rhythm game with three fully synthesized original tracks. Every song is generated live with WebAudio (lead melody, chord pads, drums and bass) and its chart is built from the song's own beat-pattern sequence — note times map exactly from beats to seconds, so what you hit is what you hear. Three difficulties (Easy/Normal/Hard) change density, double-note rate and scroll speed. Judge windows of ±40ms PERFECT and ±90ms GOOD feed combo multipliers (+5% every 25 combo), a Fever mode at 50 combo that doubles scores for 8 seconds with a full-screen light show, and an S/A/B/C/D accuracy grade on the results screen. Per-song per-difficulty best score and accuracy are saved locally.",
+      "controls": "Press D F J K (or tap the four touch zones) to hit falling notes on the four lanes. ±40ms is PERFECT, ±90ms is GOOD, anything else is a MISS that breaks your combo. Every 25 combo adds +5% score bonus; reaching 50 combo triggers Fever (score ×2 for 8 seconds). P pauses (music stops too), M mutes, Esc or the ✕ button ends the song early for an aborted result.",
+      "type": "local",
+      "path": "/games/rhythm-starlane/index.html",
+      "thumbnail": "/games/rhythm-starlane/thumbnail.jpg",
+      "tags": [
+        "rhythm",
+        "music",
+        "4k",
+        "falling-notes",
+        "combo",
+        "fever",
+        "synth"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-17",
+      "image": "/games/rhythm-starlane/thumbnail.jpg"
+    },
+    {
       "id": "room-escape-reaction",
       "title": "Room Escape Reaction",
       "category": "Arcade",
@@ -1561,6 +1585,29 @@
       "version": "1.0.0",
       "path": "/games/skyscraper-stack/index.html",
       "type": "local"
+    },
+    {
+      "id": "sling-siege",
+      "title": "Sling Siege 弹弓拆塔记",
+      "category": "Physics,Puzzle",
+      "description": "A dusk-lit slingshot destruction puzzle! Stretch the band, read the dotted trajectory, and unleash stones, bombs and triple-split shots at wobbly wooden towers, stubborn stone forts and shattering glass halls to flatten every green guard. Wood cracks, stone shrugs, glass explodes — bombs detonate with a shockwave that chain-triggers nearby explosives. Crush enemies under collapsing blocks, blast them off ledges, or drop them from fatal heights. Fewer shots, more stars: 24 hand-built levels across three chapters.",
+      "controls": "Drag back from the slingshot to aim (dotted line previews the arc), release to fire. R retries instantly, P pauses, M mutes. Use fewer shots than par for 3 stars and unlock later chapters.",
+      "type": "local",
+      "path": "/games/sling-siege/index.html",
+      "thumbnail": "/games/sling-siege/thumbnail.jpg",
+      "tags": [
+        "physics",
+        "slingshot",
+        "destruction",
+        "levels",
+        "stars",
+        "bomb"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-18",
+      "image": "/games/sling-siege/thumbnail.jpg"
     },
     {
       "id": "smartphone-shooter",

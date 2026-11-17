@@ -1,0 +1,15 @@
+{
+  "id": "prism-paths",
+  "title": "Prism Paths 光路迷阵",
+  "category": "Puzzle,Logic",
+  "description": "A laser refraction puzzle on an obsidian board! Rotate mirrors, split beams with prisms, thread through color filters, and bounce off one-shot ice mirrors to light every matching crystal. Purple crystals demand two different colors arriving at once. 30 hand-crafted levels across three chapters — Reflection Basics, Splitting & Filters, and Master Challenges — with par-based star ratings and chapter unlock gates. Pure logic, zero luck: every beam is deterministic.",
+  "controls": "Click / tap any mirror or prism to rotate it 90°. Guide every emitter's beam into its matching color crystal (purple crystals need two distinct colors). Z undoes, R resets the level, P pauses, M mutes.",
+  "type": "local",
+  "path": "/games/prism-paths/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["puzzle", "laser", "logic", "mirror", "prism", "levels", "stars"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-17"
+}

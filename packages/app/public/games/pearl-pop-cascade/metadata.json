@@ -1,0 +1,15 @@
+{
+  "id": "pearl-pop-cascade",
+  "title": "Pearl Pop Cascade 珠光瀑语",
+  "category": "Arcade,Pachinko",
+  "description": "A dreamy 3D pachinko-peg puzzle! Aim and fire steel orbs to shatter glowing dream-pearls across a starlit board. Chain hits in one shot to climb the score-multiplier ladder, purple pearls quintuple your shot, green pearls gift free balls. When only 10 pearls remain, FEVER grants three consecutive free orbs. Catch the roaming golden buckets for +1000 and another ball, clear the board for a 5000 bonus and a harder round. A soothing synth lullaby plays as pearls cascade.",
+  "controls": "Move mouse (or touch-drag) to aim from the top launcher, click / tap / press Space to fire. Blue pearls score with a rising per-shot multiplier ladder, purple ×5, green +1 ball. Catch pearls in the moving golden buckets. P pauses, M mutes.",
+  "type": "local",
+  "path": "/games/pearl-pop-cascade/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["pachinko", "peg", "arcade", "physics", "fever", "multiplier", "3d"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-17"
+}

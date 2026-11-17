@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Orchard Fusion 果园大合成</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#2b1d12;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .panel{background:rgba(43,26,14,.88);border:1px solid rgba(255,214,140,.28);border-radius:12px;backdrop-filter:blur(3px)}
+
+  /* top hud */
+  #hud{position:fixed;left:0;right:0;top:0;z-index:10;display:flex;justify-content:space-between;align-items:flex-start;padding:12px 16px;pointer-events:none;color:#ffe9c8}
+  #scorebox{display:flex;flex-direction:column;gap:2px}
+  #score{font-size:30px;font-weight:700;color:#ffd77a;text-shadow:0 2px 8px rgba(120,60,10,.6);letter-spacing:1px}
+  #best{font-size:12px;color:#d8b98a}
+  #nextbox{display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:auto;cursor:pointer}
+  #nextbox .lbl{font-size:12px;color:#d8b98a}
+  #nextcv{background:rgba(20,12,6,.55);border:1px solid rgba(255,214,140,.3);border-radius:12px}
+  #nexthint{font-size:10px;color:#a8895f}
+
+  /* top-right buttons */
+  #tr{position:fixed;right:12px;top:186px;z-index:12;display:flex;flex-direction:column;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:10px;border:1px solid rgba(255,214,140,.3);background:rgba(43,26,14,.85);color:#ffd77a;font-size:16px;cursor:pointer}
+  #tr button.on{background:rgba(110,70,26,.9)}
+
+  /* combo floaters live on canvas; DOM side only banners/toasts */
+  #banner{position:fixed;left:50%;top:26%;transform:translate(-50%,-50%);z-index:14;text-align:center;pointer-events:none;opacity:0;transition:opacity .25s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:34px;font-weight:700;color:#ffe9a8;text-shadow:0 0 18px rgba(255,180,60,.8),0 2px 6px #000;letter-spacing:4px}
+  #banner .bsub{font-size:14px;color:#e8cfa0;margin-top:6px;text-shadow:0 1px 4px #000}
+
+  #toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%);z-index:14;background:rgba(20,12,6,.9);border:1px solid rgba(255,214,140,.35);color:#ffe9c8;font-size:13px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none}
+  #toast.show{opacity:1}
+
+  /* title / end overlays */
+  #title,#end{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:radial-gradient(ellipse at 50% 30%,rgba(90,54,20,.92),rgba(24,14,6,.97));color:#ffe9c8;text-align:center}
+  #title h1{margin:0;font-size:52px;letter-spacing:10px;color:#ffd77a;text-shadow:0 0 24px rgba(255,170,60,.55)}
+  #title h2{margin:0;font-size:15px;font-weight:400;color:#c8a878;letter-spacing:6px}
+  #title .howto{max-width:420px;font-size:13.5px;line-height:1.9;color:#d8c8a8;margin:10px 18px}
+  #titlebest{font-size:13px;color:#e8b878}
+  .btns{display:flex;gap:14px;margin-top:10px}
+  .btns button{padding:13px 42px;font-size:19px;letter-spacing:5px;color:#2b1a0c;background:linear-gradient(180deg,#ffd77a,#e8a84f);border:none;border-radius:26px;cursor:pointer;box-shadow:0 4px 18px rgba(230,150,50,.45)}
+  .btns button:active{transform:translateY(2px)}
+  .btns button.ghost{background:rgba(60,40,20,.9);color:#ffd77a;border:1px solid rgba(255,214,140,.4);box-shadow:none}
+  #end{display:none}
+  #end h1{margin:0;font-size:40px;letter-spacing:8px;color:#ffd77a}
+  #endd{font-size:15px;line-height:2;color:#e8d0a8;white-space:pre-line}
+  .hide{display:none!important}
+
+  @media (max-width:540px){
+    #title h1{font-size:36px;letter-spacing:6px}
+    #score{font-size:24px}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud">
+  <div id="scorebox">
+    <div id="score">0</div>
+    <div id="best">纪录 0</div>
+  </div>
+  <div id="nextbox" title="点按交换当前水果 (X)">
+    <div class="lbl">下一个</div>
+    <canvas id="nextcv" width="72" height="72"></canvas>
+    <div id="nexthint">点按交换 (X)</div>
+  </div>
+</div>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+</div>
+
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="title">
+  <h1>果园大合成</h1>
+  <h2>ORCHARD FUSION · 果园物语</h2>
+  <div class="howto">
+    点击或按住罐子上方移动，松手放下水果<br>
+    相同水果碰撞会合成进化，越合越大越甜<br>
+    连续合成有 combo 加成，合成出西瓜有大惊喜！<br>
+    水果堆过警戒线 2 秒则结束
+  </div>
+  <div id="titlebest"></div>
+  <div class="btns"><button id="startbtn">开 始</button></div>
+</div>
+
+<div id="end">
+  <h1 id="endh">果园丰收</h1>
+  <div id="endd"></div>
+  <div class="btns"><button id="go">再来一局</button><button id="go2" class="ghost">回标题</button></div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "id": "sling-siege",
+  "title": "Sling Siege 弹弓拆塔记",
+  "category": "Physics,Puzzle",
+  "description": "A dusk-lit slingshot destruction puzzle! Stretch the band, read the dotted trajectory, and unleash stones, bombs and triple-split shots at wobbly wooden towers, stubborn stone forts and shattering glass halls to flatten every green guard. Wood cracks, stone shrugs, glass explodes — bombs detonate with a shockwave that chain-triggers nearby explosives. Crush enemies under collapsing blocks, blast them off ledges, or drop them from fatal heights. Fewer shots, more stars: 24 hand-built levels across three chapters.",
+  "controls": "Drag back from the slingshot to aim (dotted line previews the arc), release to fire. R retries instantly, P pauses, M mutes. Use fewer shots than par for 3 stars and unlock later chapters.",
+  "type": "local",
+  "path": "/games/sling-siege/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["physics", "slingshot", "destruction", "levels", "stars", "bomb"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-18"
+}
