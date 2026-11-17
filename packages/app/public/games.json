@@ -1,6 +1,30 @@
 {
   "games": [
     {
+      "id": "abyss-reaper",
+      "title": "Abyss Reaper 暗渊割草者",
+      "category": "Action,Roguelite",
+      "description": "A survivors-like horde roguelite in the abyss! Steer the bone-white reaper with WASD while your weapons auto-target and shred endless waves of blood-red horrors. Collect XP crystals, pick from three upgrades each level, and evolve a maxed weapon into its true form when its matching passive reaches level 3 — the Blood Moon Great Scythe, Plague Mire and more. Elites arrive every 90 seconds, the Ultimate Death Boss descends at 10 minutes with five bullet waves and deadly charges, and surviving 15 minutes triggers the Reaper's victory. Dodge, reap, evolve, and outlast the abyss.",
+      "controls": "Move with WASD / arrow keys, or drag the on-screen virtual joystick on touch. Weapons fire automatically at nearby enemies. Collect green XP crystals to level up and choose 1 of 3 upgrades (keys 1/2/3 or click). Max a weapon to level 8 and raise its linked passive to 3+ to unlock its evolution. Grab drumsticks to heal and magnets to vacuum every crystal. P pauses, M mutes. Survive 15 minutes and defeat the Death Boss to win.",
+      "type": "local",
+      "path": "/games/abyss-reaper/index.html",
+      "thumbnail": "/games/abyss-reaper/thumbnail.jpg",
+      "tags": [
+        "survivors",
+        "roguelite",
+        "horde",
+        "action",
+        "evolution",
+        "boss",
+        "auto-attack"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-18",
+      "image": "/games/abyss-reaper/thumbnail.jpg"
+    },
+    {
       "id": "age-test-memory-game",
       "title": "Age Test Memory Game",
       "category": "Puzzle",
@@ -342,6 +366,53 @@
       "path": "/games/danger-ranger/index.html",
       "image": "/games/danger-ranger/logo.JPG",
       "type": "local"
+    },
+    {
+      "id": "danmaku-shrine",
+      "title": "Danmaku Shrine 弹幕魔境",
+      "category": "Action,Shmup",
+      "description": "A vertical bullet-hell boss rush through a haunted shrine! Four yokai bosses each guard two phases of dense rotating spell cards. Your hitbox is a tiny 2.5px dot — hold Shift for precision focus mode and weave through curtains of glowing danmaku. Graze bullets for bonus points and fill the extend meter for extra bombs, bomb-clear overwhelming patterns, and either outlast the spell timer to capture it or blast the boss down for kill bonuses. Survive all four bosses to suppress the realm!",
+      "controls": "Arrow keys / WASD to move, hold Shift for slow focus mode (shows your hitbox), X to bomb (clears all bullets, 3 charges + extends from graze meter). Player shots are automatic. P pauses, M mutes. Touch: drag pad to move, focus and bomb buttons on the right.",
+      "type": "local",
+      "path": "/games/danmaku-shrine/index.html",
+      "thumbnail": "/games/danmaku-shrine/thumbnail.jpg",
+      "tags": [
+        "bullet-hell",
+        "danmaku",
+        "shmup",
+        "boss-rush",
+        "graze",
+        "action"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-17",
+      "image": "/games/danmaku-shrine/thumbnail.jpg"
+    },
+    {
+      "id": "deep-catch-saga",
+      "title": "Deep Catch Saga 深海垂钓记",
+      "category": "Casual,Sim",
+      "description": "A relaxing three-stage fishing saga with a 42-fish collection book! Charge and release your cast to aim for the deep, steer your hook past rocks and jellyfish as it sinks through six depth layers, then win the tension tug-of-war: hold to reel when the fish is calm, let go while it struggles, or the line snaps after three bursts. Deeper water hides rarer catches — from common sprats in the shallows all the way to legendary crowned monsters of the abyss, each drawn procedurally with its own colors, patterns and glow. Fill the picture dex for milestone coin rewards, spend coins on boat upgrades (sink speed, tension tolerance, rarity luck, magnet assist), and chase your best single-catch record. Cozy synth soundtrack, day-night sky, touch-friendly controls, no fail state — just you and the sea.",
+      "controls": "Stage 1 — press Space or tap to stop the swinging needle; stopping near the center casts farther and unlocks deeper water. Stage 2 — steer the hook with A/D (or hold the left/right half of the screen); hold Space, S or the reel button to pull the line back up early; touching rocks reels you in, jellyfish stun you for 0.8s. Stage 3 — hold Space or the screen to reel while the fish is calm, release while it struggles; three tension bursts snap the line. B opens the fish dex, U opens boat upgrades, P pauses, M mutes.",
+      "type": "local",
+      "path": "/games/deep-catch-saga/index.html",
+      "thumbnail": "/games/deep-catch-saga/thumbnail.jpg",
+      "tags": [
+        "fishing",
+        "collection",
+        "casual",
+        "sim",
+        "dex",
+        "upgrade",
+        "ocean"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-18",
+      "image": "/games/deep-catch-saga/thumbnail.jpg"
     },
     {
       "id": "dodge-police-18s",
@@ -700,6 +771,30 @@
       "thumbnail": "/games/hit-me-game/icon.png"
     },
     {
+      "id": "hive-io",
+      "title": "Hive IO 蜂巢大作战",
+      "category": "Arcade,IO",
+      "description": "A 3D snake-io battle in a glowing flower meadow! Guide your queen bee to devour nectar orbs and grow longer, boost-sprint to cut off rivals, and trap smaller bees with your body — head-on duels kill the smaller bee and scatter its body into juicy nectar. 12 AI bees with three personalities (gluttons, hunters, wanderers) hunt and flee in real time. Rich flower patches hold extra nectar but hide venomous thorns. Cross the 100-length threshold to be crowned — or crash into the thorn hedge trying!",
+      "controls": "Move the mouse (or drag on touch) to steer your bee; hold left click / Space to boost (consumes length and drops nectar behind you). Head-on: the smaller bee dies. Never hit another bee's body with your head. P pauses, M mutes.",
+      "type": "local",
+      "path": "/games/hive-io/index.html",
+      "thumbnail": "/games/hive-io/thumbnail.jpg",
+      "tags": [
+        "io",
+        "snake",
+        "3d",
+        "arcade",
+        "arena",
+        "ai",
+        "boost"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-17",
+      "image": "/games/hive-io/thumbnail.jpg"
+    },
+    {
       "id": "how-many-hits",
       "title": "How Many Hits?",
       "category": "Arcade",
@@ -971,6 +1066,30 @@
       "type": "local"
     },
     {
+      "id": "nebula-run",
+      "title": "Nebula Run 星窟狂奔",
+      "category": "Action,Runner",
+      "description": "A neon 3-lane 3D endless runner through a star cavern! Sprint down a crumbling nebula track, switch lanes, leap with held-charge jumps and slide under energy beams. Slip past obstacles by a hair to trigger slow-motion near-miss bonuses, blast through blue ×2 / gold ×3 / purple ×5 multiplier gates, and ride glowing tunnel sections every 500m with music shifts. A shield absorbs one crash and resupplies every 1200m. How far can you run before the void takes you?",
+      "controls": "A/D or ←/→ to switch lanes, W/↑/Space to jump (hold for a higher jump), S/↓ to slide under beams. Pass through the tri-color gates for score multipliers, graze past obstacles for near-miss bonuses. P pauses, M mutes. Touch zones provided on mobile.",
+      "type": "local",
+      "path": "/games/nebula-run/index.html",
+      "thumbnail": "/games/nebula-run/thumbnail.jpg",
+      "tags": [
+        "runner",
+        "endless",
+        "3d",
+        "action",
+        "lanes",
+        "multiplier",
+        "near-miss"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-17",
+      "image": "/games/nebula-run/thumbnail.jpg"
+    },
+    {
       "id": "nerve-cat-launch",
       "title": "Nerve Cat Launch",
       "category": "Arcade",
@@ -1008,6 +1127,30 @@
       "type": "local",
       "image": "/games/ocd-challenge-2/icon.png",
       "thumbnail": "/games/ocd-challenge-2/icon.png"
+    },
+    {
+      "id": "orchard-fusion",
+      "title": "Orchard Fusion 果园大合成",
+      "category": "Puzzle,Physics",
+      "description": "A juicy Suika-style merge puzzle! Drop fruits into the orchard jar — identical fruits fuse into the next tier when they touch, chaining combos for multiplied scores. Grow your fruit from cherry all the way to a celebratory watermelon that clears small fruits for bonus points. One more drop could be one line too many: fruits resting above the danger line for 2 seconds end the run. Simple to learn, endlessly replayable, with satisfying physics, pop effects and a soothing synth soundtrack.",
+      "controls": "Move with mouse (or touch-drag), release / tap to drop the fruit. Identical fruits merge on contact — chain merges in one drop for combo multipliers up to ×5. Press X or tap the Next box to swap current and next fruit (once per drop). P pauses, M mutes. Fruits resting above the red danger line for 2 seconds end the run.",
+      "type": "local",
+      "path": "/games/orchard-fusion/index.html",
+      "thumbnail": "/games/orchard-fusion/thumbnail.jpg",
+      "tags": [
+        "merge",
+        "suika",
+        "physics",
+        "puzzle",
+        "casual",
+        "combo",
+        "fruit"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-17",
+      "image": "/games/orchard-fusion/thumbnail.jpg"
     },
     {
       "id": "pacman-classic",
@@ -1059,6 +1202,30 @@
       "version": "1.0.0",
       "path": "/games/peach-catch-frenzy/index.html",
       "type": "local"
+    },
+    {
+      "id": "pearl-pop-cascade",
+      "title": "Pearl Pop Cascade 珠光瀑语",
+      "category": "Arcade,Pachinko",
+      "description": "A dreamy 3D pachinko-peg puzzle! Aim and fire steel orbs to shatter glowing dream-pearls across a starlit board. Chain hits in one shot to climb the score-multiplier ladder, purple pearls quintuple your shot, green pearls gift free balls. When only 10 pearls remain, FEVER grants three consecutive free orbs. Catch the roaming golden buckets for +1000 and another ball, clear the board for a 5000 bonus and a harder round. A soothing synth lullaby plays as pearls cascade.",
+      "controls": "Move mouse (or touch-drag) to aim from the top launcher, click / tap / press Space to fire. Blue pearls score with a rising per-shot multiplier ladder, purple ×5, green +1 ball. Catch pearls in the moving golden buckets. P pauses, M mutes.",
+      "type": "local",
+      "path": "/games/pearl-pop-cascade/index.html",
+      "thumbnail": "/games/pearl-pop-cascade/thumbnail.jpg",
+      "tags": [
+        "pachinko",
+        "peg",
+        "arcade",
+        "physics",
+        "fever",
+        "multiplier",
+        "3d"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-17",
+      "image": "/games/pearl-pop-cascade/thumbnail.jpg"
     },
     {
       "id": "peek-and-pop",
@@ -1148,6 +1315,30 @@
       "version": "1.0.0",
       "path": "/games/pop-star-tap/index.html",
       "type": "local"
+    },
+    {
+      "id": "prism-paths",
+      "title": "Prism Paths 光路迷阵",
+      "category": "Puzzle,Logic",
+      "description": "A laser refraction puzzle on an obsidian board! Rotate mirrors, split beams with prisms, thread through color filters, and bounce off one-shot ice mirrors to light every matching crystal. Purple crystals demand two different colors arriving at once. 30 hand-crafted levels across three chapters — Reflection Basics, Splitting & Filters, and Master Challenges — with par-based star ratings and chapter unlock gates. Pure logic, zero luck: every beam is deterministic.",
+      "controls": "Click / tap any mirror or prism to rotate it 90°. Guide every emitter's beam into its matching color crystal (purple crystals need two distinct colors). Z undoes, R resets the level, P pauses, M mutes.",
+      "type": "local",
+      "path": "/games/prism-paths/index.html",
+      "thumbnail": "/games/prism-paths/thumbnail.jpg",
+      "tags": [
+        "puzzle",
+        "laser",
+        "logic",
+        "mirror",
+        "prism",
+        "levels",
+        "stars"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-17",
+      "image": "/games/prism-paths/thumbnail.jpg"
     },
     {
       "id": "prison-memory-match",
