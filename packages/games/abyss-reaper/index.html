@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Abyss Reaper 暗渊割草者</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#060a07;font-family:"Microsoft YaHei",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  .panel{background:rgba(8,16,10,.88);border:1px solid rgba(159,232,112,.28);border-radius:12px;backdrop-filter:blur(3px)}
+
+  /* top hud */
+  #hud{position:fixed;left:0;top:0;z-index:10;display:flex;align-items:flex-start;padding:10px 14px;pointer-events:none;color:#cfe8c0}
+  #time{font-size:28px;font-weight:700;color:#9fe870;text-shadow:0 2px 10px rgba(30,90,30,.8);letter-spacing:2px}
+  #sub{font-size:12px;color:#9ab890;margin-top:2px;display:flex;gap:12px}
+  #bars{margin-top:6px;width:190px}
+  .bar{position:relative;height:12px;border-radius:7px;background:rgba(10,20,12,.75);border:1px solid rgba(159,232,112,.25);overflow:hidden;margin-top:4px}
+  .bar.hp{height:14px}
+  #hpfill{height:100%;width:100%;background:linear-gradient(90deg,#e04848,#c22e3a);transition:width .15s}
+  #xpfill{height:100%;width:0%;background:linear-gradient(90deg,#5cb84c,#9fe870);transition:width .12s}
+  #hptext{position:absolute;inset:0;font-size:10px;line-height:13px;text-align:center;color:#fff;text-shadow:0 1px 2px #000}
+
+  /* boss bar */
+  #bossbar{position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:11;width:min(46%,430px);text-align:center;pointer-events:none}
+  #bossname{font-size:14px;letter-spacing:6px;color:#ff6a6a;text-shadow:0 0 12px rgba(220,40,40,.8);margin-bottom:4px}
+  #bosstrack{height:13px;border-radius:8px;background:rgba(20,8,10,.8);border:1px solid rgba(255,110,110,.4);overflow:hidden}
+  #bossfill{height:100%;width:100%;background:linear-gradient(90deg,#8a1420,#e03a3a);transition:width .1s}
+
+  /* top-right buttons */
+  #tr{position:fixed;right:12px;top:12px;z-index:12;display:flex;flex-direction:column;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:10px;border:1px solid rgba(159,232,112,.3);background:rgba(8,16,10,.85);color:#9fe870;font-size:16px;cursor:pointer}
+  #tr button.on{background:rgba(50,90,40,.9)}
+
+  /* weapon chips */
+  #wlist{position:fixed;left:12px;bottom:12px;z-index:10;display:flex;gap:6px;pointer-events:none}
+  .wchip{display:inline-block;min-width:30px;text-align:center;padding:4px 7px;border-radius:9px;background:rgba(8,16,10,.85);border:1px solid rgba(159,232,112,.3);color:#cfe8c0;font-size:13px;font-weight:700}
+  .wchip.evo{border-color:#ffd77a;color:#ffd77a;box-shadow:0 0 10px rgba(255,200,100,.35)}
+
+  /* banner & toast */
+  #banner{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%);z-index:14;text-align:center;pointer-events:none;opacity:0;transition:opacity .25s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:36px;font-weight:700;color:#d8f5c0;text-shadow:0 0 20px rgba(110,230,90,.85),0 2px 6px #000;letter-spacing:5px}
+  #banner.danger .bmain{color:#ff5a5a;text-shadow:0 0 22px rgba(230,50,50,.9),0 2px 6px #000}
+  #banner.gold .bmain{color:#ffd77a;text-shadow:0 0 22px rgba(255,190,70,.9),0 2px 6px #000}
+  #banner .bsub{font-size:14px;color:#a8c8a0;margin-top:6px;text-shadow:0 1px 4px #000}
+  #toast{position:fixed;left:50%;bottom:64px;transform:translateX(-50%);z-index:14;background:rgba(8,16,10,.9);border:1px solid rgba(159,232,112,.35);color:#cfe8c0;font-size:13px;padding:8px 18px;border-radius:20px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+  #toast.show{opacity:1}
+
+  /* virtual joystick */
+  #joy{position:fixed;z-index:13;width:96px;height:96px;border-radius:50%;border:2px solid rgba(159,232,112,.35);background:rgba(20,40,24,.25);pointer-events:none}
+  #joyknob{position:absolute;left:27px;top:27px;width:42px;height:42px;border-radius:50%;background:rgba(159,232,112,.5);border:2px solid rgba(220,255,190,.6)}
+  .hide{display:none!important}
+
+  /* level-up overlay */
+  #lvup{position:fixed;inset:0;z-index:22;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(2,6,3,.78)}
+  #lvup h2{margin:0;font-size:24px;letter-spacing:8px;color:#ffd77a;text-shadow:0 0 16px rgba(255,200,80,.6)}
+  #lvcards{display:flex;gap:14px;padding:0 12px}
+  .card{width:196px;padding:16px 14px 14px;border-radius:14px;background:rgba(10,22,13,.94);border:1px solid rgba(159,232,112,.35);color:#cfe8c0;cursor:pointer;text-align:center;transition:transform .12s,border-color .12s}
+  .card:hover{transform:translateY(-4px);border-color:#9fe870}
+  .card .cg{font-size:34px;line-height:1.2;color:#9fe870;text-shadow:0 0 14px rgba(110,230,90,.5)}
+  .card .ctag{display:inline-block;margin-top:8px;font-size:11px;padding:2px 10px;border-radius:10px;background:rgba(60,110,50,.4);border:1px solid rgba(159,232,112,.4);color:#bfe8a8}
+  .card .cname{font-size:17px;font-weight:700;color:#eaffd8;margin-top:8px}
+  .card .cdesc{font-size:12px;line-height:1.7;color:#96b890;margin-top:6px;min-height:40px}
+  .card .ckeys{font-size:10px;color:#5e7a58;margin-top:6px}
+  .card.evolve{border-color:rgba(255,215,122,.75);box-shadow:0 0 22px rgba(255,190,80,.4)}
+  .card.evolve .cg{color:#ffd77a;text-shadow:0 0 16px rgba(255,190,80,.8)}
+  .card.evolve .ctag{background:rgba(120,90,20,.5);border-color:rgba(255,215,122,.6);color:#ffe4a0}
+
+  /* title / end overlays */
+  #title,#end{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:radial-gradient(ellipse at 50% 30%,rgba(16,40,20,.94),rgba(3,7,4,.98));color:#cfe8c0;text-align:center}
+  #title h1{margin:0;font-size:52px;letter-spacing:12px;color:#9fe870;text-shadow:0 0 26px rgba(110,230,90,.55)}
+  #title h2{margin:0;font-size:14px;font-weight:400;color:#7ea878;letter-spacing:7px}
+  #title .howto{max-width:440px;font-size:13.5px;line-height:1.95;color:#a8c8a0;margin:8px 18px}
+  #titlebest{font-size:13px;color:#c8b878}
+  .btns{display:flex;gap:14px;margin-top:8px}
+  .btns button{padding:13px 42px;font-size:19px;letter-spacing:5px;color:#0a1408;background:linear-gradient(180deg,#b8ec8a,#5cb84c);border:none;border-radius:26px;cursor:pointer;box-shadow:0 4px 18px rgba(90,180,70,.4)}
+  .btns button:active{transform:translateY(2px)}
+  .btns button.ghost{background:rgba(20,40,24,.9);color:#9fe870;border:1px solid rgba(159,232,112,.4);box-shadow:none}
+  #end{display:none}
+  #end h1{margin:0;font-size:40px;letter-spacing:9px;color:#9fe870}
+  #end.lose h1{color:#ff6a6a}
+  #endd{font-size:15px;line-height:2;color:#b8d8a8;white-space:pre-line}
+
+  @media (max-width:640px){
+    #title h1{font-size:34px;letter-spacing:7px}
+    .card{width:150px}
+    #lvcards{flex-wrap:wrap}
+    #time{font-size:22px}
+    #bars{width:140px}
+  }
+</style>
+<script>window.__BOOTERR=[];window.addEventListener('error',e=>{window.__BOOTERR.push(String(e.message||e));if(window.__G&&window.__G.err)window.__G.err.push(String(e.message||e));});</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud">
+  <div>
+    <div id="time">00:00</div>
+    <div id="sub"><span id="kills">击杀 0</span><span id="lvl">Lv.1</span></div>
+    <div id="bars">
+      <div class="bar hp"><div id="hpfill"></div><span id="hptext"></span></div>
+      <div class="bar xp"><div id="xpfill"></div></div>
+    </div>
+  </div>
+</div>
+
+<div id="bossbar" class="hide">
+  <div id="bossname">终极死神</div>
+  <div id="bosstrack"><div id="bossfill"></div></div>
+</div>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+</div>
+
+<div id="wlist"></div>
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+<div id="joy" class="hide"><div id="joyknob"></div></div>
+
+<div id="lvup" class="hide">
+  <h2>升 级</h2>
+  <div id="lvcards"></div>
+</div>
+
+<div id="title">
+  <h1>暗渊割草者</h1>
+  <h2>ABYSS REAPER · 幸存者之夜</h2>
+  <div class="howto">
+    WASD / 方向键移动（触屏拖动摇杆），武器全自动索敌开火<br>
+    收集绿色 XP 晶石升级，三选一强化你的构筑<br>
+    武器满 8 级 + 对应被动 ≥3 级 → 进化质变<br>
+    撑过 15 分钟，击败终极死神，迎接黎明！
+  </div>
+  <div id="titlebest"></div>
+  <div class="btns"><button id="startbtn">开 始</button></div>
+</div>
+
+<div id="end">
+  <h1 id="endh">结算</h1>
+  <div id="endd"></div>
+  <div class="btns"><button id="go">再来一局</button><button id="go2" class="ghost">回标题</button></div>
+</div>
+
+<script type="module" src="js/game.js"></script>
+</body>
+</html>
