@@ -39,7 +39,7 @@ export function makeUI({ onStart, onContinue, onSelect, onBack, onPick, onUndo, 
     el.titlebest.textContent = total > 0 ? `已收集 ${total} / 90 星` : '还没有纪录，来点亮第一颗水晶吧';
     el.selbest.textContent = total > 0 ? `当前总星数 ${total} / 90` : '从第一章开始你的光路之旅';
   }
-  function setMoves(m, par) { el.moves.textContent = `步数 ${m} / par ${par}`; }
+  function setMoves(m, par, lit = 0, total = 0) { el.moves.textContent = `步数 ${m} / par ${par} · 水晶 ${lit}/${total}`; }
   function renderSelect(LEVELS, stars, gates, current) {
     el.chaplist.innerHTML = '';
     const total = stars.reduce((a, b) => a + b, 0);

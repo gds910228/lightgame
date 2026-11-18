@@ -152,7 +152,8 @@ function doSwap() {
 function spawnBody(tier, x, y, vx = 0, vy = 0) {
   const f = FRUITS[tier];
   const b = {
-    tier, x: Math.max(JAR.left + f.r, Math.min(JAR.right - f.r, x)), y,
+    tier, x: Math.max(JAR.left + f.r, Math.min(JAR.right - f.r, x)),
+    y: Math.min(y, JAR.floor - f.r),      // merged fruit is bigger than parents: keep above floor
     vx, vy, r: f.r, rot: 0, hit: false, dead: false, born: 0,
   };
   bodies.push(b);
@@ -362,6 +363,7 @@ function tick(now) {
   requestAnimationFrame(tick);
   let dt = (now - last) / 1000; last = now;
   if (document.hidden) return;
+  handleKeys();   // consume pressed keys in the REAL loop too (was debug-only — keyboard was dead for players)
   dt = Math.min(dt, 1 / 30);
   if (mode === 'play' && !paused) {
     acc += dt;
@@ -609,7 +611,7 @@ async function autotest() {
   assert(32, !nan2 && G.err.length === errBefore, '整局快进 240 投无 NaN 无新报错');
   if (S().mode === 'play') for (let i = 0; i < 30; i++) { G.spawnTier(7 + (i % 3), 110 + Math.random() * 320, 150 + Math.random() * 300); G.upd(5); }
   G.setNoAuto(false);
-  for (let i = 0; i < 400 && S().mode === 'play'; i++) G.upd(1);
+  for (let i = 0; i < 900 && S().mode === 'play'; i++) G.upd(1);
   assert(33, S().mode === 'over', '堆满后自然判负到结算');
 
   // -- T34: back to title screen

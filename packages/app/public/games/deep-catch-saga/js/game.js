@@ -740,6 +740,7 @@ function tick(now) {
   requestAnimationFrame(tick);
   let dt = (now - last) / 1000; last = now;
   if (document.hidden) return;
+  handleKeys();   // consume pressed keys in the REAL loop too (was debug-only — keyboard was dead for players)
   dt = Math.min(dt, 1 / 30);
   if (mode === 'play' && !paused && !panel) {
     acc += dt;

@@ -9,9 +9,9 @@ import { makeUI } from './ui.js';
 import * as THREE from '../vendor/three.module.min.js';
 
 // ==================== physics constants ====================
-const GRAV = -26, REST = .8, WALL_REST = .75, BALL_R = .55, PEG_R = .5;
+const GRAV = -26, REST = .8, WALL_REST = .75, BALL_R = .55, PEG_R = .56;
 const MAXV = 42, SUBSTEPS = 3;
-const START_BALLS = 8, FEVER_AT = 10, FEVER_BALLS = 3;
+const START_BALLS = 8, FEVER_AT = 12, FEVER_BALLS = 3;
 const BUCKET_W = 3.4;
 
 // ==================== state ====================
@@ -19,7 +19,7 @@ let mode = 'title', paused = false, noAuto = false;
 let score = 0, bestScore = 0, bestRound = 0, round = 1;
 let balls = START_BALLS, freeBalls = 0, mult = 1, shotHits = 0, purpleHit = false;
 let feverArmed = false, feverActive = false, clearBonus = 0;
-let aimAngle = 0;                          // 0 = straight down; ±1.3 rad max
+let aimAngle = 0, fastBall = false;        // click during flight = fast-forward
 let ball = null;                           // {x,y,vx,vy}
 let playT = 0, time = 0, lastReportT = 0;
 const pegs = [], buckets = [], trailDots = [];
@@ -91,9 +91,9 @@ function layoutPegs(seedRng, count) {
   let placed = 0;
   for (let r = 0; r < rows && placed < count; r++) {
     const y = 5.5 + (r / Math.max(1, rows - 1)) * 19;
-    const n = Math.min(12, count - placed);
+    const n = Math.min(14, count - placed);
     for (let i = 0; i < n; i++) {
-      const x = -BW / 2 + 2.4 + (BW - 4.8) * ((i + .5) / n) + (seedRng() - .5) * 1.2;
+      const x = -BW / 2 + 2.4 + (BW - 4.8) * ((i + .5) / n) + (seedRng() - .5) * .9;
       const yy = y + (seedRng() - .5) * 1.4;
       if (yy > BH - 2.5 && Math.abs(x) < 3.4) continue;      // keep launcher column clear
       const kind = seedRng() < .03 ? 'purple' : seedRng() < .015 ? 'green' : 'blue';
@@ -327,7 +327,7 @@ function updateBuckets(dt) {
 
 // trajectory preview: simulate 46 steps
 function updatePreview() {
-  if (ball || mode !== 'play') { trailMeshes.forEach(m => m.visible = false); return; }
+  if (mode !== 'play') { trailMeshes.forEach(m => m.visible = false); return; }
   let x = 0, y = BH - 1.4, vx = Math.sin(aimAngle) * 30, vy = -Math.cos(aimAngle) * 30;
   let dot = 0;
   const h = 1 / 45;
@@ -356,6 +356,8 @@ function update(dt) {
   updateBuckets(dt);
   if (ball) {
     stepBall(dt);
+    if (fastBall && ball) { stepBall(dt); stepBall(dt); }   // click-to-fast-forward ×3
+    if (!ball) fastBall = false;
     if (ball) {                              // ball may have been consumed inside stepBall
       ballMesh.position.set(ball.x, ball.y, .55);
       ballMesh.visible = true;
@@ -387,6 +389,7 @@ function tick(now) {
   requestAnimationFrame(tick);
   let dt = (now - last) / 1000; last = now;
   if (document.hidden) return;
+  handleKeys();   // consume pressed keys in the REAL loop too (was debug-only — keyboard was dead for players)
   dt = Math.min(dt, 1 / 30);
   if (mode === 'play' && !paused) {
     acc += dt;
@@ -417,7 +420,10 @@ function setAimFromScreen(sx, sy) {
 addEventListener('pointermove', (e) => { if (mode === 'play' && !paused && e.pointerType !== 'touch') setAimFromScreen(e.clientX); });
 addEventListener('pointerdown', (e) => {
   audio.ensure();
-  if (mode === 'play' && !paused && e.pointerType === 'touch') setAimFromScreen(e.clientX);
+  if (mode === 'play' && !paused) {
+    setAimFromScreen(e.clientX);
+    if (ball) fastBall = true;              // click during flight = speed up
+  }
 });
 addEventListener('pointerup', (e) => {
   if (mode === 'play' && !paused) {
@@ -562,7 +568,7 @@ async function autotest() {
 
     // -- T16: bucket catch (deterministic: pegs pushed aside, frozen bucket at center)
     startGame();
-    G.killPegs(11);                            // 11 left: above FEVER_AT, no clear
+    G.killPegs(13);                            // 13 left: above FEVER_AT, no clear
     G.pushPegsAside();                         // clear the drop lane
     G.bucketAt(0, 0);
     buckets[0].dir = 0;
