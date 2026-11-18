@@ -285,9 +285,10 @@ function affordMap() {
   return m;
 }
 function upgradeSel() {
-  if (!selTower || selTower.lv >= 2) return false;
+  if (!selTower) return false;
+  if (selTower.lv >= 2) { ui.toast('已满级 Lv3'); return false; }
   const cost = selTower.def.upg[selTower.lv];
-  if (essence < cost) { ui.toast('星尘不足'); return false; }
+  if (essence < cost) { ui.toast(`星尘不足（需 ${cost}✦）`); return false; }
   essence -= cost;
   selTower.upgrade(); audio.play('upgrade');
   fx.ring(selTower.pad.pos, selTower.def.color, 1.6, .4);
@@ -493,6 +494,8 @@ Object.assign(G, {
   shot: () => world.renderer.domElement.toDataURL('image/jpeg', .6),
   noEvent: (fn) => { const r = Math.random; Math.random = () => .99; try { return fn(); } finally { Math.random = r; } },
   setNoAuto: (v) => { noAuto = v; },
+  pump: () => { if (pressed.size) { if (pressed.has('Click') && !paused) handleClick(); endFrame(); } },
+  clickAt: (cx, cy) => { mouse.x = cx / innerWidth * 2 - 1; mouse.y = -(cy / innerHeight) * 2 + 1; handleClick(); },
 });
 
 // ==================== autotest suite ====================
@@ -846,6 +849,56 @@ async function autotest() {
     R(1);
     ok('T34', essence === before + 15 && mode === 'combat', `+${essence - before} mode=${mode}`);
     backToBuild();
+  }
+
+  // T35/T36 interaction regressions (with a sane stub viewport — the hidden
+  // test guest may report 0x0; the stub also validates the self-heal path)
+  {
+    const dW = Object.getOwnPropertyDescriptor(window, 'innerWidth');
+    const dH = Object.getOwnPropertyDescriptor(window, 'innerHeight');
+    Object.defineProperty(window, 'innerWidth', { value: 1280, configurable: true });
+    Object.defineProperty(window, 'innerHeight', { value: 720, configurable: true });
+    try {
+      G.reset(); G.noEvent(() => startGame(false));
+      G.step(2);
+      world.camera.updateMatrixWorld(true); world.camera.matrixWorldInverse.copy(world.camera.matrixWorld).invert();
+      const v = world.pads[3].pos.clone().setY(.5).project(world.camera);
+      const px = Math.round((v.x * .5 + .5) * innerWidth), py = Math.round((-v.y * .5 + .5) * innerHeight);
+      const cards = () => document.getElementById('cards').classList.contains('on');
+      const gl = document.getElementById('gl');
+      // touch tap directly on the pad → tap-to-select
+      gl.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', clientX: px, clientY: py }));
+      G.pump();
+      ok('T35', cards(), 'touch tap selects pad');
+      deselect();
+      // stray touch far away, then a mouse click inside the echo window → suppressed
+      gl.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', clientX: 40, clientY: 40 }));
+      G.pump();
+      gl.dispatchEvent(new MouseEvent('mousemove', { clientX: px, clientY: py, bubbles: true }));
+      gl.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: px, clientY: py, bubbles: true }));
+      G.pump();
+      ok('T35b', !cards(), 'mouse click suppressed inside touch echo window');
+      // UI press (target = a DOM button) must not raycast through the DOM and deselect
+      G.clickAt(px, py);
+      ok('T35c-pre', cards(), 'pad selected via direct click');
+      document.getElementById('callbtn').dispatchEvent(new MouseEvent('mousedown', { button: 0, bubbles: true, clientX: px, clientY: py }));
+      G.pump();
+      ok('T35c', cards(), 'UI press does not deselect');
+      deselect();
+      // poisoned camera aspect (0x0 collapse) self-heals and picking revives
+      const cam = world.camera;
+      cam.aspect = NaN; cam.updateProjectionMatrix();
+      G.upd(2);
+      ok('T36', isFinite(cam.aspect) && Math.abs(cam.aspect - 1280 / 720) < 1e-6, `aspect=${cam.aspect}`);
+      const v2 = world.pads[5].pos.clone().setY(.5).project(cam);
+      const x = Math.round((v2.x * .5 + .5) * innerWidth), y = Math.round((-v2.y * .5 + .5) * innerHeight);
+      G.clickAt(x, y);
+      ok('T36b', document.getElementById('cards').classList.contains('on'), 'picking works after heal');
+      deselect();
+    } finally {
+      if (dW) Object.defineProperty(window, 'innerWidth', dW); else delete window.innerWidth;
+      if (dH) Object.defineProperty(window, 'innerHeight', dH); else delete window.innerHeight;
+    }
   }
 
   // wrap: back to title

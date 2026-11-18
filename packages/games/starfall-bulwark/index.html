@@ -44,9 +44,9 @@
   /* build cards */
   #cardwrap{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:12;text-align:center;pointer-events:none}
   #cardeh{font-size:12px;color:#a898c0;margin-bottom:6px;text-shadow:0 1px 4px #000}
-  #cards{display:none;gap:9px;pointer-events:auto;justify-content:center}
+  #cards{display:none;gap:9px;pointer-events:none;justify-content:center}
   #cards.on{display:flex}
-  .card{position:relative;width:78px;padding:9px 4px 7px;background:rgba(18,12,28,.9);border:1px solid rgba(255,215,122,.25);border-radius:10px;cursor:pointer;text-align:center;transition:transform .12s,border-color .12s}
+  .card{position:relative;width:78px;padding:9px 4px 7px;background:rgba(18,12,28,.9);border:1px solid rgba(255,215,122,.25);border-radius:10px;cursor:pointer;text-align:center;transition:transform .12s,border-color .12s;pointer-events:auto}
   .card:hover{transform:translateY(-3px);border-color:rgba(255,215,122,.7)}
   .card.dim{opacity:.38;pointer-events:none}
   .card .glyph{font-size:21px}

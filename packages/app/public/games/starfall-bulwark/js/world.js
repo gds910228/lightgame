@@ -189,7 +189,12 @@ export function makeWorld(canvas) {
   const quadScene = new THREE.Scene(); quadScene.add(quad);
 
   function size() {
+    // Never adopt a collapsed/invalid viewport (hidden guest, transient iframe
+    // layout): a 0x0 or NaN aspect poisons the projection matrix and kills
+    // every raycast until the next resize. Keep the last good state instead.
     const w = innerWidth, h = innerHeight;
+    if (!w || !h || !isFinite(w / h)) return;
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
     renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix();
     const pw = Math.max(2, w >> 1), ph = Math.max(2, h >> 1);
     rtScene.setSize(w, h); rtA.setSize(pw, ph); rtB.setSize(pw, ph);
@@ -206,6 +211,12 @@ export function makeWorld(canvas) {
   let time = 0;
   function update(dt) {
     time += dt;
+    // self-heal: catch size changes that arrive without a resize event
+    // (hidden→shown iframe, pane collapse) — canvas buffer must track viewport
+    const wantW = innerWidth, wantH = innerHeight;
+    const badAspect = !isFinite(camera.aspect) || Math.abs(camera.aspect - wantW / wantH) > 1e-6;
+    if (wantW && wantH && badAspect) size();
+    else if (wantW && wantH && renderer.domElement.width !== Math.round(wantW * renderer.getPixelRatio())) size();
     core.getObjectByName('crystal').rotation.y += dt * .7; core.getObjectByName('crystal').rotation.x += dt * .22;
     const shards = core.getObjectByName('shards');
     shards.rotation.y -= dt * 1.1;

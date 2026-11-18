@@ -18,7 +18,18 @@ addEventListener('keyup', (e) => { note('↑' + e.code); keys.delete(e.code); if
 for (const ev of ['blur', 'focus', 'pagehide']) addEventListener(ev, () => { note('[' + ev + ']'); keys.clear(); });
 document.addEventListener('visibilitychange', () => keys.clear());
 addEventListener('mousemove', (e) => { mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = -(e.clientY / innerHeight) * 2 + 1; });
-addEventListener('mousedown', (e) => { if (touchMode) return; if (e.button === 0) { note('click'); pressed.add('Click'); } });
+// A touch must not permanently disable mouse input (touchscreen laptops, stray
+// palm contact): only suppress the synthetic mousedown that trails a real touch.
+// AND: a press on any DOM UI element (cards, tower panel, HUD buttons) must NOT
+// queue a scene click — otherwise the next frame raycasts through the UI,
+// deselecting the selection before the element's own click handler runs.
+let lastTouchT = -1e9;
+const isScene = (e) => !e.target || e.target.id === 'gl' || e.target === document.body || e.target === document.documentElement;
+addEventListener('mousedown', (e) => {
+  if (e.button !== 0 || !isScene(e)) return;
+  if (touchMode && performance.now() - lastTouchT < 1200) return;   // synthetic echo of a real touch
+  note('click'); pressed.add('Click');
+});
 addEventListener('contextmenu', (e) => e.preventDefault());
 export function endFrame() { pressed.clear(); }
 
@@ -36,7 +47,13 @@ export function initTouch(onBtn) {
   const root = document.getElementById('touch');
   if (!root) return;
   const setMode = (v) => { touchMode = v; root.classList.toggle('on', v); };
-  addEventListener('pointerdown', (e) => { if (e.pointerType === 'touch') setMode(true); }, { passive: true });
+  addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'touch' || !isScene(e)) return;
+    setMode(true); lastTouchT = performance.now();
+    // tap-to-select: a touch must reach pad/tower picking just like a mouse click
+    mouse.x = e.clientX / innerWidth * 2 - 1; mouse.y = -(e.clientY / innerHeight) * 2 + 1;
+    pressed.add('Click');
+  }, { passive: true });
   const bind = (id, code, hold) => {
     const el = document.getElementById(id);
     if (!el) return;
