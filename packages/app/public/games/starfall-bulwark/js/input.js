@@ -62,5 +62,6 @@ export function initTouch(onBtn) {
     for (const ev of ['pointerup', 'pointercancel', 'pointerleave']) el.addEventListener(ev, up);
   };
   bind('twave', 'Space'); bind('tspeed', 'KeyF'); bind('tpause', 'KeyP');
+  bind('tq', 'KeyQ'); bind('te', 'KeyE'); bind('tr', 'KeyR');
   for (let i = 1; i <= 5; i++) bind('tb' + i, 'Digit' + i);
 }

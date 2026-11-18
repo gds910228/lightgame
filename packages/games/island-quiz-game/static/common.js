@@ -525,7 +525,7 @@ var btGame;
         }
     };
     window.a = c;
-    var mebtnopenurl = 'http://g.lanrenmb.com';
+    var mebtnopenurl = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
 var thegameurl =""; 
 var guanzhuurl ="http://mp.weixin.qq.com/s?__biz=MjM5NjA0MTI0OQ==&mid=200068987&idx=1&sn=1de5daeaae94c66a3c46a13e20e8011e#rd";
     c.src = "http://mmbiz.qpic.cn/mmbiz/2zpp2iaH4HWGibTGlgZ0T24BEhuvDE3KFIOib0Bicg8yfs64RHzul0BvfriaEJyI65UjLYmhop9YRyak37Oib0Laju1A/640";

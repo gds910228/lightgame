@@ -92,20 +92,24 @@ export function textTag(text, { fg = '#ffd77a', bg = 'rgba(30,10,40,.72)', size 
   return sp;
 }
 
-// HP bar sprite: two-layer canvas redrawn on demand (cheap, few enemies alive).
+// HP bar sprite: hp fill + optional blue shield strip above, redrawn on demand
+// (cheap: quantized, few enemies alive).
 export function hpBar() {
-  const [c, g] = cv(48, 7);
+  const [c, g] = cv(48, 9);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, transparent: true }));
-  sp.scale.set(.9, .14, 1);
+  sp.scale.set(.9, .17, 1);
   let last = -1;
-  sp.redraw = (frac) => {
-    const f = Math.max(0, Math.min(1, frac)), q = Math.round(f * 20);
+  sp.redraw = (frac, shieldFrac = -1) => {
+    const f = Math.max(0, Math.min(1, frac));
+    const sf = shieldFrac < 0 ? -1 : Math.max(0, Math.min(1, shieldFrac));
+    const q = Math.round(f * 20) * 100 + Math.round(Math.max(0, sf) * 20);
     if (q === last) return; last = q;
-    g.clearRect(0, 0, 48, 7);
-    g.fillStyle = 'rgba(8,8,14,.85)'; g.fillRect(0, 0, 48, 7);
+    g.clearRect(0, 0, 48, 9);
+    g.fillStyle = 'rgba(8,8,14,.85)'; g.fillRect(0, 0, 48, 9);
     g.fillStyle = f > .5 ? '#6fe08a' : f > .25 ? '#e0b34f' : '#e05252';
-    g.fillRect(1, 1, 46 * f, 5);
+    g.fillRect(1, 3, 46 * f, 5);
+    if (sf > 0) { g.fillStyle = '#7fc4ff'; g.fillRect(1, 1, 46 * sf, 2); }
     t.needsUpdate = true;
   };
   return sp;

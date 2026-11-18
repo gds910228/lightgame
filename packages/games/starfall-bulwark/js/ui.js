@@ -5,8 +5,37 @@ import { TOWERS } from './towers.js';
 
 const $ = (id) => document.getElementById(id);
 
+const SKILL_META = [
+  { key: 'Q', glyph: '☄', zh: '星陨术 — 三连陨石轰击敌群' },
+  { key: 'E', glyph: '❄', zh: '冰封新星 — 冻结全场 2.5s' },
+  { key: 'R', glyph: '⚡', zh: '过载脉冲 — 全塔射速 +45% 10s' },
+];
+
 export function makeUI(cb) {
   const ui = {};
+
+  // --- actives skill bar (built once, updated per frame) ---
+  const skillEls = [];
+  {
+    const bar = $('skills');
+    for (const m of SKILL_META) {
+      const d = document.createElement('div');
+      d.className = 'skill';
+      d.title = m.zh;
+      d.innerHTML = `<div class="scd"></div><div class="sg">${m.glyph}</div><div class="sk">${m.key}</div>`;
+      d.onclick = () => cb.onSkill && cb.onSkill(m.key);
+      bar.appendChild(d);
+      skillEls.push(d);
+    }
+  }
+  ui.skills = (arr) => {
+    arr.forEach((s, i) => {
+      const el = skillEls[i];
+      if (!el) return;
+      el.querySelector('.scd').style.height = (Math.min(1, Math.max(0, s.cdFrac)) * 100) + '%';
+      el.classList.toggle('ready', !!s.ready);
+    });
+  };
 
   // --- HUD ---
   ui.hud = ({ core, coreMax, essence, wave, endless, preview, best }) => {

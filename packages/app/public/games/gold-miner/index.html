@@ -74,32 +74,7 @@
 			1);
 	</script>  
 	<script src="GoldNuggets_x.js?v=14502aa"></script>
-
-	<!-- Share Button -->
-<button id="shareButton" style="position: fixed; top: 10px; right: 10px; z-index: 1000; background: #007bff; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 14px;">
-  Share
-</button>
-
-<script>
-document.getElementById('shareButton').addEventListener('click', function() {
-  if (navigator.share) {
-    navigator.share({
-      title: 'Gold Miner - LightGame',
-      text: 'Play this classic gold mining game! Use your hook to grab gold and gems.',
-      url: window.location.href
-    }).catch(err => console.log('Error sharing:', err));
-  } else {
-    // Fallback for browsers that don't support Web Share API
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(window.location.href).then(() => {
-        alert('Game link copied to clipboard!');
-      });
-    } else {
-      alert('Share this game: ' + window.location.href);
-    }
-  }
-});
-</script>
+	<script src="audio.js?v=1"></script>
 
 </body>
 </html>

@@ -54,6 +54,15 @@
   .card .cc{font-size:11px;color:#ffd77a}
   .card .ck{position:absolute;left:5px;top:4px;font-size:10px;color:#8a7aa0}
 
+  /* actives skill bar */
+  #skills{position:fixed;right:14px;bottom:14px;z-index:13;display:flex;gap:10px}
+  .skill{position:relative;width:52px;height:52px;border-radius:10px;background:rgba(18,12,28,.85);border:1px solid rgba(255,215,122,.3);cursor:pointer;overflow:hidden;display:flex;align-items:center;justify-content:center}
+  .skill .sg{font-size:24px;color:#c8bca8;transition:color .2s}
+  .skill.ready .sg{color:#ffe0a8;text-shadow:0 0 10px rgba(255,190,90,.8)}
+  .skill .scd{position:absolute;left:0;bottom:0;width:100%;height:0;background:rgba(8,5,16,.72);pointer-events:none}
+  .skill .sk{position:absolute;right:3px;bottom:1px;font-size:10px;color:#8a7aa0}
+  .skill:not(.ready){border-color:rgba(255,215,122,.15)}
+
   /* tower panel */
   #tpanel{position:fixed;right:14px;top:96px;z-index:12;width:210px;padding:12px;display:none;color:#e8dcc8;pointer-events:auto}
   #tpname{font-size:15px;color:#ffd77a;margin-bottom:6px}
@@ -104,6 +113,7 @@
   #twave{right:80px;bottom:24px;width:64px!important;height:64px!important;font-size:13px!important}
   #tspeed{right:150px;bottom:30px}
   #tpause{right:150px;bottom:96px}
+  #tq{right:220px;bottom:30px}#te{right:220px;bottom:96px}#tr{right:220px;bottom:162px}
   #tb1,#tb2,#tb3,#tb4,#tb5{right:18px}
   #tb1{bottom:104px}#tb2{bottom:160px}#tb3{bottom:216px}#tb4{bottom:272px}#tb5{bottom:328px}
 
@@ -153,6 +163,7 @@
 <div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
 <div id="toast"></div>
 <div id="flash"></div>
+<div id="skills"></div>
 
 <div id="draft"><div class="dtitle"></div><div class="dcards"></div></div>
 
@@ -173,6 +184,9 @@
   <div class="tbtn" id="twave">召唤</div>
   <div class="tbtn" id="tspeed">变速</div>
   <div class="tbtn" id="tpause">暂停</div>
+  <div class="tbtn" id="tq">陨</div>
+  <div class="tbtn" id="te">冻</div>
+  <div class="tbtn" id="tr">过</div>
   <div class="tbtn" id="tb1">弩</div>
   <div class="tbtn" id="tb2">霜</div>
   <div class="tbtn" id="tb3">雷</div>

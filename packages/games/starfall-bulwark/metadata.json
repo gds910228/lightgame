@@ -2,14 +2,14 @@
   "id": "starfall-bulwark",
   "title": "Starfall Bulwark",
   "category": "Strategy",
-  "description": "A dusk-canyon 3D tower defense built with three.js. A fallen star core wakes beside a void portal — build ballistic towers along the winding star-road, chain lightning through crystal beasts, slow them with frost, splash the armored brutes and catch the fliers with prism beams. Roguelite blessing drafts every third wave, random wave events (essence tide, meteor strikes, fog, overcharge, swarm), a two-phase colossus boss that stomps your towers offline, and an endless mode with elite affixes and rising scaling. Chase your best-wave record.",
-  "controls": "Click a glowing hex pad to open the build menu, then pick one of 5 towers (keys 1-5). Click a built tower to upgrade (U) or sell (X, 70% refund). Space calls the next wave early for +15 essence (or toggles speed during combat), F toggles 1×/2× speed, P pauses, Esc deselects. Clear wave 10 to unlock endless mode. Touch controls supported on mobile.",
+  "description": "A dusk-canyon 3D tower defense built with three.js. A fallen star core wakes beside a void portal — build ballistic towers along the winding star-road, chain lightning through crystal beasts, slow them with frost, splash the armored brutes and catch the fliers with prism beams, and turn the tide yourself with three castable powers: Starfall, Frost Nova and Overload Pulse. Roguelite blessing drafts every third wave, random wave events, a colossus boss that stomps your towers offline — and a Deep Tide endless mode where enemies compound +10% per wave, learn to split, shield and burrow, grow armor with depth and march in ever larger colossus packs. Chase your best-wave record.",
+  "controls": "Click a glowing hex pad to open the build menu, then pick one of 5 towers (keys 1-5). Click a built tower to upgrade (U) or sell (X, 70% refund). Cast powers with Q (Starfall), E (Frost Nova), R (Overload Pulse). Space calls the next wave early for +15 essence (or toggles speed during combat), F toggles 1×/2× speed, P pauses, Esc deselects. Clear wave 10 to unlock endless mode. Touch controls supported on mobile.",
   "type": "local",
   "path": "/games/starfall-bulwark/index.html",
   "thumbnail": "./thumbnail.jpg",
   "tags": ["tower-defense", "strategy", "3d", "roguelite", "endless", "waves", "boss"],
   "author": "LightGame",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "featured": false,
   "date_added": "2026-11-17"
 }

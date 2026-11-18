@@ -40,7 +40,7 @@ function isMobile() {
 function isIOS() {
 	return navigator.userAgent.match(/iphone|ipod|ios/i)
 }
-var RESOURCE_IMG_PATH = RESOURCE_IMG_PATH || "/vapp/",
+var RESOURCE_IMG_PATH = RESOURCE_IMG_PATH || "vapp/",
 HORIZONTAL = HORIZONTAL || false,
 COVER_SHOW_TIME = COVER_SHOW_TIME || 2e3;
 document.addEventListener("WeixinJSBridgeReady",
@@ -97,7 +97,7 @@ false); (function() {
 	document.body.appendChild(t);
 	window.addEventListener("orientationchange", n);
 if (!isMobile()) return;	var e = document.createElement("div");	if (!document.body) return;	e.style.cssText = "position:absolute;z-index:1000000;left:0;top:0;background:#6699ff url(" + RESOURCE_IMG_PATH + "cover.jpg) no-repeat center center;background-size: 50%;width:" + window.innerWidth + "px;height:" + Math.max(window.innerHeight, window.document.documentElement.offsetHeight) + "px";	e.className = "common_cover";	document.body.appendChild(e);
-};
+})();
 if (isWeixin()) {
 	addShareWX()
 } else {

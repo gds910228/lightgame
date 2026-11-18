@@ -40,11 +40,14 @@ const BLESSINGS = [
 ];
 
 const EVENTS = {
-  tide:   { zh: '精 华 潮', sub: '本波击杀星尘翻倍', apply: () => rewardMult = 2, revert: () => rewardMult = 1 },
-  meteor: { zh: '星 陨', sub: '陨石将坠入战场', apply: () => { meteorQ = [3, 7, 11]; }, revert: () => meteorQ = [] },
-  fog:    { zh: '迷 雾', sub: '本波全塔射程 -20%', apply: () => fogWave = true, revert: () => fogWave = false },
-  over:   { zh: '超 频', sub: '开波 18 秒射速 +45%', apply: () => overchargeT = 18, revert: () => overchargeT = 0 },
-  swarm:  { zh: '虫 潮', sub: '本波敌群 +30%', apply: () => swarmMult = 1.3, revert: () => swarmMult = 1 },
+  tide:    { zh: '精 华 潮', sub: '本波击杀星尘翻倍', deep: false, apply: () => rewardMult = 2, revert: () => rewardMult = 1 },
+  meteor:  { zh: '星 陨', sub: '陨石将坠入战场', deep: false, apply: () => { meteorQ = [3, 7, 11]; }, revert: () => meteorQ = [] },
+  fog:     { zh: '迷 雾', sub: '本波全塔射程 -20%', deep: false, apply: () => fogWave = true, revert: () => fogWave = false },
+  over:    { zh: '超 频', sub: '开波 18 秒射速 +45%', deep: false, apply: () => overchargeT = 18, revert: () => overchargeT = 0 },
+  swarm:   { zh: '虫 潮', sub: '本波敌群 +30%', deep: false, apply: () => swarmMult = 1.3, revert: () => swarmMult = 1 },
+  emp:     { zh: '磁 暴', sub: '随机哨塔将三次停机 4 秒', deep: true, apply: () => { empQ = [2, 10, 18]; }, revert: () => empQ = [] },
+  corrode: { zh: '晶 蚀', sub: '本波敌群护甲 +3', deep: true, apply: () => waveArmor += 3, revert: () => waveArmor -= 3 },
+  frenzy:  { zh: '狂 潮', sub: '本波敌群移速 +30%', deep: true, apply: () => waveSpd += .3, revert: () => waveSpd -= .3 },
 };
 
 // --- state ---
@@ -54,6 +57,8 @@ let essence = START_ESS, coreHp = CORE_MAX;
 let towers = [], enemies = [], spawnQ = [], meteorQ = [];
 let speed = 1, paused = false, callT = 0, combatT = 0, overchargeT = 0;
 let rewardMult = 1, fogWave = false, swarmMult = 1, lastEvent = '';
+let waveArmor = 0, waveSpd = 0, empQ = [];
+let qCd = 0, eCd = 0, rCd = 0, lastCycle = 0;
 let noAuto = false;                 // autotest guard: build countdown never auto-calls
 let selPad = -1, selTower = null;
 let best = 0, newBest = false, nanFlag = false;
@@ -73,9 +78,10 @@ function resetState(toEndless = false) {
   essence = START_ESS; coreHp = CORE_MAX;
   towers.forEach(t => t.dispose(world.scene)); towers = [];
   enemies.forEach(e => e.dispose(world.scene)); enemies = [];
-  spawnQ = []; meteorQ = [];
+  spawnQ = []; meteorQ = []; empQ = []; starfallQ = [];
   speed = 1; paused = false; callT = 0; combatT = 0; overchargeT = 0;
   rewardMult = 1; fogWave = false; swarmMult = 1; lastEvent = '';
+  waveArmor = 0; waveSpd = 0; qCd = 0; eCd = 0; rCd = 0; lastCycle = 0;
   selPad = -1; selTower = null; newBest = false; nanFlag = false;
   mods = { ballistaDmg: 1, allDmg: 1, range: 1, rate: 1, slow: 0, chain: 0, splash: 1, prismDmg: 1, essence: 1 };
   counts = {};
@@ -94,6 +100,7 @@ const ui = makeUI({
   onSpeed: toggleSpeed, onPause: togglePause, onMute: () => ui.mute(audio.toggleMute()),
   onCall: () => callWave(true), onUpgrade: upgradeSel, onSell: sellSel, onDeselect: deselect,
   onBuild: (key) => buildOn(key), onStart: () => startGame(false),
+  onSkill: (key) => { if (key === 'Q') castStarfall(); else if (key === 'E') castNova(); else if (key === 'R') castOverload(); },
 });
 
 // --- protocol (site bridge) ---
@@ -114,13 +121,14 @@ function waveComp(w) {
   const idx = Math.max(0, w - TOTAL_WAVES - 1);
   const base = WAVES[idx % 10].map(x => [...x]);
   const comp = base.filter(g => g[0] !== 'colossus');
-  if (idx % 5 === 4) comp.unshift(['colossus', 1]);
+  if (idx % 5 === 4) comp.unshift(['colossus', 1 + Math.floor(idx / 10)]);   // +1 colossus per 2 cycles
   return comp;
 }
 function wavePlan(w) {
   const idx = Math.max(0, w - TOTAL_WAVES - 1);
   const cycle = Math.floor(idx / 5) + 1;
-  return { hpMult: 1 + .16 * cycle, spdMult: 1 + Math.min(.04 * (cycle - 1), .3), cycle };
+  // compound +10% per deep wave — maxed towers alone cannot keep up, actives required
+  return { hpMult: Math.pow(1.10, idx) * (1 + .16 * cycle), spdMult: 1 + Math.min(.06 * (cycle - 1), .5), cycle, armorAdd: Math.floor(idx / 8) };
 }
 function buildSpawnQ(comp, t0 = 1) {
   const q = [];
@@ -144,17 +152,25 @@ function callWave(bonus = true) {
   swarmMult = 1; rewardMult = 1; fogWave = false; overchargeT = 0;
   const comp = waveComp(wave);
   const bossWave = comp.some(g => g[0] === 'colossus');
-  // random event roll first (swarm must affect this wave's spawn queue)
-  if (!bossWave && Math.random() < (endless ? .55 : .4)) {
-    const pool = Object.keys(EVENTS).filter(k => k !== lastEvent);
+  const plan = wavePlan(wave);
+  // random event roll first (swarm must affect this wave's spawn queue);
+  // deep waves add hostile events and the roll chance climbs per cycle
+  if (!bossWave && Math.random() < (endless ? Math.min(.55 + .04 * plan.cycle, .8) : .4)) {
+    const pool = Object.keys(EVENTS).filter(k => k !== lastEvent && (!EVENTS[k].deep || (endless && wave >= TOTAL_WAVES + 5)));
     const ev = pool[(Math.random() * pool.length) | 0];
     lastEvent = ev;
     EVENTS[ev].apply();
     ui.banner(EVENTS[ev].zh, EVENTS[ev].sub, 2.6);
   }
+  // deep-tide cycle announcement
+  if (endless && plan.cycle > lastCycle) {
+    lastCycle = plan.cycle;
+    const news = plan.cycle === 2 ? '新词缀「裂」：死亡分裂' : plan.cycle === 3 ? '新词缀「盾」：再生护盾' : plan.cycle === 4 ? '新词缀「潜」：周期潜地' : '敌群变异加剧';
+    setTimeout(() => { ui.banner(`深 潮 循 环 ${plan.cycle}`, news, 2.4); }, 2600);
+  }
   spawnQ = buildSpawnQ(comp);
   audio.setState(bossWave ? 'boss' : 'combat');
-  ui.banner(bossWave ? '裂 地 巨 像' : `第 ${wave} 波`, bossWave ? '踏碎大地的轰鸣' : '来袭');
+  ui.banner(bossWave ? `裂 地 巨 像${comp[0][1] > 1 ? ' ×' + comp[0][1] : ''}` : `第 ${wave} 波`, bossWave ? '踏碎大地的轰鸣' : '来袭');
   audio.play(bossWave ? 'roar' : 'waveStart');
   ui.callBtn(false);
   return true;
@@ -168,6 +184,8 @@ function endWave() {
   saveBest();
   gain(20 + 2 * wave);
   if (lastEvent && EVENTS[lastEvent]) { EVENTS[lastEvent].revert(); lastEvent = ''; }
+  fx.clear();                     // in-flight starfall/ projectiles must not bleed into the next wave
+  starfallQ = [];
   audio.setState('build');
   report('progress', { wave, score: wavesCleared });
   if (!endless && wave >= TOTAL_WAVES) { winGame(); return; }
@@ -211,23 +229,33 @@ function startDraft() {
 }
 
 // --- spawning ---
-function rollAffixes() {
+function rollAffixes(kind) {
   if (!endless) return null;
   const { cycle } = wavePlan(wave);
-  if (Math.random() >= Math.min(.2 + .1 * cycle, .75)) return null;
-  const ks = Object.keys(AFFIX);
-  const n = Math.random() < .12 ? 2 : 1;
+  if (Math.random() >= Math.min(.25 + .08 * cycle, .8)) return null;
+  const fly = ENEMY[kind] && ENEMY[kind].fly;
+  const base = ['swift', 'vital', 'ward'];
+  const pool = cycle >= 4 ? [...base, 'split', 'shield', 'burrow']
+    : cycle === 3 ? [...base, 'split', 'shield']
+    : cycle === 2 ? [...base, 'split'] : base;
+  const usable = pool.filter(k => !(fly && !AFFIX[k].fly));
+  const maxN = Math.min(1 + Math.floor(cycle / 2), 3);   // c1:1 c2:2 c3:2 c4:3 c5:3
+  const n = Math.min(maxN, usable.length);
   const out = [];
-  while (out.length < n && out.length < ks.length) {
-    const k = ks[(Math.random() * ks.length) | 0];
+  let guard = 0;
+  while (out.length < n && guard++ < 30) {
+    const k = usable[(Math.random() * usable.length) | 0];
     if (!out.includes(k)) out.push(k);
   }
-  return out;
+  return out.length ? out : null;
 }
 function spawn(kind, t = 0, opts = {}) {
-  const plan = opts.noScale ? { hpMult: 1, spdMult: 1 } : wavePlan(Math.max(wave, 1));
-  if (!opts.affixes && !opts.noScale) opts.affixes = rollAffixes();
-  const e = makeEnemy(kind, world, { hpMult: plan.hpMult, spdMult: plan.spdMult, ...opts, t: opts.t ?? t });
+  const plan = opts.noScale ? { hpMult: 1, spdMult: 1, armorAdd: 0 } : wavePlan(Math.max(wave, 1));
+  if (!opts.affixes && !opts.noScale) opts.affixes = rollAffixes(kind);
+  const e = makeEnemy(kind, world, {
+    hpMult: plan.hpMult, spdMult: plan.spdMult * (1 + waveSpd), armorAdd: (plan.armorAdd || 0) + waveArmor,
+    ...opts, t: opts.t ?? t,
+  });
   if (e.fly) e.group.position.set(10.5, 1, -9.5);
   else { const p = world.curve.getPointAt(Math.min(Math.max(t, 0), 1)); e.group.position.set(p.x, .12, p.z); }
   enemies.push(e);
@@ -240,6 +268,17 @@ function killEnemy(e) {
   fx.burst(e.pos(), e.def.color, 12, 2.2, 1.4);
   fx.ring(e.pos(true), e.def.color, 1.1, .35);
   if (e.boss) { report('event', { event: 'boss_slain' }); ui.banner('巨 像 陨 落', `+${r}✦`, 2.2); }
+  // 「裂」affix: death splits into two minis (never re-split)
+  if (e.affixes && e.affixes.includes('split') && !e.mini && !e.boss) {
+    const plan = wavePlan(Math.max(wave, 1));
+    for (const off of [-.014, .014]) {
+      const m = spawn('crawler', Math.max(0, Math.min(.99, e.t + off)), { noScale: true, hpMult: plan.hpMult * .35, spdMult: plan.spdMult * 1.15, affixes: [] });
+      m.mini = true;
+      m.group.scale.setScalar(.68);
+    }
+    fx.burst(e.pos(), 0xff8a8a, 8, 1.6, 1.2);
+    if (!e.leaked) ui.toast('「裂」分裂！两只幼体钻出');
+  }
   e.dispose(world.scene);
 }
 
@@ -337,10 +376,78 @@ const hooks = {
       ui.toast('★ 践踏！' + bestT.def.zh + ' 停机 3.5s');
     }
   },
+  onBurrow(e) { fx.ring(e.pos(true), 0xc8a2ff, 1.4, .4); audio.play('disable'); if (selTower) ui.towerPanel(selTower); },
+  onSurface(e) { fx.burst(e.pos(), 0xc8a2ff, 8, 1.6, 1.2); },
 };
 function ctxHit(tower, e, dealt) {
   if (tower && tower.key === 'prism') audio.play('beamTick');
   if (!e.alive && !e.leaked) hooks.onDeath(e);
+}
+
+// --- player actives (Q/E/R): hands-on tools that deep endless demands ---
+const ACTIVES = [
+  { key: 'Q', zh: '星陨术', desc: '三连陨石轰击最密集的敌群', cd: 30, glyph: '☄' },
+  { key: 'E', zh: '冰封新星', desc: '冰冻全场敌人 2.5 秒，随后减速', cd: 45, glyph: '❄' },
+  { key: 'R', zh: '过载脉冲', desc: '全塔射速 +45%，持续 10 秒', cd: 35, glyph: '⚡' },
+];
+let starfallQ = [];
+function castStarfall() {
+  if (mode !== 'combat' || qCd > 0) { if (qCd > 0) ui.toast(`星陨术冷却 ${Math.ceil(qCd)}s`); return false; }
+  qCd = ACTIVES[0].cd;
+  audio.play('meteor');
+  starfallQ = [combatT + .05, combatT + .4, combatT + .75];
+  ui.toast('☄ 星陨术！');
+  return true;
+}
+function dropStarfall() {
+  // re-target at drop time: land on the CENTER OF MASS of the densest cluster
+  // (ties broken toward the front-most enemy — corners bend the road, so the
+  // cluster centroid beats any single-enemy aim)
+  const alive = enemies.filter(e => e.alive);
+  if (!alive.length) return;
+  const prog = e => e.fly ? e.flyF : e.t;
+  let best = null, bestN = -1;
+  for (const e of [...alive].sort((x, y) => prog(y) - prog(x))) {
+    const n = alive.filter(o => o.pos(true).distanceTo(e.pos(true)) < 2.4).length;
+    if (n > bestN) { bestN = n; best = e; }
+  }
+  const cluster = alive.filter(o => o.pos(true).distanceTo(best.pos(true)) < 2.4);
+  const to = cluster.reduce((acc, o) => acc.add(o.pos(true)), new THREE.Vector3()).multiplyScalar(1 / cluster.length);
+  fx.meteor(to, (t2) => {
+    fx.ring(t2, 0xffc878, 2.4, .45); fx.burst(t2, 0xffa050, 20, 2.6, 1.8);
+    fx.flash(t2.clone().add(new THREE.Vector3(0, .4, 0)), 0xffd090, .5, 2.6, .3);
+    audio.play('boom');
+    for (const e of enemies) {
+      if (!e.alive) continue;
+      if (e.pos(true).distanceTo(t2) <= 2.4) { const d = e.takeHit(100); if (d) ctxHit(null, e, d); }
+    }
+  });
+}
+function castNova() {
+  if (mode !== 'combat' || eCd > 0) { if (eCd > 0) ui.toast(`冰封新星冷却 ${Math.ceil(eCd)}s`); return false; }
+  eCd = ACTIVES[1].cd;
+  fx.ring(new THREE.Vector3(-5.5, .6, 0), 0x7fd0ff, 12, .7);
+  fx.flash(new THREE.Vector3(-5.5, 1.2, 0), 0xbfe8ff, .8, 5, .5);
+  audio.play('shard');
+  let n = 0;
+  for (const e of enemies) {
+    if (!e.alive) continue;
+    e.frozenT = 2.5;
+    e.slowT = Math.max(e.slowT, 5); if (e.slowF < .4) e.slowF = .4;
+    e.flashT = .15; e.bar.visible = true;
+    n++;
+  }
+  ui.toast(`❄ 冰封新星 — 冻结 ${n} 个敌人`);
+  return true;
+}
+function castOverload() {
+  if (mode !== 'combat' || rCd > 0) { if (rCd > 0) ui.toast(`过载脉冲冷却 ${Math.ceil(rCd)}s`); return false; }
+  rCd = ACTIVES[2].cd;
+  overchargeT = Math.max(overchargeT, 10);
+  audio.play('upgrade');
+  for (const t of towers) fx.ring(t.group.position, 0xffd77a, 1.6, .4);
+  ui.toast('⚡ 过载脉冲 — 全塔射速 +45% 10s');
+  return true;
 }
 
 // --- input ---
@@ -368,6 +475,9 @@ addEventListener('keydown', (e) => {
   if (e.code === 'KeyF') toggleSpeed();
   if (e.code === 'KeyP') togglePause();
   if (e.code === 'Space') { mode === 'build' ? callWave(true) : toggleSpeed(); }
+  if (e.code === 'KeyQ') castStarfall();
+  if (e.code === 'KeyE') castNova();
+  if (e.code === 'KeyR') castOverload();
   if (e.code === 'KeyU') upgradeSel();
   if (e.code === 'KeyX') sellSel();
   if (/^Digit[1-5]$/.test(e.code)) buildOn(Object.keys(TOWERS)[+e.code.slice(5) - 1]);
@@ -396,7 +506,23 @@ function step(dt) {
   } else if (mode === 'combat') {
     combatT += dt;
     if (overchargeT > 0) overchargeT -= dt;
+    qCd = Math.max(0, qCd - dt); eCd = Math.max(0, eCd - dt); rCd = Math.max(0, rCd - dt);
     while (spawnQ.length && spawnQ[0].t <= combatT) spawn(spawnQ.shift().kind);
+    // EMP event: three random tower blackouts
+    if (empQ.length && empQ[0] <= combatT) {
+      empQ.shift();
+      const live = towers.filter(t => t.disabledT <= 0);
+      if (live.length) {
+        const t = live[(Math.random() * live.length) | 0];
+        t.disabledT = 4; t.setDisabled(true); t.fx.beamEnd(t._beamId);
+        fx.burst(t.group.position.clone().add(new THREE.Vector3(0, 1, 0)), 0x9a8aff, 10, 1.4, 1);
+        audio.play('disable');
+        if (selTower === t) ui.towerPanel(t);
+        ui.toast('磁暴！' + t.def.zh + ' 停机 4s');
+      }
+    }
+    // starfall staggered drops
+    while (starfallQ.length && starfallQ[0] <= combatT) { starfallQ.shift(); dropStarfall(); }
     if (meteorQ.length && meteorQ[0] <= combatT) {
       meteorQ.shift();
       const alive = enemies.filter(e => e.alive);
@@ -433,8 +559,13 @@ function step(dt) {
 
   if (mode === 'combat') {
     ui.hud({ core: coreHp, coreMax: CORE_MAX, essence, wave, endless, preview: `剩余敌人 ${spawnQ.length + enemies.length}`, best });
+    ui.skills(ACTIVES.map((a, i) => {
+      const cd = [qCd, eCd, rCd][i];
+      return { cdFrac: cd / a.cd, ready: cd <= 0 };
+    }));
   } else {
     ui.hud({ core: coreHp, coreMax: CORE_MAX, essence, wave, endless, preview: mode === 'build' ? ('下波：' + nextWaveText(wave + 1)) : '', best });
+    ui.skills(ACTIVES.map(a => ({ cdFrac: 1, ready: false })));
   }
   if (!Number.isFinite(coreHp) || !Number.isFinite(essence) || !Number.isFinite(wave)) nanFlag = true;
 }
@@ -484,7 +615,8 @@ Object.assign(G, {
   },
   grant: (id) => { const b = BLESSINGS.find(x => x.id === id); if (b) { b.apply(); counts[id] = (counts[id] || 0) + 1; } },
   callWave, startGame, wavePlan, waveComp, nextWaveText, buildSpawnQ,
-  events: EVENTS, blessings: BLESSINGS, enemyDefs: ENEMY, towerDefs: TOWERS, affixes: AFFIX,
+  events: EVENTS, blessings: BLESSINGS, enemyDefs: ENEMY, towerDefs: TOWERS, affixes: AFFIX, actives: ACTIVES,
+  castStarfall, castNova, castOverload,
   upgrade: () => upgradeSel(), sell: () => sellSel(),
   reset: () => { resetState(false); mode = 'title'; ui.title({ best }, () => startGame(false)); },
   enterEndless: () => startGame(true),
@@ -899,6 +1031,130 @@ async function autotest() {
       if (dW) Object.defineProperty(window, 'innerWidth', dW); else delete window.innerWidth;
       if (dH) Object.defineProperty(window, 'innerHeight', dH); else delete window.innerHeight;
     }
+  }
+
+  // T37 deep-tide compound scaling
+  {
+    const p25 = wavePlan(TOTAL_WAVES + 15), p35 = wavePlan(TOTAL_WAVES + 25), p45 = wavePlan(TOTAL_WAVES + 35);
+    ok('T37', p25.hpMult > 4 && p35.hpMult > p25.hpMult * 2 && p45.hpMult > p35.hpMult * 2 && p35.armorAdd > p25.armorAdd,
+      `25:${p25.hpMult.toFixed(1)} 35:${p35.hpMult.toFixed(1)} 45:${p45.hpMult.toFixed(1)} armor ${p25.armorAdd}→${p35.armorAdd}`);
+  }
+
+  // T38 starfall active: cooldown + clustered kill
+  {
+    G.noEvent(() => callWave(false)); G.wipeEnemies();
+    const a = spawn('crawler', .3, { noScale: true }), b = spawn('crawler', .32, { noScale: true }), c = spawn('crawler', .34, { noScale: true });
+    const okCast = G.castStarfall();
+    ok('T38', okCast && qCd > 0, `cast=${okCast} qCd=${qCd.toFixed(1)}`);
+    let dead = false;
+    for (let i = 0; i < 60 * 3 && !dead; i++) { R(1); if (!a.alive && !b.alive && !c.alive) dead = true; }
+    ok('T38b', dead, `starfall cleared cluster`);
+    ok('T38c', !G.castStarfall(), 'on cooldown rejected');
+    backToBuild();
+  }
+
+  // T39 nova active: freeze then slow
+  {
+    G.noEvent(() => callWave(false)); G.wipeEnemies();
+    const e = spawn('runner', .3, { noScale: true });
+    G.castNova();
+    ok('T39', e.frozenT > 0 && e.speedNow() === 0, `frozen ${(e.frozenT).toFixed(2)} spd ${e.speedNow()}`);
+    const probe = [];
+    for (let i = 0; i < 180; i++) {
+      step(DT); if (pressed.size) endFrame();
+      if (i % 30 === 0) probe.push({ s: +((i + 1) / 60).toFixed(2), fz: +e.frozenT.toFixed(2), al: e.alive, lk: e.leaked, mode, n: enemies.length, hp: +e.hp.toFixed(0), t: +e.t.toFixed(3), q: spawnQ.length });
+    }
+    ok('T39b', e.frozenT <= 0 && e.slowT > 0 && e.slowF >= .4 && e.speedNow() < e.baseSpeed,
+      `after: spd ${e.speedNow().toFixed(2)}/${e.baseSpeed.toFixed(2)} frozen=${e.frozenT.toFixed(2)} slowT=${e.slowT.toFixed(1)} slowF=${e.slowF} alive=${e.alive} probe=${JSON.stringify(probe)}`);
+    ok('T39c', !G.castNova(), 'on cooldown rejected');
+    backToBuild();
+  }
+
+  // T40 overload active: fire-rate surge window
+  {
+    G.noEvent(() => callWave(false)); G.wipeEnemies();
+    G.castOverload();
+    const t = towers[0] || G.place(0, 'ballista');
+    ok('T40', overchargeT > 8 && t.effRate(overchargeT) < t.effRate(0), `overchargeT=${overchargeT.toFixed(1)} rate ${t.effRate(0).toFixed(2)}→${t.effRate(overchargeT).toFixed(2)}`);
+    ok('T40b', !G.castOverload(), 'on cooldown rejected');
+    backToBuild();
+  }
+
+  // T41 「裂」affix: death spawns two minis, minis do not re-split
+  {
+    const before = enemies.length;
+    const e = spawn('crawler', .3, { noScale: true, hpMult: .3, affixes: ['split'] });
+    e.takeHit(9999); if (!e.alive) hooks.onDeath(e);
+    R(1);
+    const minis = enemies.filter(x => x.mini);
+    ok('T41', enemies.length - before === 2 && minis.length === 2 && minis.every(m => m.hp > 0), `+${enemies.length - before} minis`);
+    const m0 = minis[0];
+    const b2 = enemies.length;
+    m0.takeHit(9999); if (!m0.alive) hooks.onDeath(m0);
+    R(1);
+    ok('T41b', enemies.length === b2 - 1, 'mini does not re-split');
+    G.wipeEnemies();
+  }
+
+  // T42 「盾」affix: absorb pool then full regen after 4 quiet seconds
+  {
+    const e = spawn('brute', .5, { noScale: true, affixes: ['shield'] });
+    ok('T42', e.shieldMax > 0 && e.shield === e.shieldMax, `shield ${e.shield.toFixed(1)}/${e.shieldMax.toFixed(1)}`);
+    const hp0 = e.hp;
+    e.takeHit(30);
+    ok('T42b', e.shield < e.shieldMax && e.hp < hp0 && e.alive, `hp ${hp0.toFixed(0)}→${e.hp.toFixed(1)} shield ${e.shield.toFixed(1)}`);
+    for (let i = 0; i < 60 * 4.5; i++) R(1);
+    ok('T42c', e.shield === e.shieldMax, `regen ${e.shield.toFixed(1)}`);
+    G.wipeEnemies();
+  }
+
+  // T43 「潜」affix: invulnerable dive, towers skip, resurfaces
+  {
+    const t = towers[0] || G.place(0, 'ballista');
+    const e = spawn('crawler', .06, { noScale: true, affixes: ['burrow'] });
+    e.burrowT = .1;
+    R(8);
+    ok('T43', e.burrowed && e.takeHit(50) === 0, `burrowed=${e.burrowed} hit=${e.takeHit(1)}`);
+    ok('T43b', t.pick(() => enemies, false) === null || t.pick(() => enemies, false) !== e, 'towers skip burrowed');
+    for (let i = 0; i < 60 * 2.2; i++) R(1);
+    ok('T43c', !e.burrowed, 'resurfaced');
+    G.wipeEnemies();
+  }
+
+  // T44 EMP event disables a tower mid-wave
+  {
+    const t = towers[0] || G.place(0, 'ballista');
+    G.noEvent(() => callWave(false)); G.wipeEnemies();
+    const filler = spawn('brute', .5, { noScale: true, hpMult: 5 });   // keep the wave alive
+    G.forceEvent('emp');
+    let hit = false;
+    for (let i = 0; i < 60 * 4 && !hit; i++) { R(1); if (towers.some(x => x.disabledT > 0)) hit = true; }
+    ok('T44', hit && mode === 'combat', `EMP blackout (mode=${mode})`);
+    G.revertEvent('emp');
+    towers.forEach(x => { x.disabledT = 0; x.setDisabled(false); });
+    backToBuild();
+  }
+
+  // T45 colossus count escalates per cycle
+  {
+    endless = true;
+    ok('T45', waveComp(TOTAL_WAVES + 15).filter(g => g[0] === 'colossus')[0][1] === 2 && waveComp(TOTAL_WAVES + 25).filter(g => g[0] === 'colossus')[0][1] === 3, '2 → 3 colossi');
+    endless = false;
+  }
+
+  // T46 corrode/frenzy wave mods reach spawns
+  {
+    endless = true; wave = TOTAL_WAVES + 5;
+    G.forceEvent('corrode');
+    const e1 = spawn('crawler', .1, { noScale: true, affixes: [] });
+    ok('T46', e1.armor === ENEMY.crawler.armor + 3, `armor ${e1.armor}`);
+    G.revertEvent('corrode');
+    G.forceEvent('frenzy');
+    const e2 = spawn('crawler', .1, { noScale: true, affixes: [] });
+    ok('T46b', e2.baseSpeed > ENEMY.crawler.spd * 1.25, `spd ${e2.baseSpeed.toFixed(2)}`);
+    G.revertEvent('frenzy');
+    endless = false;
+    G.wipeEnemies();
   }
 
   // wrap: back to title

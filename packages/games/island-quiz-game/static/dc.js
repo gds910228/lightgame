@@ -3,7 +3,7 @@
  * */
 var _DC_Constant = {
 	isFlashLoaded:false,
-	rurl:'http://dc.100bt.com/dc?',
+	rurl:'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7',
 	startTime : new Date().getTime(),
 	btdomain:'100bt.com',
 	flashName:'_dcFlash',
@@ -83,7 +83,7 @@ var _DC_Util = {
 	postData : function(result){
 		var submitURL = new Image();
 		var submitData = encodeURI(_DC_Util.objToString(result))
-		submitURL.src = _DC_Constant.rurl + submitData;
+		return; /*[lg] tracking send disabled (rurl replaced, combo produced invalid URL)*/
 	},
 	jsGetCookie : function(cName){
 		var sRE = "(?:;)?" + cName + "=([^;]*);?" , oRE = new RegExp(sRE);
@@ -229,7 +229,7 @@ function Dc_SetUserCanyuData(gameName,dc_userId){
 	function jsLoadFlash (callback){
 		if(!_DC_Constant.isFlashLoaded) {
 			var div = document.createElement("div");
-			div.innerHTML = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="" id="'+_DC_Constant.flashName+'" width=1 height=1><param name=movie value="http://dc.100bt.com/flash/cookie.swf"><param name="allowScriptAccess" value="always"><embed play=false swliveconnect="true" name="'+_DC_Constant.flashName+'" src="http://dc.100bt.com/flash/cookie.swf" quality=high bgcolor=#FFFFFF width=1 height=1 type="application/x-shockwave-flash"></embed ></object >';
+			div.innerHTML = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="" id="'+_DC_Constant.flashName+'" width=1 height=1><param name=movie value="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><param name="allowScriptAccess" value="always"><embed play=false swliveconnect="true" name="'+_DC_Constant.flashName+'" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" quality=high bgcolor=#FFFFFF width=1 height=1 type="application/x-shockwave-flash"></embed ></object >';
 			document.body.appendChild(div);
 			 //每隔5ms判断一下flash是否加载完全,让flash加载完后再调用callback函数
 			var t = setInterval(function(){

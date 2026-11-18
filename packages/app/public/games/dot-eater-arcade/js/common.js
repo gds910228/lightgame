@@ -1,13 +1,13 @@
 var btGame;~
 function(bt) {
 	bt.URL = {
-		root: "http://g.lanrenmb.com",
+		root: "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7",
 		getMoreGame: function() {
 			bt.dc("more");
-			return "http://g.lanrenmb.com"
+			return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 		},
 		getConcern: function() {
-			return "http://g.lanrenmb.com/"
+			return "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 		},
 	};
 	bt.getGameId = function() {

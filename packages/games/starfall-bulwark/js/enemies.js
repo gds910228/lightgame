@@ -13,9 +13,12 @@ export const ENEMY = {
   colossus: { zh: '裂地巨像', hp: 900, spd: .65, armor: 4, reward: 120, size: 1.6, coreDmg: 5, color: 0xb04a3a, boss: true },
 };
 export const AFFIX = {
-  swift: { zh: '疾', speed: 1.35, fg: '#ffd77a' },
-  vital: { zh: '坚', hp: 1.6, fg: '#7fe89a' },
-  ward:  { zh: '磐', armor: 2, fg: '#8ab4ff' },
+  swift:  { zh: '疾', speed: 1.35, fg: '#ffd77a', ground: true, fly: true },
+  vital:  { zh: '坚', hp: 1.6, fg: '#7fe89a', ground: true, fly: true },
+  ward:   { zh: '磐', armor: 2, fg: '#8ab4ff', ground: true, fly: true },
+  split:  { zh: '裂', fg: '#ff8a8a', ground: true, fly: false },   // death → two minis
+  shield: { zh: '盾', fg: '#7fc4ff', ground: true, fly: true },    // regenerating absorb pool
+  burrow: { zh: '潜', fg: '#c8a2ff', ground: true, fly: false },   // periodic invulnerable dive
 };
 
 export function makeEnemy(kind, world, opts = {}) {
@@ -77,21 +80,35 @@ export function makeEnemy(kind, world, opts = {}) {
     baseSpeed: def.spd * (opts.spdMult || 1),
     alive: true, leaked: false, slowT: 0, slowF: 0, flashT: 0, bob: Math.random() * 6,
     healT: 1.2, stompT: 6, affixes: opts.affixes || [],
+    frozenT: 0, burrowed: false, burrowT: 5, sink: 0, mini: false,
+    shieldMax: 0, shield: 0, shieldHitT: 0,
     group, bar, tags,
     _wobble: Math.random() * 9,
     pos(ground) {
       if (ground && this.fly) return new THREE.Vector3(this.group.position.x, 0, this.group.position.z);
       return this.group.position.clone();
     },
-    speedNow() { return this.baseSpeed * (this.slowT > 0 ? 1 - this.slowF : 1); },
+    speedNow() {
+      if (this.frozenT > 0) return 0;
+      const s = this.baseSpeed * (this.slowT > 0 ? 1 - this.slowF : 1);
+      return this.burrowed ? s * 2.2 : s;
+    },
     applySlow(f, dur) { if (f > this.slowF || this.slowT <= 0) this.slowF = f; this.slowT = Math.max(this.slowT, dur); },
     heal(n) { if (!this.alive || this.hp >= this.maxHp) return false; this.hp = Math.min(this.maxHp, this.hp + n); this.flashT = .18; this.bar.visible = true; return true; },
     takeHit(dmg) {
-      if (!this.alive) return 0;
-      const eff = Math.max(1, dmg - this.armor);
+      if (!this.alive || this.burrowed) return 0;
+      let eff = Math.max(1, dmg - this.armor);
+      let total = eff;
+      if (this.shieldMax > 0 && this.shield > 0) {
+        const absorbed = Math.min(this.shield, eff);
+        this.shield -= absorbed; eff -= absorbed;
+        this.shieldHitT = 4;
+        this.flashT = Math.max(this.flashT, .06); this.bar.visible = true;
+        if (eff <= 0) return total;                 // fully absorbed
+      }
       this.hp -= eff; this.flashT = .12; this.bar.visible = true;
       if (this.hp <= 0) this.alive = false;
-      return eff;
+      return total;
     },
     update(dt, hooks, allies) {
       if (!this.alive) return;
@@ -101,8 +118,31 @@ export function makeEnemy(kind, world, opts = {}) {
         bodies.forEach((m, i) => m.material.emissiveIntensity = f || eiBase[i]);
       }
       if (this.slowT > 0) this.slowT -= dt;
+      if (this.frozenT > 0) this.frozenT -= dt;
+      // regenerating shield (盾 affix): full refill after 4s without taking damage
+      if (this.shieldMax > 0) {
+        this.shieldHitT -= dt;
+        if (this.shieldHitT <= 0 && this.shield < this.shieldMax) { this.shield = this.shieldMax; this.bar.visible = true; }
+      }
+      // periodic burrow (潜 affix): invulnerable dive with telegraph
+      let diving = false;
+      if (this.affixes.includes('burrow') && !this.fly) {
+        this.burrowT -= dt;
+        if (this.burrowT <= 0 && !this.burrowed) {
+          this.burrowed = true; this.burrowT = 5; this._diveT = 1.2;
+          hooks.onBurrow && hooks.onBurrow(this);
+        }
+        if (this.burrowed) {
+          this._diveT -= dt;
+          diving = true;
+          if (this._diveT <= 0) { this.burrowed = false; hooks.onSurface && hooks.onSurface(this); }
+        }
+      }
+      this.sink += ((diving ? 1 : 0) - this.sink) * Math.min(1, dt * 6);
+      this.group.scale.setScalar(Math.max(.5, 1 - this.sink * .45));
       const spd = this.speedNow();
       this.bob += dt * spd * 3.4;
+      if (this.frozenT > 0) { this.bar.position.y = (def.boss ? 2.9 : 1 + S + .2); return; }
       if (this.fly) {
         this.flyF += spd * dt / straightLen;
         if (this.flyF >= 1) { this.alive = false; this.leaked = true; hooks.onLeak(this); return; }
@@ -116,7 +156,7 @@ export function makeEnemy(kind, world, opts = {}) {
         if (this.t >= 1) { this.alive = false; this.leaked = true; hooks.onLeak(this); return; }
         const p = world.curve.getPointAt(Math.min(this.t, 1));
         const tg = world.curve.getTangentAt(Math.min(this.t + .01, 1));
-        this.group.position.set(p.x, .12 + Math.abs(Math.sin(this.bob)) * .05, p.z);
+        this.group.position.set(p.x, .12 + Math.abs(Math.sin(this.bob)) * .05 - this.sink * .28, p.z);
         this.group.rotation.y = Math.atan2(tg.x, tg.z);
       }
       // shaman aura heal
@@ -137,6 +177,7 @@ export function makeEnemy(kind, world, opts = {}) {
         if (this.stompT <= 0) { this.stompT = 6; hooks.onStomp && hooks.onStomp(this); }
       }
       this.bar.position.y = (def.boss ? 2.9 : 1 + S + .2) + (this.fly ? .5 : 0);
+      this.bar.redraw(this.hp / this.maxHp, this.shieldMax > 0 ? this.shield / this.shieldMax : -1);
     },
     addTag(txt, fg) {
       const sp = textTag(txt, { fg, size: 22, bg: 'rgba(20,8,30,.78)', pad: 5 });
@@ -153,6 +194,7 @@ export function makeEnemy(kind, world, opts = {}) {
     if (A.speed) e.baseSpeed *= A.speed;
     if (A.hp) { e.maxHp *= A.hp; e.hp = e.maxHp; }
     if (A.armor) e.armor += A.armor;
+    if (a === 'shield') { e.shieldMax = e.maxHp * .25; e.shield = e.shieldMax; }
     e.addTag(A.zh, A.fg);
   }
   return e;

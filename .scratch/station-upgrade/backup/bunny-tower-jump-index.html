@@ -1,0 +1,279 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bunny Challenge</title>
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <style>
+        body {
+            text-align: center;
+            background: #000000;
+            padding: 0;
+            border: 0;
+            margin: 0;
+            height: 100%;
+        }
+
+        * {
+            -webkit-touch-callout:none;
+            -webkit-user-select:none;
+            -khtml-user-select:none;
+            -moz-user-select:none;
+            -ms-user-select:none;
+            user-select:none;
+            -webkit-tap-highlight-color:rgba(0,0,0,0);
+        }
+
+        html {
+            -ms-touch-action: none; /* Direct all pointer events to JavaScript code. */
+        }
+        .button {
+        display: block;
+        margin: 0 auto;
+        width: 320px;
+        }
+	.imghide{
+		display:none;
+	}
+	#statusnow{
+		width:70%;
+		height:250px;
+	}
+    </style>
+</head>
+<body>
+<div style="display:inline-block;width:100%; height:100%;margin: 0 auto; background: black; position:relative;" id="gameDiv">
+    <div style="text-align:center;margin-top:50px;">
+        <span id="timer" style="color:#fff;font-size:20px;">10 sec</span>
+        <div id="result_panel" style="display:none;text-align:center;background-color:rgba(0,0,0,0.5)">
+            <div>
+                <button id="reset" style="font-size:25px">Play Again</button><br>
+                <button id="share_btn" style="font-size:25px;margin:10px;">Share Score</button><br>
+                <button onClick="clickMore();" style="font-size:25px">More Games</button>
+            </div>
+        </div>
+    </div>
+    <div id="button" class="button">
+    	 <img src="img/01.jpg" id="statusnow"/>
+    </div>
+    <div style="text-align:center;">
+        <div id="result" style="color:#fff;font-size:30px;">0 points</div>
+        <div id="best" style="margin-top:20px;color:#fff;font-size:20px;"> </div>
+    </div>
+    <audio src="audio/2793.wav" preload id="clickdownsound"></audio>
+    <img src="img/01.jpg" class="imghide" id="status01"/>
+    <img src="img/02.jpg" class="imghide"  id="status02"/>
+</div>
+
+        <script src="jquery/1.10.2/jquery.min.js"></script>
+            <script type="text/javascript">
+                    var initial = 1000;
+                    var count = initial;
+                    var counter; //10 will  run it every 100th of a second
+                    var state = 0;
+                    var total = 0;
+					var cds=$('#clickdownsound').get(0);
+                    if (localStorage.max) {
+                        $('#best').html( 'Best Score: ' + localStorage.max + ' points');
+                    }
+
+                    function timer() {
+                        if (count <= 0) {
+                            clearInterval(counter);
+                            state = 0;
+                            $('#result_panel').show();
+                            if ( !localStorage.max || parseInt(localStorage.max) < total) {
+                                localStorage.max = total;
+                                $('#best').html( 'Best Score: ' + localStorage.max + ' points');
+                            }
+							$('#timer').hide();
+                            localStorage.max = parseInt(localStorage.max) > total ? localStorage.max: total;
+                            dp_submitScore(total);
+                            offEvent();
+                            return;
+                        }
+                        count--;
+                        displayCount(count);
+                    }
+
+                    function displayCount(count) {
+                        var res = count / 100;
+                        document.getElementById("timer").innerHTML = res.toPrecision(count.toString().length) + " sec";
+                    }
+                    $(document).on('touchmove', function(e) {
+                        e.preventDefault();
+                    })
+                  
+                    function reset() {
+                        count = initial;
+                        total = 0;
+                        state = 0;
+                        $('#result').html(total + ' points');
+                        $('#timer').html(10 + ' sec');
+                        initEvent();
+                    }
+					
+                    $('#reset').on('touchend  click', function (e) {
+                        reset();
+                        $('#result_panel').hide();
+                        $('#timer').show();
+                        
+                         e.preventDefault();
+                    });
+                    
+                    // Add share button event handler
+                    $('#share_btn').on('touchend click', function (e) {
+                        if (myData.score > 0) {
+                            // Use postMessage to communicate with parent window
+                            if (window.parent && window.parent !== window) {
+                                window.parent.postMessage({
+                                    type: 'SHARE_GAME',
+                                    data: {
+                                        score: myData.score,
+                                        message: "Bunny Challenge - I scored " + myData.score + " points in 10 seconds! Can you beat that?"
+                                    }
+                                }, '*');
+                            } else {
+                                // Fallback for standalone mode
+                                dp_share();
+                            }
+                        }
+                        e.preventDefault();
+                    });
+                    displayCount(initial);
+                    initEvent();
+                   function offEvent(){
+                   		$('#button').unbind();
+                   }
+                   function initEvent(){
+                   		  $('#button').on('touchstart mousedown', function (e) {
+                        	if (!state) {
+                            	state = 1;
+                            	counter = setInterval(timer, 10);
+                        	}
+                        	 $('#statusnow').attr('src',$('#status01').attr('src'));
+                        	if(cds.paused){
+                        			cds.currentTime=0;
+                        	}
+                        	cds.play();
+                        	e.preventDefault();
+                    	});
+
+                    $('#button').on('touchend mouseup', function (e) {
+                        if (state) {
+                            total++;
+                            $('#result').html(total + ' points');
+                        }
+                        cds.pause();
+                        $('#statusnow').attr('src',$('#status02').attr('src'));
+                        e.preventDefault();
+                    });
+                   }
+            </script>
+		<script language=javascript>
+		var mebtnopenurl = '/';
+		window.shareData = {
+		        "imgUrl": "/games/bttz/share.png",
+		        "timeLineLink": window.location.origin + "/game/bttz",
+		        "tTitle": "Bunny Challenge - LightGame",
+		        "tContent": "Play Bunny Challenge on LightGame - A cute bunny-themed casual game!"
+		};
+				
+		function goHome(){
+			// Navigate back to LightGame main page
+			window.location.href = '/';
+		}
+		function clickMore(){
+			// Navigate back to the home page
+			if (window.parent && window.parent !== window) {
+				// If in iframe, try to communicate with parent to go home
+				window.parent.postMessage({ type: 'NAVIGATE_TO_HOME' }, '*');
+			} else {
+				// Navigate to the home page
+				window.location.href = '/';
+			}
+		}
+		function dp_share(){
+			document.title ="Bunny Challenge - I scored "+myData.score+" points in 10 seconds! Can you beat that?"
+			document.getElementById("share").style.display="";
+			window.shareData.tTitle = document.title;
+		}
+		function dp_Ranking(){
+			window.location=mebtnopenurl;
+		}
+
+		function showAd(){
+		}
+		function hideAd(){
+		}
+		document.addEventListener('WeixinJSBridgeReady', function onBridgeReady() {
+		    
+		    WeixinJSBridge.on('menu:share:appmessage', function(argv) {
+		        WeixinJSBridge.invoke('sendAppMessage', {
+		            "img_url": window.shareData.imgUrl,
+		            "link": window.shareData.timeLineLink,
+		            "desc": window.shareData.tContent,
+		            "title": window.shareData.tTitle
+		        }, onShareComplete);
+		    });
+
+		    WeixinJSBridge.on('menu:share:timeline', function(argv) {
+		        WeixinJSBridge.invoke('shareTimeline', {
+		            "img_url": window.shareData.imgUrl,
+		            "img_width": "640",
+		            "img_height": "640",
+		            "link": window.shareData.timeLineLink,
+		            "desc": window.shareData.tContent,
+		            "title": window.shareData.tTitle
+		        }, onShareComplete);
+		    });
+		}, false);
+		</script>
+		<div id=share style="display: none">
+			<img width=100% src="/games/bttz/share.png"
+				style="position: fixed; z-index: 9999; top: 0; left: 0; display: block;"
+				ontouchstart="document.getElementById('share').style.display='none';" />
+		</div>
+		<div style="display: none;">
+			<script type="text/javascript">
+            var myData = { gameid: "bttz" };
+			window.shareData.timeLineLink = window.location.origin + "/game/bttz";
+			function dp_submitScore(score){
+				myData.score = score;
+				myData.scoreName ="Scored "+score+" points";
+				// Just store the score, don't auto-share
+				// User will click the share button if they want to share
+			}
+			function onShareComplete(res) {
+                if (localStorage.myuid && myData.score != undefined) {
+                    setTimeout(function(){
+                        // Use postMessage instead of confirm for iframe compatibility
+                        if (window.parent && window.parent !== window) {
+                            window.parent.postMessage({
+                                type: 'NAVIGATE_TO_HOME'
+                            }, '*');
+                        } else {
+                            window.location = "/";
+                        }
+                    }, 500);
+                }
+				else {
+		        	if (window.parent && window.parent !== window) {
+                        window.parent.postMessage({
+                            type: 'NAVIGATE_TO_HOME'
+                        }, '*');
+                    } else {
+                        document.location.href = mebtnopenurl;
+                    }
+				}
+	        }
+
+			</script>
+</body>
+</html>

@@ -104,7 +104,7 @@ export function makeTower(key, pad, mods, fx, glowT) {
       let best = null, bestP = -1;
       const R = this.effRange(fog);
       for (const e of enemies()) {
-        if (!e.alive) continue;
+        if (!e.alive || e.burrowed) continue;
         if (e.fly && !this.def.canFly) continue;
         const d = e.pos(true).distanceTo(this.group.position);
         if (d > R) continue;
@@ -188,7 +188,7 @@ export function makeTower(key, pad, mods, fx, glowT) {
         for (let i = 1; i < chain; i++) {
           let best = null, bd = 2.6;
           for (const e of enemies()) {
-            if (!e.alive || hitList.includes(e)) continue;
+            if (!e.alive || e.burrowed || hitList.includes(e)) continue;
             const d = e.pos().distanceTo(last.pos());
             if (d < bd) { bd = d; best = e; }
           }
@@ -212,7 +212,7 @@ export function makeTower(key, pad, mods, fx, glowT) {
           this.fx.burst(to, 0xff8a50, 16, 2.4, 1.6);
           this.fx.flash(to.clone().add(new THREE.Vector3(0, .3, 0)), 0xffc080, .4, 2.0, .25);
           for (const e of enemies()) {
-            if (!e.alive || e.fly) continue;
+            if (!e.alive || e.fly || e.burrowed) continue;
             if (e.pos(true).distanceTo(to) <= st.splash * this.mods.splash) {
               const dealt = e.takeHit(this.dmgFor());
               if (dealt) ctx.hit(this, e, dealt);

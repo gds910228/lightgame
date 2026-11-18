@@ -69,57 +69,44 @@ html,body,#teach{margin:0;padding:0}
 		<div style="float: left;width:34%;"><a style="border-bottom: 3px solid #04fece;" href="javascript:void(0);" onclick="addToFavorites(); return false;">Add to Favorites</a></div>
 		<div style="float: left;width:33%;"><a style="width:100%;margin:0;border-bottom: 3px solid #fdcd01;" onclick="location.href=location.href;" href="javascript:;"><img width="15" src="./vapp/4.png">Replay</a></div>
 	</div>
-	<script language=javascript>
+	<script type="text/javascript">
 		var mebtnopenurl = './';
-		dataForWeixin = {
+		var dataForWeixin = {
 			"appId": "wx6d5d37d74fcd62b1",
-		    "imgUrl": "./vapp/49/3.jpg",
-		    "url": "./",
-		    "tTitle": "Beat the Tiger Game",
-		    "tContent": "Play Beat the Tiger now! Can you beat my score?"
+			"imgUrl": "./vapp/49/3.jpg",
+			"url": "./",
+			"tTitle": "Beat the Tiger Game",
+			"tContent": "Play Beat the Tiger now! Can you beat my score?"
 		};
-				
-		function goHome(){
-			window.location.href = "/";
-		}
-				
-		function goHome(){
-			window.location.href = "/";
-		}
-		function addToFavorites(){
-			window.location.href = "/game/beat-the-tiger-game";
-		}
-		function dp_share(){
-			// 分享功能已移除，使用项目自带的分享功能
-		}
-		function dp_Ranking(){
-			window.location.href = "/";
-		}
-		    WeixinJSBridge.on('menu:share:appmessage', function(argv) {
-		        WeixinJSBridge.invoke('sendAppMessage', {
+		function goHome(){ window.location.href = "/"; }
+		function addToFavorites(){ window.location.href = "/game/beat-the-tiger-game"; }
+		function dp_share(){}
+		function dp_Ranking(){ window.location.href = "/"; }
+		document.addEventListener('WeixinJSBridgeReady', function () {
+			WeixinJSBridge.on('menu:share:appmessage', function (argv) {
+				WeixinJSBridge.invoke('sendAppMessage', {
 					"appid": dataForWeixin.appId,
-		            "img_url": dataForWeixin.imgUrl,
-		            "link": dataForWeixin.url,
-		            "desc": dataForWeixin.tContent,
-		            "title": dataForWeixin.tTitle
-		        });
-				 setTimeout(function () {location.href = "/";}, 1500); 
-		    });
-
-		    WeixinJSBridge.on('menu:share:timeline', function(argv) {
-		        WeixinJSBridge.invoke('shareTimeline', {
+					"img_url": dataForWeixin.imgUrl,
+					"link": dataForWeixin.url,
+					"desc": dataForWeixin.tContent,
+					"title": dataForWeixin.tTitle
+				});
+				setTimeout(function () { location.href = "/"; }, 1500);
+			});
+			WeixinJSBridge.on('menu:share:timeline', function (argv) {
+				WeixinJSBridge.invoke('shareTimeline', {
 					"appid": dataForWeixin.appId,
-		            "img_url": dataForWeixin.imgUrl,
-		            "img_width": "640",
-		            "img_height": "640",
-		            "link": dataForWeixin.url,
-		            "desc": dataForWeixin.tContent,
-		            "title": dataForWeixin.tTitle
-		        });
-				 setTimeout(function () {location.href = "/";}, 1500); 
-		    });
+					"img_url": dataForWeixin.imgUrl,
+					"img_width": "640",
+					"img_height": "640",
+					"link": dataForWeixin.url,
+					"desc": dataForWeixin.tContent,
+					"title": dataForWeixin.tTitle
+				});
+				setTimeout(function () { location.href = "/"; }, 1500);
+			});
 		}, false);
-		</script>
+	</script>
 	 <div id="teach">
         <div class="info">
             <img src="./vapp/49/tiger2.png" width="130" height="130" />
@@ -150,6 +137,8 @@ html,body,#teach{margin:0;padding:0}
     var cpro_id = "u1639910";
 </script>
 
-    <!-- <script type="text/javascript" src="http://tajs.qq.com/stats?sId=36313548" charset="UTF-8"></script> -->
+    <!--  -->
 </body>
 </html>
+
+<script src="audio.js?v=1"></script>

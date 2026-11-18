@@ -1,0 +1,422 @@
+[
+  {
+    "id": "age-test-memory-game",
+    "soundInCode": false,
+    "kb": 92
+  },
+  {
+    "id": "air-strike-battle",
+    "soundInCode": false,
+    "kb": 177
+  },
+  {
+    "id": "beat-the-cat",
+    "soundInCode": true,
+    "kb": 184
+  },
+  {
+    "id": "beat-the-tiger-game",
+    "soundInCode": false,
+    "kb": 118
+  },
+  {
+    "id": "black-tiles-game",
+    "soundInCode": false,
+    "kb": 17
+  },
+  {
+    "id": "bouncy-block",
+    "soundInCode": true,
+    "kb": 707
+  },
+  {
+    "id": "bubble-pop-game",
+    "soundInCode": false,
+    "kb": 83
+  },
+  {
+    "id": "bubble-shooter-puzzle",
+    "soundInCode": false,
+    "kb": 64
+  },
+  {
+    "id": "bubble-shooter-puzzle-2",
+    "soundInCode": false,
+    "kb": 78
+  },
+  {
+    "id": "bun-eating-contest",
+    "soundInCode": false,
+    "kb": 114
+  },
+  {
+    "id": "bunny-tower-jump",
+    "soundInCode": false,
+    "kb": 102
+  },
+  {
+    "id": "car-crash-rally",
+    "soundInCode": false,
+    "kb": 15
+  },
+  {
+    "id": "card-memory-match",
+    "soundInCode": true,
+    "kb": 430
+  },
+  {
+    "id": "cash-catch-rush",
+    "soundInCode": true,
+    "kb": 163
+  },
+  {
+    "id": "ceo-fortune-quiz",
+    "soundInCode": false,
+    "kb": 87
+  },
+  {
+    "id": "color-brain-challenge",
+    "soundInCode": false,
+    "kb": 315
+  },
+  {
+    "id": "cube-tetris-game",
+    "soundInCode": false,
+    "kb": 10
+  },
+  {
+    "id": "danger-ranger",
+    "soundInCode": false,
+    "kb": 113
+  },
+  {
+    "id": "dodge-police-18s",
+    "soundInCode": true,
+    "kb": 1373
+  },
+  {
+    "id": "dodge-the-lover",
+    "soundInCode": true,
+    "kb": 254
+  },
+  {
+    "id": "dots-mania",
+    "soundInCode": true,
+    "kb": 332
+  },
+  {
+    "id": "dream-merge-2048",
+    "soundInCode": false,
+    "kb": 18
+  },
+  {
+    "id": "eastern-adventure",
+    "soundInCode": false,
+    "kb": 367
+  },
+  {
+    "id": "egyptian-iq-test",
+    "soundInCode": false,
+    "kb": 268
+  },
+  {
+    "id": "face-pair-match",
+    "soundInCode": true,
+    "kb": 250
+  },
+  {
+    "id": "fiery-dragon",
+    "soundInCode": false,
+    "kb": 95
+  },
+  {
+    "id": "find-the-different-face",
+    "soundInCode": false,
+    "kb": 110
+  },
+  {
+    "id": "fly-higher-challenge",
+    "soundInCode": false,
+    "kb": 52
+  },
+  {
+    "id": "fortune-money-game",
+    "soundInCode": false,
+    "kb": 106
+  },
+  {
+    "id": "fortune-quiz-game",
+    "soundInCode": false,
+    "kb": 117
+  },
+  {
+    "id": "geography-collection-game",
+    "soundInCode": false,
+    "kb": 67
+  },
+  {
+    "id": "glass-bridge-challenge",
+    "soundInCode": true,
+    "kb": 758
+  },
+  {
+    "id": "gold-miner",
+    "soundInCode": true,
+    "kb": 57
+  },
+  {
+    "id": "hit-me-game",
+    "soundInCode": true,
+    "kb": 2182
+  },
+  {
+    "id": "how-many-hits",
+    "soundInCode": true,
+    "kb": 526
+  },
+  {
+    "id": "hyper-gunner",
+    "soundInCode": false,
+    "kb": 151
+  },
+  {
+    "id": "ice-bucket-challenge",
+    "soundInCode": true,
+    "kb": 297
+  },
+  {
+    "id": "immortal-warrior",
+    "soundInCode": true,
+    "kb": 80
+  },
+  {
+    "id": "island-quiz-game",
+    "soundInCode": false,
+    "kb": 75
+  },
+  {
+    "id": "laser-defense",
+    "soundInCode": false,
+    "kb": 71
+  },
+  {
+    "id": "light-bulb-puzzle",
+    "soundInCode": false,
+    "kb": 85
+  },
+  {
+    "id": "lumberjack-tap",
+    "soundInCode": true,
+    "kb": 89
+  },
+  {
+    "id": "mind-reader-game",
+    "soundInCode": false,
+    "kb": 70
+  },
+  {
+    "id": "monster-shooter-rush",
+    "soundInCode": true,
+    "kb": 1011
+  },
+  {
+    "id": "moon-rabbit-jump",
+    "soundInCode": true,
+    "kb": 699
+  },
+  {
+    "id": "mummy-maze-escape",
+    "soundInCode": true,
+    "kb": 94
+  },
+  {
+    "id": "name-duel",
+    "soundInCode": false,
+    "kb": 238
+  },
+  {
+    "id": "nerve-cat-launch",
+    "soundInCode": true,
+    "kb": 758
+  },
+  {
+    "id": "pacman",
+    "soundInCode": false,
+    "kb": 25
+  },
+  {
+    "id": "peach-catch-frenzy",
+    "soundInCode": false,
+    "kb": 147
+  },
+  {
+    "id": "peek-and-pop",
+    "soundInCode": false,
+    "kb": 109
+  },
+  {
+    "id": "pink-blue-love-match",
+    "soundInCode": true,
+    "kb": 288
+  },
+  {
+    "id": "pop-star-tap",
+    "soundInCode": false,
+    "kb": 107
+  },
+  {
+    "id": "prison-memory-match",
+    "soundInCode": true,
+    "kb": 250
+  },
+  {
+    "id": "prison-whack",
+    "soundInCode": false,
+    "kb": 196
+  },
+  {
+    "id": "retro-game-tune-quiz",
+    "soundInCode": true,
+    "kb": 52
+  },
+  {
+    "id": "room-escape-reaction",
+    "soundInCode": true,
+    "kb": 54
+  },
+  {
+    "id": "save-the-sperm",
+    "soundInCode": true,
+    "kb": 530
+  },
+  {
+    "id": "sea-treasure-match",
+    "soundInCode": false,
+    "kb": 69
+  },
+  {
+    "id": "secret-admirer-quiz",
+    "soundInCode": false,
+    "kb": 89
+  },
+  {
+    "id": "sky-city-flight",
+    "soundInCode": true,
+    "kb": 1059
+  },
+  {
+    "id": "skyscraper-stack",
+    "soundInCode": true,
+    "kb": 2218
+  },
+  {
+    "id": "smartphone-shooter",
+    "soundInCode": true,
+    "kb": 104
+  },
+  {
+    "id": "snake",
+    "soundInCode": false,
+    "kb": 6
+  },
+  {
+    "id": "snake-arena",
+    "soundInCode": false,
+    "kb": 8
+  },
+  {
+    "id": "soccer-dash",
+    "soundInCode": true,
+    "kb": 270
+  },
+  {
+    "id": "space-shooter",
+    "soundInCode": false,
+    "kb": 16
+  },
+  {
+    "id": "stack-wood-game",
+    "soundInCode": false,
+    "kb": 25
+  },
+  {
+    "id": "step-by-step-heart",
+    "soundInCode": true,
+    "kb": 117
+  },
+  {
+    "id": "stock-trader-pro",
+    "soundInCode": true,
+    "kb": 289
+  },
+  {
+    "id": "super-jump-adventure",
+    "soundInCode": true,
+    "kb": 257
+  },
+  {
+    "id": "super-mario-adventure",
+    "soundInCode": false,
+    "kb": 104
+  },
+  {
+    "id": "super-shooter-football",
+    "soundInCode": true,
+    "kb": 275
+  },
+  {
+    "id": "sword-shrine-guardian",
+    "soundInCode": true,
+    "kb": 903
+  },
+  {
+    "id": "tap-frenzy",
+    "soundInCode": false,
+    "kb": 97
+  },
+  {
+    "id": "tetris",
+    "soundInCode": false,
+    "kb": 16
+  },
+  {
+    "id": "tickle-frenzy",
+    "soundInCode": false,
+    "kb": 35
+  },
+  {
+    "id": "tidemark",
+    "soundInCode": true,
+    "kb": 4590
+  },
+  {
+    "id": "tightrope-walker",
+    "soundInCode": true,
+    "kb": 56
+  },
+  {
+    "id": "tile-tap-rush",
+    "soundInCode": true,
+    "kb": 162
+  },
+  {
+    "id": "time-travel-quiz",
+    "soundInCode": false,
+    "kb": 184
+  },
+  {
+    "id": "tower-defense",
+    "soundInCode": false,
+    "kb": 22
+  },
+  {
+    "id": "twins-match-up",
+    "soundInCode": false,
+    "kb": 99
+  },
+  {
+    "id": "wildflower-picker",
+    "soundInCode": true,
+    "kb": 481
+  }
+]
