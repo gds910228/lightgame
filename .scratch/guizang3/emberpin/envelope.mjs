@@ -1,0 +1,20 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({headless:true,executablePath:'/usr/local/bin/chromium',args:['--no-sandbox','--use-gl=swiftshader']});
+const p = await b.newPage({viewport:{width:900,height:700}});
+await p.setContent(`<body style="margin:0"><script>
+window.__MSGS=[]; window.addEventListener('message',e=>{ if(e.data && e.data.source==='lightgame') window.__MSGS.push(e.data); });
+</script><iframe id="f" src="http://localhost:8625/emberpin/" style="width:700px;height:600px;border:0"></iframe></body>`);
+const fr = p.frames().find(f => f.url().includes('/emberpin/'));
+await fr.waitForFunction('window.G && window.G.state', {timeout:20000});
+await p.waitForTimeout(300);
+await fr.evaluate(`(()=>{ const G=window.G; G.setNoAuto(true); G.startGame();
+  G.setScore(1234); G.reportProgress();
+  G.forceFail();
+  G.startGame(); G.setScore(60000); G.completeAllTasks();
+})()`);
+await p.waitForTimeout(400);
+const msgs = await p.evaluate('window.__MSGS');
+console.log(JSON.stringify(msgs.map(m=>({type:m.type,kind:m.payload&&m.payload.kind,event:m.payload&&m.payload.event,score:m.payload&&m.payload.score,progress:m.payload&&m.payload.progress,hasData:!!(m.payload&&m.payload.data),gameId:m.payload&&m.payload.gameId})),null,2));
+await b.close();

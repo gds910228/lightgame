@@ -1,0 +1,80 @@
+{
+  "state": {
+    "mode": "play",
+    "paused": false,
+    "score": 0,
+    "best": 0,
+    "ballsLeft": 3,
+    "liveBalls": 1,
+    "multiplier": 1,
+    "combo": 0,
+    "comboT": 0,
+    "comboMult": 1,
+    "tasksDone": 0,
+    "targetScore": 60000,
+    "charging": false,
+    "charge": 0,
+    "servePending": false,
+    "serveT": 0,
+    "playT": 1.58,
+    "nan": false,
+    "muted": false,
+    "newBest": false,
+    "win": false,
+    "over": false,
+    "groups": [
+      {
+        "label": "余火",
+        "done": false,
+        "lit": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "label": "青焰",
+        "done": false,
+        "lit": [
+          false,
+          false,
+          false
+        ]
+      },
+      {
+        "label": "金环",
+        "done": false,
+        "lit": [
+          false,
+          false,
+          false
+        ]
+      }
+    ],
+    "targetsLit": 0,
+    "flippers": {
+      "left": 0.38,
+      "right": 2.762,
+      "leftPressed": false,
+      "rightPressed": false
+    },
+    "leftRest": 0.38,
+    "leftActive": -0.44,
+    "balls": [
+      {
+        "x": 46.74,
+        "y": 115.47,
+        "vx": -496.8,
+        "vy": 912,
+        "inLane": false
+      }
+    ],
+    "progress": 0,
+    "reports": 2
+  },
+  "boot": [],
+  "errs": [],
+  "warns": [],
+  "perrs": [],
+  "external": []
+}

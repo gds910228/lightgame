@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" href="data:,">
+<title>Twin Tempo Arena 双生擂台</title>
+<style>
+  :root{
+    --ink:#080711; --ink2:#121026; --paper:#e9dfc8;
+    --copper:#d8a44d; --copper2:#ffd98e;
+    --vermilion:#e8553a; --vermilion2:#ff9a76;
+    --indigo:#5267df; --indigo2:#9aabff;
+    --jade:#58d8c0; --jade2:#bdfff1;
+    --muted:#9c93b4;
+  }
+  html,body{margin:0;height:100%;overflow:hidden;background:#05040c;font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  button{font-family:inherit}
+  .hide{display:none!important}
+
+  /* top-right controls */
+  #tr{position:fixed;right:12px;top:clamp(66px,18vh,132px);z-index:26;display:flex;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:12px;border:1px solid rgba(216,164,77,.45);background:rgba(9,8,20,.82);color:var(--copper2);font-size:16px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px);transition:background .15s,transform .1s}
+  @media (max-height:600px){ #tr{top:64px} #tr button{width:34px;height:34px;font-size:14px} }
+  #tr button:hover{background:rgba(29,23,48,.94)}
+  #tr button:active{transform:translateY(1px)}
+  #tr button.on{background:rgba(96,42,32,.85);color:#ffc3aa;border-color:rgba(255,140,102,.55)}
+  #tr button:disabled{opacity:.35;cursor:default}
+
+  #toast{position:fixed;left:50%;bottom:48px;transform:translateX(-50%);z-index:28;padding:8px 20px;border-radius:22px;background:rgba(9,8,20,.92);border:1px solid rgba(88,216,192,.32);color:#dffcf4;font-size:13px;letter-spacing:1px;opacity:0;pointer-events:none;transition:opacity .24s;white-space:nowrap}
+  #toast.show{opacity:1}
+
+  /* shared overlay shell */
+  .overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#f2ead9}
+  #title{background:radial-gradient(ellipse at 50% 38%,rgba(11,9,26,.36),rgba(4,3,10,.9) 74%);padding:18px}
+  #title .kicker{font-size:11px;letter-spacing:7px;color:rgba(216,164,77,.95);margin-bottom:7px;text-shadow:0 1px 6px #000}
+  #title h1{margin:0;font-size:clamp(44px,7vw,76px);letter-spacing:.18em;font-weight:800;text-indent:.18em;color:#fff5e2;text-shadow:0 0 28px rgba(232,85,58,.34),0 0 48px rgba(82,103,223,.24),0 4px 18px #000}
+  #title h2{margin:5px 0 10px;font-size:clamp(10px,1.35vw,14px);font-weight:600;letter-spacing:.5em;text-indent:.5em;color:#a9a3cc;text-shadow:0 2px 8px #000}
+  .ruleline{width:min(600px,84vw);height:1px;background:linear-gradient(90deg,transparent,rgba(232,85,58,.65),rgba(216,164,77,.7),rgba(82,103,223,.65),transparent);margin:3px 0 12px}
+  #titlebest{font-size:13px;letter-spacing:1.5px;color:#ffdda0;margin-bottom:14px;text-shadow:0 2px 8px #000}
+  #titlebest::before{content:"◇ ";color:#8ff2db}
+  .modegrid{display:flex;gap:10px;align-items:stretch;justify-content:center;flex-wrap:wrap;max-width:760px}
+  .modebtn{position:relative;width:142px;padding:11px 9px 10px;border-radius:14px;border:1px solid rgba(216,164,77,.26);background:linear-gradient(180deg,rgba(26,20,42,.9),rgba(10,8,20,.94));color:#f0e8da;cursor:pointer;text-align:center;transition:transform .15s,border-color .15s,box-shadow .15s;backdrop-filter:blur(4px);overflow:hidden}
+  .modebtn::after{content:"";position:absolute;left:14%;right:14%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,rgba(216,164,77,.85),transparent);opacity:.55}
+  .modebtn:hover{transform:translateY(-3px);border-color:rgba(255,217,142,.7);box-shadow:0 7px 24px rgba(200,140,50,.16)}
+  .modebtn .mb-top{display:block;font-size:10px;letter-spacing:2px;color:rgba(216,164,77,.92);margin-bottom:5px}
+  .modebtn .mb-name{display:block;font-size:17px;font-weight:700;letter-spacing:2px;color:#fff8e9}
+  .modebtn .mb-sub{display:block;font-size:10.5px;color:#a49bbc;margin-top:5px;letter-spacing:.4px;line-height:1.5}
+  .modebtn.rec{border-color:rgba(216,164,77,.62);background:linear-gradient(180deg,rgba(48,33,33,.92),rgba(15,11,22,.95))}
+  .modebtn.rec::before{content:"推荐";position:absolute;right:7px;top:6px;font-size:9px;color:#ffdda0;border:1px solid rgba(216,164,77,.42);border-radius:8px;padding:1px 5px;letter-spacing:1px}
+  .modebtn.local{width:200px;border-color:rgba(82,103,223,.48);background:linear-gradient(180deg,rgba(27,28,64,.92),rgba(9,9,24,.95))}
+  .modebtn.local::after{background:linear-gradient(90deg,transparent,rgba(154,171,255,.8),transparent)}
+
+  .guidecard{margin-top:13px;padding:8px 20px 7px;border-radius:14px;background:rgba(6,5,15,.72);border:1px solid rgba(216,164,77,.2);box-shadow:0 8px 30px rgba(0,0,0,.35);backdrop-filter:blur(3px)}
+  .howto{font-size:12px;line-height:1.85;color:#b7c1d4;max-width:760px;text-shadow:0 1px 4px #000}
+  .howto b{color:#f7efdf;font-weight:600}
+  .howto .p1{color:#ffb29a}
+  .howto .p2{color:#b7c2ff}
+  .howto .jade{color:#8ff2db}
+  .keyrow{display:flex;gap:24px;justify-content:center;flex-wrap:wrap;margin-top:4px;font-size:11px;letter-spacing:.3px;color:#a39bb8;line-height:1.6}
+  .imprint{position:absolute;bottom:12px;left:0;right:0;font-size:10px;letter-spacing:3px;color:rgba(216,164,77,.6)}
+  .imprint span{color:rgba(88,216,192,.45)}
+
+  #end{background:radial-gradient(ellipse at 50% 38%,rgba(24,17,42,.52),rgba(3,2,9,.93) 74%)}
+  #end .end-kicker{font-size:10px;letter-spacing:6px;color:rgba(216,164,77,.85);margin-bottom:8px}
+  #end h1{margin:0;font-size:clamp(36px,5.2vw,58px);letter-spacing:.14em;text-indent:.14em;color:#fff5e3;text-shadow:0 0 28px rgba(232,85,58,.36),0 0 48px rgba(82,103,223,.22),0 4px 16px #000}
+  #endd{margin:14px 0 22px;font-size:14px;line-height:2;color:#e3d9c7;white-space:pre-line;text-shadow:0 2px 8px #000}
+  .btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .btns button{padding:12px 28px;min-width:120px;border-radius:24px;border:1px solid rgba(216,164,77,.55);background:linear-gradient(180deg,#f4cd87,#cf9a51);color:#1b1420;font-size:15px;font-weight:700;letter-spacing:3px;cursor:pointer;box-shadow:0 5px 22px rgba(213,156,71,.24)}
+  .btns button.ghost{background:rgba(13,11,26,.9);color:#e9dfc8;border-color:rgba(216,164,77,.34);box-shadow:none}
+  .btns button.ghost:hover{background:rgba(29,24,48,.95)}
+  .btns button:active{transform:translateY(1px)}
+
+  /* same-screen touch pads */
+  #touch{position:fixed;left:0;right:0;bottom:0;z-index:24;display:none;justify-content:space-between;align-items:flex-end;padding:0 10px 10px;pointer-events:none}
+  #touch .tpad{display:grid;grid-template-columns:repeat(3,47px);grid-auto-rows:47px;gap:6px;pointer-events:auto}
+  #touch button{width:47px;height:47px;border-radius:50%;border:1px solid rgba(255,217,142,.4);background:rgba(10,8,20,.66);color:#f4ecdc;font-size:14px;font-weight:700;letter-spacing:1px;touch-action:none;backdrop-filter:blur(3px);box-shadow:0 3px 10px rgba(0,0,0,.35)}
+  #touch .left button{border-color:rgba(232,85,58,.55);color:#ffc3aa}
+  #touch .right button{border-color:rgba(82,103,223,.6);color:#c3ccff}
+  #touch button.jump{font-size:12px}
+  #touch button.atk{background:rgba(46,20,22,.72)}
+  #touch button.def{background:rgba(16,20,52,.72)}
+  #touch button.on{background:rgba(255,217,142,.36);transform:scale(.94)}
+  body.touchui #touch{display:flex}
+  @media (pointer:coarse){ #touch{display:flex} }
+  @media (max-width:430px){
+    #touch .tpad{grid-template-columns:repeat(3,41px);grid-auto-rows:41px;gap:5px}
+    #touch button{width:41px;height:41px;font-size:12px}
+  }
+
+  @media (max-width:760px){
+    #title h1{letter-spacing:.1em;text-indent:.1em}
+    #title h2{letter-spacing:.3em;text-indent:.3em}
+    .modebtn{width:116px;padding:8px 7px}
+    .modebtn.local{width:158px}
+    .modebtn .mb-name{font-size:15px}
+    .modebtn .mb-sub{font-size:9.5px}
+    .guidecard{margin-top:10px;padding:6px 12px 5px}
+    .howto{font-size:11px}
+    .keyrow{gap:12px;font-size:9.5px}
+    #tr button{width:34px;height:34px;font-size:14px}
+    .imprint{bottom:7px;font-size:9px}
+    #toast{font-size:11px;bottom:82px}
+  }
+  @media (max-height:540px){
+    #title h1{font-size:40px}
+    #title h2{margin-bottom:5px}
+    #titlebest{margin-bottom:8px}
+    .guidecard{margin-top:7px;padding:5px 12px 4px}
+    .howto{line-height:1.55}
+    .modebtn{padding:8px 7px}
+    .imprint{bottom:5px}
+  }
+</style>
+<script>
+window.__BOOTERR = [];
+(function(){
+  function pushErr(msg){
+    msg = String(msg || 'script error');
+    if (window.__BOOTERR.indexOf(msg) < 0) window.__BOOTERR.push(msg);
+    if (window.__G && window.__G.err && window.__G.err.indexOf(msg) < 0) window.__G.err.push(msg);
+  }
+  window.addEventListener('error', function(e){
+    if (e && e.target && (e.target.src || e.target.href)) pushErr('resource error: ' + (e.target.src || e.target.href));
+    else pushErr(e && e.message ? e.message : 'script error');
+  }, true);
+  window.addEventListener('unhandledrejection', function(e){
+    pushErr('unhandledrejection: ' + (e && e.reason ? e.reason : 'unknown'));
+  });
+})();
+</script>
+</head>
+<body>
+<canvas id="gl" aria-label="双生擂台游戏画布"></canvas>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)" aria-label="静音">♪</button>
+  <button id="pausebtn" title="暂停 (P)" aria-label="暂停">❚❚</button>
+</div>
+
+<div id="toast"></div>
+
+<div id="title" class="overlay">
+  <div class="kicker">灯匠夜游 · 第 14 铺</div>
+  <h1>双生擂台</h1>
+  <h2>TWIN TEMPO ARENA</h2>
+  <div class="ruleline"></div>
+  <div id="titlebest">尚无纪录 · 夺冠后记下最快用时</div>
+
+  <div class="modegrid">
+    <button class="modebtn" data-mode="ai" data-diff="1">
+      <span class="mb-top">单人对 AI · 一</span>
+      <span class="mb-name">易</span>
+      <span class="mb-sub">灯影迟缓<br>熟悉三回合</span>
+    </button>
+    <button class="modebtn rec" data-mode="ai" data-diff="2">
+      <span class="mb-top">单人对 AI · 二</span>
+      <span class="mb-name">中</span>
+      <span class="mb-sub">会抢灯会格挡<br>有来有回</span>
+    </button>
+    <button class="modebtn" data-mode="ai" data-diff="3">
+      <span class="mb-top">单人对 AI · 三</span>
+      <span class="mb-name">难</span>
+      <span class="mb-sub">贴身压制<br>灯影不留情</span>
+    </button>
+    <button class="modebtn local" data-mode="local" data-diff="2">
+      <span class="mb-top">同屏对战</span>
+      <span class="mb-name">本地双人</span>
+      <span class="mb-sub">P1 WASD · P2 方向键</span>
+    </button>
+  </div>
+
+  <div class="guidecard">
+    <div class="howto">
+      三回合轮换：<b>斗剑</b> 削减体力 · <b>抢点</b> 站上中央灯台积满灯焰 · <b>推挤</b> 把对手撞出浮台<br>
+      胜场多者夺冠；平局加时一回合 · <span class="jade">P 暂停 · M 静音 · R 重开</span>
+    </div>
+    <div class="keyrow">
+      <span><span class="p1">P1</span> WASD 移动/跳 · F 攻击 · G 长按格挡 / 带方向冲刺</span>
+      <span><span class="p2">P2</span> 方向键移动/跳 · J 或 Numpad0 攻击 · L 或 Numpad1 格挡/冲刺</span>
+    </div>
+  </div>
+  <div class="imprint">灯匠夜游 · 第 14 铺 <span>◆</span> TWIN TEMPO ARENA</div>
+</div>
+
+<div id="end" class="overlay hide">
+  <div class="end-kicker" id="endkick">MATCH RESULT · 双生记</div>
+  <h1 id="endh">比 分 落 定</h1>
+  <div id="endd"></div>
+  <div class="btns">
+    <button id="go">再来一局</button>
+    <button id="change" class="ghost">换难度</button>
+    <button id="home" class="ghost">回标题</button>
+  </div>
+  <button id="share" class="ghost" style="display:none">分享</button>
+  <div class="imprint"><b>灯匠夜游 · 第 14 铺</b></div>
+</div>
+
+<div id="touch" aria-label="触屏双人按键">
+  <div class="tpad left">
+    <button data-code="KeyA" aria-label="P1 左">◀</button>
+    <button data-code="KeyW" class="jump" aria-label="P1 跳">跳</button>
+    <button data-code="KeyD" aria-label="P1 右">▶</button>
+    <button data-code="KeyF" class="atk" aria-label="P1 攻击">攻</button>
+    <button data-code="KeyG" class="def" aria-label="P1 格挡/冲刺">防</button>
+  </div>
+  <div class="tpad right">
+    <button data-code="ArrowLeft" aria-label="P2 左">◀</button>
+    <button data-code="ArrowUp" class="jump" aria-label="P2 跳">跳</button>
+    <button data-code="ArrowRight" aria-label="P2 右">▶</button>
+    <button data-code="KeyJ" class="atk" aria-label="P2 攻击">攻</button>
+    <button data-code="KeyL" class="def" aria-label="P2 格挡/冲刺">防</button>
+  </div>
+</div>
+
+<script src="static/play68.js"></script>
+<script src="static/play68bar.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

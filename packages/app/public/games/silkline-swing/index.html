@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>丝线荡跃 Silkline Swing</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --ink:#05070f; --indigo:#0b1428; --indigo2:#162747; --panel:rgba(10,18,36,.84);
+    --copper:#e0a45a; --copper2:#ffd99a; --jade:#6fe3c4; --jade2:#b6ffe8;
+    --verm:#e35d4c; --verm2:#ff9a78; --paper:#f1e4c8; --muted:#8fa1bf;
+    --line:rgba(224,164,90,.24);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05070f;color:var(--paper);
+    font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    user-select:none;-webkit-user-select:none;touch-action:none}
+  canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  button{font-family:inherit;color:inherit;cursor:pointer}
+  .hidden{display:none!important}
+
+  /* ---------- HUD ---------- */
+  #hud{position:fixed;inset:0;z-index:8;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-start;
+    padding:max(14px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) 14px max(18px,env(safe-area-inset-left))}
+  .hudcard{background:linear-gradient(180deg,rgba(10,19,38,.86),rgba(8,14,29,.66));
+    border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.3);
+    padding:9px 13px;backdrop-filter:blur(5px)}
+  #hud-left .kick{font-size:10px;letter-spacing:2.6px;color:var(--copper);opacity:.9}
+  #hud-level{font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:21px;font-weight:700;
+    letter-spacing:2px;color:#f7ead0;text-shadow:0 2px 12px #000;margin-top:1px}
+  #hud-row{display:flex;gap:14px;align-items:center;margin-top:5px;font-size:13px;color:var(--muted)}
+  #hud-shards{letter-spacing:4px;color:var(--jade);font-size:15px}
+  #hud-shards .off{color:rgba(111,227,196,.18)}
+  #hud-lives{letter-spacing:3px;color:var(--verm2);font-size:14px}
+  #hud-lives .off{color:rgba(227,93,76,.2)}
+  #hud-time{font-variant-numeric:tabular-nums;color:#d8e2f0}
+  #hud-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+  #hud-total{font-size:11px;color:var(--copper2);letter-spacing:1.4px;padding:6px 11px}
+  .tr{display:flex;gap:7px;pointer-events:auto}
+  .tr button{width:38px;height:38px;border-radius:9px;border:1px solid var(--line);
+    background:rgba(9,16,32,.86);color:var(--copper2);font-size:13px;letter-spacing:1px}
+  .tr button:hover{background:rgba(40,32,20,.9)}
+  .tr button.on{background:rgba(92,64,24,.9)}
+
+  /* ---------- hints / banners ---------- */
+  #guide{position:fixed;left:50%;bottom:max(12px,env(safe-area-inset-bottom));transform:translateX(-50%);
+    z-index:7;font-size:11.5px;color:#c7d3e6;letter-spacing:1px;background:rgba(6,11,22,.72);
+    border:1px solid rgba(224,164,90,.16);border-radius:20px;padding:6px 16px;pointer-events:none;white-space:nowrap}
+  #banner{position:fixed;left:50%;top:24%;transform:translate(-50%,-50%);z-index:14;text-align:center;
+    pointer-events:none;opacity:0;transition:opacity .22s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:32px;font-weight:700;
+    letter-spacing:6px;color:#ffe3ad;text-shadow:0 0 22px rgba(255,170,70,.65),0 2px 8px #000}
+  #banner .bsub{font-size:13px;color:#c9d6e8;margin-top:7px;letter-spacing:2px;text-shadow:0 1px 5px #000}
+  #toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);z-index:14;font-size:12.5px;
+    color:#f0e3c6;background:rgba(8,14,27,.9);border:1px solid var(--line);border-radius:18px;
+    padding:7px 16px;opacity:0;transition:opacity .25s;pointer-events:none}
+  #toast.show{opacity:1}
+  #flash{position:fixed;inset:0;z-index:9;pointer-events:none;opacity:0;transition:opacity .18s;
+    background:radial-gradient(ellipse at center,transparent 42%,rgba(200,50,38,.5))}
+  #flash.on{opacity:1}
+
+  /* ---------- title ---------- */
+  #title{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:18px;
+    background:radial-gradient(ellipse at 50% 30%,rgba(20,38,70,.66),rgba(4,7,15,.93) 68%)}
+  #title .kicker{font-size:11px;letter-spacing:5px;color:var(--copper);opacity:.95}
+  #title h1{font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:60px;letter-spacing:14px;
+    margin:8px 0 0;color:#ffe2a8;text-shadow:0 0 30px rgba(255,175,70,.5),0 3px 12px #000}
+  #title h2{font-size:13px;font-weight:400;letter-spacing:6px;color:var(--jade);margin:8px 0 0}
+  #title .howto{max-width:600px;font-size:12.5px;line-height:1.9;color:#b9c8dc;margin:14px 16px 8px}
+  #title .howto b{color:var(--copper2);font-weight:600}
+  #level-grid{display:flex;flex-direction:column;gap:8px;margin-top:6px;max-width:880px;width:100%}
+  .chap{display:grid;grid-template-columns:repeat(6,78px);gap:8px;justify-content:center;align-items:center}
+  .chap .ctitle{grid-column:1/-1;font-size:10.5px;letter-spacing:3px;color:var(--muted);margin-bottom:-2px}
+  .lv{position:relative;width:auto;min-height:46px;padding:6px 3px 5px;border-radius:8px;border:1px solid rgba(224,164,90,.2);
+    background:rgba(9,16,31,.78);color:#c9d5e6;font-size:11px;transition:.15s;overflow:hidden}
+  .lv:hover{border-color:rgba(255,217,154,.7);transform:translateY(-2px)}
+  .lv .n{font-size:9px;color:#8ea0ba;letter-spacing:1px}
+  .lv .nm{font-family:"STKaiti","KaiTi",serif;font-size:12px;color:#eddfc4;margin-top:1px;white-space:nowrap}
+  .lv .st{font-size:10px;letter-spacing:1px;color:var(--jade);height:12px;margin-top:2px}
+  .lv .st .off{color:rgba(111,227,196,.16)}
+  .lv.locked{opacity:.36;pointer-events:none}
+  .lv.cur{border-color:rgba(255,217,154,.75);box-shadow:0 0 16px rgba(255,180,80,.24)}
+  .lv .badge{position:absolute;right:4px;top:4px;font-size:8px;color:var(--verm2)}
+  #title-foot{display:flex;align-items:center;gap:18px;margin-top:16px}
+  #title-best{font-size:12px;color:var(--copper2);letter-spacing:1px}
+  #startbtn{padding:12px 42px;font-size:18px;letter-spacing:5px;border:none;border-radius:24px;
+    background:linear-gradient(180deg,#ffd99a,#df9f51);color:#1a1206;
+    box-shadow:0 0 24px rgba(255,185,90,.36),0 4px 16px rgba(0,0,0,.4)}
+  #startbtn:hover{filter:brightness(1.06)}
+  #title .foot{margin-top:12px;font-size:10px;letter-spacing:3px;color:#63718a}
+
+  /* ---------- end ---------- */
+  #end{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(18,34,64,.8),rgba(4,7,15,.95) 70%)}
+  #end.show{display:flex}
+  #end .ek{font-size:10px;letter-spacing:4px;color:var(--copper)}
+  #end h2{font-family:"STKaiti","KaiTi",serif;font-size:42px;letter-spacing:8px;margin:8px 0 0;color:#ffe2a8;
+    text-shadow:0 0 24px rgba(255,170,70,.4)}
+  #end .reason{font-size:13px;color:#b9c8dc;margin-top:10px;letter-spacing:1px}
+  .starrow{font-size:36px;letter-spacing:10px;color:var(--jade);margin:12px 0 0;height:44px}
+  .starrow .off{color:rgba(111,227,196,.15)}
+  .estats{display:flex;gap:26px;margin-top:12px}
+  .estat{min-width:92px}
+  .estat .n{font-size:24px;font-variant-numeric:tabular-nums;color:var(--copper2)}
+  .estat .l{font-size:10.5px;letter-spacing:1.6px;color:var(--muted);margin-top:2px}
+  .endbtns{display:flex;gap:12px;margin-top:22px}
+  .endbtns button{padding:11px 28px;font-size:14px;letter-spacing:2px;border-radius:22px;
+    border:1px solid rgba(224,164,90,.4);background:rgba(12,20,38,.9);color:#ffe0a4}
+  .endbtns button.primary{background:linear-gradient(180deg,#ffd99a,#df9f51);color:#1a1206;border:none}
+  .endbtns button:hover{filter:brightness(1.1)}
+  #end .foot{margin-top:14px;font-size:10px;letter-spacing:3px;color:#63718a}
+
+  /* ---------- touch ---------- */
+  #touch{position:fixed;inset:0;z-index:12;pointer-events:none;display:none}
+  #touch.on{display:block}
+  #touch button{position:absolute;pointer-events:auto;border-radius:50%;
+    border:1px solid rgba(224,164,90,.45);background:rgba(8,14,28,.78);color:#ffe0a8;
+    font-size:14px;letter-spacing:1px;backdrop-filter:blur(3px)}
+  #tgrab{right:26px;bottom:88px;width:86px;height:86px;font-size:16px;
+    border-color:rgba(111,227,196,.65)!important;color:var(--jade2)!important;
+    box-shadow:0 0 20px rgba(111,227,196,.16)}
+  #tgrab.down{background:rgba(36,80,72,.9);box-shadow:0 0 30px rgba(111,227,196,.4)}
+  #tleft{left:24px;bottom:40px;width:60px;height:60px;font-size:20px}
+  #tright{left:100px;bottom:40px;width:60px;height:60px;font-size:20px}
+  #tin{right:126px;bottom:40px;width:58px;height:58px}
+  #tout{right:126px;bottom:112px;width:58px;height:58px}
+  .pressed{filter:brightness(1.5);transform:scale(.96)}
+
+  @media (max-width:760px){
+    #title h1{font-size:38px;letter-spacing:8px}
+    #title .howto{font-size:11px;max-width:92vw}
+    .chap{grid-template-columns:repeat(3,72px);gap:7px}
+    .lv{min-height:44px}
+    .lv .nm{font-size:10.5px}
+    #level-grid{gap:6px}
+    #hud-level{font-size:17px}
+    #guide{display:none}
+    #banner .bmain{font-size:25px}
+  }
+  @media (max-height:700px){
+    #title h1{font-size:32px;margin:4px 0 0;letter-spacing:7px}
+    #title .howto{font-size:10.5px;line-height:1.6;margin:6px 10px 4px}
+    #title h2{font-size:11px;margin-top:4px}
+    .chap{grid-template-columns:repeat(3,64px);gap:5px}
+    .lv{min-height:37px;padding:4px 2px}
+    .lv .nm{font-size:10px}
+    #level-grid{gap:4px;margin-top:2px}
+    #title-foot{margin-top:8px}
+    #startbtn{padding:9px 30px;font-size:15px}
+    #title .foot{margin-top:6px;font-size:9px}
+  }
+  @media (max-height:640px) and (pointer:fine){
+    #title h1{font-size:40px}
+    #title .howto{margin:8px 16px 4px}
+    #level-grid{gap:5px}
+    .lv{padding:5px 3px}
+    #title-foot{margin-top:10px}
+  }
+</style>
+<script>
+  window.__BOOTERR = [];
+  window.__NET = { fetch: 0, xhr: 0, ws: 0, external: [] };
+  (function () {
+    try {
+      const of = window.fetch;
+      if (of) window.fetch = function (input) {
+        window.__NET.fetch++;
+        const u = String(input && input.url || input || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return of.apply(this, arguments);
+      };
+      const xo = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function (method, url) {
+        window.__NET.xhr++;
+        const u = String(url || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return xo.apply(this, arguments);
+      };
+      const OW = window.WebSocket;
+      if (OW) window.WebSocket = function (url) {
+        window.__NET.ws++;
+        const u = String(url || '');
+        if (/^wss?:\/\//i.test(u) && u.indexOf(location.host) < 0) window.__NET.external.push(u);
+        return new OW(url);
+      };
+      window.WebSocket.prototype = OW.prototype;
+    } catch (e) { window.__BOOTERR.push('netwrap:' + e); }
+    window.addEventListener('error', function (e) {
+      window.__BOOTERR.push(String(e.message || e));
+      if (window.__G && window.__G.err) window.__G.err.push(String(e.message || e));
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      window.__BOOTERR.push('promise:' + String(e && e.reason || e));
+      if (window.__G && window.__G.err) window.__G.err.push('promise:' + String(e && e.reason || e));
+    });
+  })();
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="hudcard" id="hud-left">
+    <div class="kick" id="hud-chapter">第一章 · 雾谷初丝</div>
+    <div id="hud-level">第 1 关 · 灯口试丝</div>
+    <div id="hud-row">
+      <span id="hud-shards">◇◇◇</span>
+      <span id="hud-lives">♥♥♥</span>
+      <span id="hud-time">0.0s</span>
+    </div>
+  </div>
+  <div id="hud-right">
+    <div class="hudcard" id="hud-total">总星 0 / 54</div>
+    <div class="tr">
+      <button id="mutebtn" title="静音 (M)">声</button>
+      <button id="pausebtn" title="暂停 (P)">停</button>
+      <button id="restartbtn" title="重开本关 (R)">重</button>
+    </div>
+  </div>
+</div>
+
+<div id="guide">按住 Space / 鼠标 / 触屏抓丝 · A/D 泵摆 · W/S 收放 · 松手飞出</div>
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+<div id="flash"></div>
+
+<div id="title">
+  <div class="kicker">灯匠夜游 · 第 6 铺</div>
+  <h1>丝线荡跃</h1>
+  <h2>SILKLINE SWING · 深峡丝索</h2>
+  <div class="howto">
+    按住 <b>空格 / 鼠标左键 / 触屏</b> 抓住射程内的铜锚，绕锚荡起；<b>A / D</b> 泵摆，<b>W / S</b> 收放丝长，<b>松手</b>便带着惯性飞出。<br>
+    每关收集 <b>三颗星屑</b>，穿过空中的 <b>釉朱星门</b>。尖刺与深渊会折断丝线。
+  </div>
+  <div id="level-grid"></div>
+  <div id="title-foot">
+    <span id="title-best">总星 0 / 54</span>
+    <button id="startbtn">开始荡跃</button>
+  </div>
+  <div class="foot">18 关 · 3 章 · 全程序化 Canvas 与 WebAudio</div>
+</div>
+
+<div id="end">
+  <div class="ek" id="end-kicker">LEVEL CLEAR</div>
+  <h2 id="end-heading">星门已渡</h2>
+  <div class="reason" id="end-reason"></div>
+  <div class="starrow" id="end-stars"><span>★</span><span>★</span><span>★</span></div>
+  <div class="estats">
+    <div class="estat"><div class="n" id="end-shards">0/3</div><div class="l">星屑</div></div>
+    <div class="estat"><div class="n" id="end-time">0.0s</div><div class="l">用时</div></div>
+    <div class="estat"><div class="n" id="end-total">0</div><div class="l">总星</div></div>
+  </div>
+  <div class="endbtns">
+    <button id="end-next" class="primary">下一关</button>
+    <button id="end-retry">再试一次</button>
+    <button id="end-home">回标题</button>
+  </div>
+  <div class="foot">灯匠夜游 · 第 6 铺 · SILKLINE SWING</div>
+</div>
+
+<div id="touch">
+  <button id="tgrab">抓丝</button>
+  <button id="tleft">←</button>
+  <button id="tright">→</button>
+  <button id="tin">收</button>
+  <button id="tout">放</button>
+</div>
+
+<script type="text/javascript" src="static/play68.js"></script>
+<script type="module" src="js/game.js"></script>
+<script type="text/javascript" src="static/play68bar.js"></script>
+</body>
+</html>

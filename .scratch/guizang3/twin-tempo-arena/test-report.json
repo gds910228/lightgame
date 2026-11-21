@@ -1,0 +1,68 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "pass": 36,
+      "fail": 0,
+      "total": 36,
+      "mandatoryOk": true,
+      "failed": [],
+      "booterr": [],
+      "errors": [],
+      "warnings": [],
+      "external": [],
+      "done": true
+    },
+    {
+      "round": 2,
+      "pass": 36,
+      "fail": 0,
+      "total": 36,
+      "mandatoryOk": true,
+      "failed": [],
+      "booterr": [],
+      "errors": [],
+      "warnings": [],
+      "external": [],
+      "done": true
+    }
+  ],
+  "smoke": {
+    "keyboard": {
+      "x0": 380,
+      "x1": 447.4337652149195,
+      "moved": true
+    },
+    "pointer": {
+      "pauseClick": true
+    },
+    "errors": [],
+    "external": []
+  },
+  "touch": {
+    "errors": [],
+    "external": [],
+    "moved": true,
+    "x0": 360,
+    "x1": 427.4337652149195,
+    "buttons": 10
+  },
+  "direct": {
+    "errors": [],
+    "warnings": [],
+    "titleVisible": true,
+    "booterr": [],
+    "external": []
+  },
+  "gameplay": {
+    "errors": [],
+    "external": []
+  },
+  "allErrors": [],
+  "allWarnings": [],
+  "allExternal": [],
+  "thumbnail": {
+    "path": "/mnt/tos/workspace/packages/games/twin-tempo-arena/thumbnail.jpg",
+    "bytes": 32705
+  }
+}

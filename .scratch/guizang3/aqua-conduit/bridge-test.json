@@ -1,0 +1,76 @@
+[
+  {
+    "source": "lightgame",
+    "type": "lightgame:report",
+    "payload": {
+      "kind": "ready",
+      "game": "aqua-conduit",
+      "version": "1.0.0"
+    }
+  },
+  {
+    "source": "lightgame",
+    "type": "lightgame:ready",
+    "gameId": "aqua-conduit",
+    "v": 1
+  },
+  {
+    "source": "lightgame",
+    "type": "lightgame:report",
+    "payload": {
+      "kind": "progress",
+      "data": {
+        "kind": "progress",
+        "score": 0,
+        "progress": 2,
+        "stars": 0,
+        "budget": 11,
+        "optimal": 6
+      }
+    }
+  },
+  {
+    "source": "lightgame",
+    "type": "lightgame:report",
+    "payload": {
+      "kind": "gameOver",
+      "score": 0,
+      "progress": {
+        "value": 2
+      },
+      "data": {
+        "kind": "gameOver",
+        "score": 0,
+        "progress": 2,
+        "reason": "步数用尽，水路仍未接通",
+        "moves": 0,
+        "movesLeft": 0,
+        "optimal": 6,
+        "time": 0
+      }
+    }
+  },
+  {
+    "source": "lightgame",
+    "type": "lightgame:report",
+    "payload": {
+      "kind": "progress",
+      "data": {
+        "kind": "progress",
+        "score": 0,
+        "progress": 3,
+        "stars": 0,
+        "budget": 9,
+        "optimal": 4
+      }
+    }
+  },
+  {
+    "source": "lightgame",
+    "type": "lightgame:report",
+    "payload": {
+      "kind": "complete",
+      "score": 298
+    }
+  }
+]

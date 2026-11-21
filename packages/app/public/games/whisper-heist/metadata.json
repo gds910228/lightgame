@@ -1,0 +1,15 @@
+{
+  "id": "whisper-heist",
+  "title": "Whisper Heist 声息窃影",
+  "category": ["Stealth", "Action", "Guizang"],
+  "description": "A hand-drawn top-down stealth heist set in a lamplit indigo night. Slip past fixed watchmen, turning patrols and sharp-eared sentries across 12 crafted heists in three chapters. Read vision cones and wall occlusion, crouch through low crates, throw sound decoys to pull guards away, steal every lacquer relic and reach the exit before the 180-second lamp burns out. Noise ripples through the courtyard, guards investigate, and a three-stage alarm (suspicion, search, pursuit) can seal the night. Synthesized WebAudio ambience, no downloads.",
+  "controls": "WASD / arrow keys move, Shift crouches (slow, near-silent, slips through low cover). Space or 1 throws a sound decoy toward the mouse or facing direction, E steals a relic or escapes through the exit once all relics are taken, P pauses, R restarts, M mutes. On touch: drag the left virtual stick to move and use the crouch / decoy / interact buttons; mute and pause are top-right.",
+  "type": "local",
+  "path": "/games/whisper-heist/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["stealth", "top-down", "heist", "patrol", "noise", "12-levels", "guizang", "touch"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-19"
+}

@@ -1,0 +1,15 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({ headless: true, executablePath: '/usr/local/bin/chromium', args: ['--no-sandbox','--use-gl=swiftshader'] });
+const p = await b.newPage({ viewport: { width: 360, height: 640 }, isMobile: true, hasTouch: true });
+const logs=[]; p.on('console',m=>{if(m.type()==='error'||m.type()==='warning')logs.push(m.type()+': '+m.text())}); p.on('pageerror',e=>logs.push('ERR '+e));
+await p.goto('http://localhost:8621/silkline-swing/', { waitUntil:'load' });
+await p.waitForTimeout(400);
+await p.screenshot({ path:'/mnt/tos/workspace/.scratch/guizang3/silkline-swing/mobile-small.png' });
+const startBox = await p.evaluate(() => { const r=document.getElementById('startbtn').getBoundingClientRect(); return {top:r.top,bottom:r.bottom,h:innerHeight}; });
+await p.tap('#startbtn');
+await p.waitForTimeout(300);
+await p.screenshot({ path:'/mnt/tos/workspace/.scratch/guizang3/silkline-swing/mobile-small-play.png' });
+console.log(JSON.stringify({startBox, logs}));
+await b.close();

@@ -1,0 +1,15 @@
+{
+  "id": "echo-hour",
+  "title": "Echo Hour 回声之时",
+  "category": ["Puzzle", "Platformer", "Time", "Guizang"],
+  "description": "A hand-authored time-loop puzzle platformer in deep indigo and warm copper. Record up to eight seconds of your own movement, stop, and a ghostly echo loops that action forever — it can hold pressure plates and trip timed switches for you, but it cannot pick up the hourglasses and star grains. Hold Q or Shift to rewind yourself and nearby time mechanisms up to three seconds, restoring moving platforms, laser cadence, conveyors and crushers to a past state that lets you pass. Twelve authored levels across three chapters combine both abilities with seven mechanism classes. Optional hourglasses and star grains are extra objectives; stars are rated on clear time and rewind count. Procedural Canvas art, synthesized WebAudio, no external assets.",
+  "controls": "A / D or Left / Right to walk, Space / W / Up to jump. E starts and stops an 8-second echo recording; the echo then loops and can press plates and switches. Hold Q or Shift to rewind yourself and local mechanisms up to 3 seconds. R restarts the level, P pauses, M mutes. On touch, use the on-screen left/right, jump, record (录) and rewind (溯) buttons. Reach the copper hour gate to clear the level. Optional hourglasses and star grains add score; star rating depends on clear time and how many rewinds you used.",
+  "type": "local",
+  "path": "/games/echo-hour/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["time-rewind", "puzzle-platformer", "echo", "canvas", "procedural", "single-player", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

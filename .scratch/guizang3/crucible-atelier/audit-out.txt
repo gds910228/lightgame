@@ -1,0 +1,122 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "pass": 37,
+      "fail": 0,
+      "total": 37,
+      "done": true,
+      "failed": [],
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "external": [],
+      "net": {
+        "fetch": 0,
+        "xhr": 0,
+        "ws": 0,
+        "external": []
+      },
+      "booterr": []
+    },
+    {
+      "round": 2,
+      "pass": 37,
+      "fail": 0,
+      "total": 37,
+      "done": true,
+      "failed": [],
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "external": [],
+      "net": {
+        "fetch": 0,
+        "xhr": 0,
+        "ws": 0,
+        "external": []
+      },
+      "booterr": []
+    }
+  ],
+  "direct": {
+    "mode": "title",
+    "booterr": [],
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "external": [],
+    "net": {
+      "fetch": 0,
+      "xhr": 0,
+      "ws": 0,
+      "external": []
+    },
+    "globalFns": {
+      "goHome": "function",
+      "clickMore": "function",
+      "dp_share": "function",
+      "play68_submitScore": "function"
+    }
+  },
+  "input": {
+    "startedMode": "play",
+    "lineSwitch": {
+      "after2": 1,
+      "after1": 0
+    },
+    "gather": {
+      "waterBefore": 6,
+      "w": 8,
+      "a": 8,
+      "mat": 13
+    },
+    "cards": {
+      "crafts": 3,
+      "gold": 54,
+      "discovered": 3
+    },
+    "quickCraft": {
+      "before": 3,
+      "after": 10
+    },
+    "paused": true,
+    "resumed": true,
+    "muteBefore": false,
+    "muteAfter": true,
+    "upgrade": {
+      "from": 0,
+      "to": 1
+    },
+    "canvasGather": {
+      "before": 0,
+      "after": 2
+    },
+    "external": [],
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": []
+  },
+  "touch": {
+    "started": "play",
+    "waterTouch": {
+      "before": 6,
+      "after": 8
+    },
+    "cardTouch": {
+      "before": 0,
+      "after": 1
+    },
+    "external": [],
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": []
+  },
+  "extAll": [],
+  "shots": [
+    "/mnt/tos/workspace/.scratch/guizang3/crucible-atelier/title-1280x720.png",
+    "/mnt/tos/workspace/.scratch/guizang3/crucible-atelier/play-1280x720-demo.png",
+    "/mnt/tos/workspace/.scratch/guizang3/crucible-atelier/play-640x360.png",
+    "/mnt/tos/workspace/.scratch/guizang3/crucible-atelier/play-640x360.jpg"
+  ]
+}

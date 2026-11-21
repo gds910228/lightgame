@@ -1,0 +1,15 @@
+{
+  "id": "twin-tempo-arena",
+  "title": "Twin Tempo Arena 双生擂台",
+  "category": ["Action", "Fighting", "Local Multiplayer", "Guizang"],
+  "description": "A midnight paper-cut arena duel for two players on one keyboard. Three rotating rounds decide the match: a sword duel to break stamina, a lamp-capture race in the centre of the deck, and a sumo-style shove round where momentum sends rivals off a shrinking floating platform. Real acceleration, friction, jumping, blocking, dash invulnerability and momentum-based shove impulses. Play local two-player (vermilion P1 vs indigo P2) or practise against a three-tier lamp-shade AI. Round wins decide the score, draws trigger a push overtime, and a fastest-champion record is kept. Fully procedural Canvas art and synthesized WebAudio — no external assets.",
+  "controls": "Local two-player: P1 uses A/D to move, W to jump, F to attack, hold G to block and press G while moving to dash. P2 uses Left/Right arrows, Up to jump, J or Numpad0 to attack, hold L or Numpad1 to block and press it while moving to dash. On touch screens each player gets their own on-screen pad. P pauses, M mutes, R restarts. Win two of the three rotating rounds (duel / lamp capture / shove) to take the match; a tied series goes to one push overtime round.",
+  "type": "local",
+  "path": "/games/twin-tempo-arena/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["2d", "fighting", "local-multiplayer", "arena", "physics", "ai", "canvas", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

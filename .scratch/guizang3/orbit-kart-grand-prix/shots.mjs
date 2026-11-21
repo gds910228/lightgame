@@ -1,0 +1,15 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const browser = await chromium.launch({ headless:true, executablePath:'/usr/local/bin/chromium', args:['--no-sandbox','--use-gl=swiftshader'] });
+const page = await browser.newPage({ viewport:{width:1280,height:720}, deviceScaleFactor:1 });
+await page.goto('http://127.0.0.1:8620/orbit-kart-grand-prix/');
+await page.waitForTimeout(2500);
+await page.screenshot({path:'.scratch/guizang3/orbit-kart-grand-prix/title.png'});
+await page.goto('http://127.0.0.1:8620/orbit-kart-grand-prix/?autostart=1&track=0');
+await page.waitForTimeout(3500);
+await page.screenshot({path:'.scratch/guizang3/orbit-kart-grand-prix/play.png'});
+await page.setViewportSize({width:640,height:360});
+await page.waitForTimeout(1500);
+await page.screenshot({path:'.scratch/guizang3/orbit-kart-grand-prix/thumb.jpg', type:'jpeg', quality:92});
+await browser.close();

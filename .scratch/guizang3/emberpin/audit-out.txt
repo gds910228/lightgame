@@ -1,0 +1,85 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "pass": 36,
+      "fail": 0,
+      "total": 36,
+      "done": true,
+      "failed": [],
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "external": [],
+      "net": {
+        "fetch": 0,
+        "xhr": 0,
+        "ws": 0,
+        "external": []
+      },
+      "booterr": []
+    },
+    {
+      "round": 2,
+      "pass": 36,
+      "fail": 0,
+      "total": 36,
+      "done": true,
+      "failed": [],
+      "consoleErrors": [],
+      "consoleWarnings": [],
+      "pageErrors": [],
+      "external": [],
+      "net": {
+        "fetch": 0,
+        "xhr": 0,
+        "ws": 0,
+        "external": []
+      },
+      "booterr": []
+    }
+  ],
+  "direct": {
+    "mode": "title",
+    "booterr": [],
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": [],
+    "external": [],
+    "net": {
+      "fetch": 0,
+      "xhr": 0,
+      "ws": 0,
+      "external": []
+    },
+    "globalFns": {
+      "goHome": "function",
+      "clickMore": "function",
+      "dp_share": "function",
+      "play68_submitScore": "function"
+    }
+  },
+  "input": {
+    "startedMode": "play",
+    "chargeDuringHold": 0.921,
+    "launchedVy": -1830.9,
+    "leftFlipperPressed": true,
+    "rightFlipperPressed": true,
+    "paused": true,
+    "resumed": true,
+    "muteBefore": false,
+    "muteAfter": true,
+    "mouseLeftPressed": true,
+    "restart": {
+      "mode": "play",
+      "score": 0,
+      "ballsLeft": 3,
+      "lane": true
+    },
+    "external": [],
+    "consoleErrors": [],
+    "consoleWarnings": [],
+    "pageErrors": []
+  },
+  "extAll": []
+}

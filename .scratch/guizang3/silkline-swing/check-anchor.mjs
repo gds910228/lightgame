@@ -1,0 +1,11 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({ headless: true, executablePath: '/usr/local/bin/chromium', args: ['--no-sandbox','--use-gl=swiftshader'] });
+const p = await b.newPage({ viewport: { width: 1280, height: 720 } });
+await p.goto('http://localhost:8621/silkline-swing/?autostart=1&level=14&shot=gate', { waitUntil:'load' });
+await p.waitForTimeout(500);
+const info = await p.evaluate(() => { const st=G.state(); const a=st.player.anchor; return {anchor:a, info:G.anchorInfo(a), rope:st.rope}; });
+console.log(JSON.stringify(info, null, 2));
+await p.screenshot({ path:'/mnt/tos/workspace/.scratch/guizang3/silkline-swing/gameplay-final.png' });
+await b.close();

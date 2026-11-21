@@ -1,0 +1,15 @@
+{
+  "id": "frostpuck-arena",
+  "title": "Frostpuck Arena 霜锋冰球",
+  "category": ["Sports", "Physics", "Guizang"],
+  "description": "A frost-lit 2D air-hockey duel on a midnight aurora rink. Drag your glowing mallet, read the bounce, and slam the puck past the opposing goal. Play solo against Frostshade AI on three genuinely different difficulty tiers, or share the keyboard with a friend in local two-player mode (WASD vs arrow keys). First to 7 wins. Elastic mallet physics, wall rebounds, real opening countdowns, goal fireworks, screen shake, a fastest-win record and a fully synthesized ice-court soundtrack. Pure Canvas art, no external assets.",
+  "controls": "Single player: move the lower mallet with mouse or touch drag (WASD also works). Local two-player: P1 uses WASD, P2 uses arrow keys. Push the puck past the top goal to score; defend the bottom goal. First to 7 points wins. P pauses, M mutes. Choose Easy / Medium / Hard AI or local two-player from the title menu. Touch controls are supported.",
+  "type": "local",
+  "path": "/games/frostpuck-arena/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["air-hockey", "sports", "physics", "arcade", "1v1", "local-multiplayer", "ice", "canvas"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-19"
+}

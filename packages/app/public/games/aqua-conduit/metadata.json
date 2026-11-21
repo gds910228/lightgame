@@ -1,0 +1,15 @@
+{
+  "id": "aqua-conduit",
+  "title": "Aqua Conduit 水脉连环",
+  "category": ["Puzzle", "Logic", "Relaxing", "Guizang"],
+  "description": "A midnight-indigo pipe-rotation puzzle from the Guizang night series. Rotate straight pipes, elbows, tees and cross bridges to lead the hidden spring to a glazed fountain or a waterwheel. Later chapters add brass gate valves that only open at the right angle, one-way valves that refuse reverse flow, straight-only cross channels, and twin-colour springs where jade and azure water must never mix. Twenty-four authored levels across four chapters, each with a real reference solution and a limited move budget; leftover moves convert into score and up to three stars. Every board is procedurally drawn on Canvas with copper pipe walls, flowing jade water, valve wheels, ripples and sparks, and all sound is synthesised WebAudio. No external requests.",
+  "controls": "Click or tap any rotatable pipe to turn it 90 degrees clockwise; right-click or Shift-click turns it counter-clockwise. Arrow keys / WASD move the keyboard cursor and Space or Enter rotates the focused pipe (Shift+Space reverses). R restarts the current level, P pauses, M mutes. The goal is to connect every water source to its matching fountain or waterwheel before the move budget runs out. Gate valves show 通 when open and 闭 when shut; one-way valves only conduct along their gold arrow; cross bridges conduct straight through only, never turning. Clear a level to unlock the next; stars reward few moves and a fast clear.",
+  "type": "local",
+  "path": "/games/aqua-conduit/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["puzzle", "pipes", "rotation", "logic", "water", "canvas", "guizang", "relaxing"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

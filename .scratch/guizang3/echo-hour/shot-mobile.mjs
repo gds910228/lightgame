@@ -1,0 +1,11 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({headless:true, executablePath:'/usr/local/bin/chromium', args:['--no-sandbox','--use-gl=swiftshader']});
+const p = await b.newPage({viewport:{width:640,height:360}, isMobile:true, hasTouch:true});
+await p.goto('http://localhost:8627/echo-hour/',{waitUntil:'load'});
+await p.waitForTimeout(600);
+const m = await p.evaluate(() => ({sw:document.documentElement.scrollWidth, sh:document.documentElement.scrollHeight, iw:innerWidth, ih:innerHeight, title:document.getElementById('title').getBoundingClientRect().toJSON()}));
+console.log(JSON.stringify(m));
+await p.screenshot({path:'shot-title-mobile.png'});
+await b.close();

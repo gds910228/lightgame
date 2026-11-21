@@ -1,0 +1,18 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b=await chromium.launch({headless:true,executablePath:'/usr/local/bin/chromium',args:['--no-sandbox','--use-gl=swiftshader']});
+const p=await b.newPage({viewport:{width:1280,height:720}});
+const errs=[],warns=[],reqs=[];
+p.on('console',m=>{if(m.type()==='error')errs.push(m.text());if(m.type()==='warning')warns.push(m.text())});
+p.on('pageerror',e=>errs.push(String(e)));p.on('request',r=>reqs.push(r.url()));
+await p.goto('http://127.0.0.1:8620/orbit-kart-grand-prix/');
+await p.waitForTimeout(2500);
+await p.click('.modeBtn[data-mode="tt"]');
+await p.click('.trackcard[data-i="2"]');
+await p.click('#startbtn');
+await p.waitForTimeout(3900);
+await p.keyboard.down('KeyW'); await p.waitForTimeout(700); await p.keyboard.up('KeyW');
+const st=await p.evaluate(()=>G.state());
+console.log(JSON.stringify({screen:st.screen,mode:st.mode,track:st.track,speed:st.speed,errs,scriptWarns:warns.filter(w=>!w.includes('GL Driver')),external:reqs.filter(u=>!u.startsWith('http://127.0.0.1:8620'))}));
+await b.close();

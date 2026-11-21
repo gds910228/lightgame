@@ -82,6 +82,36 @@
       "thumbnail": "/games/air-strike-battle/icon.png"
     },
     {
+      "id": "aqua-conduit",
+      "title": "Aqua Conduit 水脉连环",
+      "category": [
+        "Puzzle",
+        "Logic",
+        "Relaxing",
+        "Guizang"
+      ],
+      "description": "A midnight-indigo pipe-rotation puzzle from the Guizang night series. Rotate straight pipes, elbows, tees and cross bridges to lead the hidden spring to a glazed fountain or a waterwheel. Later chapters add brass gate valves that only open at the right angle, one-way valves that refuse reverse flow, straight-only cross channels, and twin-colour springs where jade and azure water must never mix. Twenty-four authored levels across four chapters, each with a real reference solution and a limited move budget; leftover moves convert into score and up to three stars. Every board is procedurally drawn on Canvas with copper pipe walls, flowing jade water, valve wheels, ripples and sparks, and all sound is synthesised WebAudio. No external requests.",
+      "controls": "Click or tap any rotatable pipe to turn it 90 degrees clockwise; right-click or Shift-click turns it counter-clockwise. Arrow keys / WASD move the keyboard cursor and Space or Enter rotates the focused pipe (Shift+Space reverses). R restarts the current level, P pauses, M mutes. The goal is to connect every water source to its matching fountain or waterwheel before the move budget runs out. Gate valves show 通 when open and 闭 when shut; one-way valves only conduct along their gold arrow; cross bridges conduct straight through only, never turning. Clear a level to unlock the next; stars reward few moves and a fast clear.",
+      "type": "local",
+      "path": "/games/aqua-conduit/index.html",
+      "thumbnail": "/games/aqua-conduit/thumbnail.jpg",
+      "tags": [
+        "puzzle",
+        "pipes",
+        "rotation",
+        "logic",
+        "water",
+        "canvas",
+        "guizang",
+        "relaxing"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/aqua-conduit/thumbnail.jpg"
+    },
+    {
       "id": "geography-collection-game",
       "title": "Baba Game",
       "category": [
@@ -173,6 +203,36 @@
         "phaser"
       ],
       "thumbnail": "/games/bouncy-block/tanli.png"
+    },
+    {
+      "id": "bridgewright",
+      "title": "Bridgewright 造桥匠",
+      "category": [
+        "Puzzle",
+        "Physics",
+        "Simulation",
+        "Guizang"
+      ],
+      "description": "A hand-drawn dusk-canyon bridge builder with a real physical truss under your cursor. Link brass gussets with timber beams, tension-only cables and expensive stone pillars, then send a loaded mine cart across. Every level has a budget, its own span layout, and a cart with a different mass and speed. Deck nodes sag progressively as the cart rolls over them; members glow green, amber and red with stress, and a single overloaded cable can snap the whole structure into the gorge. Eighteen authored levels across three chapters, three-star ratings based on budget, crossing time and peak stress, persistent stars and unlocks, and fully synthesized WebAudio sound and music. No external requests, no image assets — all art is procedural Canvas.",
+      "controls": "Click or tap node A then node B to connect them. Press 1 / 2 / 3 (or tap the cards) to choose timber beam, tension cable or stone pillar. A pillar is placed by clicking a single deck node and automatically drops to the canyon floor. Z undoes the last member with a full refund, R clears and restarts the level, Enter starts the stress test, P pauses, M mutes. Mouse drag from A to B also builds. On touch, tap-tap or drag works. Keep the whole deck connected with beams: the mine cart can only drive across connected beam spans. Earn up to three stars from completion, remaining budget, peak stress and time.",
+      "type": "local",
+      "path": "/games/bridgewright/index.html",
+      "thumbnail": "/games/bridgewright/thumbnail.jpg",
+      "tags": [
+        "bridge",
+        "physics",
+        "puzzle",
+        "construction",
+        "canyon",
+        "canvas",
+        "simulation",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-19",
+      "image": "/games/bridgewright/thumbnail.jpg"
     },
     {
       "id": "bubble-pop-game",
@@ -314,6 +374,31 @@
       ],
       "thumbnail": "/games/color-brain-challenge/logo.jpg",
       "image": "/games/color-brain-challenge/logo.jpg"
+    },
+    {
+      "id": "crucible-atelier",
+      "title": "Crucible Atelier 坩埚炼金坊",
+      "category": "Guizang,Idle,Alchemy",
+      "description": "A night-indigo 2D idle alchemy workshop drawn entirely with Canvas. Begin with a drop of water and a handful of ash, then climb a 36-recipe dependency tree of herbs, salts, copper, starlight and glass. Four automation lines (gather, distill, synthesize, package) turn raw matter into materials, gold and essence while you are away, banking up to eight hours of offline output at your current line efficiency. Overload the crucible for triple yields at the cost of furnace pressure — push it to 100 and the workshop explodes. Prestige by re-forging the furnace heart to keep a permanent +15% output per inherited ember. Forge the Starfall Crucible to complete the Great Work.",
+      "controls": "Click or tap the crucible (or the 采撷 button) to gather water, ash and materials. Click a recipe card to select and craft it; the recipe tree unlocks tier by tier. Click a production-line card to upgrade it, or press 1-4 to select / press again to upgrade. Q crafts the selected recipe, W crafts the first craftable recipe, E crafts every available recipe once. The overload button (超载催炼) triples a craft's output but adds +28 furnace pressure; at 100 the furnace explodes. P pauses, M mutes, R restarts the current run. A single tap on the recipe card, line card, gather button and quick-craft buttons is supported on touch devices; the layout adapts to landscape and portrait.",
+      "type": "local",
+      "path": "/games/crucible-atelier/index.html",
+      "thumbnail": "/games/crucible-atelier/thumbnail.jpg",
+      "tags": [
+        "idle",
+        "alchemy",
+        "crafting",
+        "recipe-tree",
+        "offline",
+        "prestige",
+        "canvas",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/crucible-atelier/thumbnail.jpg"
     },
     {
       "id": "cube-tetris-game",
@@ -578,6 +663,35 @@
       "type": "local"
     },
     {
+      "id": "echo-hour",
+      "title": "Echo Hour 回声之时",
+      "category": [
+        "Puzzle",
+        "Platformer",
+        "Time",
+        "Guizang"
+      ],
+      "description": "A hand-authored time-loop puzzle platformer in deep indigo and warm copper. Record up to eight seconds of your own movement, stop, and a ghostly echo loops that action forever — it can hold pressure plates and trip timed switches for you, but it cannot pick up the hourglasses and star grains. Hold Q or Shift to rewind yourself and nearby time mechanisms up to three seconds, restoring moving platforms, laser cadence, conveyors and crushers to a past state that lets you pass. Twelve authored levels across three chapters combine both abilities with seven mechanism classes. Optional hourglasses and star grains are extra objectives; stars are rated on clear time and rewind count. Procedural Canvas art, synthesized WebAudio, no external assets.",
+      "controls": "A / D or Left / Right to walk, Space / W / Up to jump. E starts and stops an 8-second echo recording; the echo then loops and can press plates and switches. Hold Q or Shift to rewind yourself and local mechanisms up to 3 seconds. R restarts the level, P pauses, M mutes. On touch, use the on-screen left/right, jump, record (录) and rewind (溯) buttons. Reach the copper hour gate to clear the level. Optional hourglasses and star grains add score; star rating depends on clear time and how many rewinds you used.",
+      "type": "local",
+      "path": "/games/echo-hour/index.html",
+      "thumbnail": "/games/echo-hour/thumbnail.jpg",
+      "tags": [
+        "time-rewind",
+        "puzzle-platformer",
+        "echo",
+        "canvas",
+        "procedural",
+        "single-player",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/echo-hour/thumbnail.jpg"
+    },
+    {
       "id": "egyptian-iq-test",
       "title": "Egyptian IQ Test",
       "category": "Puzzle",
@@ -587,6 +701,36 @@
       "type": "local",
       "image": "/games/egyptian-iq-test/logo.png",
       "thumbnail": "/games/egyptian-iq-test/logo.png"
+    },
+    {
+      "id": "emberpin",
+      "title": "Emberpin 余烬弹珠台",
+      "category": [
+        "Arcade",
+        "Pinball",
+        "Physics",
+        "Guizang"
+      ],
+      "description": "A hand-authored molten-gold pinball table in charcoal and glazed vermilion. Charge the spring plunger, launch the chrome ball up the right lane and work two genuinely rotating flippers through pop bumpers, glowing scoring rings, kicker slingshots and three groups of drop targets. Light all three targets in a group to raise the score multiplier and earn multiball or an extra ball; light all three groups and reach 60,000 points to finish the run. Three balls, a 2.4-second combo chain, ember particle bursts, glass-dome reflections and synthesized WebAudio arcade music. Everything is procedural Canvas art with no external assets.",
+      "controls": "Hold Space to charge the plunger and release to launch. A / Left Arrow works the left flipper, D / Right Arrow the right flipper. P pauses, M mutes, R restarts. On touch, tap or hold the left and right halves of the table (or the two on-screen flipper buttons) to flip, and press the 发射 button to charge and launch. Light all three targets in a task group for a multiplier step; complete all three groups and reach the 60,000 target score to win.",
+      "type": "local",
+      "path": "/games/emberpin/index.html",
+      "thumbnail": "/games/emberpin/thumbnail.jpg",
+      "tags": [
+        "pinball",
+        "physics",
+        "arcade",
+        "flippers",
+        "multiball",
+        "canvas",
+        "procedural",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/emberpin/thumbnail.jpg"
     },
     {
       "id": "face-pair-match",
@@ -738,6 +882,65 @@
       "thumbnail": "/games/fortune-quiz-game/icon.jpg"
     },
     {
+      "id": "frostpuck-arena",
+      "title": "Frostpuck Arena 霜锋冰球",
+      "category": [
+        "Sports",
+        "Physics",
+        "Guizang"
+      ],
+      "description": "A frost-lit 2D air-hockey duel on a midnight aurora rink. Drag your glowing mallet, read the bounce, and slam the puck past the opposing goal. Play solo against Frostshade AI on three genuinely different difficulty tiers, or share the keyboard with a friend in local two-player mode (WASD vs arrow keys). First to 7 wins. Elastic mallet physics, wall rebounds, real opening countdowns, goal fireworks, screen shake, a fastest-win record and a fully synthesized ice-court soundtrack. Pure Canvas art, no external assets.",
+      "controls": "Single player: move the lower mallet with mouse or touch drag (WASD also works). Local two-player: P1 uses WASD, P2 uses arrow keys. Push the puck past the top goal to score; defend the bottom goal. First to 7 points wins. P pauses, M mutes. Choose Easy / Medium / Hard AI or local two-player from the title menu. Touch controls are supported.",
+      "type": "local",
+      "path": "/games/frostpuck-arena/index.html",
+      "thumbnail": "/games/frostpuck-arena/thumbnail.jpg",
+      "tags": [
+        "air-hockey",
+        "sports",
+        "physics",
+        "arcade",
+        "1v1",
+        "local-multiplayer",
+        "ice",
+        "canvas"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-19",
+      "image": "/games/frostpuck-arena/thumbnail.jpg"
+    },
+    {
+      "id": "glyphbeast-trail",
+      "title": "Glyphbeast: Sixfold Trail 符兽六道",
+      "category": [
+        "RPG",
+        "Turn-Based",
+        "Monster Taming",
+        "Guizang"
+      ],
+      "description": "A night-indigo, ink-and-copper turn-based monster-tamer road. Explore four wild zones on the Champion Trail, meet and weaken twelve hand-drawn-in-code rune-beasts, then throw paper seals to capture them into a four-member party. Every beast knows three skills (damage, status, heal or shield), speed decides turn order, and six elements form a full counter cycle: Flame beats Gale, Gale beats Stone, Stone beats Tide, Tide beats Light, Light beats Shadow and Shadow beats Flame (1.5x advantage, 0.67x resisted). Campfires heal the whole party for free, the roadside shop sells more seals, and four gatekeepers guard the road in increasing difficulty. Win battles for coins and experience, switch beasts mid-battle, manage status effects, and defeat all four bosses to light the final lamp. All art, animation, sound and music are procedural; no external assets or requests.",
+      "controls": "Explore with Arrow keys or WASD; press E or Enter to interact with the campfire, shop and boss gates; C opens the 12-beast codex; P pauses; M mutes. In battle, press 1-4 (or click/tap the command cards) for Skills, Throw Seal, Switch Beast and Flee. Skills open a 1-3 submenu; Arrow keys move the selection and Enter confirms. In the party submenu, 1-4 or click/tap chooses a beast. All buttons are pointer/touch friendly, and on touch devices a D-pad and interact button appear; tapping the battlefield also walks toward that point. Esc backs out of submenus and closes overlays. All UI text is in Chinese.",
+      "type": "local",
+      "path": "/games/glyphbeast-trail/index.html",
+      "thumbnail": "/games/glyphbeast-trail/thumbnail.jpg",
+      "tags": [
+        "monster-taming",
+        "turn-based",
+        "rpg",
+        "capture",
+        "six-elements",
+        "pixel-free",
+        "canvas",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/glyphbeast-trail/thumbnail.jpg"
+    },
+    {
       "id": "gold-miner",
       "title": "Gold Miner",
       "category": [
@@ -851,6 +1054,35 @@
       "thumbnail": "/games/ice-bucket-challenge/img/bg.png"
     },
     {
+      "id": "ironwright-arena",
+      "title": "Ironwright Arena 锻甲机斗场",
+      "category": [
+        "Action",
+        "Mecha",
+        "Boss Rush",
+        "Guizang"
+      ],
+      "description": "An iron-and-ember 2D Canvas mech foundry and three-boss arena. In the forge, assemble a rig from 6 weapons, 6 armor plates and 4 thrusters; every part measurably changes firepower, cadence, heat, armor, weight, movement speed, dash and hover. Then face three furnace wardens one after another, reading their telegraphed slams, radial volleys, sweeping lances, cross-beams, missile rain and the colossus's half-health overdrive. Earn coins and parts, spend a single limited repair between bouts, and chase a best clear time. Procedural mech silhouettes, forge sparks, hit-stop, screen shake and fully synthesized WebAudio with no external assets.",
+      "controls": "WASD / Arrow keys move, move the mouse to aim, hold left click or J to fire, Shift or K to dash, E to raise the melt-core barrier, P to pause, M to mute, R to restart the run. On touch: the left stick moves, the right stick aims and fires, and the 冲刺 / E 屏障 buttons trigger dash and barrier. Beat all three bosses to complete the run; repairs and part swaps happen at the foundry between fights.",
+      "type": "local",
+      "path": "/games/ironwright-arena/index.html",
+      "thumbnail": "/games/ironwright-arena/thumbnail.jpg",
+      "tags": [
+        "mecha",
+        "boss-rush",
+        "arena-shooter",
+        "build",
+        "canvas",
+        "procedural",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/ironwright-arena/thumbnail.jpg"
+    },
+    {
       "id": "island-quiz-game",
       "title": "Island Quiz Game",
       "category": "Puzzle",
@@ -889,6 +1121,36 @@
       "version": "1.0.0",
       "path": "/games/laser-defense/index.html",
       "type": "local"
+    },
+    {
+      "id": "lexicon-bastion",
+      "title": "Lexicon Bastion 词垒防线",
+      "category": [
+        "Typing",
+        "Arcade",
+        "Defense",
+        "Guizang"
+      ],
+      "description": "A night-paper typing defence. English words ride down with glazed vermilion enemies toward a stone word-fortress; type each word letter by letter, lock the target, and complete it to fire a copper barrage. Wrong keys break the combo and cost accuracy, while combo and accuracy charge an automatic word-fortress volley. Four enemy archetypes (slow high-HP slabs, fast darters, splitters that spawn shards, and shield-bearers that absorb a whole word) escalate across endless waves, with long multi-segment boss words on wave 8, wave 10 and every eighth wave thereafter. Beating the wave 10 boss raises a milestone complete and opens endless mode. Ink energy buys one of three upgrades between waves (barrage damage, shorter word cap, or fortress HP). Accuracy, WPM, best combo and highest wave persist locally. Fully procedural Canvas art and synthesized WebAudio; no external requests or assets.",
+      "controls": "Type the English word directly on the keyboard. The first letter locks the closest matching word; keep typing to finish it and fire. A wrong letter breaks the combo and lowers accuracy. Click or tap an enemy to lock it manually. P pauses, M mutes, R restarts; these shortcut letters still type normally when they are the next expected letter. On touch, tap the in-page input field to open the system keyboard, or reveal the 26-key in-page keyboard; pause / mute / restart buttons sit beside it. Between waves choose one of three ink-priced upgrades or rest to heal. At the wave 10 milestone you can continue into endless, view the settlement, or restart.",
+      "type": "local",
+      "path": "/games/lexicon-bastion/index.html",
+      "thumbnail": "/games/lexicon-bastion/thumbnail.jpg",
+      "tags": [
+        "typing",
+        "word",
+        "defense",
+        "endless",
+        "canvas",
+        "boss",
+        "combo",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/lexicon-bastion/thumbnail.jpg"
     },
     {
       "id": "light-bulb-puzzle",
@@ -1127,6 +1389,35 @@
       "type": "local",
       "image": "/games/ocd-challenge-2/icon.png",
       "thumbnail": "/games/ocd-challenge-2/icon.png"
+    },
+    {
+      "id": "orbit-kart-grand-prix",
+      "title": "Orbit Kart Grand Prix 星环卡丁大奖赛",
+      "category": [
+        "Racing",
+        "Action",
+        "Guizang"
+      ],
+      "description": "A three-dimensional kart racer across three hand-tuned star-ring circuits. Drift through the bend to charge a two-stage boost, grab question boxes for a dash, a homing bolt or a roadblock, and hold off three rubber-band AI rivals over three laps. Grand Prix mode packs a full four-kart race; Time Trial strips it back to a solo hunt for the perfect lap. Best finish and fastest lap are saved per circuit in localStorage.",
+      "controls": "WASD or arrow keys to drive, Shift + steering to drift and charge a boost (release to launch), E or Space to use an item, R to rejoin the track, P or Esc to pause, M to mute. Touch devices get left/right, brake, drift and item buttons. Pick Grand Prix or Time Trial and a circuit on the title screen; cross the line three times to finish.",
+      "type": "local",
+      "path": "/games/orbit-kart-grand-prix/index.html",
+      "thumbnail": "/games/orbit-kart-grand-prix/thumbnail.jpg",
+      "tags": [
+        "kart",
+        "racing",
+        "3d",
+        "drift",
+        "items",
+        "ai",
+        "time-trial",
+        "threejs"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-19",
+      "image": "/games/orbit-kart-grand-prix/thumbnail.jpg"
     },
     {
       "id": "orchard-fusion",
@@ -1536,6 +1827,66 @@
         "shareable"
       ],
       "thumbnail": "/games/secret-admirer-quiz/icon.png"
+    },
+    {
+      "id": "shadowspire-ninja",
+      "title": "Shadowspire Ninja 影峰登天",
+      "category": [
+        "Action",
+        "Platformer",
+        "Guizang"
+      ],
+      "description": "A vertical paper-cut ninja climb through a 1200-metre tower. Chain wall jumps to enter a flow state, spend chi on i-frame dashes, collect lantern dust to refill chi, and survive warning-pulsing spike traps across the Timber Hold, Wind Gallery and Star Pavilion. Three lives, lantern checkpoints every 150 m, and a persistent best-height record.",
+      "controls": "A/D or Left/Right to move, Space to jump (coyote time, wall slide, wall jump), Shift to dash (costs chi, grants invincibility frames), P to pause, M to mute, R to restart. Touch controls appear on mobile: left/right pads, jump and dash buttons. Chain three wall jumps without landing to trigger a temporary flow speed and score boost.",
+      "type": "local",
+      "path": "/games/shadowspire-ninja/index.html",
+      "thumbnail": "/games/shadowspire-ninja/thumbnail.jpg",
+      "tags": [
+        "platformer",
+        "ninja",
+        "wall-jump",
+        "climbing",
+        "precision",
+        "action",
+        "guizang",
+        "vertical"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-19",
+      "image": "/games/shadowspire-ninja/thumbnail.jpg"
+    },
+    {
+      "id": "silkline-swing",
+      "title": "Silkline Swing 丝线荡跃",
+      "category": [
+        "Action",
+        "Physics",
+        "Platformer",
+        "Canvas",
+        "Guizang"
+      ],
+      "description": "A moonlit canyon swinging platformer with real pendulum physics. Hold to bind a jade silk line to a copper anchor, pump your swing with A/D, reel in or out with W/S and let go to fly on pure inertia. Three star shards float on every route; cross the glazed-vermilion star gate to clear each level. Eighteen hand-authored routes across three chapters introduce moving anchors, fraying silk that snaps under prolonged load, crosswind corridors and spike-toothed rock pillars. Collect all three shards under par time for a three-star clear, unlock the next canyon, and chase a 54-star record. Everything is rendered procedurally on Canvas and synthesized with WebAudio — no images, fonts, CDNs or network requests.",
+      "controls": "Hold Space, the left mouse button or touch on the canvas to grab the best anchor in range (forward anchors are preferred). While bound, press A/D or Left/Right to pump the swing, W/S or Up/Down to shorten/lengthen the silk, and release the grab input to fly off with your current velocity. R restarts the level, P pauses, M mutes. On touch, use the 抓丝 button to hold the silk plus the ←/→ and 收/放 buttons. Collect three star shards and pass through the floating star gate. Spikes and the abyss cost a life and return you to the last checkpoint; three lost lives fail the level. Stars are awarded for clearing, collecting two or three shards, and finishing all three under par time.",
+      "type": "local",
+      "path": "/games/silkline-swing/index.html",
+      "thumbnail": "/games/silkline-swing/thumbnail.jpg",
+      "tags": [
+        "swing",
+        "grappling",
+        "pendulum",
+        "physics",
+        "platformer",
+        "canyon",
+        "canvas",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/silkline-swing/thumbnail.jpg"
     },
     {
       "id": "sky-city-flight",
@@ -2056,6 +2407,36 @@
       "type": "local"
     },
     {
+      "id": "twin-tempo-arena",
+      "title": "Twin Tempo Arena 双生擂台",
+      "category": [
+        "Action",
+        "Fighting",
+        "Local Multiplayer",
+        "Guizang"
+      ],
+      "description": "A midnight paper-cut arena duel for two players on one keyboard. Three rotating rounds decide the match: a sword duel to break stamina, a lamp-capture race in the centre of the deck, and a sumo-style shove round where momentum sends rivals off a shrinking floating platform. Real acceleration, friction, jumping, blocking, dash invulnerability and momentum-based shove impulses. Play local two-player (vermilion P1 vs indigo P2) or practise against a three-tier lamp-shade AI. Round wins decide the score, draws trigger a push overtime, and a fastest-champion record is kept. Fully procedural Canvas art and synthesized WebAudio — no external assets.",
+      "controls": "Local two-player: P1 uses A/D to move, W to jump, F to attack, hold G to block and press G while moving to dash. P2 uses Left/Right arrows, Up to jump, J or Numpad0 to attack, hold L or Numpad1 to block and press it while moving to dash. On touch screens each player gets their own on-screen pad. P pauses, M mutes, R restarts. Win two of the three rotating rounds (duel / lamp capture / shove) to take the match; a tied series goes to one push overtime round.",
+      "type": "local",
+      "path": "/games/twin-tempo-arena/index.html",
+      "thumbnail": "/games/twin-tempo-arena/thumbnail.jpg",
+      "tags": [
+        "2d",
+        "fighting",
+        "local-multiplayer",
+        "arena",
+        "physics",
+        "ai",
+        "canvas",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-20",
+      "image": "/games/twin-tempo-arena/thumbnail.jpg"
+    },
+    {
       "id": "twins-match-up",
       "title": "Twins Match Up",
       "category": "Puzzle",
@@ -2073,6 +2454,35 @@
       ],
       "thumbnail": "/games/twins-match-up/logo.jpg",
       "image": "/games/twins-match-up/logo.jpg"
+    },
+    {
+      "id": "whisper-heist",
+      "title": "Whisper Heist 声息窃影",
+      "category": [
+        "Stealth",
+        "Action",
+        "Guizang"
+      ],
+      "description": "A hand-drawn top-down stealth heist set in a lamplit indigo night. Slip past fixed watchmen, turning patrols and sharp-eared sentries across 12 crafted heists in three chapters. Read vision cones and wall occlusion, crouch through low crates, throw sound decoys to pull guards away, steal every lacquer relic and reach the exit before the 180-second lamp burns out. Noise ripples through the courtyard, guards investigate, and a three-stage alarm (suspicion, search, pursuit) can seal the night. Synthesized WebAudio ambience, no downloads.",
+      "controls": "WASD / arrow keys move, Shift crouches (slow, near-silent, slips through low cover). Space or 1 throws a sound decoy toward the mouse or facing direction, E steals a relic or escapes through the exit once all relics are taken, P pauses, R restarts, M mutes. On touch: drag the left virtual stick to move and use the crouch / decoy / interact buttons; mute and pause are top-right.",
+      "type": "local",
+      "path": "/games/whisper-heist/index.html",
+      "thumbnail": "/games/whisper-heist/thumbnail.jpg",
+      "tags": [
+        "stealth",
+        "top-down",
+        "heist",
+        "patrol",
+        "noise",
+        "12-levels",
+        "guizang",
+        "touch"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-19",
+      "image": "/games/whisper-heist/thumbnail.jpg"
     },
     {
       "id": "wildflower-picker",

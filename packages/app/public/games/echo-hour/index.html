@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Echo Hour 回声之时</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --ink:#05070f; --indigo:#0a1226; --indigo2:#152747; --panel:rgba(10,18,36,.86);
+    --copper:#e0a45a; --copper2:#ffd99a; --copperDim:#8d5f2e;
+    --cyan:#6fe3e8; --cyan2:#b8fbff; --cyanDim:#2f7f8a;
+    --amber:#ffc063; --amber2:#ffe6b0;
+    --jade:#6fe3c4; --jade2:#b6ffe8; --verm:#e35d4c; --verm2:#ff9a78;
+    --paper:#f1e4c8; --muted:#8fa1bf;
+    --line:rgba(224,164,90,.24); --cline:rgba(111,227,232,.28);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#05070f;color:var(--paper);
+    font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    user-select:none;-webkit-user-select:none;touch-action:none}
+  canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block;background:#05070f}
+  button{font-family:inherit;color:inherit;cursor:pointer}
+  .hidden{display:none!important}
+
+  /* ---------- HUD ---------- */
+  #hud{position:fixed;inset:0;z-index:8;pointer-events:none;display:flex;justify-content:space-between;align-items:flex-start;
+    padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left))}
+  .hudcard{background:linear-gradient(180deg,rgba(10,19,38,.88),rgba(8,14,29,.68));
+    border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.32);
+    padding:8px 12px;backdrop-filter:blur(5px)}
+  #hud-left .kick{font-size:10px;letter-spacing:2.4px;color:var(--copper);opacity:.92}
+  #hud-level{font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:20px;font-weight:700;
+    letter-spacing:2px;color:#f7ead0;text-shadow:0 2px 12px #000;margin-top:1px}
+  #hud-row{display:flex;gap:13px;align-items:center;margin-top:4px;font-size:13px;color:var(--muted)}
+  #hud-keys{letter-spacing:2px;color:var(--jade);font-size:14px}
+  #hud-keys .off{color:rgba(111,227,196,.18)}
+  #hud-lives{letter-spacing:3px;color:var(--verm2);font-size:14px}
+  #hud-lives .off{color:rgba(227,93,76,.2)}
+  #hud-time{font-variant-numeric:tabular-nums;color:#d8e2f0}
+  #hud-rewinds{font-variant-numeric:tabular-nums;color:#9fe9ee;font-size:12px}
+  #hud-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+  #hud-total{font-size:11px;color:var(--copper2);letter-spacing:1.4px;padding:5px 10px}
+  .tr{display:flex;gap:7px;pointer-events:auto}
+  .tr button{width:38px;height:38px;border-radius:9px;border:1px solid var(--line);
+    background:rgba(9,16,32,.88);color:var(--copper2);font-size:13px;letter-spacing:1px}
+  .tr button:hover{background:rgba(40,32,20,.9)}
+  .tr button.on{background:rgba(92,64,24,.9)}
+
+  /* dual timeline */
+  #timeline{position:fixed;left:50%;bottom:max(8px,env(safe-area-inset-bottom));transform:translateX(-50%);
+    z-index:9;display:flex;flex-direction:column;gap:4px;pointer-events:none;width:min(560px,86vw)}
+  .trow{display:flex;align-items:center;gap:8px;font-size:9.5px;letter-spacing:1.5px;color:#9fb0c9}
+  .tlabel{width:64px;text-align:right;white-space:nowrap}
+  .ttrack{position:relative;flex:1;height:8px;border-radius:5px;overflow:hidden;
+    background:rgba(1,4,10,.75);border:1px solid rgba(255,255,255,.09)}
+  #recfill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:4px;
+    background:linear-gradient(90deg,#a96a26,#ffc063,#fff0c0);box-shadow:0 0 9px rgba(255,192,99,.5)}
+  #rewfill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:4px;
+    background:linear-gradient(90deg,#2c7f8c,#6fe3e8,#b8fbff);box-shadow:0 0 9px rgba(111,227,232,.5)}
+  .tmark{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,.22)}
+  #recrow.rec .tlabel{color:var(--amber2)}
+  #rewrow.on .tlabel{color:var(--cyan2)}
+
+  /* ---------- guide / banner / toast / flash ---------- */
+  #guide{position:fixed;left:50%;bottom:44px;transform:translateX(-50%);z-index:7;font-size:11.5px;
+    color:#c7d3e6;letter-spacing:1px;background:rgba(6,11,22,.76);border:1px solid rgba(224,164,90,.16);
+    border-radius:20px;padding:6px 15px;pointer-events:none;white-space:nowrap}
+  #banner{position:fixed;left:50%;top:22%;transform:translate(-50%,-50%);z-index:14;text-align:center;
+    pointer-events:none;opacity:0;transition:opacity .22s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:32px;font-weight:700;
+    letter-spacing:6px;color:#ffe3ad;text-shadow:0 0 22px rgba(255,170,70,.65),0 2px 8px #000}
+  #banner .bsub{font-size:13px;color:#c9d6e8;margin-top:7px;letter-spacing:2px;text-shadow:0 1px 5px #000}
+  #toast{position:fixed;left:50%;bottom:82px;transform:translateX(-50%);z-index:14;font-size:12.5px;
+    color:#f0e3c6;background:rgba(8,14,27,.92);border:1px solid var(--line);border-radius:18px;
+    padding:7px 16px;opacity:0;transition:opacity .25s;pointer-events:none}
+  #toast.show{opacity:1}
+  #flash{position:fixed;inset:0;z-index:9;pointer-events:none;opacity:0;transition:opacity .18s;
+    background:radial-gradient(ellipse at center,transparent 42%,rgba(200,50,38,.5))}
+  #flash.on{opacity:1}
+
+  /* ---------- title ---------- */
+  #title{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:16px;
+    background:radial-gradient(ellipse at 50% 30%,rgba(20,38,70,.66),rgba(4,7,15,.94) 68%)}
+  #title .kicker{font-size:11px;letter-spacing:5px;color:var(--copper);opacity:.95}
+  #title h1{font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:58px;letter-spacing:13px;
+    margin:6px 0 0;color:#ffe2a8;text-shadow:0 0 30px rgba(255,175,70,.5),0 3px 12px #000}
+  #title h2{font-size:13px;font-weight:400;letter-spacing:6px;color:var(--cyan);margin:7px 0 0}
+  #title .howto{max-width:680px;font-size:12.5px;line-height:1.85;color:#b9c8dc;margin:12px 16px 6px}
+  #title .howto b{color:var(--copper2);font-weight:600}
+  #title .howto .c{color:var(--cyan2);font-weight:600}
+  #level-grid{display:flex;flex-direction:column;gap:6px;margin-top:4px;max-width:860px;width:100%}
+  .chap{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap}
+  .chap .ctitle{width:100%;font-size:10px;letter-spacing:3px;color:var(--muted);margin-bottom:-2px}
+  .lv{position:relative;width:84px;padding:6px 4px 5px;border-radius:8px;border:1px solid rgba(224,164,90,.2);
+    background:rgba(9,16,31,.8);color:#c9d5e6;font-size:11px;transition:.15s;overflow:hidden}
+  .lv:hover{border-color:rgba(255,217,154,.7);transform:translateY(-2px)}
+  .lv .n{font-size:9px;color:#8ea0ba;letter-spacing:1px}
+  .lv .nm{font-family:"STKaiti","KaiTi",serif;font-size:12px;color:#eddfc4;margin-top:1px;white-space:nowrap}
+  .lv .st{font-size:10px;letter-spacing:1px;color:var(--jade);height:12px;margin-top:2px}
+  .lv .st .off{color:rgba(111,227,196,.16)}
+  .lv.locked{opacity:.38;pointer-events:none}
+  .lv.cur{border-color:rgba(255,217,154,.75);box-shadow:0 0 16px rgba(255,180,80,.24)}
+  .lv .badge{position:absolute;right:4px;top:4px;font-size:8px;color:var(--verm2)}
+  #title-foot{display:flex;align-items:center;gap:16px;margin-top:12px}
+  #title-best{font-size:12px;color:var(--copper2);letter-spacing:1px}
+  #startbtn{padding:11px 38px;font-size:17px;letter-spacing:4px;border:none;border-radius:24px;
+    background:linear-gradient(180deg,#ffd99a,#df9f51);color:#1a1206;
+    box-shadow:0 0 24px rgba(255,185,90,.36),0 4px 16px rgba(0,0,0,.4)}
+  #startbtn:hover{filter:brightness(1.06)}
+  #title .foot{margin-top:9px;font-size:10px;letter-spacing:3px;color:#63718a}
+
+  /* ---------- end ---------- */
+  #end{position:fixed;inset:0;z-index:30;display:none;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;background:radial-gradient(ellipse at 50% 40%,rgba(18,34,64,.8),rgba(4,7,15,.95) 70%)}
+  #end.show{display:flex}
+  #end .ek{font-size:10px;letter-spacing:4px;color:var(--copper)}
+  #end h2{font-family:"STKaiti","KaiTi",serif;font-size:40px;letter-spacing:8px;margin:7px 0 0;color:#ffe2a8;
+    text-shadow:0 0 24px rgba(255,170,70,.4)}
+  #end .reason{font-size:13px;color:#b9c8dc;margin-top:8px;letter-spacing:1px;max-width:620px}
+  .starrow{font-size:35px;letter-spacing:10px;color:var(--jade);margin:10px 0 0;height:42px}
+  .starrow .off{color:rgba(111,227,196,.15)}
+  .estats{display:flex;gap:24px;margin-top:10px}
+  .estat{min-width:88px}
+  .estat .n{font-size:23px;font-variant-numeric:tabular-nums;color:var(--copper2)}
+  .estat .l{font-size:10.5px;letter-spacing:1.6px;color:var(--muted);margin-top:2px}
+  .endbtns{display:flex;gap:11px;margin-top:19px}
+  .endbtns button{padding:10px 26px;font-size:14px;letter-spacing:2px;border-radius:22px;
+    border:1px solid rgba(224,164,90,.4);background:rgba(12,20,38,.9);color:#ffe0a4}
+  .endbtns button.primary{background:linear-gradient(180deg,#ffd99a,#df9f51);color:#1a1206;border:none}
+  .endbtns button:hover{filter:brightness(1.1)}
+  #end .foot{margin-top:12px;font-size:10px;letter-spacing:3px;color:#63718a}
+
+  /* ---------- touch ---------- */
+  #touch{position:fixed;inset:0;z-index:12;pointer-events:none;display:none}
+  #touch.on{display:block}
+  #touch button{position:absolute;pointer-events:auto;border-radius:50%;
+    border:1px solid rgba(224,164,90,.45);background:rgba(8,14,28,.78);color:#ffe0a8;
+    font-size:14px;letter-spacing:1px;backdrop-filter:blur(3px)}
+  #tjump{right:24px;bottom:74px;width:82px;height:82px;font-size:15px;
+    border-color:rgba(111,227,196,.6)!important;color:var(--jade2)!important;
+    box-shadow:0 0 20px rgba(111,227,196,.16)}
+  #tleft{left:22px;bottom:36px;width:60px;height:60px;font-size:20px}
+  #tright{left:96px;bottom:36px;width:60px;height:60px;font-size:20px}
+  #trec{right:122px;bottom:104px;width:64px;height:64px;border-color:rgba(255,192,99,.7)!important;color:var(--amber2)!important}
+  #trew{right:122px;bottom:28px;width:64px;height:64px;border-color:rgba(111,227,232,.7)!important;color:var(--cyan2)!important}
+  #trec.down,#trew.down{background:rgba(46,42,24,.92);transform:scale(.95)}
+  .pressed{filter:brightness(1.5);transform:scale(.96)}
+
+  @media (max-width:760px){
+    #title h1{font-size:36px;letter-spacing:7px}
+    #title .howto{font-size:10.5px;max-width:94vw;line-height:1.65}
+    .lv{width:64px}
+    .lv .nm{font-size:10.5px}
+    #level-grid{gap:4px}
+    #hud-level{font-size:16px}
+    #guide{display:none}
+    #banner .bmain{font-size:24px}
+    #timeline{width:94vw}
+  }
+  @media (max-height:660px) and (pointer:fine){
+    #title h1{font-size:40px}
+    #title .howto{margin:7px 16px 3px;line-height:1.6}
+    #level-grid{gap:4px}
+    .lv{padding:4px 3px}
+    #title-foot{margin-top:8px}
+  }
+  @media (max-height:620px){
+    #title{justify-content:flex-start;overflow-y:auto;padding:8px}
+    #title .kicker{font-size:9px;letter-spacing:3px}
+    #title h1{font-size:30px;letter-spacing:6px;margin:2px 0 0}
+    #title h2{font-size:10px;font-weight:400;letter-spacing:3px;margin:3px 0 0}
+    #title .howto{font-size:9.5px;line-height:1.45;margin:5px 8px 2px;max-width:620px}
+    #level-grid{gap:2px;margin-top:2px}
+    .chap{gap:5px}
+    .chap .ctitle{font-size:8.5px;letter-spacing:2px;margin-bottom:0}
+    .lv{width:58px;padding:3px 2px 2px;border-radius:6px}
+    .lv .n{font-size:8px}
+    .lv .nm{font-size:9.5px}
+    .lv .st{font-size:8px;height:9px;margin-top:0}
+    #title-foot{margin-top:5px;gap:10px}
+    #startbtn{padding:7px 20px;font-size:13px;letter-spacing:2px}
+    #title-best{font-size:10px}
+    #title .foot{display:none}
+  }
+</style>
+<script>
+  window.__BOOTERR = [];
+  window.__NET = { fetch: 0, xhr: 0, ws: 0, external: [] };
+  (function () {
+    try {
+      const of = window.fetch;
+      if (of) window.fetch = function (input) {
+        window.__NET.fetch++;
+        const u = String(input && input.url || input || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return of.apply(this, arguments);
+      };
+      const xo = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function (method, url) {
+        window.__NET.xhr++;
+        const u = String(url || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return xo.apply(this, arguments);
+      };
+      const OW = window.WebSocket;
+      if (OW) window.WebSocket = function (url) {
+        window.__NET.ws++;
+        const u = String(url || '');
+        if (/^wss?:\/\//i.test(u) && u.indexOf(location.host) < 0) window.__NET.external.push(u);
+        return new OW(url);
+      };
+      window.WebSocket.prototype = OW.prototype;
+    } catch (e) { window.__BOOTERR.push('netwrap:' + e); }
+    window.addEventListener('error', function (e) {
+      window.__BOOTERR.push(String(e.message || e));
+      if (window.__G && window.__G.err) window.__G.err.push(String(e.message || e));
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      const s = 'promise:' + String(e && e.reason || e);
+      window.__BOOTERR.push(s);
+      if (window.__G && window.__G.err) window.__G.err.push(s);
+    });
+  })();
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="hudcard" id="hud-left">
+    <div class="kick" id="hud-chapter">第一章 · 铜轴初响</div>
+    <div id="hud-level">第 1 关 · 第一道回声</div>
+    <div id="hud-row">
+      <span id="hud-keys">◇◇</span>
+      <span id="hud-lives">♥♥♥</span>
+      <span id="hud-time">0.0s</span>
+      <span id="hud-rewinds">溯 0</span>
+    </div>
+  </div>
+  <div id="hud-right">
+    <div class="hudcard" id="hud-total">总星 0 / 36</div>
+    <div class="tr">
+      <button id="mutebtn" title="静音 (M)">声</button>
+      <button id="pausebtn" title="暂停 (P)">停</button>
+      <button id="restartbtn" title="重开本关 (R)">重</button>
+    </div>
+  </div>
+</div>
+
+<div id="timeline" class="hidden">
+  <div class="trow" id="recrow"><span class="tlabel" id="reclabel">回声录制 8s</span><div class="ttrack"><div id="recfill"></div><div class="tmark" style="left:100%"></div></div></div>
+  <div class="trow" id="rewrow"><span class="tlabel" id="rewlabel">倒流缓冲 3s</span><div class="ttrack"><div id="rewfill"></div><div class="tmark" style="left:100%"></div></div></div>
+</div>
+
+<div id="guide">A/D 移动 · Space 跳 · E 录回声（8s）· 按住 Q/Shift 倒流（3s）· R 重开 · P 暂停 · M 静音</div>
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+<div id="flash"></div>
+
+<div id="title">
+  <div class="kicker">灯匠夜游 · 第 12 铺</div>
+  <h1>回声之时</h1>
+  <h2>ECHO HOUR · 双时轴回响</h2>
+  <div class="howto">
+    <b>A / D</b> 行走，<b>Space</b> 跳跃。<b>E</b> 开始录制最多 <b>8 秒</b> 的行动，再按 <b>E</b> 停下，回声影子便会循环重演，替你踩住压力板、按时开门（影子不能拿取沙漏与星粒）。<br>
+    按住 <b class="c">Q / Shift</b> 让自身与局部机关倒流最多 <b class="c">3 秒</b>：移动平台、激光节拍、传送带和冲压机都会回到过去。<br>
+    抵达终点的 <b>铜金时门</b> 即可过关；每关的 <b>沙漏 / 星粒</b> 是额外目标，三星按用时与倒流次数评定。
+  </div>
+  <div id="level-grid"></div>
+  <div id="title-foot">
+    <span id="title-best">总星 0 / 36</span>
+    <button id="startbtn">进入时廊</button>
+  </div>
+  <div class="foot">12 关 · 3 章 · 全程序化 Canvas 与 WebAudio</div>
+</div>
+
+<div id="end">
+  <div class="ek" id="end-kicker">ECHO RESTORED</div>
+  <h2 id="end-heading">时门已渡</h2>
+  <div class="reason" id="end-reason"></div>
+  <div class="starrow" id="end-stars"><span>★</span><span>★</span><span>★</span></div>
+  <div class="estats">
+    <div class="estat"><div class="n" id="end-keys">0/2</div><div class="l">沙漏 · 星粒</div></div>
+    <div class="estat"><div class="n" id="end-time">0.0s</div><div class="l">用时</div></div>
+    <div class="estat"><div class="n" id="end-rewinds">0</div><div class="l">倒流次数</div></div>
+    <div class="estat"><div class="n" id="end-total">0</div><div class="l">总星</div></div>
+  </div>
+  <div class="endbtns">
+    <button id="end-next" class="primary">下一关</button>
+    <button id="end-retry">再试一次</button>
+    <button id="end-home">回标题</button>
+  </div>
+  <div class="foot">灯匠夜游 · 第 12 铺 · ECHO HOUR</div>
+</div>
+
+<div id="touch">
+  <button id="tleft">←</button>
+  <button id="tright">→</button>
+  <button id="tjump">跳</button>
+  <button id="trec">录</button>
+  <button id="trew">溯</button>
+</div>
+
+<script type="text/javascript" src="static/play68.js"></script>
+<script type="module" src="js/game.js"></script>
+<script type="text/javascript" src="static/play68bar.js"></script>
+</body>
+</html>

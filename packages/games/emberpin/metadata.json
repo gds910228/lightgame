@@ -1,0 +1,15 @@
+{
+  "id": "emberpin",
+  "title": "Emberpin 余烬弹珠台",
+  "category": ["Arcade", "Pinball", "Physics", "Guizang"],
+  "description": "A hand-authored molten-gold pinball table in charcoal and glazed vermilion. Charge the spring plunger, launch the chrome ball up the right lane and work two genuinely rotating flippers through pop bumpers, glowing scoring rings, kicker slingshots and three groups of drop targets. Light all three targets in a group to raise the score multiplier and earn multiball or an extra ball; light all three groups and reach 60,000 points to finish the run. Three balls, a 2.4-second combo chain, ember particle bursts, glass-dome reflections and synthesized WebAudio arcade music. Everything is procedural Canvas art with no external assets.",
+  "controls": "Hold Space to charge the plunger and release to launch. A / Left Arrow works the left flipper, D / Right Arrow the right flipper. P pauses, M mutes, R restarts. On touch, tap or hold the left and right halves of the table (or the two on-screen flipper buttons) to flip, and press the 发射 button to charge and launch. Light all three targets in a task group for a multiplier step; complete all three groups and reach the 60,000 target score to win.",
+  "type": "local",
+  "path": "/games/emberpin/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["pinball", "physics", "arcade", "flippers", "multiball", "canvas", "procedural", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

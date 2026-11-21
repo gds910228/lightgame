@@ -1,0 +1,15 @@
+{
+  "id": "silkline-swing",
+  "title": "Silkline Swing 丝线荡跃",
+  "category": ["Action", "Physics", "Platformer", "Canvas", "Guizang"],
+  "description": "A moonlit canyon swinging platformer with real pendulum physics. Hold to bind a jade silk line to a copper anchor, pump your swing with A/D, reel in or out with W/S and let go to fly on pure inertia. Three star shards float on every route; cross the glazed-vermilion star gate to clear each level. Eighteen hand-authored routes across three chapters introduce moving anchors, fraying silk that snaps under prolonged load, crosswind corridors and spike-toothed rock pillars. Collect all three shards under par time for a three-star clear, unlock the next canyon, and chase a 54-star record. Everything is rendered procedurally on Canvas and synthesized with WebAudio — no images, fonts, CDNs or network requests.",
+  "controls": "Hold Space, the left mouse button or touch on the canvas to grab the best anchor in range (forward anchors are preferred). While bound, press A/D or Left/Right to pump the swing, W/S or Up/Down to shorten/lengthen the silk, and release the grab input to fly off with your current velocity. R restarts the level, P pauses, M mutes. On touch, use the 抓丝 button to hold the silk plus the ←/→ and 收/放 buttons. Collect three star shards and pass through the floating star gate. Spikes and the abyss cost a life and return you to the last checkpoint; three lost lives fail the level. Stars are awarded for clearing, collecting two or three shards, and finishing all three under par time.",
+  "type": "local",
+  "path": "/games/silkline-swing/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["swing", "grappling", "pendulum", "physics", "platformer", "canyon", "canvas", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

@@ -1,0 +1,10 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({headless:true, executablePath:'/usr/local/bin/chromium', args:['--no-sandbox','--use-gl=swiftshader']});
+const p = await b.newPage({viewport:{width:1280,height:720}});
+await p.goto('http://localhost:8627/echo-hour/?autostart=1',{waitUntil:'load'});
+await p.waitForTimeout(1200);
+await p.screenshot({path:'/mnt/tos/workspace/.scratch/guizang3/echo-hour/shot-play-1280.png'});
+console.log(await p.evaluate(() => ({state: window.G.state(), err: window.G.err.length})));
+await b.close();

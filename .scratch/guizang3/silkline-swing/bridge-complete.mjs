@@ -1,0 +1,15 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({ headless: true, executablePath: '/usr/local/bin/chromium', args: ['--no-sandbox','--use-gl=swiftshader'] });
+const p = await b.newPage();
+const logs=[]; p.on('console',m=>{if(m.type()==='error'||m.type()==='warning')logs.push(m.type()+': '+m.text())}); p.on('pageerror',e=>logs.push('ERR '+e));
+await p.setContent(`<!doctype html><html><body><iframe src="http://localhost:8621/silkline-swing/?level=18" style="width:900px;height:560px"></iframe><script>window.msgs=[];addEventListener('message',e=>window.msgs.push(e.data));</script></body></html>`);
+const frame = p.frames().find(f => f.url().includes('silkline-swing'));
+await frame.waitForFunction('window.G && window.G.state');
+await p.waitForTimeout(400);
+await frame.evaluate('G.setShards(3);G.setTime(30);G.forceWin();');
+await p.waitForTimeout(200);
+const msgs = await p.evaluate('window.msgs');
+console.log(JSON.stringify({complete: msgs.filter(m=>m.payload&&m.payload.kind==='complete'), progress: msgs.filter(m=>m.payload&&m.payload.kind==='progress').slice(-1), logs}, null, 2));
+await b.close();

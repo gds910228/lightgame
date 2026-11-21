@@ -1,0 +1,15 @@
+{
+  "id": "crucible-atelier",
+  "title": "Crucible Atelier 坩埚炼金坊",
+  "category": "Guizang,Idle,Alchemy",
+  "description": "A night-indigo 2D idle alchemy workshop drawn entirely with Canvas. Begin with a drop of water and a handful of ash, then climb a 36-recipe dependency tree of herbs, salts, copper, starlight and glass. Four automation lines (gather, distill, synthesize, package) turn raw matter into materials, gold and essence while you are away, banking up to eight hours of offline output at your current line efficiency. Overload the crucible for triple yields at the cost of furnace pressure — push it to 100 and the workshop explodes. Prestige by re-forging the furnace heart to keep a permanent +15% output per inherited ember. Forge the Starfall Crucible to complete the Great Work.",
+  "controls": "Click or tap the crucible (or the 采撷 button) to gather water, ash and materials. Click a recipe card to select and craft it; the recipe tree unlocks tier by tier. Click a production-line card to upgrade it, or press 1-4 to select / press again to upgrade. Q crafts the selected recipe, W crafts the first craftable recipe, E crafts every available recipe once. The overload button (超载催炼) triples a craft's output but adds +28 furnace pressure; at 100 the furnace explodes. P pauses, M mutes, R restarts the current run. A single tap on the recipe card, line card, gather button and quick-craft buttons is supported on touch devices; the layout adapts to landscape and portrait.",
+  "type": "local",
+  "path": "/games/crucible-atelier/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["idle", "alchemy", "crafting", "recipe-tree", "offline", "prestige", "canvas", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

@@ -1,0 +1,15 @@
+{
+  "id": "shadowspire-ninja",
+  "title": "Shadowspire Ninja 影峰登天",
+  "category": ["Action", "Platformer", "Guizang"],
+  "description": "A vertical paper-cut ninja climb through a 1200-metre tower. Chain wall jumps to enter a flow state, spend chi on i-frame dashes, collect lantern dust to refill chi, and survive warning-pulsing spike traps across the Timber Hold, Wind Gallery and Star Pavilion. Three lives, lantern checkpoints every 150 m, and a persistent best-height record.",
+  "controls": "A/D or Left/Right to move, Space to jump (coyote time, wall slide, wall jump), Shift to dash (costs chi, grants invincibility frames), P to pause, M to mute, R to restart. Touch controls appear on mobile: left/right pads, jump and dash buttons. Chain three wall jumps without landing to trigger a temporary flow speed and score boost.",
+  "type": "local",
+  "path": "/games/shadowspire-ninja/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["platformer", "ninja", "wall-jump", "climbing", "precision", "action", "guizang", "vertical"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-19"
+}

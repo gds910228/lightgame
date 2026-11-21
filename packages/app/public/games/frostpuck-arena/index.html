@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" href="data:,">
+<title>Frostpuck Arena 霜锋冰球</title>
+<style>
+  :root{
+    --ink:#060b1b; --ink2:#0e1630; --ice:#9ef5ff; --ice2:#dffcff;
+    --copper:#e5b46b; --copper2:#ffe0a2; --violet:#c29aff; --muted:#a9bdca;
+  }
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--ink);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  button{font-family:inherit}
+
+  /* top-right controls */
+  #tr{position:fixed;right:12px;top:10px;z-index:24;display:flex;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:12px;border:1px solid rgba(229,180,107,.42);background:rgba(7,14,32,.82);color:var(--copper2);font-size:16px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px);transition:background .15s,transform .1s}
+  #tr button:hover{background:rgba(20,34,62,.92)}
+  #tr button:active{transform:translateY(1px)}
+  #tr button.on{background:rgba(92,46,40,.82);color:#ffc0a8;border-color:rgba(255,160,120,.5)}
+  #tr button:disabled{opacity:.35;cursor:default}
+
+  #toast{position:fixed;left:50%;bottom:52px;transform:translateX(-50%);z-index:26;padding:8px 20px;border-radius:22px;background:rgba(7,14,32,.9);border:1px solid rgba(158,245,255,.3);color:#dffcff;font-size:13px;letter-spacing:1px;opacity:0;pointer-events:none;transition:opacity .24s}
+  #toast.show{opacity:1}
+
+  /* shared overlay shell */
+  .overlay{position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#eaf8ff}
+  .hide{display:none!important}
+
+  #title{background:radial-gradient(ellipse at 50% 34%,rgba(10,23,48,.32),rgba(4,8,20,.84) 72%);padding:22px 18px}
+  #title .kicker{font-size:11px;letter-spacing:7px;color:rgba(229,180,107,.9);margin-bottom:8px;text-shadow:0 1px 6px #000}
+  #title h1{margin:0;font-size:clamp(44px,7.2vw,76px);letter-spacing:.16em;font-weight:800;color:#efffff;text-shadow:0 0 26px rgba(96,231,255,.5),0 4px 18px rgba(0,0,0,.85);}
+  #title h2{margin:4px 0 12px;font-size:clamp(10px,1.35vw,14px);font-weight:600;letter-spacing:.46em;color:#94d9e9;text-shadow:0 2px 8px #000}
+  .ruleline{width:min(560px,82vw);height:1px;background:linear-gradient(90deg,transparent,rgba(229,180,107,.68),rgba(158,245,255,.58),rgba(229,180,107,.68),transparent);margin:4px 0 14px}
+  #titlebest{font-size:13px;letter-spacing:1.5px;color:#ffdda0;margin-bottom:16px;text-shadow:0 2px 8px #000}
+  #titlebest::before{content:"◇ ";color:#8fefff}
+
+  .modegrid{display:flex;gap:10px;align-items:stretch;justify-content:center;flex-wrap:wrap;max-width:720px}
+  .modebtn{position:relative;width:140px;padding:12px 10px 11px;border-radius:14px;border:1px solid rgba(158,245,255,.24);background:linear-gradient(180deg,rgba(15,30,58,.9),rgba(7,14,32,.92));color:#def7ff;cursor:pointer;text-align:center;transition:transform .15s,border-color .15s,box-shadow .15s;backdrop-filter:blur(4px);overflow:hidden}
+  .modebtn::after{content:"";position:absolute;left:14%;right:14%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,rgba(158,245,255,.7),transparent);opacity:.55}
+  .modebtn:hover{transform:translateY(-3px);border-color:rgba(158,245,255,.7);box-shadow:0 6px 22px rgba(51,190,220,.18)}
+  .modebtn .mb-top{display:block;font-size:10px;letter-spacing:2px;color:rgba(229,180,107,.9);margin-bottom:5px}
+  .modebtn .mb-name{display:block;font-size:17px;font-weight:700;letter-spacing:2px;color:#f2ffff}
+  .modebtn .mb-sub{display:block;font-size:10.5px;color:#93b9c8;margin-top:5px;letter-spacing:.5px}
+  .modebtn.rec{border-color:rgba(229,180,107,.62);background:linear-gradient(180deg,rgba(43,36,45,.92),rgba(13,17,31,.94))}
+  .modebtn.rec::before{content:"推荐";position:absolute;right:7px;top:6px;font-size:9px;color:#ffdda0;border:1px solid rgba(229,180,107,.4);border-radius:8px;padding:1px 5px;letter-spacing:1px}
+  .modebtn.local{width:196px;border-color:rgba(194,154,255,.34);background:linear-gradient(180deg,rgba(32,23,54,.92),rgba(9,14,31,.94))}
+  .modebtn.local::after{background:linear-gradient(90deg,transparent,rgba(194,154,255,.7),transparent)}
+
+  .howto{margin-top:17px;font-size:12px;line-height:1.9;color:#a9c6d2;max-width:600px;text-shadow:0 1px 4px #000}
+  .howto b{color:#dffcff;font-weight:600}
+  .howto .copper{color:#ffd99c}
+  .imprint{position:absolute;bottom:14px;left:0;right:0;font-size:10px;letter-spacing:3px;color:rgba(229,180,107,.62)}
+  .imprint span{color:rgba(158,245,255,.5)}
+
+  #end{background:radial-gradient(ellipse at 50% 38%,rgba(13,30,57,.5),rgba(3,7,17,.9) 74%)}
+  #end .end-kicker{font-size:10px;letter-spacing:6px;color:rgba(229,180,107,.84);margin-bottom:8px}
+  #end h1{margin:0;font-size:clamp(36px,5.4vw,58px);letter-spacing:.14em;color:#edffff;text-shadow:0 0 28px rgba(96,231,255,.45),0 4px 16px #000}
+  #endd{margin:14px 0 22px;font-size:14px;line-height:2;color:#d8e9ee;white-space:pre-line;text-shadow:0 2px 8px #000}
+  .btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+  .btns button{padding:12px 28px;min-width:120px;border-radius:24px;border:1px solid rgba(229,180,107,.55);background:linear-gradient(180deg,#f3cd88,#cf9a51);color:#161322;font-size:15px;font-weight:700;letter-spacing:3px;cursor:pointer;box-shadow:0 5px 22px rgba(213,156,71,.26)}
+  .btns button.ghost{background:rgba(10,20,41,.88);color:#bdefff;border-color:rgba(158,245,255,.34);box-shadow:none}
+  .btns button.ghost:hover{background:rgba(20,38,66,.94)}
+  .btns button:active{transform:translateY(1px)}
+  #end .imprint b{color:rgba(229,180,107,.75);font-weight:400}
+
+  @media (max-width:700px){
+    #title h1{letter-spacing:.1em}
+    #title h2{letter-spacing:.3em}
+    .modebtn{width:118px;padding:9px 7px}
+    .modebtn.local{width:150px}
+    .modebtn .mb-name{font-size:15px}
+    .modebtn .mb-sub{font-size:9.5px}
+    .howto{font-size:11px;margin-top:12px}
+    #tr button{width:34px;height:34px;font-size:14px}
+    #titlebest{font-size:12px;margin-bottom:12px}
+    .imprint{bottom:8px;font-size:9px}
+  }
+  @media (max-height:520px){
+    #title h1{font-size:40px}
+    #title h2{margin-bottom:6px}
+    #titlebest{margin-bottom:8px}
+    .howto{margin-top:10px;line-height:1.6}
+    .modebtn{padding:8px 7px}
+  }
+</style>
+<script>
+window.__BOOTERR = [];
+(function(){
+  function pushErr(msg) {
+    msg = String(msg || 'script error');
+    if (window.__BOOTERR.indexOf(msg) < 0) window.__BOOTERR.push(msg);
+    if (window.__G && window.__G.err && window.__G.err.indexOf(msg) < 0) window.__G.err.push(msg);
+  }
+  window.addEventListener('error', function(e){
+    if (e && e.target && e.target.src) pushErr('script error: ' + e.target.src);
+    else pushErr(e && e.message ? e.message : 'script error');
+  }, true);
+  window.addEventListener('unhandledrejection', function(e){
+    pushErr('unhandledrejection: ' + (e && e.reason ? e.reason : 'unknown'));
+  });
+})();
+</script>
+</head>
+<body>
+<canvas id="gl" aria-label="霜锋冰球游戏画布"></canvas>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)" aria-label="静音">♪</button>
+  <button id="pausebtn" title="暂停 (P)" aria-label="暂停">❚❚</button>
+</div>
+
+<div id="toast"></div>
+
+<div id="title" class="overlay">
+  <div class="kicker">灯匠夜游 · 第 5 铺</div>
+  <h1>霜锋冰球</h1>
+  <h2>FROSTPUCK ARENA</h2>
+  <div class="ruleline"></div>
+  <div id="titlebest">尚无胜绩 · 首胜将记下最快用时</div>
+
+  <div class="modegrid">
+    <button class="modebtn" data-mode="ai" data-diff="1">
+      <span class="mb-top">单人对 AI · 一</span>
+      <span class="mb-name">易</span>
+      <span class="mb-sub">霜影慢半拍<br>适合熟悉手感</span>
+    </button>
+    <button class="modebtn rec" data-mode="ai" data-diff="2">
+      <span class="mb-top">单人对 AI · 二</span>
+      <span class="mb-name">中</span>
+      <span class="mb-sub">预判来路<br>有来有回</span>
+    </button>
+    <button class="modebtn" data-mode="ai" data-diff="3">
+      <span class="mb-top">单人对 AI · 三</span>
+      <span class="mb-name">难</span>
+      <span class="mb-sub">高速封角<br>霜影不留情</span>
+    </button>
+    <button class="modebtn local" data-mode="local">
+      <span class="mb-top">同屏对战</span>
+      <span class="mb-name">本地双人</span>
+      <span class="mb-sub">P1 WASD · P2 方向键</span>
+    </button>
+  </div>
+
+  <div class="howto">
+    先到 <b>7 分</b>者胜 · 下方球拍用<b>鼠标 / 触屏拖动</b>或 <span class="copper">WASD</span><br>
+    撞开冰球、借边反弹、轰入对方球门；M 静音 · P 暂停
+  </div>
+  <div class="imprint">灯匠夜游 · 第 5 铺 <span>◆</span> FROSTPUCK ARENA</div>
+</div>
+
+<div id="end" class="overlay hide">
+  <div class="end-kicker">MATCH RESULT · 霜锋记</div>
+  <h1 id="endh">冰 面 制 胜</h1>
+  <div id="endd"></div>
+  <div class="btns">
+    <button id="go">再来一局</button>
+    <button id="change" class="ghost">换难度</button>
+    <button id="home" class="ghost">回标题</button>
+  </div>
+  <button id="share" class="ghost" style="display:none">分享</button>
+  <div class="imprint"><b>灯匠夜游 · 第 5 铺</b></div>
+</div>
+
+<script src="static/play68.js"></script>
+<script src="static/play68bar.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

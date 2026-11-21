@@ -1,0 +1,15 @@
+{
+  "id": "glyphbeast-trail",
+  "title": "Glyphbeast: Sixfold Trail 符兽六道",
+  "category": ["RPG", "Turn-Based", "Monster Taming", "Guizang"],
+  "description": "A night-indigo, ink-and-copper turn-based monster-tamer road. Explore four wild zones on the Champion Trail, meet and weaken twelve hand-drawn-in-code rune-beasts, then throw paper seals to capture them into a four-member party. Every beast knows three skills (damage, status, heal or shield), speed decides turn order, and six elements form a full counter cycle: Flame beats Gale, Gale beats Stone, Stone beats Tide, Tide beats Light, Light beats Shadow and Shadow beats Flame (1.5x advantage, 0.67x resisted). Campfires heal the whole party for free, the roadside shop sells more seals, and four gatekeepers guard the road in increasing difficulty. Win battles for coins and experience, switch beasts mid-battle, manage status effects, and defeat all four bosses to light the final lamp. All art, animation, sound and music are procedural; no external assets or requests.",
+  "controls": "Explore with Arrow keys or WASD; press E or Enter to interact with the campfire, shop and boss gates; C opens the 12-beast codex; P pauses; M mutes. In battle, press 1-4 (or click/tap the command cards) for Skills, Throw Seal, Switch Beast and Flee. Skills open a 1-3 submenu; Arrow keys move the selection and Enter confirms. In the party submenu, 1-4 or click/tap chooses a beast. All buttons are pointer/touch friendly, and on touch devices a D-pad and interact button appear; tapping the battlefield also walks toward that point. Esc backs out of submenus and closes overlays. All UI text is in Chinese.",
+  "type": "local",
+  "path": "/games/glyphbeast-trail/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["monster-taming", "turn-based", "rpg", "capture", "six-elements", "pixel-free", "canvas", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

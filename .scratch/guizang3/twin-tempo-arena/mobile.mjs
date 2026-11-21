@@ -1,0 +1,32 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({ headless: true, executablePath: '/usr/local/bin/chromium', args: ['--no-sandbox', '--use-gl=swiftshader'] });
+const ctx = await b.newContext({ viewport: { width: 812, height: 375 }, hasTouch: true, isMobile: true, deviceScaleFactor: 1 });
+const p = await ctx.newPage();
+const errs = [];
+p.on('pageerror', e => errs.push(String(e)));
+p.on('console', m => { if (m.type() === 'error' || m.type() === 'warning') errs.push(m.text()); });
+await p.goto('http://127.0.0.1:8629/twin-tempo-arena/?autostart=1&mode=local');
+await p.waitForFunction('window.G && window.G.state && window.G.state().mode === "play"');
+await p.evaluate(() => {
+  G.setNoAuto(true); G.startRound(2); G.setPhase('live');
+  G.setFighter('p1', { x: 480 - 120, z: 0, vx: 0, facing: 1 });
+  G.setFighter('p2', { x: 480 + 120, z: 0, vx: 0, facing: -1 });
+  G.setRoundHalf(230);
+  document.body.classList.add('touchui');
+});
+await p.waitForTimeout(250);
+await p.screenshot({ path: '/mnt/tos/workspace/.scratch/guizang3/twin-tempo-arena/shot-touch.png' });
+// real touch tap on P1 attack and hold-ish test on P1 right via touchscreen (tap is short)
+const btn = await p.$('#touch button[data-code="KeyD"]');
+const box = await btn.boundingBox();
+const x0 = await p.evaluate(() => G.state().p1.x);
+const client = await ctx.newCDPSession(p);
+await client.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: box.x + box.width / 2, y: box.y + box.height / 2, id: 1 }] });
+await p.waitForTimeout(320);
+await client.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+await p.waitForTimeout(80);
+const x1 = await p.evaluate(() => G.state().p1.x);
+console.log(JSON.stringify({ errs, box, x0, x1, buttons: await p.evaluate(() => document.querySelectorAll('#touch button').length) }));
+await b.close();

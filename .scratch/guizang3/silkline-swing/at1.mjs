@@ -1,0 +1,18 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({ headless: true, executablePath: '/usr/local/bin/chromium', args: ['--no-sandbox','--use-gl=swiftshader'] });
+const p = await b.newPage({ viewport: { width: 1280, height: 720 } });
+const logs = [], reqs = [];
+p.on('console', m => { if (m.type()==='error'||m.type()==='warning') logs.push(m.type()+': '+m.text()); });
+p.on('pageerror', e => logs.push('PAGEERROR: '+String(e)));
+p.on('request', r => reqs.push(r.url()));
+await p.goto('http://localhost:8621/silkline-swing/?autotest=1', { waitUntil: 'load' });
+await p.waitForFunction('window.__TEST && window.__TEST.done', { timeout: 180000 });
+const t = await p.evaluate('window.__TEST');
+console.log(JSON.stringify({pass:t.pass,fail:t.fail,total:t.total,failed:t.results.filter(r=>!r.ok),crash:t.crash}, null, 2));
+console.log('logs', JSON.stringify(logs, null, 2));
+console.log('external', reqs.filter(u=>!u.startsWith('http://localhost:8621')&&!u.startsWith('data:')));
+console.log('state', JSON.stringify(await p.evaluate('window.G.state()'), null, 2));
+await p.screenshot({ path: '/mnt/tos/workspace/.scratch/guizang3/silkline-swing/at1.png' });
+await b.close();

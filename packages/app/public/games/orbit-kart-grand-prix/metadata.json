@@ -1,0 +1,15 @@
+{
+  "id": "orbit-kart-grand-prix",
+  "title": "Orbit Kart Grand Prix 星环卡丁大奖赛",
+  "category": ["Racing", "Action", "Guizang"],
+  "description": "A three-dimensional kart racer across three hand-tuned star-ring circuits. Drift through the bend to charge a two-stage boost, grab question boxes for a dash, a homing bolt or a roadblock, and hold off three rubber-band AI rivals over three laps. Grand Prix mode packs a full four-kart race; Time Trial strips it back to a solo hunt for the perfect lap. Best finish and fastest lap are saved per circuit in localStorage.",
+  "controls": "WASD or arrow keys to drive, Shift + steering to drift and charge a boost (release to launch), E or Space to use an item, R to rejoin the track, P or Esc to pause, M to mute. Touch devices get left/right, brake, drift and item buttons. Pick Grand Prix or Time Trial and a circuit on the title screen; cross the line three times to finish.",
+  "type": "local",
+  "path": "/games/orbit-kart-grand-prix/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["kart", "racing", "3d", "drift", "items", "ai", "time-trial", "threejs"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-19"
+}

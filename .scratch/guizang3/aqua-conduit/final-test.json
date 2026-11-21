@@ -1,0 +1,85 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "pass": 38,
+      "fail": 0,
+      "total": 38,
+      "crash": null,
+      "failed": [],
+      "errors": [],
+      "external": [],
+      "finalMode": "title",
+      "nan": false,
+      "net": {
+        "fetch": 0,
+        "xhr": 0,
+        "ws": 0,
+        "external": []
+      }
+    },
+    {
+      "round": 2,
+      "pass": 38,
+      "fail": 0,
+      "total": 38,
+      "crash": null,
+      "failed": [],
+      "errors": [],
+      "external": [],
+      "finalMode": "title",
+      "nan": false,
+      "net": {
+        "fetch": 0,
+        "xhr": 0,
+        "ws": 0,
+        "external": []
+      }
+    }
+  ],
+  "input": {
+    "startMoves": 11,
+    "mouse": {
+      "movesBefore": 11,
+      "movesAfter": 10,
+      "rotBefore": 2,
+      "rotAfter": 3
+    },
+    "keyboard": {
+      "movesAfter": 9,
+      "used": 2,
+      "cursor": {
+        "r": 2,
+        "c": 2
+      }
+    },
+    "paused": true,
+    "muted": true,
+    "restart": {
+      "mode": "play",
+      "used": 0,
+      "movesLeft": 11,
+      "budget": 11
+    },
+    "globals": [
+      "function",
+      "function",
+      "function",
+      "function"
+    ],
+    "touch": {
+      "usedBefore": 0,
+      "usedAfter": 1,
+      "rot": 3,
+      "sol": 1
+    },
+    "errors": [],
+    "external": [],
+    "mobileErrors": []
+  },
+  "directInfo": {
+    "mode": "title",
+    "errors": [],
+    "external": []
+  }
+}

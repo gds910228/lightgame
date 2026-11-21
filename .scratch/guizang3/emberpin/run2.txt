@@ -1,0 +1,193 @@
+{
+ "pass": 35,
+ "fail": 1,
+ "total": 36,
+ "results": [
+  {
+   "id": 1,
+   "ok": true,
+   "name": "启动零报错"
+  },
+  {
+   "id": 2,
+   "ok": true,
+   "name": "开局：3 球、1 球在发射轨、得分/倍率归零"
+  },
+  {
+   "id": 3,
+   "ok": true,
+   "name": "重力使球下落且数值有限"
+  },
+  {
+   "id": 4,
+   "ok": true,
+   "name": "撞左壁后 vx=363.2 反弹回界内"
+  },
+  {
+   "id": 5,
+   "ok": false,
+   "name": "左翻板击球 vy=228.3 speed=228"
+  },
+  {
+   "id": 6,
+   "ok": true,
+   "name": "保险杠反弹并得分 score=144"
+  },
+  {
+   "id": 7,
+   "ok": true,
+   "name": "得分环计分 score=600"
+  },
+  {
+   "id": 8,
+   "ok": true,
+   "name": "任务靶命中 800×1×1.2=960（实得 960）"
+  },
+  {
+   "id": 9,
+   "ok": true,
+   "name": "一组点亮：任务1/3、倍率×2"
+  },
+  {
+   "id": 9.5,
+   "ok": true,
+   "name": "任务奖励多球：场上 2 球"
+  },
+  {
+   "id": 10,
+   "ok": true,
+   "name": "第二组点亮：额外球 3→4"
+  },
+  {
+   "id": 11,
+   "ok": true,
+   "name": "三组全亮：场上 2→4 球"
+  },
+  {
+   "id": 12,
+   "ok": true,
+   "name": "连击加成 1→144，5→240（120×倍率×连击系数）"
+  },
+  {
+   "id": 13,
+   "ok": true,
+   "name": "连击窗口耗尽后归零"
+  },
+  {
+   "id": 14,
+   "ok": true,
+   "name": "倍率×3 任务靶 800×3×1.2=2880（实得 2880）"
+  },
+  {
+   "id": 15,
+   "ok": true,
+   "name": "多球 +2、额外球库存钳制（2 球 / 9）"
+  },
+  {
+   "id": 16,
+   "ok": true,
+   "name": "落球扣 1（3→2）并补球到发射轨"
+  },
+  {
+   "id": 17,
+   "ok": true,
+   "name": "暂停冻结球（457.92→457.92），恢复后继续（401.4→148.51）"
+  },
+  {
+   "id": 18,
+   "ok": true,
+   "name": "D 键右翻板 2.762→3.582→2.762"
+  },
+  {
+   "id": 19,
+   "ok": true,
+   "name": "空格蓄力 0.703 → 弹射 vy=-1505.6"
+  },
+  {
+   "id": 20,
+   "ok": true,
+   "name": "蓄力影响弹速 -1140 vs -2100"
+  },
+  {
+   "id": 21,
+   "ok": true,
+   "name": "触屏按钮：左翻板=true、蓄力=true、发射=true"
+  },
+  {
+   "id": 22,
+   "ok": true,
+   "name": "屏幕左半触控压下/松开左翻板"
+  },
+  {
+   "id": 23,
+   "ok": true,
+   "name": "三球耗尽 gameOver（ballsLeft=0）"
+  },
+  {
+   "id": 23.5,
+   "ok": true,
+   "name": "失败上报 gameOver 帧"
+  },
+  {
+   "id": 24,
+   "ok": true,
+   "name": "best 写入 localStorage（4321）"
+  },
+  {
+   "id": 25,
+   "ok": true,
+   "name": "任务全亮 + 目标分 → complete"
+  },
+  {
+   "id": 25.5,
+   "ok": true,
+   "name": "通关上报 complete 帧"
+  },
+  {
+   "id": 26,
+   "ok": true,
+   "name": "ready 为首个上报帧"
+  },
+  {
+   "id": 26.5,
+   "ok": true,
+   "name": "任务 event 与 milestone progress 帧存在"
+  },
+  {
+   "id": 27,
+   "ok": true,
+   "name": "重开一局完整复位"
+  },
+  {
+   "id": 28,
+   "ok": true,
+   "name": "R 键重开并回到发射轨"
+  },
+  {
+   "id": 29,
+   "ok": true,
+   "name": "1500 帧快进无 NaN、无逃逸、无新报错（live=0）"
+  },
+  {
+   "id": 30,
+   "ok": true,
+   "name": "自测不建 AudioContext、配乐状态可切换且保持静音"
+  },
+  {
+   "id": 31,
+   "ok": true,
+   "name": "标题/结算/静音/暂停/触控 DOM 齐备"
+  },
+  {
+   "id": 32,
+   "ok": true,
+   "name": "测完回到标题画面"
+  }
+ ],
+ "done": true
+}
+CONSOLE_ERRORS []
+CONSOLE_WARNINGS []
+PAGEERRORS []
+EXTERNAL []
+NET {"fetch":0,"xhr":0,"ws":0,"external":[]}

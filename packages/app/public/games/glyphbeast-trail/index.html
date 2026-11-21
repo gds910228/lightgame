@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#0d0a1e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d0a1e'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23d9a45b' stroke-width='1.6'/%3E%3Cpath d='M16 8l3 5 5 3-5 3-3 5-3-5-5-3 5-3z' fill='%236fe0c0'/%3E%3C/svg%3E">
+<title>符兽六道 · Glyphbeast: Sixfold Trail</title>
+<style>
+  html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #05040d; }
+  body { font-family: "Noto Sans CJK SC", "Microsoft YaHei", system-ui, sans-serif; user-select: none; -webkit-user-select: none; touch-action: none; overscroll-behavior: none; }
+  #gl { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; cursor: default; }
+  #topbtns { position: fixed; top: 12px; right: 14px; z-index: 8; display: flex; gap: 8px; }
+  #topbtns button {
+    width: 42px; height: 42px; border-radius: 10px; cursor: pointer;
+    border: 1px solid rgba(217,164,91,.42);
+    background: rgba(13,10,28,.82); color: #f4d293;
+    font-family: inherit; font-size: 16px; line-height: 1;
+    box-shadow: 0 2px 12px rgba(0,0,0,.35);
+    touch-action: manipulation;
+  }
+  #topbtns button:hover { border-color: rgba(244,210,147,.8); background: rgba(38,28,52,.9); }
+  #topbtns button.on { background: rgba(86,60,30,.85); border-color: #f4d293; }
+  #rotatehint { display:none; position:fixed; left:50%; bottom:8px; transform:translateX(-50%); z-index:6; color:rgba(210,190,160,.55); font-size:11px; letter-spacing:1px; pointer-events:none; }
+  @media (max-width: 760px) {
+    #rotatehint { display:block; }
+    #topbtns { top: 8px; right: 8px; gap: 6px; }
+    #topbtns button { width: 38px; height: 38px; font-size: 14px; }
+  }
+  @media (max-width: 760px) and (orientation: landscape) { #rotatehint { display:none; } }
+</style>
+<script>
+  window.__BOOTERR = [];
+  window.__NET = { fetch: 0, xhr: 0, ws: 0, external: [] };
+  (function () {
+    try {
+      const of = window.fetch;
+      if (of) window.fetch = function (input, init) {
+        window.__NET.fetch++;
+        const u = String((input && input.url) || input || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return of.apply(this, arguments);
+      };
+      const xo = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function (method, url) {
+        window.__NET.xhr++;
+        const u = String(url || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return xo.apply(this, arguments);
+      };
+      const OW = window.WebSocket;
+      if (OW) window.WebSocket = function (url) {
+        window.__NET.ws++;
+        const u = String(url || '');
+        if (/^wss?:\/\//i.test(u) && u.indexOf(location.host) < 0) window.__NET.external.push(u);
+        return new OW(url);
+      };
+      window.WebSocket.prototype = OW.prototype;
+    } catch (e) { window.__BOOTERR.push('netwrap:' + e); }
+    window.addEventListener('error', function (e) {
+      window.__BOOTERR.push(String(e.message || e));
+      if (window.__G && window.__G.err) window.__G.err.push(String(e.message || e));
+    });
+    window.addEventListener('unhandledrejection', function (e) {
+      window.__BOOTERR.push('rejection:' + String(e.reason || e));
+    });
+  })();
+</script>
+</head>
+<body>
+<canvas id="gl" aria-label="符兽六道——回合制符兽训练师游戏画布"></canvas>
+<div id="rotatehint">横屏游玩更清晰</div>
+<div id="topbtns">
+  <button id="btn-mute" title="静音 / 声音 (M)" aria-label="静音">声</button>
+  <button id="btn-pause" title="暂停 (P)" aria-label="暂停">Ⅱ</button>
+  <button id="btn-codex" title="符兽录 (C)" aria-label="符兽录">录</button>
+</div>
+<script type="text/javascript" src="static/play68.js"></script>
+<script type="module" src="js/game.js"></script>
+<script type="text/javascript" src="static/play68bar.js"></script>
+</body>
+</html>

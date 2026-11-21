@@ -1,0 +1,15 @@
+{
+  "id": "lexicon-bastion",
+  "title": "Lexicon Bastion 词垒防线",
+  "category": ["Typing", "Arcade", "Defense", "Guizang"],
+  "description": "A night-paper typing defence. English words ride down with glazed vermilion enemies toward a stone word-fortress; type each word letter by letter, lock the target, and complete it to fire a copper barrage. Wrong keys break the combo and cost accuracy, while combo and accuracy charge an automatic word-fortress volley. Four enemy archetypes (slow high-HP slabs, fast darters, splitters that spawn shards, and shield-bearers that absorb a whole word) escalate across endless waves, with long multi-segment boss words on wave 8, wave 10 and every eighth wave thereafter. Beating the wave 10 boss raises a milestone complete and opens endless mode. Ink energy buys one of three upgrades between waves (barrage damage, shorter word cap, or fortress HP). Accuracy, WPM, best combo and highest wave persist locally. Fully procedural Canvas art and synthesized WebAudio; no external requests or assets.",
+  "controls": "Type the English word directly on the keyboard. The first letter locks the closest matching word; keep typing to finish it and fire. A wrong letter breaks the combo and lowers accuracy. Click or tap an enemy to lock it manually. P pauses, M mutes, R restarts; these shortcut letters still type normally when they are the next expected letter. On touch, tap the in-page input field to open the system keyboard, or reveal the 26-key in-page keyboard; pause / mute / restart buttons sit beside it. Between waves choose one of three ink-priced upgrades or rest to heal. At the wave 10 milestone you can continue into endless, view the settlement, or restart.",
+  "type": "local",
+  "path": "/games/lexicon-bastion/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["typing", "word", "defense", "endless", "canvas", "boss", "combo", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

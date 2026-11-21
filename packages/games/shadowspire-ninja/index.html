@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0b0718">
+<meta name="description" content="Shadowspire Ninja 影峰登天 — 2D 忍者蹬墙爬塔。三层塔区、灯屑回气、疾影冲刺、连续蹬墙加速，登上 1200m 星阁。">
+<title>影峰登天 Shadowspire Ninja</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --ink:#0b0718; --paper:#17102a; --gold:#e4c06f; --copper:#d99a55;
+    --vermilion:#c84e3b; --jade:#9fe8c8; --muted:#a894b3;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080611;color:#f1e8d8;
+    font-family:"KaiTi","STKaiti","Songti SC","Microsoft YaHei",serif;
+    user-select:none;-webkit-user-select:none;touch-action:none}
+  body{display:flex;align-items:center;justify-content:center;
+    background:
+      radial-gradient(ellipse at 18% 28%,rgba(64,28,55,.36),transparent 54%),
+      radial-gradient(ellipse at 82% 72%,rgba(21,63,65,.28),transparent 58%),
+      repeating-linear-gradient(113deg,rgba(255,230,190,.018) 0 1px,transparent 1px 7px),
+      #080611;}
+  body::before,body::after{content:"";position:fixed;top:0;bottom:0;width:min(23vw,300px);pointer-events:none;opacity:.32;
+    background:linear-gradient(90deg,transparent,rgba(255,214,150,.06),transparent)}
+  body::before{left:0}body::after{right:0;transform:scaleX(-1)}
+
+  #stage{position:relative;width:min(100vw,56.25vh);height:min(100vh,177.78vw);
+    overflow:hidden;background:#0d0820;box-shadow:0 0 0 1px rgba(228,192,111,.22),0 0 64px rgba(0,0,0,.8);
+    isolation:isolate;container-type:size}
+  #cv{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .hide{display:none!important}
+  button{font-family:inherit;color:inherit;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+  /* ---------- HUD ---------- */
+  #hud{position:absolute;inset:0;pointer-events:none;z-index:5}
+  #hud-left{position:absolute;left:3.1%;top:2.3%;padding:1.4% 3.4% 1.5% 3%;
+    background:linear-gradient(135deg,rgba(13,8,25,.84),rgba(20,12,34,.62));
+    border:1px solid rgba(228,192,111,.28);border-radius:.55em;min-width:27%;
+    box-shadow:0 .3em 1.4em rgba(0,0,0,.32);backdrop-filter:blur(3px)}
+  #hud-height{font-size:clamp(16px,3.1vh,31px);line-height:1;color:#ffe6aa;letter-spacing:.03em;
+    text-shadow:0 0 12px rgba(255,184,92,.3),0 2px 3px #000}
+  #hud-height::after{content:" 高度";font-size:.36em;letter-spacing:.28em;color:#bd9d74;vertical-align:.35em}
+  #hud-best{margin-top:.28em;font-size:clamp(9px,1.35vh,14px);color:#bda985;letter-spacing:.12em}
+  #hud-meta{display:flex;gap:.9em;margin-top:.5em;font-size:clamp(9px,1.35vh,13px);color:#d8c7aa;letter-spacing:.08em}
+  #hud-meta b{font-weight:normal}
+  #hud-score{color:#ffe3a0}#hud-dust{color:#b7f0d8}#hud-lives{color:#e6a095}
+  #hud-lives::before{content:"命 ";color:#a98a7c;font-size:.86em}
+  #hud-zone{position:absolute;top:2.7%;left:50%;transform:translateX(-50%);text-align:center;
+    color:#e4c06f;letter-spacing:.32em;font-size:clamp(10px,1.65vh,16px);text-shadow:0 1px 5px #000;opacity:.9}
+  #zone-en{display:block;margin-top:.25em;font-size:.64em;letter-spacing:.22em;color:#9d8c9f;opacity:.8}
+  #hud-tr{position:absolute;right:3.1%;top:2.3%;display:flex;gap:.55em;pointer-events:auto}
+  #hud-tr button{width:clamp(31px,4.6vh,46px);height:clamp(31px,4.6vh,46px);border-radius:.5em;
+    border:1px solid rgba(228,192,111,.34);background:rgba(15,9,28,.78);color:#e4c06f;
+    font-size:clamp(12px,1.6vh,16px);letter-spacing:0;backdrop-filter:blur(3px)}
+  #hud-tr button.on{background:rgba(113,70,31,.85);color:#ffe6ac;border-color:rgba(255,214,140,.65)}
+
+  #chi-wrap{position:absolute;left:50%;transform:translateX(-50%);bottom:2.6%;width:68%;pointer-events:none}
+  #chi-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:.35em;
+    font-size:clamp(9px,1.35vh,13px);letter-spacing:.12em;color:#d7c39f}
+  #chi-text{color:#b7f0d8}
+  #dash-state{color:#a894b3;font-size:.9em}
+  #chi-track{height:clamp(7px,1.25vh,12px);border-radius:1em;overflow:hidden;background:rgba(8,5,18,.78);
+    border:1px solid rgba(159,232,200,.28);box-shadow:inset 0 1px 4px #000}
+  #chi-fill{height:100%;width:100%;border-radius:1em;background:linear-gradient(90deg,#477f76,#9fe8c8 58%,#e8d17e);
+    box-shadow:0 0 12px rgba(125,234,199,.4);transition:width .1s linear}
+  #flow-badge{position:absolute;left:50%;bottom:9.2%;transform:translateX(-50%) scale(.92);
+    padding:.45em 1.2em;border-radius:2em;color:#0f1720;background:linear-gradient(180deg,#ffe7a6,#d8b765);
+    border:1px solid rgba(255,247,210,.65);font-size:clamp(9px,1.4vh,13px);font-weight:bold;letter-spacing:.12em;
+    opacity:0;transition:opacity .15s,transform .15s;box-shadow:0 0 24px rgba(255,214,120,.38);white-space:nowrap}
+  #flow-badge.show{opacity:1;transform:translateX(-50%) scale(1)}
+  #stage.title-mode #hud,#stage.title-mode #touch,#stage.title-mode #banner,#stage.title-mode #toast{display:none!important}
+
+  /* ---------- overlays ---------- */
+  .overlay{position:absolute;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:8%;background:radial-gradient(ellipse at 50% 38%,rgba(26,15,46,.52),rgba(6,3,15,.91))}
+  #title{background:
+    radial-gradient(ellipse at 50% 32%,rgba(53,27,64,.42),transparent 60%),
+    linear-gradient(180deg,rgba(9,5,20,.42),rgba(6,3,15,.86) 78%,rgba(6,3,15,.96));}
+  .eyebrow{font-size:clamp(8px,1.15vh,12px);letter-spacing:.52em;color:#b79a6a;margin-bottom:1.15em;text-transform:uppercase}
+  #title h1{margin:0;font-size:clamp(34px,6.4vh,68px);line-height:1.04;letter-spacing:.16em;color:#ffe9b4;
+    text-shadow:0 0 34px rgba(255,173,78,.38),0 3px 0 rgba(74,28,33,.7),0 6px 14px #000}
+  #title h2{margin:.7em 0 0;font-size:clamp(9px,1.45vh,15px);font-weight:normal;letter-spacing:.36em;color:#9fd7c7}
+  .rule{display:flex;align-items:center;gap:.8em;width:66%;margin:1.6em auto 1.2em;color:#c8a96f;opacity:.75}
+  .rule::before,.rule::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,rgba(228,192,111,.65),transparent)}
+  .rule span{width:.36em;height:.36em;transform:rotate(45deg);background:#d7b46a;box-shadow:0 0 8px rgba(255,200,110,.55)}
+  #titlehowto{font-size:clamp(10px,1.5vh,15px);line-height:1.9;color:#dbc9aa;letter-spacing:.055em;max-width:82%}
+  #titlehowto em{font-style:normal;color:#ffe0a1}
+  #titlebest{margin:1.25em 0 1.15em;font-size:clamp(11px,1.6vh,16px);letter-spacing:.16em;color:#d9bb7e}
+  #startbtn{padding:.85em 2.2em;font-size:clamp(16px,2.3vh,24px);letter-spacing:.32em;border:none;border-radius:2.5em;
+    color:#191023;background:linear-gradient(180deg,#ffe4a1,#dfb35b);
+    box-shadow:0 0 28px rgba(255,190,93,.4),0 7px 18px rgba(0,0,0,.35);text-indent:.32em}
+  #startbtn:active{transform:translateY(2px)}
+  #imprint{margin-top:1.7em;font-size:clamp(8px,1.1vh,12px);letter-spacing:.28em;color:#8e7b91}
+  #imprint strong{font-weight:normal;color:#d0b075}
+  .seal{position:absolute;right:8%;bottom:8%;width:clamp(34px,5vh,52px);height:clamp(34px,5vh,52px);
+    border:1px solid rgba(200,78,59,.6);color:#d96952;border-radius:.28em;display:flex;align-items:center;justify-content:center;
+    font-size:clamp(11px,1.7vh,17px);line-height:1.05;letter-spacing:0;transform:rotate(-5deg);
+    background:rgba(104,32,31,.1);opacity:.75}
+
+  #end{background:radial-gradient(ellipse at 50% 40%,rgba(36,22,49,.55),rgba(5,3,13,.95))}
+  #endkicker{font-size:clamp(8px,1.05vh,11px);letter-spacing:.4em;color:#a78e75;margin-bottom:1.2em}
+  #endh{margin:0;font-size:clamp(30px,5.2vh,55px);letter-spacing:.18em;color:#ffe9b4;
+    text-shadow:0 0 26px rgba(255,175,80,.35),0 3px 8px #000}
+  #endd{margin:1.2em 0 1.5em;white-space:pre-line;line-height:2;font-size:clamp(11px,1.55vh,16px);color:#d8c6a8}
+  .btns{display:flex;gap:.8em;flex-wrap:wrap;justify-content:center}
+  .btns button{padding:.72em 1.5em;font-size:clamp(12px,1.75vh,17px);letter-spacing:.18em;border-radius:2em;
+    border:1px solid rgba(228,192,111,.4);background:rgba(29,17,44,.88);color:#f4e4c4}
+  .btns button.primary{border:none;color:#1a1124;background:linear-gradient(180deg,#ffe4a1,#dfb35b)}
+  #pause{z-index:24;background:rgba(5,3,13,.72)}
+  #pause h2{margin:0 0 .4em;font-size:clamp(26px,4.4vh,46px);letter-spacing:.24em;color:#ffe8b6;text-shadow:0 0 24px rgba(255,190,90,.35)}
+  #pause p{margin:0 0 1.4em;color:#bda98c;font-size:clamp(10px,1.4vh,14px);letter-spacing:.18em}
+
+  /* ---------- banner / toast ---------- */
+  #banner{position:absolute;left:50%;top:22%;transform:translate(-50%,-50%);z-index:12;text-align:center;
+    pointer-events:none;opacity:0;transition:opacity .2s;width:90%}
+  #banner.show{opacity:1}
+  #banner-main{font-size:clamp(21px,3.3vh,34px);letter-spacing:.24em;color:#ffe6a9;
+    text-shadow:0 0 22px rgba(255,181,79,.55),0 3px 8px #000}
+  #banner-sub{margin-top:.5em;font-size:clamp(9px,1.35vh,13px);letter-spacing:.14em;color:#d7c4a7;text-shadow:0 1px 5px #000}
+  #toast{position:absolute;left:50%;bottom:11.5%;transform:translateX(-50%);z-index:13;max-width:88%;
+    padding:.65em 1.25em;border-radius:2em;text-align:center;font-size:clamp(9px,1.32vh,13px);line-height:1.55;
+    color:#eadcc2;background:rgba(12,7,23,.9);border:1px solid rgba(228,192,111,.28);
+    opacity:0;transition:opacity .2s;pointer-events:none;box-shadow:0 8px 26px rgba(0,0,0,.32)}
+  #toast.show{opacity:1}
+
+  /* ---------- touch ---------- */
+  #touch{display:none;position:absolute;inset:0;z-index:16;pointer-events:none}
+  .tbtn{position:absolute;pointer-events:auto;display:flex;align-items:center;justify-content:center;
+    width:clamp(48px,8.6vh,72px);height:clamp(48px,8.6vh,72px);border-radius:50%;
+    border:1px solid rgba(228,192,111,.35);background:rgba(14,8,27,.64);color:#f1d79d;
+    font-size:clamp(14px,2.2vh,21px);backdrop-filter:blur(2px);text-shadow:0 1px 4px #000}
+  .tbtn.on{background:rgba(146,82,43,.72);border-color:rgba(255,221,150,.7)}
+  #btn-left{left:4%;bottom:8%;border-radius:1em}
+  #btn-right{left:23%;bottom:8%;border-radius:1em}
+  #btn-jump{right:5%;bottom:10%;width:clamp(56px,10vh,82px);height:clamp(56px,10vh,82px);font-size:clamp(15px,2.4vh,23px)}
+  #btn-dash{right:23%;bottom:8%;border-color:rgba(159,232,200,.4);color:#b9f0dc}
+  @media (hover:none),(pointer:coarse){
+    #touch{display:block}
+    #chi-wrap{bottom:22%}
+    #hud-tr{top:2.3%}
+    #toast{bottom:24%}
+  }
+  @media (max-aspect-ratio:1/1){
+    #hud-left{min-width:34%}
+  }
+</style>
+<script>
+  window.__BOOTERR = [];
+  window.addEventListener('error', function (e) {
+    var msg = String((e && e.message) || e || 'error');
+    window.__BOOTERR.push(msg);
+    if (window.__G && window.__G.err) window.__G.err.push(msg);
+  });
+  window.addEventListener('unhandledrejection', function (e) {
+    var msg = String((e && e.reason && (e.reason.stack || e.reason.message)) || e.reason || 'rejection');
+    window.__BOOTERR.push(msg);
+    if (window.__G && window.__G.err) window.__G.err.push(msg);
+  });
+</script>
+</head>
+<body>
+<div id="stage" data-zone="wood">
+  <canvas id="cv" width="540" height="960" aria-label="影峰登天游戏画面"></canvas>
+
+  <div id="hud">
+    <div id="hud-left">
+      <div id="hud-height">0m</div>
+      <div id="hud-best">最高 0m</div>
+      <div id="hud-meta">
+        <b id="hud-score">0</b>
+        <b id="hud-dust">0</b>
+        <b id="hud-lives">3 / 3</b>
+      </div>
+    </div>
+    <div id="hud-zone"><span id="zone-name">木塔</span><span id="zone-en">TIMBER HOLD</span></div>
+    <div id="hud-tr">
+      <button id="mutebtn" aria-label="静音">声</button>
+      <button id="pausebtn" aria-label="暂停">止</button>
+    </div>
+    <div id="chi-wrap">
+      <div id="chi-head"><span id="chi-text">气 100</span><span id="dash-state">疾影 就绪</span></div>
+      <div id="chi-track"><div id="chi-fill"></div></div>
+    </div>
+    <div id="flow-badge">流 ×1.28</div>
+  </div>
+
+  <div id="banner"><div id="banner-main"></div><div id="banner-sub"></div></div>
+  <div id="toast"></div>
+
+  <div id="touch">
+    <button class="tbtn" id="btn-left" aria-label="向左">左</button>
+    <button class="tbtn" id="btn-right" aria-label="向右">右</button>
+    <button class="tbtn" id="btn-jump" aria-label="跳跃或蹬墙">跃</button>
+    <button class="tbtn" id="btn-dash" aria-label="冲刺">疾</button>
+  </div>
+
+  <div id="title" class="overlay">
+    <div class="eyebrow">A NIGHT CLIMB THROUGH THREE DISTRICTS</div>
+    <h1>影峰登天</h1>
+    <h2>SHADOWSPIRE NINJA</h2>
+    <div class="rule"><span></span></div>
+    <div id="titlehowto">
+      <em>A / D</em> 横移 · <em>空格</em> 起跃 · 贴墙再按空格<em>蹬墙跳</em><br>
+      <em>Shift</em> 疾影冲刺（耗气，带无敌帧）· 拾灯屑回复气<br>
+      连续三次不落地蹬墙可入「流」，乘势冲上 1200m 星阁
+    </div>
+    <div id="titlebest">尚无登顶纪录</div>
+    <button id="startbtn">开始登塔</button>
+    <div id="imprint">灯匠夜游 · 第 <strong>2</strong> 铺　<span style="opacity:.65">纸刻横版 · 影峰篇</span></div>
+    <div class="seal">影<br>峰</div>
+  </div>
+
+  <div id="end" class="overlay hide">
+    <div id="endkicker">THE LANTERN GOES DARK</div>
+    <h1 id="endh">灯 熄 塔 沉</h1>
+    <div id="endd"></div>
+    <div class="btns">
+      <button id="go" class="primary">再来一局</button>
+      <button id="go2">回标题</button>
+      <button id="sharebtn">分享高度</button>
+    </div>
+  </div>
+
+  <div id="pause" class="overlay hide">
+    <h2>入 定</h2>
+    <p>塔风暂歇 · 按 P 继续</p>
+    <div class="btns">
+      <button id="resumebtn" class="primary">继续登塔</button>
+      <button id="pauseback">回标题</button>
+    </div>
+  </div>
+</div>
+
+<script src="static/play68.js"></script>
+<script src="static/play68bar.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

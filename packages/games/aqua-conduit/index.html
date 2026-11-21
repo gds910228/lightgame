@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>水脉连环 Aqua Conduit</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --ink:#070b18; --ink2:#0d1428; --indigo:#16213f; --indigo2:#22335d;
+    --paper:#e9e2cf; --muted:#9aa8bd; --copper:#d7a05a; --copper2:#f2cf8d;
+    --jade:#78e0c8; --jade2:#2b837c; --amber:#f0b85e; --verm:#e26858; --verm2:#8d3333;
+    --line:rgba(157,185,205,.17);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;touch-action:none;
+    background:radial-gradient(ellipse at 50% 42%,#101a35,#04070f 74%);
+    font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    color:var(--paper);user-select:none;-webkit-user-select:none}
+  canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+  button{font-family:inherit;color:inherit}
+  .hidden{display:none!important}
+
+  /* ---------- HUD ---------- */
+  #hud{position:fixed;inset:0;z-index:8;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;
+    padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+  .top{display:flex;align-items:flex-start;gap:14px}
+  .levelplate{min-width:186px;max-width:280px}
+  .kicker{font-size:9.5px;letter-spacing:2.8px;color:var(--copper);opacity:.95;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kicker .kch{color:var(--muted)}
+  .lname{font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:25px;font-weight:700;letter-spacing:3px;color:#f6e9cc;text-shadow:0 2px 14px #000;line-height:1.15}
+  .lsub{font-size:10.5px;color:var(--muted);letter-spacing:.6px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .plate{background:linear-gradient(180deg,rgba(11,18,36,.87),rgba(8,13,27,.72));
+    border:1px solid rgba(215,160,90,.24);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,235,200,.05);
+    backdrop-filter:blur(5px)}
+  .moveplate{flex:1;max-width:430px;margin-left:2px;padding:8px 12px 7px}
+  .moverow{display:flex;justify-content:space-between;align-items:baseline;font-size:10px;letter-spacing:1px;color:var(--muted);gap:10px}
+  .moverow b{font-size:18px;color:var(--copper2);letter-spacing:1px;font-variant-numeric:tabular-nums}
+  .moverow .low{color:#ff8a78}
+  .moverow.sub{font-size:9.5px;margin-top:1px;color:#a9b6c8}
+  .moverow.sub span:first-child{color:var(--jade)}
+  .bar{height:6px;margin:6px 0 5px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden;position:relative}
+  .bar i{display:block;height:100%;width:100%;background:linear-gradient(90deg,#2f8c80,#7ce4cb);border-radius:5px;transition:width .15s}
+  .bar i.warn{background:linear-gradient(90deg,#b47c39,#f2cf8d)}
+  .bar i.danger{background:linear-gradient(90deg,#8d3333,#e26858)}
+  .mechrow{display:flex;gap:5px;flex-wrap:wrap;margin-top:4px;font-size:8.5px;line-height:1}
+  .mechrow span{padding:2px 6px;border-radius:8px;border:1px solid rgba(120,224,200,.18);color:#a9d9cf;background:rgba(30,70,70,.18)}
+  .mechrow span.cop{border-color:rgba(215,160,90,.22);color:#e2c28f;background:rgba(80,58,28,.18)}
+  .mechrow span.ver{border-color:rgba(226,104,88,.22);color:#e9a497;background:rgba(90,36,30,.16)}
+  .topright{display:flex;gap:8px;align-items:flex-start;margin-left:auto}
+  .starsbox{padding:7px 11px;text-align:right;min-width:96px}
+  .starsbox .st{font-size:17px;color:#f1c77e;letter-spacing:2px;text-shadow:0 0 10px rgba(240,201,138,.25)}
+  .starsbox .sl{font-size:8.5px;color:var(--muted);letter-spacing:1.2px;margin-top:2px}
+  .iconbtns{display:flex;gap:6px}
+  .iconbtn{pointer-events:auto;width:38px;height:38px;border-radius:9px;border:1px solid rgba(215,160,90,.26);
+    background:rgba(11,18,36,.78);color:var(--copper2);font-size:14px;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px)}
+  .iconbtn:hover{background:rgba(34,51,93,.85)}
+  .iconbtn.off{opacity:.48}
+  .bottom{display:flex;align-items:flex-end;gap:14px}
+  .hintline{flex:1;text-align:center;font-size:10.5px;letter-spacing:1px;color:#aeb8c8;padding-bottom:8px;text-shadow:0 1px 4px #000}
+  .hintline b{color:var(--copper2);font-weight:500}
+  .actions{display:flex;gap:7px;pointer-events:auto}
+  .act{padding:8px 12px;border-radius:8px;border:1px solid rgba(157,185,205,.18);background:rgba(11,18,36,.8);
+    color:#d9d4c5;font-size:11px;letter-spacing:1px;cursor:pointer;line-height:1;backdrop-filter:blur(4px)}
+  .act:hover{background:rgba(34,51,93,.86)}
+
+  /* ---------- toast / pause ---------- */
+  #toast{position:fixed;left:50%;bottom:104px;transform:translate(-50%,10px);z-index:25;padding:9px 20px;border-radius:20px;
+    background:rgba(8,13,27,.94);border:1px solid rgba(215,160,90,.38);color:#f2e3c5;font-size:12px;letter-spacing:1px;
+    opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap}
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+  .overlay{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 50% 36%,rgba(17,28,55,.66),rgba(4,8,18,.94) 72%)}
+  .overlay::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(120,224,200,.03) 0 1px,transparent 1px 46px),
+               repeating-linear-gradient(90deg,rgba(120,224,200,.03) 0 1px,transparent 1px 46px)}
+  #pause .ppanel{position:relative;z-index:1;width:min(360px,84vw);padding:26px 28px;text-align:center;
+    border:1px solid rgba(215,160,90,.32);border-radius:15px;background:linear-gradient(180deg,rgba(17,28,52,.97),rgba(8,13,25,.98));
+    box-shadow:0 22px 70px rgba(0,0,0,.6)}
+  #pause h2{margin:0 0 4px;font-family:"STKaiti","KaiTi",serif;font-size:30px;letter-spacing:7px;color:#f2dcc0}
+  #pause p{margin:0 0 18px;font-size:12px;color:var(--muted);letter-spacing:1px}
+  .pbtns{display:flex;gap:8px;justify-content:center}
+  .pbtns button{padding:10px 18px;border-radius:9px;border:1px solid rgba(157,185,205,.2);background:rgba(25,38,68,.85);
+    color:#ded9ca;font-size:12px;letter-spacing:2px;cursor:pointer}
+  .pbtns button.primary{background:linear-gradient(180deg,#e3b06a,#b5793c);border-color:#f3d29c;color:#1c130a;font-weight:700}
+
+  /* ---------- title ---------- */
+  #title{justify-content:flex-start;padding-top:clamp(16px,4.4vh,44px);overflow-y:auto;
+    background:radial-gradient(ellipse at 50% 36%,rgba(12,21,42,.80),rgba(3,6,14,.965) 76%)}
+  .series{position:absolute;top:20px;right:24px;font-size:10px;letter-spacing:3px;color:rgba(215,160,90,.78);z-index:1}
+  .titlewrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:min(880px,92vw)}
+  .eyebrow{font-size:9.5px;letter-spacing:6px;color:var(--jade);opacity:.9}
+  h1.logo{margin:5px 0 0;font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:clamp(46px,7vw,72px);font-weight:700;
+    letter-spacing:clamp(7px,1.3vw,16px);color:#f3ddc0;
+    text-shadow:0 0 36px rgba(215,160,90,.24),0 4px 0 rgba(40,26,14,.55),0 8px 30px rgba(0,0,0,.65)}
+  .logo .gold{color:var(--copper2)}
+  .logoen{margin-top:2px;font-size:10.5px;letter-spacing:7px;color:rgba(232,224,203,.55)}
+  .titleline{width:min(560px,82vw);height:1px;margin:14px 0 9px;background:linear-gradient(90deg,transparent,rgba(215,160,90,.52),transparent);position:relative}
+  .titleline::after{content:"◆";position:absolute;left:50%;top:-7px;transform:translateX(-50%);font-size:9px;color:var(--copper);background:#0b1428;padding:0 8px}
+  .tagline{font-size:11.5px;letter-spacing:1.6px;color:#bcc8d8;text-align:center;line-height:1.85}
+  .tagline b{color:var(--copper2);font-weight:500}
+  .titlemeta{display:flex;gap:20px;align-items:center;margin:9px 0 1px;font-size:10.5px;color:var(--muted);letter-spacing:1.3px;flex-wrap:wrap;justify-content:center}
+  .titlemeta b{color:var(--copper2);font-size:14px;font-weight:600}
+  .bigstart{margin:12px 0 6px;padding:12px 42px;border:none;border-radius:27px;cursor:pointer;
+    background:linear-gradient(180deg,#f0c98a,#ca8b49);color:#1a1209;font-size:15.5px;font-weight:700;letter-spacing:4px;
+    box-shadow:0 6px 26px rgba(215,160,90,.24),inset 0 1px 0 rgba(255,255,255,.5)}
+  .bigstart:hover{filter:brightness(1.07)}
+  .chaptermap{width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:10px}
+  .chapter{padding:8px 8px 9px;border:1px solid rgba(157,185,205,.13);border-radius:10px;background:rgba(8,13,27,.56)}
+  .chhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;padding:0 2px;gap:4px}
+  .chhead .ch{font-family:"STKaiti","KaiTi",serif;font-size:12.5px;letter-spacing:1.5px;color:#e7d8bc;white-space:nowrap}
+  .chhead .ce{font-size:6.5px;letter-spacing:1px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .levels{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+  .lv{aspect-ratio:1.12;position:relative;border:1px solid rgba(157,185,205,.16);border-radius:7px;background:rgba(22,34,62,.68);
+    color:#dfe4e9;font-size:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;padding:0}
+  .lv:hover{border-color:rgba(215,160,90,.6);background:rgba(41,61,99,.8)}
+  .lv .ls{font-size:6.5px;letter-spacing:0;color:#e9bd70;height:8px;line-height:8px}
+  .lv.locked{opacity:.24;cursor:default;background:rgba(12,19,36,.5)}
+  .lv.cur{border-color:rgba(240,201,138,.82);box-shadow:0 0 0 1px rgba(215,160,90,.28)}
+  .titlefoot{margin:12px 0 14px;display:flex;gap:18px;align-items:center;font-size:8.5px;letter-spacing:2.2px;color:rgba(157,169,189,.65);flex-wrap:wrap;justify-content:center}
+  .titlefoot .mk{color:rgba(215,160,90,.8)}
+
+  /* ---------- end ---------- */
+  #end .endpanel{position:relative;z-index:1;width:min(470px,88vw);padding:26px 30px 22px;text-align:center;
+    border:1px solid rgba(215,160,90,.32);border-radius:16px;background:linear-gradient(180deg,rgba(17,27,51,.97),rgba(8,12,24,.98));
+    box-shadow:0 24px 80px rgba(0,0,0,.58),inset 0 1px 0 rgba(255,240,210,.07)}
+  #end .ekick{font-size:9px;letter-spacing:4px;color:var(--jade)}
+  #end h2{margin:6px 0 2px;font-family:"STKaiti","KaiTi",serif;font-size:37px;letter-spacing:8px;color:#f2dcc0}
+  #end .ereason{font-size:11.5px;color:var(--muted);letter-spacing:1px;min-height:17px}
+  .starrow{font-size:30px;letter-spacing:11px;color:#ecc57c;margin:11px 0 3px;height:38px;text-shadow:0 0 20px rgba(240,201,138,.3)}
+  .starrow span{opacity:.22;display:inline-block;transform:scale(.88);transition:opacity .25s,transform .25s}
+  .starrow span.on{opacity:1;transform:scale(1.08)}
+  .estats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:11px 0 16px;padding:11px 0;border-top:1px solid rgba(157,185,205,.12);border-bottom:1px solid rgba(157,185,205,.12)}
+  .estat .n{font-size:15.5px;color:var(--copper2);font-variant-numeric:tabular-nums}
+  .estat .l{font-size:8px;color:var(--muted);letter-spacing:1.2px;margin-top:3px}
+  .endbtns{display:flex;gap:8px;justify-content:center}
+  .endbtns button{padding:10px 16px;border-radius:9px;border:1px solid rgba(157,185,205,.2);background:rgba(25,38,68,.8);
+    color:#ded9ca;font-size:11.5px;letter-spacing:2px;cursor:pointer}
+  .endbtns button:hover{background:rgba(41,61,99,.85)}
+  .endbtns .next{background:linear-gradient(180deg,#e3b06a,#b5793c);border-color:#f3d29c;color:#1c130a;font-weight:700}
+  .endbtns button:disabled{opacity:.3;cursor:default}
+  .endfoot{margin-top:13px;font-size:8px;letter-spacing:2.5px;color:rgba(157,169,189,.45)}
+
+  @media (max-width:820px){
+    #hud{padding:7px 9px}
+    .top{gap:6px;align-items:flex-start}
+    .levelplate{min-width:0;flex:0 1 112px}
+    .kicker{font-size:7.5px;letter-spacing:1.2px}
+    .kicker .kch{display:none}
+    .lname{font-size:17px;letter-spacing:1px;line-height:1.1}
+    .lsub{display:none}
+    .moveplate{max-width:none;flex:1 1 0;min-width:0;padding:6px 8px}
+    .moverow{font-size:8.5px;letter-spacing:.2px;gap:4px}
+    .moverow b{font-size:13px}
+    .moverow.sub{font-size:7.5px}
+    .bar{height:4px;margin:4px 0 3px}
+    .mechrow{display:none}
+    .topright{gap:4px}
+    .starsbox{display:none}
+    .iconbtn{width:31px;height:31px;font-size:12px;border-radius:7px}
+    .bottom{flex-wrap:wrap;gap:6px}
+    .hintline{order:2;width:100%;padding:0;font-size:8.5px;letter-spacing:.2px}
+    .actions{order:3;width:100%;justify-content:center;gap:6px}
+    .act{padding:8px 12px;font-size:10px}
+    .chaptermap{grid-template-columns:1fr 1fr;gap:7px}
+    .chhead .ce{display:none}
+    #end .endpanel{padding:20px 18px 16px}
+    #end h2{font-size:30px}
+    .estats{grid-template-columns:repeat(2,1fr)}
+    #title{padding-top:10px}
+    .series{top:10px;right:12px;font-size:8px}
+    .tagline{font-size:10px}
+    .titlefoot{margin:8px 0}
+  }
+  @media (min-height:640px){
+    #title{justify-content:center;padding-top:0;padding-bottom:18px}
+  }
+  @media (max-height:460px){
+    .bottom{display:none}
+  }
+  @media (max-height:560px){
+    .titlewrap{transform:none;width:min(960px,96vw);margin-top:0}
+    #title{padding-top:8px}
+    h1.logo{font-size:42px;letter-spacing:6px;margin-top:2px}
+    .logoen{font-size:8px;letter-spacing:5px}
+    .eyebrow{font-size:8px}
+    .titleline{margin:7px 0 5px}
+    .tagline{font-size:9.5px;line-height:1.55}
+    .titlemeta{margin:5px 0 0;font-size:9px;gap:12px}
+    .titlemeta b{font-size:11px}
+    .bigstart{margin:7px 0 3px;padding:8px 28px;font-size:13px;letter-spacing:3px}
+    #title .chaptermap{grid-template-columns:repeat(4,1fr);gap:6px;margin-top:5px}
+    .chapter{padding:5px 6px 6px}
+    .chhead{margin-bottom:3px}
+    .chhead .ch{font-size:10.5px}
+    .chhead .ce{display:none}
+    .levels{grid-template-columns:repeat(3,1fr);gap:3px}
+    .lv{aspect-ratio:1.06;font-size:9px}
+    .lv .ls{font-size:5px;height:6px;line-height:6px}
+    .titlefoot{margin:5px 0;font-size:7px;letter-spacing:1.5px}
+    .titlefoot:last-child{display:none}
+    .series{top:8px;right:10px;font-size:7.5px}
+  }
+</style>
+<script>
+  window.__BOOTERR = [];
+  window.__NET = { fetch: 0, xhr: 0, ws: 0, external: [] };
+  (function(){
+    try {
+      const of = window.fetch;
+      if (of) window.fetch = function(input, init){
+        window.__NET.fetch++;
+        const u = String(input && input.url || input || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return of.apply(this, arguments);
+      };
+      const xo = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url){
+        window.__NET.xhr++;
+        const u = String(url || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return xo.apply(this, arguments);
+      };
+      const OW = window.WebSocket;
+      if (OW) window.WebSocket = function(url){
+        window.__NET.ws++;
+        const u = String(url || '');
+        if (/^wss?:\/\//i.test(u) && u.indexOf(location.host) < 0) window.__NET.external.push(u);
+        return new OW(url);
+      };
+      window.WebSocket.prototype = OW.prototype;
+    } catch(e) { window.__BOOTERR.push('netwrap:' + e); }
+    window.addEventListener('error', function(e){
+      const s = String(e.message || e);
+      window.__BOOTERR.push(s);
+      if (window.__G && window.__G.err) window.__G.err.push(s);
+    });
+    window.addEventListener('unhandledrejection', function(e){
+      window.__BOOTERR.push('rejection:' + String(e.reason || e));
+    });
+  })();
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="top">
+    <div class="levelplate">
+      <div class="kicker" id="hud-chapter">第一章 · 青石夜渠</div>
+      <div class="lname" id="hud-level">初引清泉</div>
+      <div class="lsub" id="hud-sub">把第一股水从石缝引向喷泉</div>
+    </div>
+    <div class="moveplate plate">
+      <div class="moverow"><span>剩余步数</span><span><b id="hud-moves">11</b> / <span id="hud-budget">11</span></span></div>
+      <div class="bar"><i id="hud-bar"></i></div>
+      <div class="moverow sub"><span id="hud-target">三星目标 ≤ 5 步</span><span id="hud-time">00:00</span></div>
+      <div class="mechrow" id="hud-mech"></div>
+    </div>
+    <div class="topright">
+      <div class="starsbox plate"><div class="st" id="hud-stars">···</div><div class="sl" id="hud-starsl">总星 0 / 72</div></div>
+      <div class="iconbtns">
+        <button class="iconbtn" id="btn-mute" title="静音 (M)">声</button>
+        <button class="iconbtn" id="btn-pause" title="暂停 (P)">Ⅱ</button>
+        <button class="iconbtn" id="btn-restart" title="重开 (R)">↻</button>
+        <button class="iconbtn" id="btn-title" title="选关">选</button>
+      </div>
+    </div>
+  </div>
+  <div class="bottom">
+    <div class="hintline" id="hintline">点按管件旋转 <b>90°</b> · <b>Shift</b>/右键反向 · <b>R</b> 重开 · <b>P</b> 暂停 · <b>M</b> 静音</div>
+    <div class="actions">
+      <button class="act" id="btn-reset2">重开 R</button>
+      <button class="act" id="btn-pause2">暂停 P</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="pause" class="overlay hidden">
+  <div class="ppanel">
+    <div class="ekick" style="font-size:9px;letter-spacing:4px;color:var(--jade)">FLOW HELD</div>
+    <h2>已 暂 停</h2>
+    <p>水路停在此刻 · 按 P 或点按继续</p>
+    <div class="pbtns"><button class="primary" id="pause-resume">继续引水</button><button id="pause-title">回选关</button></div>
+  </div>
+</div>
+
+<div id="title" class="overlay">
+  <div class="series">灯匠夜游 · 第 8 铺</div>
+  <div class="titlewrap">
+    <div class="eyebrow">AQUA CONDUIT · 第 8 铺</div>
+    <h1 class="logo">水脉<span class="gold">连环</span></h1>
+    <div class="logoen">A Q U A &nbsp; C O N D U I T</div>
+    <div class="titleline"></div>
+    <div class="tagline">转动铜管，把夜泉接到<b>喷泉与水车</b>。<br>直管、弯管、三通与十字桥，铜闸与单向阀，碧水与蓝水各有归处。</div>
+    <div class="titlemeta"><span>总星 <b id="title-stars">0</b> / 72</span><span>最高分 <b id="title-best">0</b></span><span>进度 <b id="title-progress">0 / 24</b></span></div>
+    <button class="bigstart" id="startbtn">开始引水</button>
+    <div class="chaptermap" id="chaptermap"></div>
+    <div class="titlefoot"><span class="mk">◆</span><span>点按管件旋转 90° · Shift/右键反向 · R 重开</span><span class="mk">◆</span></div>
+    <div class="titlefoot"><span>灯匠夜游 · 第 8 铺</span><span>·</span><span>零外网 · 纯 Canvas 程序化</span></div>
+  </div>
+</div>
+
+<div id="end" class="overlay hidden">
+  <div class="endpanel">
+    <div class="ekick" id="end-kick">FLOW REPORT</div>
+    <h2 id="end-heading">水路通了</h2>
+    <div class="ereason" id="end-reason"></div>
+    <div class="starrow" id="end-stars"><span>★</span><span>★</span><span>★</span></div>
+    <div class="estats">
+      <div class="estat"><div class="n" id="end-score">0</div><div class="l">本关得分</div></div>
+      <div class="estat"><div class="n" id="end-left">0</div><div class="l">剩余步数</div></div>
+      <div class="estat"><div class="n" id="end-time">0.0s</div><div class="l">用时</div></div>
+      <div class="estat"><div class="n" id="end-optimal">0</div><div class="l">参考步数</div></div>
+    </div>
+    <div class="endbtns">
+      <button class="next" id="end-next">下一关</button>
+      <button id="end-retry">再来一次</button>
+      <button id="end-home">回标题</button>
+    </div>
+    <div class="endfoot">灯匠夜游 · 第 8 铺 · AQUA CONDUIT</div>
+  </div>
+</div>
+
+<script type="text/javascript" src="static/play68.js"></script>
+<script type="module" src="js/game.js"></script>
+<script type="text/javascript" src="static/play68bar.js"></script>
+</body>
+</html>

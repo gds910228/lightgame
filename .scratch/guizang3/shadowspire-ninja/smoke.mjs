@@ -1,0 +1,44 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const browser = await chromium.launch({ headless:true, executablePath:'/usr/local/bin/chromium', args:['--no-sandbox'] });
+const ctx = await browser.newContext({ viewport:{width:1280,height:720} });
+const page = await ctx.newPage();
+const logs=[]; const errs=[]; const reqs=[];
+page.on('console', m => { if(['error','warning'].includes(m.type())) logs.push(m.type()+': '+m.text()); });
+page.on('pageerror', e => errs.push(String(e)));
+page.on('request', r => reqs.push(r.url()));
+await page.goto('http://localhost:8611/shadowspire-ninja/', { waitUntil:'load' });
+await page.waitForTimeout(400);
+const before = await page.evaluate(()=>({mode:G.state().mode, muted:G.audio.muted, hasCtx:G.audio.hasCtx, titleHidden:document.getElementById('title').classList.contains('hide')}));
+await page.click('#startbtn');
+await page.waitForTimeout(200);
+const afterStart = await page.evaluate(()=>({mode:G.state().mode, hasCtx:G.audio.hasCtx, muted:G.audio.muted, ctxState:G.audio.state, h:G.state().height, x:G.state().x}));
+await page.keyboard.down('ArrowRight');
+await page.waitForTimeout(550);
+const afterMove = await page.evaluate(()=>({x:G.state().x, h:G.state().height}));
+await page.keyboard.press('Space');
+await page.waitForTimeout(250);
+const afterJump = await page.evaluate(()=>({x:G.state().x, y:G.state().y, vy:G.state().vy, h:G.state().height}));
+await page.keyboard.down('ShiftLeft');
+await page.waitForTimeout(60);
+await page.keyboard.up('ShiftLeft');
+const afterDash = await page.evaluate(()=>({dashT:G.state().dashT, chi:G.state().chi, invuln:G.state().invuln}));
+await page.keyboard.up('ArrowRight');
+await page.keyboard.press('KeyP');
+await page.waitForTimeout(100);
+const paused = await page.evaluate(()=>({paused:G.state().paused, overlay:!document.getElementById('pause').classList.contains('hide')}));
+await page.keyboard.press('KeyP');
+await page.keyboard.press('KeyM');
+await page.waitForTimeout(100);
+const unmuted = await page.evaluate(()=>({muted:G.audio.muted}));
+await page.keyboard.press('KeyM');
+// fps sample over ~1s
+const fps = await page.evaluate(() => new Promise(resolve => {
+  let n=0; const t0=performance.now();
+  function tick(ts){ n++; if(ts-t0<1200) requestAnimationFrame(tick); else resolve(Math.round(n*1000/(ts-t0))); }
+  requestAnimationFrame(tick);
+}));
+const external = reqs.filter(u=>!u.startsWith('http://localhost:8611/') && !u.startsWith('data:'));
+console.log(JSON.stringify({before,afterStart,afterMove,afterJump,afterDash,paused,unmuted,fps,logs,errs,external},null,2));
+await browser.close();

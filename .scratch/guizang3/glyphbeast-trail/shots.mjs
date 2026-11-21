@@ -1,0 +1,44 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const B='http://localhost:8624/glyphbeast-trail/';
+const O='/mnt/tos/workspace/.scratch/guizang3/glyphbeast-trail/';
+const b=await chromium.launch({headless:true,executablePath:'/usr/local/bin/chromium',args:['--no-sandbox','--use-gl=swiftshader']});
+const errs=[];
+const p=await b.newPage({viewport:{width:1280,height:720}});
+p.on('console',m=>{if(['error','warning'].includes(m.type()))errs.push(m.type()+': '+m.text())}); p.on('pageerror',e=>errs.push('pageerror '+e));
+await p.goto(B);
+await p.waitForTimeout(400);
+await p.screenshot({path:O+'title-final.png'});
+await p.evaluate(()=>{G.startGame(true);G.step(2);});
+await p.waitForTimeout(300);
+await p.screenshot({path:O+'gameplay-explore-1280.png'});
+await p.evaluate(()=>{G.togglePause();G.step(1);});
+await p.waitForTimeout(200);
+await p.screenshot({path:O+'pause.png'});
+await p.evaluate(()=>{G.togglePause();G.setBosses(0);G.setParty([{id:'emberbadger',lvl:9},{id:'tideotter',lvl:8},{id:'reedfox',lvl:8},{id:'lamprabbit',lvl:8}]);G.startWild('gravelrhino',9);G.upd(80);G.step(1);});
+await p.waitForTimeout(250);
+await p.screenshot({path:O+'battle-final-1280.png'});
+// result win
+await p.evaluate(()=>{G.forceWin();G.step(1);});
+await p.waitForTimeout(200);
+await p.screenshot({path:O+'battle-result-win.png'});
+await p.evaluate(()=>{G.continueBattleResult();G.startWild('tideotter',8);G.upd(70);G.forceFail();G.step(1);});
+await p.waitForTimeout(200);
+await p.screenshot({path:O+'gameover.png'});
+await p.evaluate(()=>{G.retryFromOver();G.setBosses(3);G.setParty([{id:'emberbadger',lvl:24},{id:'inkcat',lvl:24},{id:'dawnram',lvl:24},{id:'mosstort',lvl:24}]);G.startBoss(3);G.upd(70);G.forceWin();G.step(1);});
+await p.waitForTimeout(200);
+await p.screenshot({path:O+'battle-result-final.png'});
+await p.evaluate(()=>{G.continueBattleResult();G.step(1);});
+await p.waitForTimeout(250);
+await p.screenshot({path:O+'complete.png'});
+// capture result with fresh battle
+await p.evaluate(()=>{G.startGame(true);G.setSeals(5);G.startWild('lamprabbit',5);G.upd(70);G.forceCapture();G.step(1);});
+await p.waitForTimeout(200);
+await p.screenshot({path:O+'battle-result-capture.png'});
+// boss result
+await p.evaluate(()=>{G.clearBattle();G.setBosses(0);G.setParty([{id:'emberbadger',lvl:12},{id:'tideotter',lvl:12}]);G.startBoss(0);G.upd(70);G.forceWin();G.step(1);});
+await p.waitForTimeout(200);
+await p.screenshot({path:O+'battle-result-boss.png'});
+console.log('errors',errs);
+await b.close();

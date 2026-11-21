@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" href="data:,">
+<title>Emberpin 余烬弹珠台</title>
+<style>
+  :root{
+    --ink:#070504; --ink2:#140d0a; --gold:#e7b263; --gold2:#ffe3a1;
+    --verm:#e85a3e; --jade:#56c9b4; --paper:#e9dcc6; --muted:#b9a184;
+  }
+  html,body{margin:0;height:100%;overflow:hidden;background:var(--ink);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  button{font-family:inherit}
+  .hide{display:none!important}
+
+  #tr{position:fixed;right:12px;top:10px;z-index:24;display:flex;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:12px;border:1px solid rgba(231,178,99,.42);background:rgba(10,6,5,.82);color:var(--gold2);font-size:16px;font-weight:700;cursor:pointer;backdrop-filter:blur(4px);transition:background .15s,transform .1s}
+  #tr button:hover{background:rgba(35,22,14,.92)}
+  #tr button:active{transform:translateY(1px)}
+  #tr button.on{background:rgba(90,40,28,.85);border-color:rgba(255,140,100,.55);color:#ffc9b0}
+
+  #toast{position:fixed;left:50%;bottom:56px;transform:translateX(-50%);z-index:26;padding:8px 20px;border-radius:22px;background:rgba(12,7,5,.92);border:1px solid rgba(231,178,99,.36);color:var(--gold2);font-size:13px;letter-spacing:1px;opacity:0;pointer-events:none;transition:opacity .24s;white-space:nowrap;max-width:92vw;overflow:hidden;text-overflow:ellipsis}
+  #toast.show{opacity:1}
+
+  .overlay{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:var(--paper);padding:20px}
+  #title{background:radial-gradient(ellipse at 50% 40%,rgba(38,20,12,.42),rgba(5,3,3,.86) 74%)}
+  #title .kicker{font-size:11px;letter-spacing:8px;color:rgba(231,178,99,.9);margin-bottom:12px;text-shadow:0 1px 8px #000}
+  #title h1{margin:0;font-size:clamp(42px,7vw,74px);letter-spacing:.14em;font-weight:800;color:#fff1d2;text-shadow:0 0 32px rgba(255,150,70,.38),0 5px 22px rgba(0,0,0,.9)}
+  #title h2{margin:8px 0 0;font-size:clamp(9px,1.3vw,13px);font-weight:600;letter-spacing:.52em;color:#c79a5d;text-shadow:0 2px 10px #000}
+  .rule{width:min(540px,80vw);height:1px;margin:16px 0 14px;background:linear-gradient(90deg,transparent,rgba(231,178,99,.7),rgba(232,90,62,.5),rgba(231,178,99,.7),transparent)}
+  #titlebest{font-size:13px;letter-spacing:2px;color:#ffdda0;margin-bottom:20px;text-shadow:0 2px 8px #000}
+  #titlebest::before{content:"◇ ";color:var(--jade)}
+  #startbtn{padding:14px 52px;font-size:19px;letter-spacing:.32em;font-weight:700;border:none;border-radius:30px;cursor:pointer;color:#20100a;background:linear-gradient(180deg,#ffe3a1,#db9a45);box-shadow:0 0 30px rgba(255,170,80,.4),inset 0 1px 0 rgba(255,255,235,.7);transition:transform .12s,box-shadow .15s}
+  #startbtn:hover{transform:translateY(-2px);box-shadow:0 0 42px rgba(255,180,90,.6),inset 0 1px 0 rgba(255,255,235,.7)}
+  .howto{margin-top:26px;font-size:12.5px;line-height:2.05;color:rgba(220,196,162,.82);letter-spacing:.5px;text-shadow:0 1px 6px #000}
+  .howto b{color:#ffd88a;font-weight:700}
+  .imprint{margin-top:22px;font-size:10px;letter-spacing:5px;color:rgba(231,178,99,.42)}
+
+  #end{background:radial-gradient(ellipse at 50% 40%,rgba(44,18,10,.5),rgba(4,2,2,.9) 72%)}
+  #end .kicker{font-size:10px;letter-spacing:7px;color:rgba(231,178,99,.7);margin-bottom:10px}
+  #end h1{margin:0;font-size:clamp(36px,6vw,62px);letter-spacing:.2em;color:#ffe3a1;font-weight:800;text-shadow:0 0 34px rgba(255,140,60,.4),0 4px 18px #000}
+  #endd{margin:18px 0 24px;font-size:14px;line-height:2;color:rgba(230,208,175,.9);letter-spacing:1px}
+  #endd .bigscore{font-size:34px;font-weight:800;color:#ffd27a;letter-spacing:2px;text-shadow:0 0 20px rgba(255,170,80,.35)}
+  #endd .rec{color:var(--jade);font-size:12px;letter-spacing:2px}
+  .btns{display:flex;gap:12px}
+  #retrybtn,#homebtn{padding:12px 34px;font-size:16px;letter-spacing:.18em;border-radius:26px;cursor:pointer}
+  #retrybtn{border:none;color:#20100a;background:linear-gradient(180deg,#ffe3a1,#db9a45);box-shadow:0 0 24px rgba(255,170,80,.38)}
+  #homebtn{background:rgba(20,12,8,.8);color:#ffdda0;border:1px solid rgba(231,178,99,.42)}
+  #homebtn:hover{background:rgba(44,28,18,.9)}
+
+  #touch{display:none}
+  #touch .tbtn{position:fixed;z-index:22;border-radius:50%;border:1px solid rgba(231,178,99,.42);background:rgba(12,7,5,.62);color:#ffdda0;font-size:13px;font-weight:700;letter-spacing:2px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px);pointer-events:auto;touch-action:none}
+  #tflipL{left:14px;bottom:18px;width:92px;height:92px}
+  #tflipR{right:14px;bottom:18px;width:92px;height:92px}
+  #tlaunch{left:50%;bottom:18px;transform:translateX(-50%);width:104px;height:60px;border-radius:30px!important;font-size:14px!important;color:#20100a!important;background:linear-gradient(180deg,#ffe3a1,#d99a45)!important;border:none!important;box-shadow:0 0 22px rgba(255,170,80,.35)}
+  body.touch #touch{display:block}
+  @media (pointer:coarse){ #touch{display:block} }
+  @media (max-width:700px){
+    #title h1{letter-spacing:.1em}
+    .howto{font-size:11px}
+    #tflipL,#tflipR{width:76px;height:76px;bottom:14px}
+    #tlaunch{bottom:14px;height:52px;width:92px}
+  }
+</style>
+<script>
+  window.__BOOTERR = [];
+  window.__NET = { fetch: 0, xhr: 0, ws: 0, external: [] };
+  (function(){
+    try {
+      const of = window.fetch;
+      if (of) window.fetch = function(input){
+        window.__NET.fetch++;
+        const u = String(input && input.url || input || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return of.apply(this, arguments);
+      };
+      const xo = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url){
+        window.__NET.xhr++;
+        const u = String(url || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return xo.apply(this, arguments);
+      };
+      const OW = window.WebSocket;
+      if (OW) {
+        window.WebSocket = function(url){
+          window.__NET.ws++;
+          const u = String(url || '');
+          if (/^wss?:\/\//i.test(u) && u.indexOf(location.host) < 0) window.__NET.external.push(u);
+          return new OW(url);
+        };
+        window.WebSocket.prototype = OW.prototype;
+      }
+    } catch(e) { window.__BOOTERR.push('netwrap:' + e); }
+    window.addEventListener('error', function(e){
+      window.__BOOTERR.push(String(e.message || e));
+      if (window.__G && window.__G.err) window.__G.err.push(String(e.message || e));
+    });
+    window.addEventListener('unhandledrejection', function(e){
+      window.__BOOTERR.push('rejection:' + String(e.reason || e));
+    });
+  })();
+  try {
+    if (matchMedia('(pointer:coarse)').matches || (navigator.maxTouchPoints || 0) > 0) {
+      document.addEventListener('DOMContentLoaded', function(){ document.body.classList.add('touch'); });
+    }
+  } catch(e) {}
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+</div>
+
+<div id="title" class="overlay">
+  <div class="kicker">灯匠夜游 · 第 10 铺</div>
+  <h1>余烬弹珠台</h1>
+  <h2>EMBERPIN · 熔金弹珠</h2>
+  <div class="rule"></div>
+  <div id="titlebest">最高分 0</div>
+  <button id="startbtn">落 球 开 场</button>
+  <div class="howto">
+    按住 <b>空格</b> 蓄力，松开弹射 · <b>A / ←</b> 左翻板 · <b>D / →</b> 右翻板<br>
+    点亮三组任务靶提升倍率；三球用尽前完成 <b>60,000</b> 分目标即可通关<br>
+    <b>P</b> 暂停 · <b>M</b> 静音 · <b>R</b> 重开 · 触屏左右半屏控制翻板，点「发射」蓄力
+  </div>
+  <div class="imprint">◆ 熔金 · 炭黑 · 釉朱 ◆</div>
+</div>
+
+<div id="end" class="overlay hide">
+  <div class="kicker" id="endkicker">END OF RUN</div>
+  <h1 id="endh">余 烬 熄 灭</h1>
+  <div id="endd"></div>
+  <div class="btns">
+    <button id="retrybtn">再 来 一 局</button>
+    <button id="homebtn">回 标 题</button>
+  </div>
+  <div class="imprint"><b>灯匠夜游 · 第 10 铺</b></div>
+</div>
+
+<div id="toast"></div>
+
+<div id="touch">
+  <div class="tbtn" id="tflipL">左翻板</div>
+  <div class="tbtn" id="tflipR">右翻板</div>
+  <div class="tbtn" id="tlaunch">发射</div>
+</div>
+
+<script src="static/play68.js"></script>
+<script src="static/play68bar.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

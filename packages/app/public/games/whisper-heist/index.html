@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>声息窃影 Whisper Heist</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --ink:#0b0e24; --paper:#e8dcc0; --copper:#c8a15a; --gold:#ffd77a;
+    --jade:#6fe0c8; --cinnabar:#c94f4a; --panel:rgba(12,16,38,.9);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:#070a19;color:var(--paper);
+    font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:crosshair}
+  .panel{background:var(--panel);border:1px solid rgba(200,161,90,.38);border-radius:12px;
+    box-shadow:0 10px 36px rgba(0,0,0,.55),inset 0 0 30px rgba(200,161,90,.05)}
+  .hide{display:none!important}
+
+  /* ---------- HUD ---------- */
+  #hud{position:fixed;inset:0;z-index:10;pointer-events:none}
+  #hud.danger #hudframe{box-shadow:inset 0 0 120px rgba(201,79,74,.42)}
+  #hudframe{position:absolute;inset:0;transition:box-shadow .3s;box-shadow:inset 0 0 100px rgba(4,6,20,.5)}
+  #topleft{position:absolute;left:16px;top:12px;display:flex;flex-direction:column;gap:3px;
+    background:linear-gradient(180deg,rgba(12,16,38,.82),rgba(12,16,38,0));padding:6px 12px 12px;border-radius:10px}
+  #score{font-size:30px;font-weight:700;color:var(--gold);letter-spacing:1px;text-shadow:0 2px 10px rgba(255,180,80,.35)}
+  #score:before{content:'得分 ';font-size:12px;color:#a9946a;font-weight:400;letter-spacing:2px}
+  #levelname{font-size:12px;color:#bfae8e;letter-spacing:1px}
+  #besttag{font-size:10.5px;color:#8f7a58}
+
+  #topcenter{position:absolute;left:50%;top:12px;transform:translateX(-50%);width:min(360px,42vw);text-align:center}
+  #timer{font-size:24px;letter-spacing:3px;color:#e8dcc0;text-shadow:0 2px 8px #000;font-variant-numeric:tabular-nums}
+  #timer.low{color:var(--cinnabar);animation:blink 1s infinite}
+  @keyframes blink{50%{opacity:.45}}
+  #alarmwrap{margin-top:4px;height:16px;background:rgba(8,10,26,.85);border:1px solid rgba(200,161,90,.35);border-radius:9px;overflow:hidden;position:relative}
+  #alarmfill{height:100%;width:0%;background:linear-gradient(90deg,#4f8f80,#6fe0c8);transition:width .18s,background .18s}
+  #alarmfill.warm{background:linear-gradient(90deg,#9a7a3a,#ffd77a)}
+  #alarmfill.hot{background:linear-gradient(90deg,#8e2f2b,#e05a50)}
+  #alarmtag{position:absolute;inset:0;font-size:10px;letter-spacing:4px;color:#e8dcc0;font-weight:700;line-height:16px;text-shadow:0 1px 3px #000,0 0 6px #000}
+
+  #topright{position:absolute;right:16px;top:12px;display:flex;align-items:flex-start;gap:10px;pointer-events:none}
+  #counters{text-align:right;font-size:12px;line-height:1.7;color:#d8c9a8;background:rgba(12,16,38,.72);
+    padding:6px 12px;border-radius:10px;border:1px solid rgba(200,161,90,.22)}
+  #counters b{color:var(--gold);font-size:16px;font-variant-numeric:tabular-nums}
+  #counters .jade{color:var(--jade)}
+  #trbtns{display:flex;flex-direction:column;gap:7px;pointer-events:auto}
+  #trbtns button{width:38px;height:38px;border-radius:9px;border:1px solid rgba(200,161,90,.35);
+    background:rgba(12,16,38,.88);color:var(--gold);font-size:15px;cursor:pointer}
+  #trbtns button.on{background:rgba(90,60,24,.9);border-color:var(--gold)}
+
+  #prompt{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);z-index:12;pointer-events:none;
+    padding:8px 20px;border-radius:22px;background:rgba(10,14,34,.9);border:1px solid rgba(111,224,200,.4);
+    color:#d9fff5;font-size:14px;letter-spacing:1px;opacity:0;transition:opacity .18s;white-space:nowrap}
+  #prompt.show{opacity:1}
+
+  /* ---------- banner / toast ---------- */
+  #banner{position:fixed;left:50%;top:25%;transform:translate(-50%,-50%);z-index:16;text-align:center;
+    pointer-events:none;opacity:0;transition:opacity .22s}
+  #banner.show{opacity:1}
+  #banner .bmain{font-size:34px;font-weight:700;color:var(--gold);letter-spacing:8px;
+    text-shadow:0 0 22px rgba(255,180,70,.6),0 2px 8px #000}
+  #banner .bsub{font-size:13px;color:#d8c9a8;margin-top:6px;letter-spacing:2px;text-shadow:0 1px 5px #000}
+  #toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:16;padding:8px 18px;
+    border-radius:18px;background:rgba(10,14,34,.94);border:1px solid rgba(200,161,90,.36);color:#e8dcc0;
+    font-size:13px;opacity:0;transition:opacity .25s;pointer-events:none;max-width:80vw;text-align:center}
+  #toast.show{opacity:1}
+
+  /* ---------- overlays ---------- */
+  #title,#select,#end,#pause{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;text-align:center;
+    background:radial-gradient(ellipse at 50% 34%,rgba(24,26,58,.82),rgba(5,7,19,.96))}
+  #title h1{margin:0;font-size:64px;letter-spacing:18px;color:var(--gold);
+    text-shadow:0 0 30px rgba(255,175,70,.55),0 4px 14px #000;font-weight:700}
+  #title .en{margin:6px 0 2px;font-size:14px;letter-spacing:10px;color:var(--jade);opacity:.85}
+  #title .series{font-size:11px;letter-spacing:4px;color:var(--copper);opacity:.8;margin-bottom:18px}
+  #title .howto{max-width:560px;font-size:13px;line-height:1.95;color:#cfc0a0;margin:0 20px 10px}
+  #title .howto em{color:var(--gold);font-style:normal}
+  #title .howto kbd{display:inline-block;min-width:20px;padding:0 5px;border:1px solid rgba(200,161,90,.5);
+    border-radius:4px;background:rgba(200,161,90,.1);font-size:11px;color:var(--gold);font-family:inherit}
+  #titlebest{font-size:13px;color:#e8b878;margin-top:4px}
+  #titleprog{font-size:12px;color:#a9946a;letter-spacing:1px}
+  #progdots{display:flex;gap:5px;margin:9px 0 18px}
+  #progdots .dot{width:22px;height:4px;border-radius:2px;background:rgba(200,161,90,.2)}
+  #progdots .dot.done{background:linear-gradient(90deg,var(--jade),var(--gold))}
+  .btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+  .btns button{padding:13px 38px;font-size:17px;letter-spacing:4px;border:none;border-radius:26px;cursor:pointer;
+    background:linear-gradient(180deg,var(--gold),#e0a84c);color:#1a1208;
+    box-shadow:0 5px 20px rgba(230,160,60,.35)}
+  .btns button:active{transform:translateY(2px)}
+  .btns button.ghost{background:rgba(28,30,58,.92);color:var(--gold);border:1px solid rgba(200,161,90,.45);
+    box-shadow:none}
+  .btns button.jade{background:linear-gradient(180deg,#8ef0da,#3aa898);color:#081412}
+
+  /* level select */
+  #select h2{margin:0 0 4px;font-size:30px;letter-spacing:10px;color:var(--gold)}
+  #select .sub{font-size:12px;color:#a9946a;letter-spacing:3px;margin-bottom:18px}
+  #levelgrid{display:flex;flex-direction:column;gap:9px;margin-bottom:20px}
+  .chhead{font-size:12px;letter-spacing:4px;color:var(--jade);text-align:left;margin:2px 4px 0}
+  .chrow{display:flex;gap:9px;justify-content:center}
+  .lvlbtn{width:138px;padding:10px 8px;border-radius:10px;cursor:pointer;text-align:center;
+    background:rgba(22,26,54,.94);border:1px solid rgba(200,161,90,.32);color:var(--paper);
+    display:flex;flex-direction:column;gap:3px;align-items:center;transition:transform .12s,border-color .12s}
+  .lvlbtn:hover{transform:translateY(-2px);border-color:var(--gold)}
+  .lvlbtn .lnum{font-size:18px;color:var(--gold);font-variant-numeric:tabular-nums}
+  .lvlbtn .lname{font-size:11px;color:#bfae8e;letter-spacing:1px}
+  .lvlbtn.locked{opacity:.42;cursor:not-allowed;filter:grayscale(.6)}
+  .lvlbtn.locked:hover{transform:none;border-color:rgba(200,161,90,.32)}
+
+  /* end */
+  #end h1{margin:0;font-size:44px;letter-spacing:12px;color:var(--gold)}
+  #end h1.lose{color:var(--cinnabar)}
+  #endscore{font-size:26px;color:var(--gold);margin:12px 0 4px;letter-spacing:2px}
+  #endd{font-size:13.5px;line-height:2;color:#d8c9a8;white-space:pre-line;margin-bottom:20px}
+  #end .stamp{font-size:10px;letter-spacing:4px;color:var(--copper);opacity:.7;margin-top:16px}
+
+  /* pause */
+  #pause h1{font-size:36px;letter-spacing:12px;color:var(--jade);margin:0 0 20px}
+
+  /* touch */
+  #touch{position:fixed;inset:0;z-index:14;pointer-events:none;display:none}
+  #touch.on{display:block}
+  #stickzone{position:fixed;left:22px;bottom:24px;width:132px;height:132px;border-radius:50%;
+    background:radial-gradient(circle,rgba(20,26,54,.42),rgba(14,18,40,.18));
+    border:1px solid rgba(111,224,200,.25);pointer-events:auto;touch-action:none}
+  #stickknob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;
+    background:rgba(111,224,200,.2);border:1px solid rgba(111,224,200,.55);box-shadow:0 0 16px rgba(111,224,200,.2)}
+  #stickzone .lbl{position:absolute;left:50%;bottom:-18px;transform:translateX(-50%);font-size:10px;color:#7a8f88;white-space:nowrap}
+  #tbtns{position:fixed;right:20px;bottom:24px;display:flex;align-items:flex-end;gap:12px;pointer-events:auto}
+  #tbtns .tb{width:60px;height:60px;border-radius:50%;border:1px solid rgba(200,161,90,.4);
+    background:rgba(16,20,44,.82);color:var(--paper);font-size:13px;display:flex;flex-direction:column;
+    align-items:center;justify-content:center;gap:1px;cursor:pointer;touch-action:none}
+  #tbtns .tb small{font-size:9px;color:#9c8a68}
+  #tbtns .tb.on{background:rgba(111,224,200,.25);border-color:var(--jade)}
+  #tbtns .tb.empty{opacity:.4}
+  #tinteract{width:74px!important;height:74px!important;background:rgba(32,64,58,.88)!important;
+    border-color:rgba(111,224,200,.6)!important;font-size:15px!important}
+  #ttop{position:fixed;right:16px;top:64px;display:flex;flex-direction:column;gap:8px;pointer-events:auto}
+  #ttop button{width:40px;height:40px;border-radius:9px;border:1px solid rgba(200,161,90,.35);
+    background:rgba(16,20,44,.82);color:var(--gold);font-size:15px}
+
+  @media (max-width:760px){
+    #title h1{font-size:38px;letter-spacing:10px}
+    #title .howto{font-size:11.5px;max-width:90vw}
+    #score{font-size:24px}
+    #timer{font-size:19px}
+    .lvlbtn{width:96px}
+    .lvlbtn .lname{font-size:9px}
+    #topcenter{width:44vw}
+    #counters{font-size:10px}
+  }
+  @media (max-height:460px){
+    #title h1{font-size:30px}
+    #title .series{margin-bottom:8px}
+    #progdots{margin:4px 0 10px}
+  }
+</style>
+<script>
+window.__BOOTERR = [];
+window.addEventListener('error', function (e) {
+  var m = String((e && e.message) || (e && e.target && e.target.src) || e);
+  window.__BOOTERR.push(m);
+  if (window.__G && window.__G.err) window.__G.err.push(m);
+}, true);
+window.addEventListener('unhandledrejection', function (e) {
+  var m = 'promise:' + String((e && e.reason) || e);
+  window.__BOOTERR.push(m);
+  if (window.__G && window.__G.err) window.__G.err.push(m);
+});
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud" class="hide">
+  <div id="hudframe"></div>
+  <div id="topleft">
+    <div id="score">0</div>
+    <div id="levelname">第一铺</div>
+    <div id="besttag">尚无纪录</div>
+  </div>
+  <div id="topcenter">
+    <div id="timer">03:00</div>
+    <div id="alarmwrap"><div id="alarmfill"></div><div id="alarmtag">平静</div></div>
+  </div>
+  <div id="topright">
+    <div id="counters">
+      <div>密匣 <b class="jade" id="relicnum">0/2</b></div>
+      <div>声饵 <b id="decoynum">3</b></div>
+    </div>
+    <div id="trbtns">
+      <button id="mutebtn" title="静音 (M)">🔊</button>
+      <button id="pausebtn" title="暂停 (P)">❚❚</button>
+    </div>
+  </div>
+</div>
+
+<div id="prompt"></div>
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="title">
+  <h1>声息窃影</h1>
+  <div class="en">WHISPER HEIST</div>
+  <div class="series">灯匠夜游 · 第 4 铺</div>
+  <div class="howto">
+    <kbd>WASD</kbd> / 方向键 潜行 · <kbd>Shift</kbd> 蹲行（几乎无声，可钻矮掩体）<br>
+    <kbd>Space</kbd> / <kbd>1</kbd> 朝鼠标方向投声饵 · <kbd>E</kbd> 偷取密匣 / 撤离<br>
+    偷走全部密匣，避开视野锥与声纹，抵达出口按 <kbd>E</kbd>；被追上或警戒满则失手<br>
+    <kbd>P</kbd> 暂停 · <kbd>R</kbd> 重开 · <kbd>M</kbd> 静音 · 触屏有摇杆与按钮
+  </div>
+  <div id="titlebest">尚无纪录 · 今夜第一铺</div>
+  <div id="titleprog">已得手 0 / 12 铺</div>
+  <div id="progdots"></div>
+  <div class="btns">
+    <button id="startbtn">开始潜入</button>
+    <button id="selectbtn" class="ghost">关卡选择</button>
+  </div>
+</div>
+
+<div id="select" class="hide">
+  <h2>十二铺 · 夜行图</h2>
+  <div class="sub">THE TWELVE HEISTS</div>
+  <div id="levelgrid"></div>
+  <div class="btns"><button id="selback" class="ghost">回标题</button></div>
+</div>
+
+<div id="end" class="hide">
+  <h1 id="endh">潜行成功</h1>
+  <div id="endscore">得分 0</div>
+  <div id="endd"></div>
+  <div class="btns">
+    <button id="retrybtn" class="ghost">重试</button>
+    <button id="nextbtn" class="jade">下一铺</button>
+    <button id="homebtn" class="ghost">回标题</button>
+    <button id="sharebtn" class="ghost">分享</button>
+  </div>
+  <div class="stamp">灯匠夜游 · 第 4 铺 · WHISPER HEIST</div>
+</div>
+
+<div id="pause" class="hide">
+  <h1>暂 停</h1>
+  <div class="btns">
+    <button id="resumebtn">继续</button>
+    <button id="prestart" class="ghost">重开本铺</button>
+    <button id="phome" class="ghost">回标题</button>
+  </div>
+</div>
+
+<div id="touch">
+  <div id="ttop"><button id="tmute2" title="静音">🔊</button><button id="tpause2" title="暂停">❚❚</button></div>
+  <div id="stickzone"><div id="stickknob"></div><div class="lbl">拖动潜行</div></div>
+  <div id="tbtns">
+    <button class="tb" id="tcrouch">蹲<small>Shift</small></button>
+    <button class="tb" id="tdecoy">饵<small>Space</small></button>
+    <button class="tb" id="tinteract">互动<small>E</small></button>
+  </div>
+</div>
+
+<script src="static/play68.js"></script>
+<script src="static/play68bar.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

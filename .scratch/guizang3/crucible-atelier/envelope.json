@@ -1,0 +1,78 @@
+{
+  "checks": {
+    "readyMessage": true,
+    "readyReport": true,
+    "progressEnvelope": true,
+    "eventEnvelope": true,
+    "gameOverEnvelope": true,
+    "completeEnvelope": true,
+    "reportFrameCount": 8,
+    "externalRequests": 0,
+    "consoleErrors": 0,
+    "consoleWarnings": 0,
+    "pageErrors": 0
+  },
+  "sample": {
+    "readyMsg": {
+      "source": "lightgame",
+      "type": "lightgame:ready",
+      "gameId": "crucible-atelier",
+      "v": 1
+    },
+    "readyReport": {
+      "kind": "ready",
+      "game": "crucible-atelier",
+      "version": "1.0.0"
+    },
+    "progress": {
+      "kind": "progress",
+      "data": {
+        "kind": "progress",
+        "score": 140,
+        "progress": 2,
+        "recipes": 1,
+        "mat": 12,
+        "gold": 18,
+        "ess": 0,
+        "prestige": 0
+      }
+    },
+    "event": {
+      "kind": "event",
+      "event": "discover",
+      "data": {
+        "kind": "event",
+        "event": "discover",
+        "tag": "discover",
+        "recipe": "mist",
+        "tier": 1,
+        "score": 140,
+        "progress": 2
+      }
+    },
+    "gameOver": {
+      "kind": "gameOver",
+      "score": 140,
+      "progress": {
+        "value": 2
+      },
+      "data": {
+        "kind": "gameOver",
+        "score": 140,
+        "progress": 2,
+        "recipes": 1,
+        "totalCrafts": 1,
+        "prestige": 0,
+        "pressure": 100
+      }
+    },
+    "complete": {
+      "kind": "complete",
+      "score": 4353
+    }
+  },
+  "consoleErrors": [],
+  "consoleWarnings": [],
+  "pageErrors": [],
+  "external": []
+}

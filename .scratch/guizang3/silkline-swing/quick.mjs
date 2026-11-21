@@ -1,0 +1,16 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({ headless: true, executablePath: '/usr/local/bin/chromium', args: ['--no-sandbox','--use-gl=swiftshader'] });
+const p = await b.newPage({ viewport: { width: 1280, height: 720 } });
+const logs = [];
+p.on('console', m => logs.push(m.type()+': '+m.text()));
+p.on('pageerror', e => logs.push('PAGEERROR: '+String(e)));
+p.on('requestfailed', r => logs.push('REQFAIL: '+r.url()+' '+r.failure()?.errorText));
+await p.goto('http://localhost:8621/silkline-swing/', { waitUntil: 'load' });
+await p.waitForTimeout(1500);
+console.log('logs:', JSON.stringify(logs, null, 2));
+console.log('state:', JSON.stringify(await p.evaluate('window.G && window.G.state()'), null, 2));
+console.log('title visible:', await p.evaluate("!document.getElementById('title').classList.contains('hidden')"));
+await p.screenshot({ path: '/mnt/tos/workspace/.scratch/guizang3/silkline-swing/quick-title.png' });
+await b.close();

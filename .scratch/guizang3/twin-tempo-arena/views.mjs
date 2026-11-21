@@ -1,0 +1,32 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({ headless: true, executablePath: '/usr/local/bin/chromium', args: ['--no-sandbox','--use-gl=swiftshader'] });
+const p = await b.newPage({ viewport: { width: 1280, height: 720 } });
+const errs=[]; p.on('pageerror',e=>errs.push(String(e))); p.on('console',m=>{if(m.type()==='error'||m.type()==='warning')errs.push(m.text())});
+await p.goto('http://127.0.0.1:8629/twin-tempo-arena/?autostart=1&mode=local');
+await p.waitForFunction('window.G && window.G.state && window.G.state().mode === "play"');
+await p.evaluate(()=>{G.setNoAuto(true); G.setPhase('live'); G.setFighter('p1',{x:400,z:0,h:p1=>0});});
+await p.evaluate(()=>{
+  G.setNoAuto(true); G.startRound(0); G.setPhase('live');
+  G.setFighter('p1',{x:480-58,z:0,vx:0,facing:1,hp:74}); G.setFighter('p2',{x:480+46,z:0,vx:0,facing:-1,hp:61});
+  G.setTimer(38); G.clearFx(); G.press('KeyF'); G.upd(1); G.clearFx(); G.setFighter('p1',{atkAnim:.16});
+  const t=document.getElementById('toast'); if(t)t.classList.remove('show');
+});
+await p.waitForTimeout(120);
+await p.screenshot({path:'/mnt/tos/workspace/.scratch/guizang3/twin-tempo-arena/view-duel.png'});
+await p.evaluate(()=>{
+  G.startRound(2); G.setPhase('live'); G.setRoundHalf(210);
+  G.setFighter('p1',{x:480-70,z:0,vx:0,facing:1,hp:100}); G.setFighter('p2',{x:480+40,z:0,vx:0,facing:-1,hp:100});
+  G.setTimer(31); G.clearFx(); G.setFighter('p2',{dashT:.14,dashHit:false,vx:-760,dashCd:.9});
+  G.setFighter('p1',{blocking:false});
+  G.upd(1);
+  const t=document.getElementById('toast'); if(t)t.classList.remove('show');
+});
+await p.waitForTimeout(100);
+await p.screenshot({path:'/mnt/tos/workspace/.scratch/guizang3/twin-tempo-arena/view-push.png'});
+await p.evaluate(()=>{G.startMatch('local','medium'); G.setPhase('live'); G.forceWin();});
+await p.waitForTimeout(120);
+await p.screenshot({path:'/mnt/tos/workspace/.scratch/guizang3/twin-tempo-arena/view-end.png'});
+console.log(JSON.stringify({errs}));
+await b.close();
