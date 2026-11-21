@@ -1,0 +1,89 @@
+{
+  "rounds": [
+    {
+      "round": 1,
+      "pass": 35,
+      "fail": 0,
+      "total": 35,
+      "done": true,
+      "failures": [],
+      "console": {
+        "errors": [],
+        "warnings": [],
+        "pageerrors": [],
+        "external": [],
+        "localRequests": 7
+      },
+      "booterr": [],
+      "net": {
+        "fetch": 0,
+        "xhr": 0,
+        "ws": 0,
+        "external": []
+      }
+    },
+    {
+      "round": 2,
+      "pass": 35,
+      "fail": 0,
+      "total": 35,
+      "done": true,
+      "failures": [],
+      "console": {
+        "errors": [],
+        "warnings": [],
+        "pageerrors": [],
+        "external": [],
+        "localRequests": 7
+      },
+      "booterr": [],
+      "net": {
+        "fetch": 0,
+        "xhr": 0,
+        "ws": 0,
+        "external": []
+      }
+    }
+  ],
+  "smoke": {
+    "booterr": [],
+    "globals": {
+      "goHome": "function",
+      "clickMore": "function",
+      "dp_share": "function",
+      "play68_submitScore": "function",
+      "handleParentShare": true
+    },
+    "forgeVisible": true,
+    "startMode": "combat",
+    "startBoss": "warden",
+    "moved": true,
+    "x0": 640,
+    "x1": 745.47,
+    "fired": true,
+    "bossHpBefore": 2400,
+    "bossHpAfter": 2352,
+    "dash": true,
+    "barrier": true,
+    "paused": true,
+    "freeze": true,
+    "resumed": true,
+    "muteBefore": false,
+    "muteOn": true,
+    "muteOff": false,
+    "restarted": true,
+    "audit": {
+      "errors": [],
+      "warnings": [],
+      "pageerrors": [],
+      "external": [],
+      "localRequests": 7
+    }
+  },
+  "pageErrors": {
+    "errors": [],
+    "warnings": [],
+    "pageerrors": [],
+    "external": []
+  }
+}

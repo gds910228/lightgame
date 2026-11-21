@@ -1,0 +1,10 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({headless:true,executablePath:'/usr/local/bin/chromium',args:['--no-sandbox','--use-gl=swiftshader']});
+const p = await b.newPage({viewport:{width:1280,height:720}});
+const errs=[]; p.on('console',m=>{if(['error','warning'].includes(m.type()))errs.push(m.type()+':'+m.text())}); p.on('pageerror',e=>errs.push('page:'+e));
+await p.goto('http://localhost:8626/ironwright-arena/?autostart=1'); await p.waitForFunction('window.G'); await p.waitForTimeout(800);
+console.log(await p.evaluate(()=>({state:G.state(),booterr:window.__BOOTERR})));
+console.log('errs',errs);
+await b.close();

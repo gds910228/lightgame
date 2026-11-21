@@ -1,0 +1,15 @@
+{
+  "id": "bridgewright",
+  "title": "Bridgewright 造桥匠",
+  "category": ["Puzzle", "Physics", "Simulation", "Guizang"],
+  "description": "A hand-drawn dusk-canyon bridge builder with a real physical truss under your cursor. Link brass gussets with timber beams, tension-only cables and expensive stone pillars, then send a loaded mine cart across. Every level has a budget, its own span layout, and a cart with a different mass and speed. Deck nodes sag progressively as the cart rolls over them; members glow green, amber and red with stress, and a single overloaded cable can snap the whole structure into the gorge. Eighteen authored levels across three chapters, three-star ratings based on budget, crossing time and peak stress, persistent stars and unlocks, and fully synthesized WebAudio sound and music. No external requests, no image assets — all art is procedural Canvas.",
+  "controls": "Click or tap node A then node B to connect them. Press 1 / 2 / 3 (or tap the cards) to choose timber beam, tension cable or stone pillar. A pillar is placed by clicking a single deck node and automatically drops to the canyon floor. Z undoes the last member with a full refund, R clears and restarts the level, Enter starts the stress test, P pauses, M mutes. Mouse drag from A to B also builds. On touch, tap-tap or drag works. Keep the whole deck connected with beams: the mine cart can only drive across connected beam spans. Earn up to three stars from completion, remaining budget, peak stress and time.",
+  "type": "local",
+  "path": "/games/bridgewright/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["bridge", "physics", "puzzle", "construction", "canyon", "canvas", "simulation", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-19"
+}

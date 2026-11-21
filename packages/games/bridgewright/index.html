@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>造桥匠 Bridgewright</title>
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --ink:#0c1020; --ink2:#111a31; --indigo:#182446; --indigo2:#22345d;
+    --paper:#e8e0cb; --muted:#9da9bd; --copper:#d9a35b; --copper2:#f0c98a;
+    --jade:#78ddc6; --jade2:#2e7d79; --verm:#e3665a; --verm2:#8e2f33;
+    --line:rgba(157,185,205,.18);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#111b38,#060a14 72%);
+    font-family:"Noto Sans SC","Microsoft YaHei","PingFang SC",system-ui,sans-serif;
+    color:var(--paper);user-select:none;-webkit-user-select:none;touch-action:none}
+  canvas#gl{position:fixed;inset:0;width:100%;height:100%;display:block}
+  button{font-family:inherit;color:inherit}
+  .hidden{display:none!important}
+
+  /* ---------- in-game HUD ---------- */
+  #hud{position:fixed;inset:0;z-index:8;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;
+    padding:max(14px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) max(14px,env(safe-area-inset-bottom)) max(18px,env(safe-area-inset-left))}
+  .top{display:flex;align-items:flex-start;gap:16px}
+  .levelplate{min-width:190px}
+  .kicker{font-size:10px;letter-spacing:3.2px;color:var(--copper);opacity:.9}
+  .lname{font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:25px;font-weight:700;letter-spacing:3px;color:#f4e7ca;text-shadow:0 2px 14px #000}
+  .lsub{font-size:11px;color:var(--muted);letter-spacing:1px;margin-top:2px}
+  .budgetplate{flex:1;max-width:410px;margin-left:4px}
+  .plate{background:linear-gradient(180deg,rgba(12,19,38,.86),rgba(10,15,30,.72));
+    border:1px solid rgba(217,163,91,.26);border-radius:10px;box-shadow:0 8px 28px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,235,200,.06);
+    backdrop-filter:blur(5px)}
+  .budgetrow{display:flex;justify-content:space-between;align-items:baseline;padding:8px 12px 4px;font-size:11px;letter-spacing:1px;color:var(--muted)}
+  .budgetrow b{font-size:16px;color:var(--copper2);letter-spacing:1px;font-variant-numeric:tabular-nums}
+  .budgetrow .remain{color:var(--jade)}
+  .bar{height:7px;margin:0 12px 10px;background:rgba(255,255,255,.07);border-radius:5px;overflow:hidden;position:relative}
+  .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#c28347,#f0c98a);border-radius:5px;transition:width .12s}
+  .bar::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent 0 19px,rgba(5,8,16,.55) 19px 20px);pointer-events:none}
+  .stressrow{display:flex;align-items:center;gap:8px;padding:0 12px 9px;font-size:10px;color:var(--muted);letter-spacing:1px}
+  .stressbar{flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+  .stressbar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#73e0b6,#e8cc6e 60%,#e86a5b);border-radius:3px}
+  .topright{display:flex;gap:8px;align-items:flex-start;margin-left:auto}
+  .starsbox{padding:8px 12px;text-align:right;min-width:98px}
+  .starsbox .st{font-size:18px;color:#f1c77e;letter-spacing:2px}
+  .starsbox .sl{font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-top:2px}
+  .iconbtns{display:flex;gap:7px}
+  .iconbtn{pointer-events:auto;width:39px;height:39px;border-radius:9px;border:1px solid rgba(217,163,91,.28);
+    background:rgba(12,19,38,.78);color:var(--copper2);font-size:16px;cursor:pointer;display:grid;place-items:center;backdrop-filter:blur(4px)}
+  .iconbtn:hover{background:rgba(34,52,93,.85)}
+  .iconbtn.off{opacity:.5}
+
+  .bottom{display:flex;align-items:flex-end;gap:18px}
+  .materials{display:flex;gap:9px;pointer-events:auto}
+  .mat{width:154px;padding:9px 11px 10px;border-radius:10px;border:1px solid rgba(157,185,205,.18);
+    background:linear-gradient(180deg,rgba(13,20,39,.9),rgba(9,14,27,.78));cursor:pointer;position:relative;overflow:hidden;transition:transform .12s,border-color .12s}
+  .mat:hover{transform:translateY(-2px);border-color:rgba(217,163,91,.35)}
+  .mat.on{border-color:rgba(217,163,91,.8);box-shadow:0 0 0 1px rgba(217,163,91,.25),0 8px 22px rgba(0,0,0,.3)}
+  .mat.on::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--copper)}
+  .mat .key{font-size:9px;color:var(--copper);letter-spacing:1.4px}
+  .mat .mn{font-family:"STKaiti","KaiTi",serif;font-size:17px;font-weight:700;letter-spacing:2px;margin-top:1px}
+  .mat .cost{position:absolute;right:10px;top:10px;font-size:10px;color:var(--muted);font-variant-numeric:tabular-nums}
+  .mat .desc{font-size:9.5px;color:var(--muted);line-height:1.45;margin-top:4px;letter-spacing:.2px}
+  .mat .swatch{height:3px;border-radius:2px;margin-top:7px;background:linear-gradient(90deg,var(--sw1),var(--sw2))}
+  .hintline{flex:1;text-align:center;font-size:11px;letter-spacing:1.2px;color:#aeb8c8;padding-bottom:9px;text-shadow:0 1px 4px #000}
+  .hintline b{color:var(--copper2);font-weight:500}
+  .actions{display:flex;gap:8px;pointer-events:auto;align-items:flex-end}
+  .act{padding:10px 15px;border-radius:9px;border:1px solid rgba(157,185,205,.20);background:rgba(12,19,38,.82);
+    color:#d9d4c5;font-size:12px;letter-spacing:1px;cursor:pointer;line-height:1;backdrop-filter:blur(4px)}
+  .act:hover{background:rgba(34,52,93,.86)}
+  .act:disabled{opacity:.35;cursor:default}
+  .act.primary{background:linear-gradient(180deg,#e3b06a,#b5793c);border-color:#f3d29c;color:#1b140c;font-weight:700;padding:12px 22px;font-size:13px;letter-spacing:2px;box-shadow:0 4px 18px rgba(217,163,91,.22)}
+  .act.primary:hover{filter:brightness(1.08)}
+  .teststate{padding:12px 16px;color:var(--jade);font-size:12px;letter-spacing:2px;border:1px solid rgba(120,221,198,.25);border-radius:9px;background:rgba(10,25,32,.8)}
+
+  /* ---------- toast ---------- */
+  #toast{position:fixed;left:50%;bottom:118px;transform:translate(-50%,10px);z-index:15;padding:9px 20px;border-radius:20px;
+    background:rgba(9,14,27,.92);border:1px solid rgba(217,163,91,.38);color:#f2e3c5;font-size:12px;letter-spacing:1px;
+    opacity:0;transition:opacity .2s,transform .2s;pointer-events:none;white-space:nowrap}
+  #toast.show{opacity:1;transform:translate(-50%,0)}
+
+  /* ---------- overlays ---------- */
+  .overlay{position:fixed;inset:0;z-index:30;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    background:radial-gradient(ellipse at 50% 36%,rgba(24,36,70,.78),rgba(7,10,21,.96) 70%)}
+  .overlay::after{content:"";position:absolute;inset:0;pointer-events:none;
+    background:repeating-linear-gradient(0deg,rgba(120,221,198,.035) 0 1px,transparent 1px 44px),
+               repeating-linear-gradient(90deg,rgba(120,221,198,.035) 0 1px,transparent 1px 44px)}
+  #title{justify-content:flex-start;padding-top:clamp(22px,5vh,54px);overflow-y:auto;background:radial-gradient(ellipse at 50% 38%,rgba(20,31,58,.42),rgba(7,10,21,.87) 74%)}
+  #end{background:radial-gradient(ellipse at 50% 40%,rgba(18,27,50,.82),rgba(6,9,18,.97) 72%)}
+  .series{position:absolute;top:22px;right:26px;font-size:10px;letter-spacing:3px;color:rgba(217,163,91,.72)}
+  .titlewrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:min(860px,90vw)}
+  .eyebrow{font-size:10px;letter-spacing:6px;color:var(--jade);opacity:.85}
+  h1.logo{margin:6px 0 0;font-family:"STKaiti","KaiTi","Noto Serif SC",serif;font-size:clamp(46px,7vw,70px);font-weight:700;
+    letter-spacing:clamp(8px,1.5vw,18px);color:#f2dcc0;
+    text-shadow:0 0 34px rgba(217,163,91,.25),0 4px 0 rgba(44,26,14,.5),0 8px 30px rgba(0,0,0,.6)}
+  .logo .gold{color:var(--copper2)}
+  .logoen{margin-top:3px;font-size:11px;letter-spacing:7px;color:rgba(232,224,203,.55)}
+  .titleline{width:min(540px,80vw);height:1px;margin:16px 0 10px;background:linear-gradient(90deg,transparent,rgba(217,163,91,.5),transparent);position:relative}
+  .titleline::after{content:"◆";position:absolute;left:50%;top:-7px;transform:translateX(-50%);font-size:9px;color:var(--copper);background:#101729;padding:0 8px}
+  .tagline{font-size:12px;letter-spacing:2px;color:#bcc6d5;text-align:center;line-height:1.8}
+  .tagline b{color:var(--copper2);font-weight:500}
+  .titlemeta{display:flex;gap:22px;align-items:center;margin:10px 0 2px;font-size:11px;color:var(--muted);letter-spacing:1.5px}
+  .titlemeta b{color:var(--copper2);font-size:14px;font-weight:600}
+  .bigstart{margin:14px 0 8px;padding:13px 44px;border:none;border-radius:28px;cursor:pointer;
+    background:linear-gradient(180deg,#f0c98a,#ca8b49);color:#1a1209;font-size:16px;font-weight:700;letter-spacing:4px;
+    box-shadow:0 6px 26px rgba(217,163,91,.24),inset 0 1px 0 rgba(255,255,255,.5)}
+  .bigstart:hover{filter:brightness(1.07)}
+  .chaptermap{width:100%;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:12px}
+  .chapter{padding:10px 10px 11px;border:1px solid rgba(157,185,205,.14);border-radius:11px;background:rgba(9,14,27,.55)}
+  .chhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;padding:0 2px}
+  .chhead .ch{font-family:"STKaiti","KaiTi",serif;font-size:14px;letter-spacing:2px;color:#e7d8bc}
+  .chhead .ce{font-size:7.5px;letter-spacing:1.6px;color:var(--muted)}
+  .levels{display:grid;grid-template-columns:repeat(6,1fr);gap:5px}
+  .lv{aspect-ratio:1;position:relative;border:1px solid rgba(157,185,205,.16);border-radius:7px;background:rgba(22,34,62,.68);
+    color:#dfe4e9;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;cursor:pointer;padding:0}
+  .lv:hover{border-color:rgba(217,163,91,.6);background:rgba(41,61,99,.8)}
+  .lv .ls{font-size:6px;letter-spacing:0;color:#e9bd70;height:7px;line-height:7px}
+  .lv.locked{opacity:.26;cursor:default;background:rgba(12,19,36,.5)}
+  .lv.cur{border-color:rgba(240,201,138,.8);box-shadow:0 0 0 1px rgba(217,163,91,.3)}
+  .titlefoot{margin:18px 0 16px;display:flex;gap:20px;align-items:center;font-size:9px;letter-spacing:2.5px;color:rgba(157,169,189,.65)}
+  .titlefoot .mk{color:rgba(217,163,91,.8)}
+
+  /* ---------- end screen ---------- */
+  #end .endpanel{position:relative;z-index:1;width:min(470px,88vw);padding:28px 30px 24px;text-align:center;
+    border:1px solid rgba(217,163,91,.32);border-radius:16px;background:linear-gradient(180deg,rgba(18,28,52,.96),rgba(9,13,25,.97));
+    box-shadow:0 24px 80px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,240,210,.08)}
+  #end .ekick{font-size:9px;letter-spacing:4px;color:var(--jade)}
+  #end h2{margin:6px 0 2px;font-family:"STKaiti","KaiTi",serif;font-size:38px;letter-spacing:8px;color:#f2dcc0}
+  #end .ereason{font-size:12px;color:var(--muted);letter-spacing:1px;min-height:18px}
+  .starrow{font-size:31px;letter-spacing:11px;color:#ecc57c;margin:12px 0 4px;height:40px;text-shadow:0 0 20px rgba(240,201,138,.3)}
+  .starrow span{opacity:.22;display:inline-block;transform:scale(.88);transition:opacity .25s,transform .25s}
+  .starrow span.on{opacity:1;transform:scale(1.08);animation:starpop .34s ease-out backwards}
+  .starrow span.on:nth-child(2){animation-delay:.14s}
+  .starrow span.on:nth-child(3){animation-delay:.28s}
+  @keyframes starpop{0%{transform:scale(2.2) rotate(16deg);opacity:0}55%{transform:scale(1.34) rotate(-5deg);opacity:1}100%{transform:scale(1.08);opacity:1}}
+  .estats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0 18px;padding:12px 0;border-top:1px solid rgba(157,185,205,.12);border-bottom:1px solid rgba(157,185,205,.12)}
+  .estat .n{font-size:17px;color:var(--copper2);font-variant-numeric:tabular-nums}
+  .estat .l{font-size:9px;color:var(--muted);letter-spacing:1.5px;margin-top:3px}
+  .endbtns{display:flex;gap:8px;justify-content:center}
+  .endbtns button{padding:11px 18px;border-radius:9px;border:1px solid rgba(157,185,205,.2);background:rgba(25,38,68,.8);
+    color:#ded9ca;font-size:12px;letter-spacing:2px;cursor:pointer}
+  .endbtns button:hover{background:rgba(41,61,99,.85)}
+  .endbtns .next{background:linear-gradient(180deg,#e3b06a,#b5793c);border-color:#f3d29c;color:#1c130a;font-weight:700}
+  .endbtns button:disabled{opacity:.3;cursor:default}
+  .endfoot{margin-top:14px;font-size:8px;letter-spacing:2.5px;color:rgba(157,169,189,.45)}
+
+  @media (max-width:800px){
+    #hud{padding:8px 10px}
+    .top{gap:7px;align-items:flex-start}
+    .lname{font-size:17px;letter-spacing:1px;line-height:1.15}
+    .lsub{display:none}
+    .levelplate{min-width:0;flex:0 1 116px}
+    .kicker{font-size:8px;letter-spacing:1.4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .kicker .kch{display:none}
+    .budgetplate{max-width:none;flex:1 1 0;min-width:0;margin-left:0}
+    .budgetrow{padding:6px 8px 2px;font-size:9px;white-space:nowrap;gap:5px;letter-spacing:.3px}
+    .budgetrow b{font-size:12px}
+    .budgetrow span{white-space:nowrap}
+    .bar{height:5px;margin:0 8px 6px}
+    .stressrow{padding:0 8px 6px;font-size:8px;gap:5px;white-space:nowrap}
+    .topright{gap:5px}
+    .iconbtn{width:32px;height:32px;font-size:13px;border-radius:7px}
+    .starsbox{display:none}
+    .bottom{flex-wrap:wrap;gap:7px;align-items:flex-end}
+    .materials{width:100%;justify-content:center;gap:6px}
+    .mat{width:calc((100vw - 44px) / 3);min-width:0;padding:7px 8px 8px}
+    .mat .key{font-size:7px;letter-spacing:.5px}
+    .mat .mn{font-size:14px;letter-spacing:1px}
+    .mat .cost{font-size:8px;right:6px;top:7px}
+    .mat .desc{display:none}
+    .hintline{order:2;width:100%;padding:0;font-size:9px;letter-spacing:.3px}
+    .actions{order:3;width:100%;justify-content:center;gap:6px}
+    .act{padding:9px 13px;font-size:11px}
+    .act.primary{padding:10px 18px}
+    .teststate{order:3;width:100%;text-align:center;font-size:10px;padding:9px 12px}
+    .chaptermap{grid-template-columns:1fr;gap:8px}
+    .levels{grid-template-columns:repeat(6,1fr)}
+    .lv{font-size:11px}
+    #title{padding-top:14px}
+    .titlewrap{width:94vw}
+    .titlefoot{margin:10px 0}
+    .tagline{font-size:10px}
+    .series{top:12px;right:12px;font-size:8px}
+  }
+  @media (max-height:560px){
+    .titlewrap{transform:scale(.88);transform-origin:top center;margin-top:-8px}
+    #title .chaptermap{margin-top:4px}
+  }
+</style>
+<script>
+  window.__BOOTERR = [];
+  window.__NET = { fetch: 0, xhr: 0, ws: 0, external: [] };
+  (function(){
+    try {
+      const of = window.fetch;
+      if (of) window.fetch = function(input, init){
+        window.__NET.fetch++;
+        const u = String(input && input.url || input || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return of.apply(this, arguments);
+      };
+      const xo = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url){
+        window.__NET.xhr++;
+        const u = String(url || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return xo.apply(this, arguments);
+      };
+      const OW = window.WebSocket;
+      if (OW) window.WebSocket = function(url){
+        window.__NET.ws++;
+        const u = String(url || '');
+        if (/^wss?:\/\//i.test(u) && u.indexOf(location.host) < 0) window.__NET.external.push(u);
+        return new OW(url);
+      };
+      window.WebSocket.prototype = OW.prototype;
+    } catch(e) { window.__BOOTERR.push('netwrap:' + e); }
+    window.addEventListener('error', function(e){
+      window.__BOOTERR.push(String(e.message || e));
+      if (window.__G && window.__G.err) window.__G.err.push(String(e.message || e));
+    });
+    window.addEventListener('unhandledrejection', function(e){
+      window.__BOOTERR.push('rejection:' + String(e.reason || e));
+    });
+  })();
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="hud" class="hidden">
+  <div class="top">
+    <div class="levelplate">
+      <div class="kicker" id="hud-chapter">第一章 · 暮谷初桥</div>
+      <div class="lname" id="hud-level">初渡溪谷</div>
+      <div class="lsub" id="hud-sub">把第一根木梁铺到对岸</div>
+    </div>
+    <div class="budgetplate plate">
+      <div class="budgetrow"><span>造桥预算</span><span><b id="hud-spent">0</b> / <span id="hud-budget">0</span> 铜</span></div>
+      <div class="bar"><i id="hud-bar"></i></div>
+      <div class="stressrow"><span>应力</span><div class="stressbar"><i id="hud-stress"></i></div><span id="hud-remain">余 0</span></div>
+    </div>
+    <div class="topright">
+      <div class="starsbox plate"><div class="st" id="hud-stars">★★★</div><div class="sl" id="hud-starsl">总星 0 / 54</div></div>
+      <div class="iconbtns">
+        <button class="iconbtn" id="btn-mute" title="静音 (M)">声</button>
+        <button class="iconbtn" id="btn-pause" title="暂停 (P)">Ⅱ</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom">
+    <div class="materials">
+      <button class="mat on" id="mat-beam" data-mat="beam" style="--sw1:#8d542d;--sw2:#e0a764">
+        <div class="key">1 · 双向约束</div><div class="mn">木梁</div><div class="cost" data-cost>2.4/px</div>
+        <div class="desc">抗压也抗拉，铺成桥面</div><div class="swatch"></div>
+      </button>
+      <button class="mat" id="mat-cable" data-mat="cable" style="--sw1:#397f7b;--sw2:#8fe8d5">
+        <div class="key">2 · 仅抗拉</div><div class="mn">缆索</div><div class="cost" data-cost>1.05/px</div>
+        <div class="desc">轻而便宜，只能被拉紧</div><div class="swatch"></div>
+      </button>
+      <button class="mat" id="mat-pillar" data-mat="pillar" style="--sw1:#596378;--sw2:#c7d0df">
+        <div class="key">3 · 撑地</div><div class="mn">石柱</div><div class="cost" data-cost>58+</div>
+        <div class="desc">撑起节点，占用大量预算</div><div class="swatch"></div>
+      </button>
+    </div>
+    <div class="hintline" id="hintline">点选节点 A → B 建造 · <b>1/2/3</b> 换材料 · <b>Z</b> 撤销 · <b>Enter</b> 压测</div>
+    <div class="actions" id="build-actions">
+      <button class="act" id="btn-undo" title="撤销 (Z)">撤销 Z</button>
+      <button class="act" id="btn-reset" title="清空桥面 (R)">重置 R</button>
+      <button class="act primary" id="btn-test" title="开始压测 (Enter)">开始压测</button>
+    </div>
+    <div class="teststate hidden" id="test-state">矿车压测中 · P 暂停</div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<div id="title" class="overlay">
+  <div class="series">灯匠夜游 · 第 3 铺</div>
+  <div class="titlewrap">
+    <div class="eyebrow">DUSK CANYON · 第 3 铺</div>
+    <h1 class="logo">造桥<span class="gold">匠</span></h1>
+    <div class="logoen">B R I D G E W R I G H T</div>
+    <div class="titleline"></div>
+    <div class="tagline">在暮色峡谷上搭一座<b>真正站得住</b>的桥。<br>木梁铺路，缆索受拉，石柱撑地，让矿车安全抵达彼岸。</div>
+    <div class="titlemeta"><span>最佳 <b id="title-best">0</b> 星</span><span>进度 <b id="title-progress">0 / 18</b></span><span>桥谱 <b id="title-bridges">0 / 18</b></span></div>
+    <button class="bigstart" id="startbtn">开始造桥</button>
+    <div class="chaptermap" id="chaptermap"></div>
+    <div class="titlefoot"><span class="mk">◆</span><span>点节点连接构件 · 1/2/3 换材料 · Enter 压测</span><span class="mk">◆</span></div>
+    <div class="titlefoot"><span>灯匠夜游 · 第 3 铺</span><span>·</span><span>零外网 · 纯 Canvas 物理</span></div>
+  </div>
+</div>
+
+<div id="end" class="overlay hidden">
+  <div class="endpanel">
+    <div class="ekick" id="end-kick">TEST REPORT</div>
+    <h2 id="end-heading">桥通了</h2>
+    <div class="ereason" id="end-reason"></div>
+    <div class="starrow" id="end-stars"><span>★</span><span>★</span><span>★</span></div>
+    <div class="estats">
+      <div class="estat"><div class="n" id="end-time">0.0s</div><div class="l">压测用时</div></div>
+      <div class="estat"><div class="n" id="end-stress">0%</div><div class="l">应力峰值</div></div>
+      <div class="estat"><div class="n" id="end-budget">0</div><div class="l">剩余预算</div></div>
+    </div>
+    <div class="endbtns">
+      <button class="next" id="end-next">下一关</button>
+      <button id="end-retry">再来一次</button>
+      <button id="end-home">回标题</button>
+    </div>
+    <div class="endfoot">灯匠夜游 · 第 3 铺 · BRIDGEWRIGHT</div>
+  </div>
+</div>
+
+<script type="text/javascript" src="static/play68.js"></script>
+<script type="module" src="js/game.js"></script>
+<script type="text/javascript" src="static/play68bar.js"></script>
+</body>
+</html>

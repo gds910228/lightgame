@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" href="data:,">
+<title>Ironwright Arena 锻甲机斗场</title>
+<style>
+  :root{
+    --ink:#080706; --iron:#1b1916; --iron2:#25211c; --steel:#8f8a7f;
+    --gold:#ffd27a; --gold2:#ffe7b0; --orange:#ff8a3d; --hot:#ff5a24;
+    --red:#e04e2d; --jade:#8fe6d4; --paper:#eadfcb; --muted:#b6a68c;
+    --line:rgba(255,176,90,.26);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:#050403;font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;user-select:none;-webkit-user-select:none;touch-action:none;color:var(--paper)}
+  #gl{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:crosshair}
+  button{font-family:inherit;color:inherit}
+  .hide{display:none!important}
+  .overlay{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px;background:radial-gradient(ellipse at 50% 42%,rgba(52,27,12,.38),rgba(4,3,3,.9) 74%)}
+  .imprint{font-size:10px;letter-spacing:6px;color:rgba(255,186,100,.45);margin-top:16px}
+
+  /* ---------------- title ---------------- */
+  #title{background:radial-gradient(ellipse at 50% 42%,rgba(39,21,11,.04),rgba(4,3,3,.74) 76%);flex-direction:column;text-align:center}
+  #title::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 47%,rgba(4,3,3,.86) 0%,rgba(4,3,3,.62) 28%,rgba(4,3,3,.12) 58%,rgba(4,3,3,0) 78%)}
+  #title>*{position:relative;z-index:1}
+  #title .kicker{font-size:11px;letter-spacing:9px;color:rgba(255,192,110,.9);margin-bottom:12px;text-shadow:0 2px 10px #000}
+  #title h1{margin:0;font-size:clamp(46px,7.4vw,86px);letter-spacing:.14em;font-weight:900;color:#fff0cf;text-shadow:0 0 38px rgba(255,118,40,.42),0 6px 24px rgba(0,0,0,.95),0 0 4px rgba(255,220,160,.7)}
+  #title h2{margin:10px 0 0;font-size:clamp(10px,1.35vw,14px);font-weight:600;letter-spacing:.55em;color:#d19b5e;text-shadow:0 2px 10px #000}
+  .rule{width:min(600px,84vw);height:1px;margin:18px 0 15px;background:linear-gradient(90deg,transparent,rgba(255,173,87,.75),rgba(224,78,45,.55),rgba(255,173,87,.75),transparent)}
+  #titlebest{font-size:13px;letter-spacing:2px;color:#ffe0a8;margin-bottom:22px;text-shadow:0 2px 8px #000}
+  #titlebest::before{content:"◇ ";color:var(--jade)}
+  #startbtn{padding:15px 56px;font-size:19px;letter-spacing:.32em;font-weight:800;border:none;border-radius:30px;cursor:pointer;color:#1d0d06;background:linear-gradient(180deg,#ffe5a7,#e5a34a);box-shadow:0 0 32px rgba(255,151,58,.42),inset 0 1px 0 rgba(255,255,235,.75);transition:transform .12s,box-shadow .15s}
+  #startbtn:hover{transform:translateY(-2px);box-shadow:0 0 48px rgba(255,166,68,.65),inset 0 1px 0 rgba(255,255,235,.75)}
+  .howto{margin-top:24px;font-size:12.5px;line-height:2.05;color:rgba(226,207,176,.86);letter-spacing:.4px;text-shadow:0 2px 7px #000;max-width:820px}
+  .howto b{color:#ffd88a;font-weight:700}
+  .tagsline{margin-top:14px;font-size:10px;letter-spacing:4px;color:rgba(255,181,92,.5)}
+
+  /* ---------------- forge ---------------- */
+  #forge{align-items:stretch;justify-content:center;background:radial-gradient(ellipse at 50% 42%,rgba(43,22,10,.46),rgba(4,3,3,.9) 76%)}
+  .forge-shell{width:min(1220px,100%);max-height:calc(100vh - 24px);display:flex;flex-direction:column;background:linear-gradient(160deg,rgba(24,20,16,.96),rgba(9,8,7,.97));border:1px solid var(--line);border-radius:14px;box-shadow:0 24px 80px rgba(0,0,0,.7),inset 0 1px 0 rgba(255,215,160,.08);overflow:hidden}
+  .fhead{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:12px 20px;background:linear-gradient(90deg,rgba(54,32,16,.8),rgba(22,17,12,.5));border-bottom:1px solid rgba(255,170,80,.18)}
+  .fhead .brand{font-size:11px;letter-spacing:4px;color:rgba(255,190,105,.7)}
+  .fhead .brand b{display:block;font-size:19px;letter-spacing:.22em;color:#ffe3aa;margin-top:2px;font-weight:800}
+  .fhead .brand span{letter-spacing:2px;color:var(--muted)}
+  .wallet{display:flex;gap:18px;align-items:center;font-size:13px;color:var(--muted);white-space:nowrap}
+  .wallet b{font-size:22px;color:#ffd684;font-weight:800;margin-right:2px;text-shadow:0 0 14px rgba(255,170,70,.32)}
+  .wallet .dot{width:5px;height:5px;border-radius:50%;background:var(--orange);box-shadow:0 0 8px var(--orange)}
+  .fgrid{display:grid;grid-template-columns:332px minmax(0,1fr);gap:0;min-height:0;flex:1}
+  .preview-col{padding:14px 14px 10px;border-right:1px solid rgba(255,170,80,.14);display:flex;flex-direction:column;min-height:0;background:radial-gradient(circle at 50% 42%,rgba(75,38,17,.23),transparent 62%)}
+  .preview-frame{position:relative;flex:1;min-height:215px;border:1px solid rgba(255,176,88,.2);border-radius:10px;overflow:hidden;background:#0a0807}
+  #forgecv{width:100%;height:100%;display:block}
+  .boss-preview{font-size:12px;line-height:1.4;color:#d8c7a8;margin:9px 4px 4px;min-height:18px}
+  .boss-preview .bpno{color:#ffb04e;font-weight:800;letter-spacing:2px;margin-right:6px}
+  .boss-preview small{color:#8d7c68;font-size:9.5px;letter-spacing:1px}
+  .stat-list{font-size:11px;line-height:1.45;margin-top:2px}
+  .srow{display:grid;grid-template-columns:38px 1fr auto;gap:5px;padding:4px 4px;border-top:1px solid rgba(255,190,100,.08);align-items:baseline}
+  .srow span{color:#9d8a70;letter-spacing:1px}
+  .srow b{color:#f2dcb4;font-weight:700}
+  .srow em{color:#c49a60;font-style:normal;font-size:10px;text-align:right}
+  .part-cols{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;min-height:0;overflow:hidden}
+  .partcol{padding:12px 10px;border-right:1px solid rgba(255,170,80,.11);min-height:0;display:flex;flex-direction:column}
+  .partcol:last-child{border-right:none}
+  .partcol h3{margin:0 0 8px;font-size:11px;letter-spacing:3px;color:#ffbb6a;font-weight:700;display:flex;align-items:center;gap:7px}
+  .partcol h3::after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgba(255,170,80,.35),transparent)}
+  .plist{display:flex;flex-direction:column;gap:6px;overflow:auto;padding-right:2px;scrollbar-width:thin;scrollbar-color:#5f4327 transparent}
+  .pcard{display:flex;align-items:center;gap:8px;padding:7px 8px;text-align:left;background:linear-gradient(145deg,rgba(43,36,29,.88),rgba(18,15,12,.88));border:1px solid rgba(255,175,85,.15);border-radius:8px;cursor:pointer;transition:border-color .12s,background .12s,transform .1s;min-height:50px}
+  .pcard:hover{border-color:rgba(255,183,98,.5);background:linear-gradient(145deg,rgba(65,46,30,.92),rgba(24,19,14,.92));transform:translateY(-1px)}
+  .pcard.sel{border-color:#ffb256;background:linear-gradient(145deg,rgba(100,58,25,.75),rgba(41,27,15,.92));box-shadow:inset 0 0 18px rgba(255,130,40,.12),0 0 12px rgba(255,140,50,.07)}
+  .pglyph{width:30px;height:34px;flex:none;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,183,95,.28);border-radius:6px;color:#ffd07c;font-size:17px;background:rgba(10,8,6,.45)}
+  .pcard.sel .pglyph{color:#1d0e06;background:linear-gradient(180deg,#ffe2a1,#df9f47);border-color:#ffd795;text-shadow:none}
+  .pbody{min-width:0;flex:1;display:flex;flex-direction:column;gap:2px}
+  .pname{font-size:12px;color:#f3e4c8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pmeta{font-size:9px;line-height:1.25;color:#a99478;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pprice{font-size:12px;color:#ffc75f;font-weight:800;flex:none;min-width:18px;text-align:right}
+  .pprice::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#e6a548;margin-right:3px;vertical-align:1px;box-shadow:0 0 5px rgba(255,170,70,.6)}
+  .pfoot{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:11px 16px;border-top:1px solid rgba(255,170,80,.18);background:linear-gradient(90deg,rgba(32,22,14,.85),rgba(13,11,9,.9))}
+  .pfoot .note{font-size:10px;color:#94816a;line-height:1.35;flex:1;min-width:150px}
+  .pfoot .note b{color:#ffcf83}
+  .btn{min-height:38px;padding:0 18px;border-radius:20px;cursor:pointer;border:1px solid rgba(255,178,90,.35);background:rgba(30,22,16,.82);color:#f2d9b0;font-size:12px;letter-spacing:1px;transition:filter .12s,transform .1s}
+  .btn:hover{filter:brightness(1.12);transform:translateY(-1px)}
+  .btn.primary{border:none;color:#1e0f07;font-weight:800;background:linear-gradient(180deg,#ffe5a7,#e3a047);box-shadow:0 0 22px rgba(255,153,60,.28);padding:0 26px;font-size:13px;letter-spacing:2px}
+  .btn:disabled{opacity:.35;pointer-events:none;filter:grayscale(.5)}
+  .btn.ghost{background:rgba(15,12,10,.55)}
+  .btn.repair{border-color:rgba(143,230,212,.38);color:#b9f2e7}
+
+  /* ---------------- HUD ---------------- */
+  #hud{position:fixed;inset:0;z-index:12;pointer-events:none;color:var(--paper)}
+  .hpanel{position:absolute;left:16px;top:14px;width:min(315px,38vw);padding:10px 12px 9px;background:linear-gradient(145deg,rgba(18,15,12,.88),rgba(8,7,6,.72));border:1px solid rgba(255,174,88,.24);border-radius:10px;box-shadow:0 6px 26px rgba(0,0,0,.35);backdrop-filter:blur(3px)}
+  .mecname{font-size:12px;letter-spacing:2px;color:#ffcf88;margin-bottom:7px;display:flex;justify-content:space-between;align-items:center}
+  .mecname span{font-size:9.5px;color:#a38e74;letter-spacing:1px}
+  .barrow{display:flex;align-items:center;gap:7px;margin-top:5px;font-size:9.5px;color:#ad9b82}
+  .barrow .lbl{width:22px;flex:none;letter-spacing:1px}
+  .track{flex:1;height:10px;background:rgba(5,4,3,.8);border:1px solid rgba(255,180,95,.18);border-radius:6px;overflow:hidden;position:relative}
+  .track .fill{height:100%;border-radius:5px;transition:width .08s linear}
+  #hpfill{background:linear-gradient(90deg,#b83a22,#ef713f,#ffb168);box-shadow:0 0 9px rgba(255,100,45,.35)}
+  #energyfill{background:linear-gradient(90deg,#327a7b,#6fd4c6,#b8f5e9)}
+  #heatfill{background:linear-gradient(90deg,#d0571e,#ff9d39,#ffe08a)}
+  #heatfill.hot{background:linear-gradient(90deg,#ff3116,#ff7b32,#ffd06d);animation:heatpulse .4s infinite alternate}
+  @keyframes heatpulse{to{filter:brightness(1.35)}}
+  #corefill{background:linear-gradient(90deg,#6c4b17,#e7aa48,#fff0ba)}
+  .barrow .num{width:62px;text-align:right;color:#e3cda9;font-size:9.5px;font-variant-numeric:tabular-nums;flex:none}
+  .barrow .num.warn{color:#ff8a55}
+  .hudbottom{position:absolute;left:16px;bottom:12px;font-size:10px;line-height:1.6;color:rgba(225,205,173,.68);letter-spacing:.5px;max-width:52vw;text-shadow:0 1px 5px #000}
+  .hudbottom b{color:#ffca7d}
+  .rightpanel{position:absolute;right:14px;top:62px;text-align:right;font-size:11px;color:#c8b296;line-height:1.75;text-shadow:0 1px 5px #000}
+  .rightpanel b{color:#ffd382;font-size:14px;font-variant-numeric:tabular-nums}
+  .rightpanel .clock{font-size:19px;color:#ffe5ad;letter-spacing:1.5px;font-variant-numeric:tabular-nums}
+  .statusline{position:absolute;top:132px;left:20px;font-size:10px;letter-spacing:2px;color:#9be0d0;text-shadow:0 1px 4px #000}
+  .statusline.warn{color:#ff955a}
+  .bossbar{position:absolute;top:13px;left:50%;transform:translateX(-50%);width:min(520px,46vw);pointer-events:none}
+  #bossname{text-align:center;font-size:11px;letter-spacing:3px;color:#ffd0a0;margin-bottom:4px;text-shadow:0 0 12px rgba(255,90,30,.45),0 1px 4px #000;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #bossname::before,#bossname::after{content:"◆";color:#e68c48;font-size:8px;margin:0 8px;vertical-align:2px;opacity:.6}
+  .bosstrack{height:13px;background:rgba(8,5,4,.88);border:1px solid rgba(255,128,55,.38);border-radius:7px;overflow:hidden;box-shadow:0 0 16px rgba(255,70,20,.12),inset 0 0 8px rgba(0,0,0,.65)}
+  #bossfill{height:100%;border-radius:6px;background:linear-gradient(90deg,#bf3c21,#ef7138,#ffc56b);box-shadow:0 0 12px rgba(255,100,40,.35);transition:width .1s linear}
+  .bossmeta{display:flex;justify-content:space-between;font-size:9px;color:#b88e68;letter-spacing:1.5px;margin-top:3px;padding:0 3px}
+  .bossmeta b{color:#ffb86b}
+
+  #tr{position:fixed;right:12px;top:10px;z-index:20;display:flex;gap:8px}
+  #tr button{width:40px;height:40px;border-radius:11px;border:1px solid rgba(255,178,90,.34);background:rgba(13,10,8,.8);color:#ffd28a;font-size:16px;font-weight:700;cursor:pointer;backdrop-filter:blur(3px);transition:background .12s,transform .1s}
+  #tr button:hover{background:rgba(55,35,20,.9)}
+  #tr button:active{transform:translateY(1px)}
+  #tr button.on{background:rgba(95,40,26,.85);border-color:rgba(255,140,90,.55);color:#ffc1a1}
+  #tr button.wide{width:auto;padding:0 12px;font-size:12px;letter-spacing:1px;color:#cfe8dd;border-color:rgba(143,230,212,.3)}
+  #tr button.wide.on{color:#ffc1a1;border-color:rgba(255,140,90,.55)}
+  @media (max-width:800px){#tr button.wide{padding:0 8px;font-size:11px}}
+
+  #toast{position:fixed;left:50%;bottom:64px;transform:translateX(-50%);z-index:41;padding:8px 20px;border-radius:20px;background:rgba(10,8,6,.92);border:1px solid rgba(255,178,90,.34);color:#ffe0b0;font-size:12px;letter-spacing:.5px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;box-shadow:0 4px 20px rgba(0,0,0,.45)}
+  #toast.show{opacity:1}
+  #banner{position:fixed;top:21%;left:50%;transform:translate(-50%,-50%);z-index:40;text-align:center;opacity:0;transition:opacity .24s;pointer-events:none}
+  #banner.on{opacity:1}
+  #banner .bmain{font-size:clamp(22px,3vw,36px);font-weight:900;letter-spacing:.22em;color:#ffe6b0;text-shadow:0 0 24px rgba(255,110,35,.65),0 3px 12px #000}
+  #banner .bsub{font-size:12px;letter-spacing:3px;color:#d5a56f;margin-top:7px;text-shadow:0 2px 6px #000}
+
+  /* ---------------- touch ---------------- */
+  #touchui{position:fixed;inset:0;z-index:18;pointer-events:none}
+  .joy{position:absolute;bottom:22px;width:112px;height:112px;border-radius:50%;border:1px solid rgba(255,175,90,.26);background:radial-gradient(circle at 50% 50%,rgba(45,30,18,.34),rgba(8,7,5,.44));pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 24px rgba(0,0,0,.45)}
+  #joyMove{left:22px}
+  #joyAim{right:22px;border-color:rgba(143,230,212,.28)}
+  .joy .knob{width:46px;height:46px;border-radius:50%;border:1px solid rgba(255,190,105,.45);background:radial-gradient(circle at 35% 30%,rgba(255,221,160,.32),rgba(45,31,19,.78));box-shadow:0 0 14px rgba(255,150,60,.18);transition:transform .04s linear}
+  #joyAim .knob{border-color:rgba(143,230,212,.5);background:radial-gradient(circle at 35% 30%,rgba(190,250,236,.25),rgba(23,52,47,.76))}
+  .joy span{position:absolute;bottom:-16px;left:50%;transform:translateX(-50%);font-size:9px;letter-spacing:3px;color:rgba(255,195,120,.55);white-space:nowrap}
+  #joyAim span{color:rgba(143,230,212,.6)}
+  .joy.active{border-color:rgba(255,194,105,.7)}
+  .tbtn{position:absolute;width:62px;height:62px;border-radius:50%;border:1px solid rgba(255,178,90,.4);background:rgba(15,11,8,.72);color:#ffe0a1;font-size:13px;font-weight:700;letter-spacing:2px;pointer-events:auto;touch-action:none;display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px rgba(255,130,50,.1)}
+  #tdash{right:152px;bottom:166px}
+  #tguard{right:152px;bottom:98px;border-color:rgba(143,230,212,.42);color:#bdf4e9}
+  .tbtn:active{background:rgba(95,44,22,.85);transform:scale(.96)}
+
+  /* ---------------- end / pause ---------------- */
+  #end{background:radial-gradient(ellipse at 50% 40%,rgba(54,24,10,.52),rgba(3,2,2,.93) 74%);flex-direction:column;text-align:center}
+  #end .kicker{font-size:10px;letter-spacing:8px;color:rgba(255,186,100,.7);margin-bottom:8px}
+  #end h1{margin:0;font-size:clamp(40px,6vw,68px);letter-spacing:.2em;color:#ffe2a6;font-weight:900;text-shadow:0 0 36px rgba(255,100,30,.42),0 4px 20px #000}
+  #endd{margin:16px 0 22px;font-size:13px;line-height:1.95;color:rgba(235,216,184,.9);letter-spacing:.5px}
+  #endd .bigtime{font-size:34px;font-weight:900;color:#ffd27a;letter-spacing:3px;text-shadow:0 0 24px rgba(255,150,55,.35)}
+  #endd .rec{color:#8fe6d4;font-size:11.5px;letter-spacing:1.5px}
+  #endd b{color:#ffd27a}
+  .btns{display:flex;gap:12px;justify-content:center}
+  #retrybtn,#homebtn{padding:12px 34px;font-size:15px;letter-spacing:2px;border-radius:25px;cursor:pointer}
+  #retrybtn{border:none;color:#1d0e06;font-weight:800;background:linear-gradient(180deg,#ffe5a7,#df9f47);box-shadow:0 0 24px rgba(255,150,55,.35)}
+  #homebtn{background:rgba(20,14,10,.8);color:#ffd79a;border:1px solid rgba(255,178,88,.38)}
+  #homebtn:hover{background:rgba(45,28,16,.9)}
+  #pause{background:rgba(4,3,2,.7);flex-direction:column;text-align:center;backdrop-filter:blur(5px)}
+  #pause h1{margin:0 0 8px;font-size:42px;letter-spacing:.3em;color:#ffe0a4;font-weight:900;text-shadow:0 0 26px rgba(255,120,40,.35)}
+  #pause p{font-size:12px;color:#b8a184;letter-spacing:2px;margin:0 0 22px}
+  #resumeBtn,#restartBtn,#pauseHome{padding:11px 28px;font-size:14px;letter-spacing:2px;border-radius:22px;cursor:pointer}
+  #resumeBtn{border:none;color:#1d0e06;font-weight:800;background:linear-gradient(180deg,#ffe5a7,#df9f47)}
+  #restartBtn,#pauseHome{background:rgba(20,14,10,.8);color:#ffd79a;border:1px solid rgba(255,178,88,.38)}
+
+  @media (max-width:1020px){
+    .hpanel{top:58px;width:min(310px,40vw);padding:7px 9px}
+    .statusline{top:160px;left:12px}
+    .rightpanel{top:58px}
+    .hudbottom{max-width:48vw;font-size:9px}
+  }
+  @media (max-width:900px){
+    .fgrid{grid-template-columns:260px minmax(0,1fr)}
+    .partcol{padding:9px 6px}
+    .pmeta{display:none}
+    .pcard{min-height:42px;padding:5px 6px}
+    .fhead .brand b{font-size:15px}
+    .wallet b{font-size:18px}
+    .howto{font-size:11px;line-height:1.85}
+  }
+  @media (max-width:720px){
+    .overlay{padding:8px}
+    .forge-shell{max-height:calc(100vh - 12px);overflow:auto}
+    .fgrid{grid-template-columns:1fr}
+    .preview-col{border-right:none;border-bottom:1px solid rgba(255,170,80,.15);min-height:330px}
+    .part-cols{grid-template-columns:1fr 1fr}
+    .partcol:nth-child(2){border-right:none}
+    .partcol:nth-child(3){grid-column:1/-1;border-top:1px solid rgba(255,170,80,.1)}
+    .hpanel{top:58px;width:45vw;padding:6px 8px}
+    .barrow .num{width:44px;font-size:8px}
+    .barrow{font-size:8px;gap:4px}
+    .bossbar{left:8px;top:8px;transform:none;width:calc(100vw - 112px)}
+    #bossname{font-size:9px;letter-spacing:1px}
+    #bossname::before,#bossname::after{margin:0 4px}
+    .bossmeta{font-size:7.5px;letter-spacing:.6px}
+    .rightpanel{top:58px;right:8px;font-size:8.5px}
+    .rightpanel .clock{font-size:14px}
+    .statusline{top:155px;left:10px;font-size:8px}
+    .hudbottom{max-width:64vw;font-size:8px;left:8px;bottom:6px;line-height:1.45}
+    .mecname{font-size:10px;letter-spacing:1px;margin-bottom:4px}
+    .mecname span{font-size:8px}
+    .bosstrack{height:10px}
+    #title h1{letter-spacing:.08em}
+    .howto{font-size:10.5px}
+  }
+</style>
+<script>
+  window.__BOOTERR = [];
+  window.__NET = { fetch: 0, xhr: 0, ws: 0, external: [] };
+  (function(){
+    try {
+      const of = window.fetch;
+      if (of) window.fetch = function(input){
+        window.__NET.fetch++;
+        const u = String(input && input.url || input || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return of.apply(this, arguments);
+      };
+      const xo = XMLHttpRequest.prototype.open;
+      XMLHttpRequest.prototype.open = function(method, url){
+        window.__NET.xhr++;
+        const u = String(url || '');
+        if (/^https?:\/\//i.test(u) && u.indexOf(location.origin) !== 0) window.__NET.external.push(u);
+        return xo.apply(this, arguments);
+      };
+      const OW = window.WebSocket;
+      if (OW) {
+        window.WebSocket = function(url){
+          window.__NET.ws++;
+          const u = String(url || '');
+          if (/^wss?:\/\//i.test(u) && u.indexOf(location.host) < 0) window.__NET.external.push(u);
+          return new OW(url);
+        };
+        window.WebSocket.prototype = OW.prototype;
+      }
+    } catch(e) { window.__BOOTERR.push('netwrap:' + e); }
+    window.addEventListener('error', function(e){
+      window.__BOOTERR.push(String(e.message || e));
+      if (window.__G && window.__G.err) window.__G.err.push(String(e.message || e));
+    });
+    window.addEventListener('unhandledrejection', function(e){
+      window.__BOOTERR.push('rejection:' + String(e.reason || e));
+    });
+  })();
+</script>
+</head>
+<body>
+<canvas id="gl"></canvas>
+
+<div id="title" class="overlay">
+  <div class="kicker">灯匠夜游 · 第 11 铺</div>
+  <h1>锻甲机斗场</h1>
+  <h2>IRONWRIGHT ARENA · 熔炉机斗</h2>
+  <div class="rule"></div>
+  <div id="titlebest">尚无完整通关记录</div>
+  <button id="startbtn">点 火 开 炉</button>
+  <div class="howto">
+    <b>WASD / 方向键</b> 移动 · <b>鼠标瞄准 · 左键 / J</b> 射击 · <b>Shift / K</b> 推进冲刺 · <b>E</b> 熔核屏障<br>
+    在锻炉内换装 6 种武器、6 种装甲、4 种推进器；连续击败 <b>3 位熔炉看守</b> 即通关。热量过载会强制停火，善用冲刺与屏障。<br>
+    <b>P</b> 暂停 · <b>M</b> 静音 · <b>R</b> 重开 · 触屏：左摇杆移动，右摇杆瞄准射击，另有冲刺 / E 按钮
+  </div>
+  <div class="tagsline">铁灰 · 警示橙 · 熔金 / PROCEDURAL CANVAS</div>
+  <div class="imprint">灯匠夜游 · 第 11 铺</div>
+</div>
+
+<div id="forge" class="overlay hide">
+  <div class="forge-shell">
+    <div class="fhead">
+      <div class="brand">灯匠夜游 · 第 11 铺 <b>锻 甲 机 斗 场</b><span id="forgeKicker">装配台 · 首战准备</span></div>
+      <div class="wallet"><span><b id="coinEl">180</b>铸币</span><span class="dot"></span><span><b id="partEl">0</b>零件</span></div>
+    </div>
+    <div class="fgrid">
+      <section class="preview-col">
+        <div class="preview-frame"><canvas id="forgecv" width="420" height="420"></canvas></div>
+        <div class="boss-preview" id="bossPreview"></div>
+        <div class="stat-list" id="statList"></div>
+      </section>
+      <section class="part-cols">
+        <div class="partcol"><h3>武器 · 6</h3><div class="plist" id="weaponList"></div></div>
+        <div class="partcol"><h3>装甲 · 6</h3><div class="plist" id="armorList"></div></div>
+        <div class="partcol"><h3>推进器 · 4</h3><div class="plist" id="thrusterList"></div></div>
+      </section>
+    </div>
+    <div class="pfoot">
+      <div class="note">换装按 <b>价差</b> 结算，拆下部件会返还铸币。<br>每场战后仅有一次有限维修；调整配置后再进竞技场。</div>
+      <button class="btn repair" id="repairBtn">维修</button>
+      <button class="btn ghost" id="forgeHome">回标题</button>
+      <button class="btn primary" id="confirmBtn">确认装配 · 点 火 出 击</button>
+    </div>
+  </div>
+</div>
+
+<div id="hud" class="hide">
+  <div class="hpanel">
+    <div class="mecname">锻甲机 · 你的座驾 <span>IRONWRIGHT</span></div>
+    <div class="barrow"><span class="lbl">结构</span><div class="track"><div class="fill" id="hpfill" style="width:100%"></div></div><span class="num" id="hptext">130 / 130</span></div>
+    <div class="barrow"><span class="lbl">推进</span><div class="track"><div class="fill" id="energyfill" style="width:100%"></div></div><span class="num">ENERGY</span></div>
+    <div class="barrow"><span class="lbl">热量</span><div class="track"><div class="fill" id="heatfill" style="width:0%"></div></div><span class="num" id="heattext">0%</span></div>
+    <div class="barrow"><span class="lbl">熔核</span><div class="track"><div class="fill" id="corefill" style="width:50%"></div></div><span class="num">E 屏障</span></div>
+  </div>
+  <div class="statusline" id="status">作战中</div>
+  <div id="bossbar" class="bossbar" style="display:block">
+    <div id="bossname">铁颚监工 · IRONJAW WARDEN</div>
+    <div class="bosstrack"><div id="bossfill" style="width:100%"></div></div>
+    <div class="bossmeta"><span>BOSS <b id="bossindex">1 / 3</b></span><span>破坏炉心 · 终止监工</span></div>
+  </div>
+  <div class="rightpanel">
+    <div class="clock" id="timer">00:00.0</div>
+    <div>铸币 <b id="runcoins">0</b> · 零件 <b id="runparts">0</b></div>
+  </div>
+  <div class="hudbottom">
+    <b>WASD</b> 移动 · <b>鼠标 / 左键 / J</b> 瞄准射击 · 不动鼠标自动锁定 Boss · <b>G</b> 自动瞄准 · <b>F</b> 自动开火 · <b>Shift / K</b> 冲刺 · <b>E</b> 屏障 · <b>P</b> 暂停 · <b>M</b> 静音 · <b>R</b> 重开
+  </div>
+</div>
+
+<div id="tr">
+  <button id="aimbtn" class="wide" title="自动瞄准：开启（G 切换）">瞄·自动</button>
+  <button id="firebtn" class="wide" title="自动开火：关闭（F 切换）">射·手动</button>
+  <button id="mutebtn" title="静音 (M)">🔊</button>
+  <button id="pausebtn" title="暂停 (P)">❚❚</button>
+</div>
+
+<div id="touchui" class="hide">
+  <div class="joy" id="joyMove"><div class="knob"></div><span>移动</span></div>
+  <div class="joy" id="joyAim"><div class="knob"></div><span>瞄准 / 射击</span></div>
+  <button class="tbtn" id="tdash">冲刺</button>
+  <button class="tbtn" id="tguard">E 屏障</button>
+</div>
+
+<div id="banner"><div class="bmain"></div><div class="bsub"></div></div>
+<div id="toast"></div>
+
+<div id="pause" class="overlay hide">
+  <h1>暂 停</h1>
+  <p>锻炉仍在呼吸，战场暂时静止。</p>
+  <div class="btns">
+    <button id="resumeBtn">继续战斗</button>
+    <button id="restartBtn">重新整备</button>
+    <button id="pauseHome">回标题</button>
+  </div>
+</div>
+
+<div id="end" class="overlay hide">
+  <div class="kicker" id="endkicker">MELT CORE SILENT</div>
+  <h1 id="endh">熔 核 熄 灭</h1>
+  <div id="endd"></div>
+  <div class="btns">
+    <button id="retrybtn">整 备 再 战</button>
+    <button id="homebtn">回 标 题</button>
+  </div>
+  <div class="imprint">灯匠夜游 · 第 11 铺</div>
+</div>
+
+<script src="static/play68.js"></script>
+<script src="static/play68bar.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

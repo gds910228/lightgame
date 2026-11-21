@@ -1,0 +1,15 @@
+{
+  "id": "ironwright-arena",
+  "title": "Ironwright Arena 锻甲机斗场",
+  "category": ["Action", "Mecha", "Boss Rush", "Guizang"],
+  "description": "An iron-and-ember 2D Canvas mech foundry and three-boss arena. In the forge, assemble a rig from 6 weapons, 6 armor plates and 4 thrusters; every part measurably changes firepower, cadence, heat, armor, weight, movement speed, dash and hover. Then face three furnace wardens one after another, reading their telegraphed slams, radial volleys, sweeping lances, cross-beams, missile rain and the colossus's half-health overdrive. Earn coins and parts, spend a single limited repair between bouts, and chase a best clear time. Procedural mech silhouettes, forge sparks, hit-stop, screen shake and fully synthesized WebAudio with no external assets.",
+  "controls": "WASD / Arrow keys move, move the mouse to aim, hold left click or J to fire, Shift or K to dash, E to raise the melt-core barrier, P to pause, M to mute, R to restart the run. On touch: the left stick moves, the right stick aims and fires, and the 冲刺 / E 屏障 buttons trigger dash and barrier. Beat all three bosses to complete the run; repairs and part swaps happen at the foundry between fights.",
+  "type": "local",
+  "path": "/games/ironwright-arena/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["mecha", "boss-rush", "arena-shooter", "build", "canvas", "procedural", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-20"
+}

@@ -1,0 +1,14 @@
+import { createRequire } from 'module';
+const require = createRequire('/tmp/pw/node_modules/');
+const { chromium } = require('playwright');
+const b = await chromium.launch({headless:true,executablePath:'/usr/local/bin/chromium',args:['--no-sandbox','--use-gl=swiftshader']});
+const p = await b.newPage({viewport:{width:1280,height:720}});
+p.on('pageerror',e=>console.log('PAGEERR',e));
+p.on('console',m=>{if(m.type()==='error')console.log('CONSOLE',m.text())});
+await p.goto('http://localhost:8626/ironwright-arena/');
+await p.waitForFunction('window.G');
+console.log(await p.evaluate(()=>({mode:G.state().mode, titleStyle:getComputedStyle(document.getElementById('title')).background, stat:document.getElementById('status').getBoundingClientRect().toJSON(), cv:document.getElementById('gl').getBoundingClientRect().toJSON()})));
+await p.evaluate(()=>document.getElementById('title').classList.add('hide'));
+await p.waitForTimeout(500);
+await p.screenshot({path:'title-scene-only.png'});
+await b.close();
