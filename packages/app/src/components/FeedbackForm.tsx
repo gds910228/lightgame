@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Game } from '../types';
-import { sendFeedbackEmail } from '../services/emailService';
+import { submitFeedback, renderTurnstile, type TurnstileWidget } from '../services/feedbackApi';
 import Select, { type StylesConfig } from 'react-select';
 
 interface SelectOption {
@@ -17,6 +17,7 @@ interface FeedbackFormData {
   feedbackType: 'bug' | 'suggestion' | 'other';
   message: string;
   rating: string;
+  website: string; // honeypot 字段：对人不可见，机器人会填
 }
 
 interface FeedbackFormProps {
@@ -36,8 +37,35 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [rating, setRating] = useState<number>(5); // 默认5星评分
-  
-  const { 
+  const [turnstileToken, setTurnstileToken] = useState('');
+  const turnstileElRef = useRef<HTMLDivElement | null>(null);
+  const widgetRef = useRef<TurnstileWidget | null>(null);
+
+  // 挂载 Turnstile 人机验证组件（token 一次性，提交后需重置）
+  useEffect(() => {
+    let cancelled = false;
+    const el = turnstileElRef.current;
+    if (!el) return;
+    renderTurnstile(el, (token) => {
+      if (!cancelled) setTurnstileToken(token);
+    })
+      .then((widget) => {
+        if (cancelled) { widget.remove(); } else { widgetRef.current = widget; }
+      })
+      .catch(() => {
+        if (cancelled) return;
+        setSubmitStatus('error');
+        setErrorMessage('Verification failed to load. Please refresh the page.');
+      });
+    return () => {
+      cancelled = true;
+      widgetRef.current?.remove();
+      widgetRef.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const {
     register, 
     handleSubmit,
     control,
@@ -68,37 +96,41 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
       // 找到选择的游戏名称
       const selectedGame = games.find(game => game.id === data.gameId);
       const gameTitle = selectedGame ? selectedGame.title : 'Entire Website';
-      
-      // 准备要发送的数据 - 修改为与EmailJS模板完全匹配的参数名
-      const templateParams = {
-        from_name: data.name || 'Anonymous User',
-        from_email: data.email,
+
+      // 人机验证 token 必须就绪
+      if (!turnstileToken) {
+        throw new Error('Please complete the human verification, then submit again.');
+      }
+
+      // 提交给表单 Worker（凭证全部在服务端，浏览器不含任何密钥）
+      const result = await submitFeedback({
+        name: data.name || 'Anonymous User',
+        email: data.email,
         game: gameTitle,
-        feedback_type: data.feedbackType === 'bug' ? 'Bug Report' : 
+        feedbackType: data.feedbackType === 'bug' ? 'Bug Report' :
                      data.feedbackType === 'suggestion' ? 'Suggestion' : 'Other',
         message: data.message,
-        email: '1479333689@qq.com',
-        company_name: 'LightGame',
-        company_email: '1479333689@qq.com',
-        company_phone: 'N/A',
-        rating: rating.toString() // 使用用户选择的评分
-      };
-      
-      // 发送邮件
-      const result = await sendFeedbackEmail(templateParams);
+        rating: rating.toString(), // 使用用户选择的评分
+        turnstileToken,
+        website: data.website || '' // honeypot
+      });
+
+      // token 一次性使用，无论成败都重置验证组件
+      widgetRef.current?.reset();
+      setTurnstileToken('');
 
       if (result.success) {
         setSubmitStatus('success');
         reset(); // 重置表单
-        
+
         // 成功后3秒关闭表单
         setTimeout(() => {
           onClose();
         }, 3000);
       } else {
         setSubmitStatus('error');
-        setErrorMessage(result.error instanceof Error ? result.error.message : 'Unknown error');
-        console.error('Feedback submission failed details:', result.error);
+        setErrorMessage(result.errorMessage);
+        console.error('Feedback submission failed details:', result.errorMessage);
       }
     } catch (error) {
       console.error('Feedback submission failed:', error);
@@ -305,6 +337,19 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
             )}
           </div>
           
+          {/* honeypot：对人不可见，机器人填写会被静默丢弃 */}
+          <input
+            type="text"
+            id="website"
+            tabIndex={-1}
+            autoComplete="off"
+            style={{ display: 'none' }}
+            {...register('website')}
+          />
+
+          {/* Cloudflare Turnstile 人机验证 */}
+          <div ref={turnstileElRef} aria-label="Human verification"></div>
+
           {/* 错误信息显示 */}
           {submitStatus === 'error' && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">

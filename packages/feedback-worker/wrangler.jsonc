@@ -1,0 +1,9 @@
+{
+  // 反馈表单 Worker：独立子域端点，与静态站托管解耦（站点迁走它照常工作）
+  "name": "lightgame-feedback",
+  "main": "src/index.js",
+  "compatibility_date": "2026-11-01",
+  "routes": [
+    { "pattern": "forms.misitebo.win", "custom_domain": true }
+  ]
+}

@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
-import { Analytics } from '@vercel/analytics/react'
 import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
 import GameDetailPage from './pages/GameDetailPage'
@@ -38,7 +37,6 @@ function App() {
                 </Route>
               </Routes>
               <AchievementUnlockToast />
-              <Analytics />
             </AchievementsProvider>
           </FavoritesProvider>
         </ProgressProvider>
