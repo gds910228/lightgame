@@ -39,3 +39,6 @@ build
 ### cc
 /docs
 .claude.scratch/
+
+# cloudflare deploy token (never commit)
+.env.cloudflare
