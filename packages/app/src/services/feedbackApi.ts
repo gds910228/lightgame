@@ -2,7 +2,8 @@
 // Turnstile sitekey 是公开值；真正的密钥全在 Worker secrets 里，浏览器包不含任何私密凭证。
 
 const ENDPOINT = import.meta.env.VITE_FEEDBACK_ENDPOINT || 'https://forms.misitebo.win/feedback';
-const TURNSTILE_SITEKEY = import.meta.env.VITE_TURNSTILE_SITEKEY || '';
+// Turnstile sitekey 是公开值（真正的密钥在 Worker secrets 里）
+const TURNSTILE_SITEKEY = import.meta.env.VITE_TURNSTILE_SITEKEY || '0x4AAAAAAGM4nR8v4hUrFT6Y';
 
 declare global {
   interface Window {
