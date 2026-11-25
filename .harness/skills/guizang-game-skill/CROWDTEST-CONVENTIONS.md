@@ -15,7 +15,7 @@
   - `DESIGN.md` — 设计文档 + 数值表 + **验证清单（实测结果逐条勾）**
   - `metadata.json` — 必填 id/title/category/description/controls（description/controls 用英文，站点模板如此）
   - `thumbnail.jpg` — **由你自己产出** 640×360：环境有浏览器截图能力就用实机游玩画面截图（选关屏不算）；没有就用 Canvas 程序化渲染游戏代表性画面；禁止纯色占位图。
-- 【修订 · 众测版】除集成所必需（games.json 再生、sitemap 再生、packages/app/public 构建副本同步）外，不要改动主应用业务代码；**每款完成后必须自己执行集成管线并独立 commit**，message：`feat(game): <id> <英文名>`（禁止把多款塞进一个提交，禁止 git push）。
+- 【修订 · 众测版】除集成所必需（games.json 再生、sitemap 再生、packages/app/public 构建副本同步）外，不要改动主应用业务代码；**每款完成后必须自己执行集成管线并独立 commit**，message：`feat(game): <id> <英文名>`（禁止把多款塞进一个提交，禁止 git push）。上传包不含 .git：**动工前先 `git init`** 再开始第一款；若环境无 git，改为在 .harness/changes/<id>.md 顶部追加「DELIVERED <id>」交付标记。
 
 ## 2. G 调试钩子（skill 强制）
 
