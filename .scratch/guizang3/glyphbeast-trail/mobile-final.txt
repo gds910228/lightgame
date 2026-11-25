@@ -1,2 +1,0 @@
-land {"started":{"mode":"explore","touch":true,"rects":["dpad-up","dpad-left","dpad-right","dpad-down","interact"]},"moved":{"x":412.5,"y":760},"phase":"skills","errs":[]}
-port {"started":{"mode":"explore","touch":true,"rects":["dpad-up","dpad-left","dpad-right","dpad-down","interact"]},"moved":{"x":412.5,"y":760},"phase":"skills","errs":[]}
