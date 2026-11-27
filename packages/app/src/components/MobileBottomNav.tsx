@@ -14,6 +14,7 @@ const MobileBottomNav = () => {
 
   const navItems: NavItem[] = [
     { path: '/', icon: 'fa-home', label: 'Home' },
+    { path: '/duels', icon: 'fa-bolt', label: 'Duels' },
     { path: '/?favorites=true', icon: 'fa-heart', label: 'Favorites' },
     { path: '#', icon: 'fa-search', label: 'Search' }, // Search button triggers Header's search
     { path: '/about', icon: 'fa-info-circle', label: 'About' },
@@ -25,6 +26,9 @@ const MobileBottomNav = () => {
     }
     if (path.includes('favorites')) {
       return location.search.includes('favorites')
+    }
+    if (path === '/duels') {
+      return location.pathname.startsWith('/duels')
     }
     return location.pathname === path
   }
@@ -58,15 +62,15 @@ const MobileBottomNav = () => {
                 key={item.path}
                 onClick={handleSearchClick}
                 className={`
-                  flex flex-col items-center justify-center
-                  min-w-[64px] py-2 px-3 rounded-lg
+                  flex flex-1 min-w-0 flex-col items-center justify-center
+                  py-2 px-1 rounded-lg
                   transition-all duration-200
                   text-gray-500 hover:text-gray-700
                 `}
                 style={{ minHeight: '56px' }}
               >
-                <i className={`fas ${item.icon} text-xl mb-1`}></i>
-                <span className="text-xs font-medium">{item.label}</span>
+                <i className={`fas ${item.icon} text-lg mb-1`}></i>
+                <span className="text-[10px] font-medium leading-tight truncate max-w-full">{item.label}</span>
               </button>
             )
           }
@@ -76,25 +80,25 @@ const MobileBottomNav = () => {
               key={item.path}
               to={item.path}
               className={`
-                flex flex-col items-center justify-center
-                min-w-[64px] py-2 px-3 rounded-lg
+                flex flex-1 min-w-0 flex-col items-center justify-center
+                py-2 px-1 rounded-lg
                 transition-all duration-200
                 ${active
-                  ? 'text-primary-500'
+                  ? 'text-blue-600'
                   : 'text-gray-500 hover:text-gray-700'
                 }
               `}
               style={{ minHeight: '56px' }}
             >
               <div className="relative">
-                <i className={`fas ${item.icon} text-xl mb-1`}></i>
+                <i className={`fas ${item.icon} text-lg mb-1`}></i>
                 {badge > 0 && (
                   <span className="absolute -top-1 -right-2 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
                     {badge}
                   </span>
                 )}
               </div>
-              <span className="text-xs font-medium">{item.label}</span>
+              <span className="text-[10px] font-medium leading-tight truncate max-w-full">{item.label}</span>
             </Link>
           )
         })}

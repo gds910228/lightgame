@@ -126,13 +126,21 @@ const Header = () => {
             {/* Search, Categories and Favorites */}
             <div className="flex items-center gap-4 flex-1 justify-end">
               <SearchBar onSearch={handleSearch} />
+              <Link
+                to="/duels"
+                className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-card border border-neon-green/30 hover:bg-dark-border hover:border-neon-green/60 transition-all flex-shrink-0 group"
+                title="Duel Arena - local and AI battles"
+              >
+                <i className="fas fa-bolt text-neon-green group-hover:animate-pulse"></i>
+                <span className="hidden xl:inline font-medium text-gray-300">Duels</span>
+              </Link>
               <button
                 onClick={() => navigate('/achievements')}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg bg-dark-card border border-neon-yellow/30 hover:bg-dark-border hover:border-neon-yellow/50 transition-all flex-shrink-0 group"
                 title="View achievements"
               >
                 <i className="fas fa-trophy text-neon-yellow group-hover:animate-heart-beat"></i>
-                <span className="font-medium text-gray-300">Achievements</span>
+                <span className="hidden xl:inline font-medium text-gray-300">Achievements</span>
                 {unlockedCount > 0 && (
                   <span className="bg-neon-yellow text-black text-xs px-2 py-1 rounded-full min-w-[20px] text-center font-bold">
                     {unlockedCount}
@@ -145,7 +153,7 @@ const Header = () => {
                 title="View favorites"
               >
                 <i className="fas fa-heart text-neon-pink group-hover:animate-heart-beat"></i>
-                <span className="font-medium text-gray-300">Favorites</span>
+                <span className="hidden xl:inline font-medium text-gray-300">Favorites</span>
                 {favoritesCount > 0 && (
                   <span className="bg-neon-pink text-white text-xs px-2 py-1 rounded-full min-w-[20px] text-center font-bold">
                     {favoritesCount}

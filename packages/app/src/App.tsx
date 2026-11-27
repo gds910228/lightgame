@@ -4,6 +4,8 @@ import Layout from './components/Layout'
 import HomePage from './pages/HomePage'
 import GameDetailPage from './pages/GameDetailPage'
 import AchievementsPage from './pages/AchievementsPage'
+import DuelsPage from './pages/DuelsPage'
+import DuelRecordsPage from './pages/DuelRecordsPage'
 import AboutPage from './pages/AboutPage'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
@@ -28,6 +30,8 @@ function App() {
                 <Route path="/" element={<Layout />}>
                   <Route index element={<HomePage />} />
                   <Route path="game/:gameId" element={<GameDetailPage />} />
+                  <Route path="duels" element={<DuelsPage />} />
+                  <Route path="duels/records" element={<DuelRecordsPage />} />
                   <Route path="achievements" element={<AchievementsPage />} />
                   <Route path="about" element={<AboutPage />} />
                   <Route path="privacy-policy" element={<PrivacyPolicy />} />

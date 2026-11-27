@@ -113,6 +113,22 @@ const MobileMenu = ({ isOpen, onClose }: MobileMenuProps) => {
                 )}
               </Link>
               <Link
+                to="/duels"
+                onClick={onClose}
+                className="flex items-center px-4 py-3 rounded-lg hover:bg-dark-border transition-colors"
+              >
+                <i className="fas fa-bolt text-neon-green w-6"></i>
+                <span className="ml-3 font-medium text-gray-300">Duel Arena</span>
+              </Link>
+              <Link
+                to="/duels/records"
+                onClick={onClose}
+                className="flex items-center px-4 py-3 rounded-lg hover:bg-dark-border transition-colors"
+              >
+                <i className="fas fa-chart-simple text-neon-green w-6"></i>
+                <span className="ml-3 font-medium text-gray-300">Duel Records</span>
+              </Link>
+              <Link
                 to="/achievements"
                 onClick={onClose}
                 className="flex items-center px-4 py-3 rounded-lg hover:bg-dark-border transition-colors"

@@ -1,0 +1,33 @@
+{
+  "id": "pong-duel-plus",
+  "title": "Pong Duel Plus 乒乓对决",
+  "category": [
+    "Sports",
+    "Arcade",
+    "Duel",
+    "Local Multiplayer",
+    "Guizang"
+  ],
+  "description": "A midnight paper-lantern pong duel for one or two players. The hit position on your paddle sets the outgoing angle, and your paddle's swing velocity at contact adds spin that visibly bends the ball. Three power-ups change the rally: a longer paddle, a slow ball, and phantom decoy balls that distract without ever changing the real deterministic ball. First to exactly 11 points wins. Face three AI tiers (slow follow / bounce prediction / edge-aiming spin control) or play local two-player on one keyboard (W/S vs arrow keys) with split-screen touch drag zones. Rally length and both sides' match wins persist locally. Fully procedural Canvas art and synthesized WebAudio - no external assets or requests.",
+  "controls": "P1: W / S to move the left paddle. P2 (local mode): Up / Down arrows. In single-player the arrows also move P1. Touch: drag vertically in the left/right split zones, or use the on-screen up/down pads. P pauses, M mutes, R restarts. Hit the ball with the paddle edge for sharper angles; swing your paddle as you hit to add curve. Collect extend (long paddle), slow (slow ball) or phantom (decoy ghosts) power-ups by touching them with the ball. First to exactly 11 points wins.",
+  "type": "local",
+  "path": "/games/pong-duel-plus/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": [
+    "pong",
+    "duel",
+    "1v1",
+    "arcade",
+    "physics",
+    "spin",
+    "powerups",
+    "ai",
+    "local-multiplayer",
+    "canvas",
+    "guizang"
+  ],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-26"
+}

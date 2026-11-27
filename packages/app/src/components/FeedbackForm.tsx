@@ -62,7 +62,6 @@ const FeedbackForm = ({ games, onClose }: FeedbackFormProps) => {
       widgetRef.current?.remove();
       widgetRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const {

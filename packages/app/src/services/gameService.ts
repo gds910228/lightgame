@@ -105,18 +105,23 @@ export async function getGameById(gameId: string): Promise<Game | null> {
  */
 export async function getGamesByCategory(category: string): Promise<Game[]> {
   const games = await getAllGames();
-  
+
   if (category === 'All') {
     return games;
   }
-  
+
+  // 一些游戏的分类是 "A,B" 组合串：按逗号拆分后的每个部分匹配（保留整串精确匹配兼容旧链接）
+  const matchesCategory = (cat: unknown): boolean =>
+    typeof cat === 'string' &&
+    (cat === category || cat.split(',').map(part => part.trim()).includes(category));
+
   return games.filter(game => {
     if (Array.isArray(game.category)) {
       // 如果游戏有多个分类，检查是否包含所选分类
-      return game.category.includes(category);
+      return game.category.some(matchesCategory);
     }
     // 向后兼容单个分类的情况
-    return game.category === category;
+    return matchesCategory(game.category);
   });
 }
 

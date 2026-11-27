@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<link rel="icon" href="data:,">
+<title>Card Duel Arena 斗牌竞技场</title>
+<style>
+  :root{
+    --ink:#07080d; --ink2:#0d1118; --panel:rgba(10,15,22,.88);
+    --jade:#4fe0bc; --jade2:#a8ffe8; --gold:#e7bd72; --gold2:#ffe6ad;
+    --red:#f07a4d; --red2:#ffb18e; --violet:#9a86ff; --violet2:#d3c8ff;
+    --mint:#54d6a0; --muted:#93a3b5; --line:rgba(231,189,114,.26);
+    --atk:#ff8a62; --def:#65e0c2; --spell:#b9a0ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#111a22 0%,#080a10 55%,#040508 100%);font-family:"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",system-ui,sans-serif;color:#edf5f4;user-select:none;-webkit-user-select:none;touch-action:none}
+  button{font-family:inherit;cursor:pointer}
+  canvas{display:block}
+  .hide{display:none!important}
+  #stage{position:fixed;inset:0;width:100%;height:100%;z-index:1}
+
+  /* top-right utility bar */
+  #topbar{position:fixed;right:12px;top:12px;z-index:46;display:flex;gap:8px}
+  #topbar button{width:42px;height:42px;border-radius:12px;border:1px solid rgba(231,189,114,.35);background:rgba(7,11,16,.84);color:var(--gold2);font-size:16px;font-weight:700;backdrop-filter:blur(5px);transition:.15s}
+  #topbar button:hover{background:rgba(24,33,43,.95);border-color:rgba(231,189,114,.65)}
+  #topbar button:active{transform:translateY(1px)}
+  #topbar button.on{background:rgba(21,76,66,.9);border-color:rgba(79,224,188,.55);color:var(--jade2)}
+  #topbar button:disabled{opacity:.28;cursor:default}
+
+  #toast{position:fixed;left:50%;bottom:258px;transform:translateX(-50%);z-index:70;padding:8px 18px;border-radius:20px;background:rgba(5,9,14,.94);border:1px solid rgba(79,224,188,.32);color:#dffcf5;font-size:13px;letter-spacing:.5px;opacity:0;pointer-events:none;transition:opacity .2s;white-space:nowrap;max-width:86vw;overflow:hidden;text-overflow:ellipsis}
+  #toast.show{opacity:1}
+
+  /* overlays */
+  .overlay{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px;color:#eef8f5}
+  #title{background:radial-gradient(ellipse at 50% 35%,rgba(10,17,23,.45),rgba(3,5,8,.9) 72%);z-index:45;overflow-y:auto}
+  .kicker{font-size:10px;letter-spacing:6px;color:rgba(231,189,114,.92);margin-bottom:6px;text-shadow:0 2px 8px #000}
+  #title h1{margin:0;font-size:clamp(38px,6.3vw,68px);letter-spacing:.17em;text-indent:.17em;font-weight:800;color:#fff8e8;text-shadow:0 0 30px rgba(79,224,188,.19),0 0 55px rgba(231,189,114,.14),0 5px 18px #000}
+  #title h2{margin:5px 0 8px;font-size:clamp(10px,1.2vw,13px);font-weight:600;letter-spacing:.48em;text-indent:.48em;color:#9fb3c1}
+  .ruleline{width:min(680px,88vw);height:1px;background:linear-gradient(90deg,transparent,rgba(240,122,77,.65),rgba(231,189,114,.75),rgba(79,224,188,.65),transparent);margin:2px 0 9px}
+  #titleRecord{font-size:12.5px;letter-spacing:1px;color:#ffe2a6;margin-bottom:10px;text-shadow:0 2px 8px #000}
+  #titleRecord::before{content:"◇ ";color:var(--jade)}
+
+  .pick-wrap{width:min(760px,94vw);display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
+  .pick-col{background:rgba(6,10,15,.65);border:1px solid rgba(231,189,114,.17);border-radius:14px;padding:7px 8px 8px;backdrop-filter:blur(5px)}
+  .pick-col .pc-head{font-size:10px;letter-spacing:2px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;gap:8px}
+  .pick-col .pc-head b{color:#eef5f2;font-weight:600;letter-spacing:.5px}
+  .class-row{display:flex;gap:5px}
+  .class-chip{flex:1;min-width:0;border-radius:10px;border:1px solid rgba(255,255,255,.09);background:linear-gradient(180deg,rgba(20,28,36,.86),rgba(8,12,18,.9));color:#dbe7e4;padding:5px 2px 4px;font-size:11px;line-height:1.25;transition:.14s;position:relative;overflow:hidden}
+  .class-chip canvas{width:28px;height:28px;display:block;margin:0 auto 1px}
+  .class-chip .cn{display:block;font-weight:700;letter-spacing:.5px}
+  .class-chip .ct{display:block;font-size:8px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .class-chip:hover{border-color:rgba(231,189,114,.55);transform:translateY(-1px)}
+  .class-chip.sel{border-color:rgba(231,189,114,.8);background:linear-gradient(180deg,rgba(57,48,32,.85),rgba(16,18,20,.92));box-shadow:0 0 16px rgba(231,189,114,.12) inset}
+  .class-chip.sel::after{content:"";position:absolute;left:18%;right:18%;bottom:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold2),transparent)}
+  .class-chip[data-class="blade"].sel{border-color:rgba(240,122,77,.8)}
+  .class-chip[data-class="ranger"].sel{border-color:rgba(84,214,160,.8)}
+  .class-chip[data-class="mage"].sel{border-color:rgba(154,134,255,.8)}
+  #deckInfo{min-height:14px;font-size:9px;color:rgba(160,180,190,.85);margin-top:4px;letter-spacing:.2px}
+  #deckInfo .ca{color:var(--atk)} #deckInfo .cd{color:var(--def)} #deckInfo .cs{color:var(--spell)}
+
+  .modegrid{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;max-width:800px;margin-top:2px}
+  .modebtn{width:142px;padding:9px 8px 8px;border-radius:12px;border:1px solid rgba(231,189,114,.24);background:linear-gradient(180deg,rgba(19,29,36,.9),rgba(6,10,15,.94));color:#eff8f3;text-align:center;position:relative;transition:.15s;overflow:hidden}
+  .modebtn:hover{transform:translateY(-2px);border-color:rgba(231,189,114,.62);box-shadow:0 6px 20px rgba(231,189,114,.08)}
+  .modebtn .mt{display:block;font-size:9px;letter-spacing:1.6px;color:rgba(231,189,114,.82);margin-bottom:2px}
+  .modebtn .mn{display:block;font-size:16px;font-weight:700;letter-spacing:1.5px;color:#fff9eb}
+  .modebtn .ms{display:block;font-size:9.5px;color:#93a3b5;margin-top:2px;line-height:1.35}
+  .modebtn.rec{border-color:rgba(79,224,188,.42)}
+  .modebtn.rec::before{content:"推荐";position:absolute;right:6px;top:5px;font-size:8px;color:var(--jade2);border:1px solid rgba(79,224,188,.35);border-radius:6px;padding:0 4px}
+  .modebtn.local{border-color:rgba(154,134,255,.42);width:174px}
+
+  .guidecard{margin-top:9px;padding:6px 16px 5px;border-radius:12px;background:rgba(4,8,12,.72);border:1px solid rgba(231,189,114,.16);max-width:830px}
+  .howto{font-size:11px;line-height:1.75;color:#aabcc7}
+  .howto b{color:#f2fbf7;font-weight:600}
+  .howto .jade{color:var(--jade2)} .howto .gold{color:var(--gold2)} .howto .red{color:var(--red2)} .howto .vio{color:var(--violet2)}
+  .keys{margin-top:2px;font-size:10px;color:#8799a7;letter-spacing:.2px;line-height:1.5}
+  .keys kbd{display:inline-block;border:1px solid rgba(231,189,114,.3);border-bottom-color:rgba(231,189,114,.5);background:rgba(13,19,26,.9);border-radius:4px;padding:0 4px;color:#e9dcc1;font-family:inherit;font-size:9px;margin:0 1px}
+  .imprint{position:absolute;bottom:8px;left:0;right:0;font-size:9px;letter-spacing:2.5px;color:rgba(231,189,114,.5)}
+  .imprint span{color:rgba(79,224,188,.42)}
+
+  #end,#pause{background:radial-gradient(ellipse at 50% 40%,rgba(14,24,28,.72),rgba(2,4,7,.94) 72%)}
+  #end .end-kicker,#pause .end-kicker{font-size:10px;letter-spacing:6px;color:rgba(231,189,114,.88);margin-bottom:6px}
+  #end h1,#pause h1{margin:0;font-size:clamp(34px,5.1vw,56px);letter-spacing:.12em;text-indent:.12em;color:#fff8ea;text-shadow:0 0 28px rgba(79,224,188,.24),0 0 50px rgba(231,189,114,.16)}
+  #endd{margin:12px 0 17px;font-size:13.5px;line-height:1.9;color:#dce8e3;white-space:pre-line;text-shadow:0 2px 8px #000}
+  .btns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+  .btns button{padding:10px 22px;min-width:104px;border-radius:22px;border:1px solid rgba(231,189,114,.55);background:linear-gradient(180deg,#f5d696,#d3a75f);color:#1b1d1b;font-size:14px;font-weight:700;letter-spacing:2px;box-shadow:0 4px 18px rgba(213,167,95,.18)}
+  .btns button.ghost{background:rgba(10,16,21,.92);color:#e8ddc6;border-color:rgba(231,189,114,.3);box-shadow:none}
+  .btns button.ghost:hover{background:rgba(23,34,40,.95)}
+  .btns button:active{transform:translateY(1px)}
+  #pause .pause-hint{font-size:12px;color:#9db0bb;margin-top:12px}
+
+  /* privacy handoff */
+  #privacy{z-index:80;background:radial-gradient(ellipse at 50% 42%,rgba(16,34,36,.82),rgba(2,5,7,.98) 72%)}
+  #privacy .lock{width:66px;height:66px;border-radius:50%;border:1px solid rgba(79,224,188,.4);display:grid;place-items:center;font-size:30px;color:var(--jade2);margin-bottom:12px;box-shadow:0 0 32px rgba(79,224,188,.12) inset}
+  #privacy h2{margin:0 0 5px;font-size:clamp(26px,4vw,42px);letter-spacing:.15em;color:#f6fffb}
+  #privacy .who{font-size:14px;color:var(--gold2);letter-spacing:2px;margin-bottom:4px}
+  #privacy .privacy-note{font-size:11px;color:#8ea4af;line-height:1.7;margin-bottom:16px}
+  #privacy button{padding:11px 26px;border-radius:24px;border:1px solid rgba(79,224,188,.5);background:rgba(12,36,32,.9);color:var(--jade2);font-size:14px;letter-spacing:3px}
+  #privacy button:hover{background:rgba(18,54,47,.95)}
+  .privacy-handback{font-size:10px;color:#687e89;margin-top:12px;letter-spacing:1px}
+
+  /* ================= in-game HUD ================= */
+  #gameui{position:fixed;inset:0;z-index:20;pointer-events:none}
+  #gameui button,#gameui .card{pointer-events:auto}
+  .duelist{position:fixed;top:58px;width:min(330px,36vw);background:linear-gradient(180deg,rgba(8,14,20,.9),rgba(5,8,12,.86));border:1px solid rgba(231,189,114,.2);border-radius:14px;padding:8px 10px 7px;backdrop-filter:blur(6px);box-shadow:0 10px 30px rgba(0,0,0,.32);transition:border-color .2s,box-shadow .2s}
+  .duelist.p1{left:12px}
+  .duelist.p2{right:12px}
+  .duelist.active{border-color:rgba(79,224,188,.55);box-shadow:0 0 0 1px rgba(79,224,188,.12) inset,0 8px 30px rgba(0,0,0,.4)}
+  .duelist.dead{opacity:.7}
+  .dtop{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+  .dava{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.16);background:#0a1218;display:grid;place-items:center;font-size:15px;flex:0 0 auto}
+  .duelist.p1 .dava{box-shadow:0 0 12px rgba(240,122,77,.18) inset} .duelist.p2 .dava{box-shadow:0 0 12px rgba(154,134,255,.2) inset}
+  .dname{flex:1;min-width:0}
+  .dname b{display:block;font-size:13px;letter-spacing:.5px;color:#f5fbf7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dname span{display:block;font-size:8.5px;color:#8fa3af;letter-spacing:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .dside{font-size:8px;border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:1px 4px;color:#b9c8cf;white-space:nowrap}
+  .hprow{display:flex;align-items:center;gap:6px}
+  .hpbar{flex:1;height:12px;border-radius:6px;background:rgba(255,255,255,.07);overflow:hidden;position:relative;box-shadow:0 0 0 1px rgba(255,255,255,.05) inset}
+  .hpfill{height:100%;width:100%;border-radius:6px;background:linear-gradient(90deg,#1c7660,#43d69e,#b4ffe5);transition:width .25s ease}
+  .duelist.p2 .hpfill{background:linear-gradient(90deg,#6c4cc9,#a98cff,#e1d6ff)}
+  .hpnum{font-size:12px;font-weight:700;color:#f7fffa;min-width:38px;text-align:right;font-variant-numeric:tabular-nums}
+  .hpnum small{font-size:9px;color:#8197a3;font-weight:400}
+  .chips{display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;align-items:center}
+  .chip{font-size:9px;line-height:1.5;border-radius:7px;padding:1px 5px;border:1px solid rgba(255,255,255,.09);color:#b9cbd2;background:rgba(255,255,255,.03);white-space:nowrap}
+  .chip.block{color:#9ff9e5;border-color:rgba(79,224,188,.25);background:rgba(79,224,188,.07)}
+  .chip.burn{color:#ffad87;border-color:rgba(255,138,98,.3);background:rgba(255,138,98,.08)}
+  .chip.buff{color:#ffe0a2;border-color:rgba(231,189,114,.3);background:rgba(231,189,114,.07)}
+  .chip.hand{color:#d4dfe4}
+  .energy{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:10px;color:#ffe3a6;font-variant-numeric:tabular-nums}
+  .pips{display:flex;gap:2px}
+  .pip{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.1)}
+  .pip.on{background:linear-gradient(180deg,#ffe8a9,#e4b75e);border-color:rgba(255,240,190,.7);box-shadow:0 0 5px rgba(231,189,114,.45)}
+  .pip.max{background:rgba(231,189,114,.25);border-color:rgba(231,189,114,.35)}
+
+  #centerhud{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:22;width:min(360px,28vw);background:rgba(6,10,15,.86);border:1px solid rgba(231,189,114,.2);border-radius:14px;padding:7px 10px;backdrop-filter:blur(6px);text-align:center;pointer-events:none}
+  #turnTag{font-size:13px;font-weight:700;letter-spacing:1.5px;color:#fff4d5}
+  #turnSub{font-size:9px;letter-spacing:1px;color:#8ea2ad;margin-top:1px}
+  #logline{margin-top:4px;height:14px;overflow:hidden;font-size:9.5px;color:#9fb3bc;white-space:nowrap;text-overflow:ellipsis;line-height:14px}
+  @media (max-width:900px){ #centerhud{display:none} }
+
+  /* cards */
+  #handbar{position:fixed;left:0;right:0;bottom:0;z-index:24;display:flex;flex-direction:column;align-items:center;padding:0 8px 8px;pointer-events:none}
+  #handinfo{display:flex;align-items:center;gap:10px;padding:3px 12px 4px;border-radius:14px 14px 0 0;background:rgba(4,8,12,.55);border:1px solid rgba(231,189,114,.12);border-bottom:none;font-size:9.5px;color:#91a4af;pointer-events:none;margin-bottom:-1px}
+  #handinfo b{color:#f2e8ce;font-weight:600}
+  #handinfo .mini{color:#6e838e}
+  #hand{display:flex;gap:6px;align-items:flex-end;justify-content:center;max-width:min(96vw,1120px);overflow-x:auto;overflow-y:visible;padding:7px 6px 3px;pointer-events:auto;scrollbar-width:thin;scrollbar-color:rgba(231,189,114,.34) transparent;touch-action:pan-x;cursor:grab}
+  #hand.dragging{cursor:grabbing}
+  #hand::-webkit-scrollbar{height:4px}
+  #hand::-webkit-scrollbar-thumb{background:rgba(231,189,114,.34);border-radius:2px}
+  .card{width:112px;height:158px;flex:0 0 auto;border-radius:10px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,#151d25 0%,#0a1017 72%,#070b10 100%);color:#e9f3ee;position:relative;padding:5px 6px 5px;text-align:left;transition:transform .14s,box-shadow .14s,border-color .14s,opacity .15s;box-shadow:0 7px 16px rgba(0,0,0,.38),0 1px 0 rgba(255,255,255,.06) inset;overflow:hidden}
+  .card:hover{transform:translateY(-5px);border-color:rgba(255,236,188,.5);box-shadow:0 12px 24px rgba(0,0,0,.5)}
+  .card.sel{transform:translateY(-9px);border-color:rgba(255,231,166,.9);box-shadow:0 0 0 1px rgba(255,231,166,.25) inset,0 0 22px rgba(231,189,114,.22),0 12px 26px rgba(0,0,0,.5)}
+  .card.off{opacity:.48}
+  .card.off:hover{transform:none}
+  .card.dead{opacity:.3;pointer-events:none}
+  .c-cost{position:absolute;left:5px;top:5px;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;color:#1a1a14;background:radial-gradient(circle at 35% 30%,#fff0b2,#e6b95e 68%,#9a7131);border:1px solid rgba(255,246,205,.8);box-shadow:0 1px 5px rgba(0,0,0,.4)}
+  .c-cat{position:absolute;right:5px;top:5px;font-size:8px;letter-spacing:.5px;padding:1px 4px;border-radius:5px;border:1px solid rgba(255,255,255,.14)}
+  .card[data-cat="attack"] .c-cat{color:var(--atk);background:rgba(255,138,98,.08);border-color:rgba(255,138,98,.28)}
+  .card[data-cat="defense"] .c-cat{color:var(--def);background:rgba(101,224,194,.07);border-color:rgba(101,224,194,.25)}
+  .card[data-cat="spell"] .c-cat{color:var(--spell);background:rgba(185,160,255,.08);border-color:rgba(185,160,255,.28)}
+  .c-art{width:100%;height:58px;margin-top:21px;border-radius:6px;overflow:hidden;background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.055)}
+  .c-art canvas{width:100%;height:100%;display:block}
+  .c-name{font-size:11px;font-weight:700;letter-spacing:.4px;margin-top:4px;text-align:center;color:#f4fbf6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .c-en{font-size:7px;letter-spacing:.4px;text-align:center;color:#6d818d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:-1px}
+  .c-text{font-size:8px;line-height:1.35;color:#a9bcc3;margin-top:3px;height:33px;overflow:hidden;text-align:center}
+  .c-key{position:absolute;left:5px;bottom:4px;font-size:8px;color:#5f747f;border:1px solid rgba(255,255,255,.07);border-radius:3px;padding:0 2px;line-height:1.35}
+  .c-deco{position:absolute;right:-16px;bottom:-18px;width:72px;height:72px;border-radius:50%;background:radial-gradient(circle,rgba(231,189,114,.08),transparent 68%);pointer-events:none}
+  .card[data-cat="attack"]{background:linear-gradient(165deg,#22171a 0%,#0c1116 68%,#080b0f 100%)}
+  .card[data-cat="defense"]{background:linear-gradient(165deg,#12241f 0%,#0a1216 68%,#080b0f 100%)}
+  .card[data-cat="spell"]{background:linear-gradient(165deg,#1b192b 0%,#0b1118 68%,#080b0f 100%)}
+  .card[data-cat="attack"]::before,.card[data-cat="defense"]::before,.card[data-cat="spell"]::before{content:"";position:absolute;left:8%;right:8%;top:0;height:2px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
+  .card[data-cat="attack"]::before{background:linear-gradient(90deg,transparent,rgba(255,138,98,.7),transparent)}
+  .card[data-cat="defense"]::before{background:linear-gradient(90deg,transparent,rgba(101,224,194,.7),transparent)}
+  .card[data-cat="spell"]::before{background:linear-gradient(90deg,transparent,rgba(185,160,255,.7),transparent)}
+
+  #actionbar{position:fixed;left:50%;bottom:214px;transform:translateX(-50%);z-index:26;display:flex;gap:8px;align-items:center;pointer-events:none}
+  #actionbar button{pointer-events:auto;border-radius:20px;border:1px solid rgba(231,189,114,.4);background:rgba(7,12,17,.92);color:#efe5ce;padding:8px 16px;font-size:12px;letter-spacing:1px;transition:.15s;min-width:92px}
+  #actionbar button:hover{background:rgba(23,32,39,.96);border-color:rgba(231,189,114,.7)}
+  #actionbar button:disabled{opacity:.32;cursor:default}
+  #actionbar #endturn{border-color:rgba(79,224,188,.45);color:var(--jade2);background:rgba(8,25,22,.92)}
+  #actionbar #endturn:hover:not(:disabled){background:rgba(13,43,37,.96)}
+  #selhint{font-size:9px;color:#8498a3;max-width:190px;text-align:center;background:rgba(5,9,13,.6);padding:5px 9px;border-radius:10px;border:1px solid rgba(231,189,114,.1);pointer-events:none}
+  @media (max-width:900px){
+    #actionbar{bottom:198px;gap:6px}
+    #actionbar button{padding:7px 11px;font-size:11px;min-width:72px}
+    #selhint{display:none}
+    .card{width:98px;height:146px}
+    .c-art{height:52px;margin-top:20px}
+    .c-text{height:31px}
+    .duelist{width:min(320px,44vw)}
+  }
+  @media (max-width:640px){
+    #topbar button{width:36px;height:36px;font-size:14px}
+    .pick-wrap{grid-template-columns:1fr}
+    .modebtn{width:31vw;min-width:100px;padding:7px 5px}
+    .modebtn.local{width:42vw}
+    .modebtn .mn{font-size:14px}
+    .modebtn .ms{font-size:8px}
+    .guidecard{padding:5px 8px}
+    .howto{font-size:10px;line-height:1.55}
+    .keys{font-size:9px}
+    #title h1{font-size:34px}
+    #title h2{letter-spacing:.28em;text-indent:.28em}
+    .duelist{top:54px;width:46vw;padding:5px 6px}
+    .duelist.p1{left:5px} .duelist.p2{right:5px}
+    .dava{width:26px;height:26px;font-size:12px}
+    .dname b{font-size:11px} .dname span{font-size:7.5px}
+    .chips .chip.hand{display:none}
+    .pips{display:none}
+    .card{width:86px;height:128px;padding:4px 4px}
+    .c-cost{width:19px;height:19px;font-size:10px;left:4px;top:4px}
+    .c-cat{font-size:7px;right:4px;top:4px}
+    .c-art{height:44px;margin-top:18px}
+    .c-name{font-size:9.5px} .c-en{display:none}
+    .c-text{font-size:7px;height:26px;line-height:1.25}
+    .c-key{display:none}
+    #hand{gap:4px;padding:5px 3px 2px}
+    #actionbar{bottom:178px}
+    #actionbar button{padding:6px 9px;font-size:10px;min-width:62px}
+    #toast{bottom:228px;font-size:11px}
+    #endd{font-size:12px}
+  }
+
+  @media (max-width:480px){
+    .card{width:calc((100vw - 50px)/5);height:112px;padding:3px 3px}
+    .c-cost{width:18px;height:18px;font-size:9px;left:3px;top:3px}
+    .c-cat{font-size:6.5px;right:3px;top:3px;padding:0 3px}
+    .c-art{height:34px;margin-top:16px}
+    .c-name{font-size:8px;letter-spacing:0}
+    .c-text{font-size:6.2px;line-height:1.18;height:22px;margin-top:2px}
+    .c-en,.c-key{display:none}
+    .duelist{width:47vw;padding:4px 5px}
+    .dava{width:23px;height:23px;font-size:10px}
+    .dname b{font-size:10px}.dname span{font-size:7px}
+    .chip{font-size:8px;padding:0 3px}
+    .hpnum{font-size:10px;min-width:31px}
+    .hpbar{height:9px}
+    #handinfo{font-size:8.5px;gap:6px;padding:2px 8px 3px}
+    #actionbar{bottom:168px}
+    #toast{bottom:218px}
+  }
+  @media (max-height:560px){
+    #title h1{font-size:38px}
+    .guidecard{display:none}
+    .pick-wrap{margin-bottom:5px}
+    .imprint{bottom:4px}
+    #actionbar{bottom:190px}
+  }
+
+  /* duel help overlay */
+  .help-open{position:fixed;left:12px;top:12px;z-index:60;display:block;margin:0;padding:8px 16px;border-radius:999px;border:1px solid var(--dh-accent,#ffb547);background:rgba(6,13,18,.92);color:var(--dh-accent,#ffb547);font:inherit;font-size:11px;letter-spacing:1.6px;cursor:pointer;transition:background .15s,transform .12s;backdrop-filter:blur(6px);box-shadow:0 4px 24px rgba(0,0,0,.45);white-space:nowrap}
+  .help-open:hover{background:rgba(32,50,54,.95);transform:translateY(-2px)}
+  .help-open:active{transform:translateY(0)}
+  #helpModal{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(2,6,10,.84);backdrop-filter:blur(7px)}
+  #helpModal.hide{display:none!important}
+  .dh-sheet{width:min(790px,96vw);max-height:90vh;overflow:auto;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(150deg,#111b23,#070d12);box-shadow:0 28px 90px rgba(0,0,0,.7);padding:clamp(16px,3vw,26px);font-family:inherit;color:#dbe7ef;scrollbar-width:thin}
+  .dh-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:12px}
+  .dh-kicker{font-size:9px;letter-spacing:2.8px;color:var(--dh-accent,#ffb547);font-weight:800}
+  .dh-head h2{margin:3px 0 0;font-family:inherit;font-size:clamp(22px,4vw,30px);letter-spacing:3px;color:#f4fbff;text-shadow:none}
+  .dh-close{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#cfdee8;font-size:16px;cursor:pointer}
+  .dh-close:hover{background:rgba(255,255,255,.14);color:#fff}
+  .dh-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .dh-col{border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.035);padding:13px 14px}
+  .dh-col h3{margin:0 0 9px;font-family:inherit;font-size:15px;letter-spacing:1.5px;color:var(--dh-accent,#ffb547);display:flex;align-items:center;gap:7px}
+  .dh-col h3 span{font-size:9px;letter-spacing:1px;color:#7e96a6;border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:1px 7px}
+  .dh-label{display:block;margin:8px 0 4px;font-size:9px;letter-spacing:1.8px;color:#7e96a6;font-weight:700}
+  .dh-col ul{margin:0;padding-left:16px;font-size:12px;line-height:1.75;color:#c3d4de}
+  .dh-col li{margin:2px 0}
+  .dh-col b{color:#fff3d0;font-weight:700}
+  .dh-col kbd{display:inline-block;padding:0 4px;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);font-family:inherit;font-size:10px;line-height:1.55;color:#fff}
+  .dh-foot{margin-top:12px;text-align:center;font-size:10px;letter-spacing:1.2px;color:#6e8493}
+  @media (max-width:640px){.dh-grid{grid-template-columns:1fr}.dh-sheet{max-height:92vh}.dh-col{padding:11px 12px}.dh-col ul{font-size:11.5px}}
+
+</style>
+<script>
+window.__BOOTERR = [];
+window.__EXTREQ = 0;
+(function(){
+  function pushErr(msg){
+    msg = String(msg || 'script error');
+    if (window.__BOOTERR.indexOf(msg) < 0) window.__BOOTERR.push(msg);
+    if (window.__G && window.__G.err && window.__G.err.indexOf(msg) < 0) window.__G.err.push(msg);
+  }
+  window.addEventListener('error', function(e){
+    if (e && e.target && (e.target.src || e.target.href)) pushErr('resource error: ' + (e.target.src || e.target.href));
+    else pushErr(e && e.message ? e.message : 'script error');
+  }, true);
+  window.addEventListener('unhandledrejection', function(e){
+    pushErr('unhandledrejection: ' + (e && e.reason ? e.reason : 'unknown'));
+  });
+  // Audit hook: count any attempt to reach an external origin. No network is
+  // needed by the game itself, so these counters must stay at zero.
+  function external(u){
+    try { u = String(u || ''); return /^(https?:)?\/\//i.test(u) && !/^https?:\/\/(127\.0\.0\.1|localhost)(:|\/|$)/i.test(u); } catch (e) { return false; }
+  }
+  try {
+    var of = window.fetch;
+    if (of) window.fetch = function(input){
+      try { var u = typeof input === 'string' ? input : (input && input.url); if (external(u)) window.__EXTREQ++; } catch (e) {}
+      return of.apply(this, arguments);
+    };
+  } catch (e) {}
+  try {
+    var xo = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function(method, url){
+      try { if (external(url)) window.__EXTREQ++; } catch (e) {}
+      return xo.apply(this, arguments);
+    };
+  } catch (e) {}
+})();
+</script>
+</head>
+<body>
+<canvas id="stage" aria-label="斗牌竞技场对局画布"></canvas>
+
+<div id="topbar">
+  <button id="homebtn" class="hide" title="回标题" aria-label="回标题">⌂</button>
+  <button id="mutebtn" title="静音 (M)" aria-label="静音">♪</button>
+  <button id="pausebtn" title="暂停 (P)" aria-label="暂停" disabled>❚❚</button>
+</div>
+
+<div id="toast"></div>
+
+<div id="title" class="overlay">
+  <div class="kicker">LIGHTGAME · 第 15 铺</div>
+  <h1>斗牌竞技场</h1>
+  <h2>CARD DUEL ARENA</h2>
+  <div class="ruleline"></div>
+  <div id="titleRecord">战绩 0 胜 0 负 · 最佳 0</div>
+
+  <div class="pick-wrap">
+    <div class="pick-col">
+      <div class="pc-head"><b>P1 / 你</b><span>职业 · 起手五张</span></div>
+      <div class="class-row" id="p1classes">
+        <button class="class-chip sel" data-side="p1" data-class="blade"><canvas width="56" height="56"></canvas><span class="cn">剑士</span><span class="ct">克 游侠</span></button>
+        <button class="class-chip" data-side="p1" data-class="ranger"><canvas width="56" height="56"></canvas><span class="cn">游侠</span><span class="ct">克 法师</span></button>
+        <button class="class-chip" data-side="p1" data-class="mage"><canvas width="56" height="56"></canvas><span class="cn">法师</span><span class="ct">克 剑士</span></button>
+      </div>
+      <div id="deckInfo"></div>
+    </div>
+    <div class="pick-col">
+      <div class="pc-head"><b id="p2head">P2 / AI 对手</b><span id="p2note">职业</span></div>
+      <div class="class-row" id="p2classes">
+        <button class="class-chip" data-side="p2" data-class="blade"><canvas width="56" height="56"></canvas><span class="cn">剑士</span><span class="ct">克 游侠</span></button>
+        <button class="class-chip sel" data-side="p2" data-class="ranger"><canvas width="56" height="56"></canvas><span class="cn">游侠</span><span class="ct">克 法师</span></button>
+        <button class="class-chip" data-side="p2" data-class="mage"><canvas width="56" height="56"></canvas><span class="cn">法师</span><span class="ct">克 剑士</span></button>
+      </div>
+      <div id="p2Info" class="ct" style="font-size:9px;color:#879aa6;min-height:14px;margin-top:4px">后手补偿：开局 3 点护甲</div>
+    </div>
+  </div>
+
+  <div class="modegrid">
+    <button class="modebtn" data-mode="ai" data-diff="1"><span class="mt">单人对 AI · 一</span><span class="mn">易</span><span class="ms">随机合法出牌<br>熟悉规则</span></button>
+    <button class="modebtn rec" data-mode="ai" data-diff="2"><span class="mt">单人对 AI · 二</span><span class="mn">中</span><span class="ms">贪心价值<br>会换牌会防守</span></button>
+    <button class="modebtn" data-mode="ai" data-diff="3"><span class="mt">单人对 AI · 三</span><span class="mn">难</span><span class="ms">一回合前瞻<br>会算你的反击</span></button>
+    <button class="modebtn local" data-mode="local" data-diff="2"><span class="mt">同屏对战</span><span class="mn">本地双人</span><span class="ms">轮流操作 · 隐私交接</span></button>
+  </div>
+
+  <div class="guidecard">
+    <div class="howto">
+      1v1 回合制卡牌：双方 <b>30 生命</b>，起手 5 张、每回合抽 1 张；能量从 1 开始每回合 +1（上限 10）。<br>
+      攻击 / 防御 / 法术三类牌 · <span class="red">剑士克游侠</span> → <span class="jade">游侠克法师</span> → <span class="vio">法师克剑士</span>（克制方伤害 ×1.15）· 后手开局 3 点护甲。
+    </div>
+    <div class="keys">
+      <kbd>1</kbd>–<kbd>5</kbd> 选牌 · <kbd>Enter</kbd> 出牌 · <kbd>E</kbd> 结束回合 · <kbd>P</kbd> 暂停 · <kbd>M</kbd> 静音 · <kbd>R</kbd> 重开 · 鼠标/触屏点牌两次出牌
+    </div>
+  </div>
+  <button type="button" class="help-open" id="helpOpen" aria-haspopup="dialog" aria-controls="helpModal">玩法说明 · 双人 / 人机</button>
+  <div class="imprint">LIGHTGAME <span>◆</span> CARD DUEL ARENA</div>
+</div>
+
+<div id="privacy" class="overlay hide">
+  <div class="lock">✧</div>
+  <h2>交接手机</h2>
+  <div class="who" id="privacyWho">P2 的回合</div>
+  <div class="privacy-note">请将设备交给下一位玩家。<br>对方手牌已隐藏，继续后才会显示。</div>
+  <button id="privacyContinue">按 空格 继续</button>
+  <div class="privacy-handback">本地双人 · 隐藏手牌</div>
+</div>
+
+<div id="gameui" class="hide">
+  <div id="centerhud">
+    <div id="turnTag">你的回合</div>
+    <div id="turnSub">第 1 回合 · 能量 1/1</div>
+    <div id="logline">选择一张牌，再次点击或 Enter 打出</div>
+  </div>
+
+  <div class="duelist p1" id="panelP1">
+    <div class="dtop">
+      <div class="dava" id="avaP1">⚔</div>
+      <div class="dname"><b id="nameP1">你 · 赤刃剑士</b><span id="clsP1">BLADE VANGUARD · 克 游侠</span></div>
+      <div class="dside" id="sideP1">P1</div>
+    </div>
+    <div class="hprow"><div class="hpbar"><div class="hpfill" id="hpFillP1"></div></div><div class="hpnum"><span id="hpValP1">30</span><small>/30</small></div></div>
+    <div class="chips">
+      <span class="chip block" id="blockP1">护甲 0</span>
+      <span class="chip hand" id="handP1">手牌 5</span>
+      <span class="chip" id="deckP1">牌库 15</span>
+      <span class="energy"><span id="energyP1">1/1</span><span class="pips" id="pipsP1"></span></span>
+    </div>
+  </div>
+
+  <div class="duelist p2" id="panelP2">
+    <div class="dtop">
+      <div class="dava" id="avaP2">✦</div>
+      <div class="dname"><b id="nameP2">游侠 · 中档 AI</b><span id="clsP2">JADE RANGER · 克 法师</span></div>
+      <div class="dside" id="sideP2">P2</div>
+    </div>
+    <div class="hprow"><div class="hpbar"><div class="hpfill" id="hpFillP2"></div></div><div class="hpnum"><span id="hpValP2">30</span><small>/30</small></div></div>
+    <div class="chips">
+      <span class="chip block" id="blockP2">护甲 0</span>
+      <span class="chip hand" id="handP2">手牌 5</span>
+      <span class="chip" id="deckP2">牌库 15</span>
+      <span class="energy"><span id="energyP2">1/1</span><span class="pips" id="pipsP2"></span></span>
+    </div>
+  </div>
+
+  <div id="handbar">
+    <div id="handinfo"><span>手牌 <b id="handCount">5</b></span><span>·</span><span id="turnInfo">你的回合</span><span class="mini" id="classInfo">剑士 vs 游侠</span></div>
+    <div id="hand" aria-label="手牌区域"></div>
+  </div>
+
+  <div id="actionbar">
+    <div id="selhint">点击选中 · 再点出牌</div>
+    <button id="playbtn" disabled>出牌 ⏎</button>
+    <button id="endturn">结束回合 E</button>
+  </div>
+</div>
+
+<div id="pause" class="overlay hide">
+  <div class="end-kicker">PAUSED · 暂停</div>
+  <h1>牌 局 暂 停</h1>
+  <div class="btns">
+    <button id="resume">继续</button>
+    <button id="restart2" class="ghost">重开</button>
+    <button id="home2" class="ghost">回标题</button>
+  </div>
+  <div class="pause-hint">按 P 继续 · R 重开 · M 静音</div>
+</div>
+
+<div id="end" class="overlay hide">
+  <div class="end-kicker" id="endKick">DUEL RESULT · 对局结算</div>
+  <h1 id="endTitle">胜 负 已 分</h1>
+  <div id="endd"></div>
+  <div class="btns">
+    <button id="again">再来一局</button>
+    <button id="change" class="ghost">换职业</button>
+    <button id="home" class="ghost">回标题</button>
+    <button id="share" class="ghost">分享</button>
+  </div>
+</div>
+
+<div id="helpModal" class="hide" style="--dh-accent:#9be7c4" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="dh-sheet">
+    <div class="dh-head">
+      <div><div class="dh-kicker">HOW TO PLAY · DUEL ARENA</div><h2 id="helpTitle">玩 法 说 明</h2></div>
+      <button type="button" class="dh-close" id="helpClose" aria-label="关闭玩法说明">✕</button>
+    </div>
+    <div class="dh-grid">
+      <section class="dh-col" aria-label="双人对战说明">
+        <h3>双人对战 <span>本地同屏</span></h3>
+        <span class="dh-label">键位</span>
+        <ul><li>双人轮流操作；本地模式开始时出现隐私交接页，按 <kbd>Space</kbd> 交给下一位玩家。</li><li><kbd>1</kbd>–<kbd>5</kbd> 选牌 · <kbd>Enter</kbd> 出牌 · <kbd>E</kbd> 结束回合；也可点牌两次出牌。</li></ul>
+        <span class="dh-label">规则</span>
+        <ul><li>双方 30 生命、起手 5 张、每回合抽 1；能量初始 1，每回合 +1，上限 10。</li><li>攻击 / 防御 / 法术三类牌；剑士克游侠、游侠克法师、法师克剑士（克制方伤害 ×1.15）。</li></ul>
+      </section>
+      <section class="dh-col" aria-label="人机对战说明">
+        <h3>人机对战 <span>三档 AI</span></h3>
+        <span class="dh-label">键位</span>
+        <ul><li>选择易 / 中 / 难三档 AI；人机模式你固定为 P1。</li><li>键位同双人模式；鼠标 / 触屏点牌两次出牌，按结束回合按钮过回合。</li></ul>
+        <span class="dh-label">规则</span>
+        <ul><li>易 = 随机合法出牌；中 = 贪心价值；难 = 一回合前瞻，会计算你的反击。</li><li>三档 AI 与玩家共用 20 张牌库、三职业、能量和先手规则，不偷看手牌。</li></ul>
+      </section>
+    </div>
+    <div class="dh-foot">P 暂停 · M 静音 · 右上角关闭 · 按 Esc 也可关闭</div>
+  </div>
+</div>
+
+<script src="static/play68.js"></script>
+<script src="static/play68bar.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

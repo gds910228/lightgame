@@ -1,0 +1,32 @@
+{
+  "id": "card-duel-arena",
+  "title": "Card Duel Arena 斗牌竞技场",
+  "category": [
+    "Card",
+    "Strategy",
+    "Duel",
+    "Local Multiplayer",
+    "Guizang"
+  ],
+  "description": "A deterministic 1v1 turn-based card duel. Choose one of three 20-card class decks - Blade Vanguard, Jade Ranger or Storm Arcanist - and trade attacks, guards, burn, buffs and energy plays on a jade tabletop. Each player starts at 30 HP, draws a five-card opening hand and one card per turn, and grows maximum energy from 1 to 10. A documented rock-paper-scissors class triangle grants a 1.15x damage bonus. Play a local hotseat match with a hidden-hand handoff screen, or face three AI tiers: random-legal, greedy-value and one-turn lookahead. Includes procedural card art, synthesized WebAudio, a shareable score and persistent win/loss records.",
+  "controls": "Mouse or touch: tap a card once to select it, tap it again (or tap Play) to play it; tap End Turn. Keyboard: 1-5 selects a card, Enter plays the selected card, E ends the turn, P pauses, M mutes, R restarts. In local two-player hotseat mode either side uses the same controls after the handoff overlay (Space resumes). Choose P1 and P2 classes on the title screen, then pick Easy, Medium, Hard or Local. Cards cost energy; maximum energy rises by 1 each of your turns up to 10. Use attacks, defensive armour, healing and spell buffs to reduce the opponent from 30 HP to zero. Class counters deal 1.15x damage: Blade beats Ranger, Ranger beats Mage, Mage beats Blade.",
+  "type": "local",
+  "path": "/games/card-duel-arena/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": [
+    "card",
+    "turn-based",
+    "strategy",
+    "duel",
+    "local-multiplayer",
+    "ai",
+    "canvas",
+    "web-audio",
+    "procedural",
+    "guizang"
+  ],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-26"
+}
