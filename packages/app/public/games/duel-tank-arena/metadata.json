@@ -1,0 +1,16 @@
+{
+  "id": "duel-tank-arena",
+  "title": "Duel Tank Arena 钢铁前线",
+  "category": ["Action", "Shooting", "Local Multiplayer", "Duel"],
+  "description": "A top-down 1v1 tank duel in a compact steel arena. Pick from five weapons (cannon, five-pellet spread, instant laser, homing missile and proximity mine), fight across three handcrafted cover maps and win a best-of-five match. Play local two-player on one keyboard or one screen with split touch pads, or challenge three AI tiers: a patrolling rookie, a predictive veteran, and an ace that leads its shots, dodges incoming shells and uses cover. Fully procedural Canvas art and synthesized WebAudio; all ammo, armor and balance numbers are tuned through a 200-game per-tier AI self-play bench.",
+  "controls": "Local two-player: P1 uses WASD to move, F to fire, 1-5 to pick a weapon, Q/E to cycle. P2 uses the arrow keys to move, J to fire, 6-0 to pick a weapon, U/O to cycle. On touch screens each player gets a separate direction pad, fire button and weapon button. In solo mode, choose Rookie, Veteran or Ace AI from the title screen. The turret auto-tracks the rival; use cover, strafing and weapon timing to win. First to three round wins takes the BO5. P pauses, M mutes, R restarts.",
+  "type": "local",
+  "path": "/games/duel-tank-arena/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "image": "./thumbnail.jpg",
+  "tags": ["2d", "tank", "duel", "local-multiplayer", "ai", "arena", "bo5", "canvas"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": true,
+  "date_added": "2026-11-26"
+}

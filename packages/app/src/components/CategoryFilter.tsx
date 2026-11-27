@@ -16,6 +16,7 @@ const categoryIcons: Record<string, string> = {
   'Arcade': 'fa-ghost',
   'Racing': 'fa-car',
   'Multiplayer': 'fa-users',
+  'Duel': 'fa-bolt',
 }
 
 const CategoryFilter = ({ onItemClick }: CategoryFilterProps) => {

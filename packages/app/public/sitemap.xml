@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://games.misitebo.win/</loc>
-    <lastmod>2026-11-19T00:00:00+00:00</lastmod>
+    <lastmod>2026-11-26T00:00:00+00:00</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -81,6 +81,12 @@
   <url>
     <loc>https://games.misitebo.win/game/car-crash-rally</loc>
     <lastmod>2026-11-19T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://games.misitebo.win/game/card-duel-arena</loc>
+    <lastmod>2026-11-26T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -175,6 +181,12 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://games.misitebo.win/game/duel-tank-arena</loc>
+    <lastmod>2026-11-26T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://games.misitebo.win/game/echo-hour</loc>
     <lastmod>2026-11-20T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
@@ -207,6 +219,12 @@
   <url>
     <loc>https://games.misitebo.win/game/find-the-different-face</loc>
     <lastmod>2026-11-19T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://games.misitebo.win/game/five-in-row-master</loc>
+    <lastmod>2026-11-26T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -417,6 +435,12 @@
   <url>
     <loc>https://games.misitebo.win/game/pink-blue-love-match</loc>
     <lastmod>2026-11-19T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://games.misitebo.win/game/pong-duel-plus</loc>
+    <lastmod>2026-11-26T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -645,6 +669,12 @@
   <url>
     <loc>https://games.misitebo.win/game/twins-match-up</loc>
     <lastmod>2026-11-19T00:00:00+00:00</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://games.misitebo.win/game/western-showdown-trio</loc>
+    <lastmod>2026-11-26T00:00:00+00:00</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>

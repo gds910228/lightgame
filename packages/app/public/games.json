@@ -306,6 +306,39 @@
       "thumbnail": "/games/car-crash-rally/hczz.png"
     },
     {
+      "id": "card-duel-arena",
+      "title": "Card Duel Arena 斗牌竞技场",
+      "category": [
+        "Card",
+        "Strategy",
+        "Duel",
+        "Local Multiplayer",
+        "Guizang"
+      ],
+      "description": "A deterministic 1v1 turn-based card duel. Choose one of three 20-card class decks - Blade Vanguard, Jade Ranger or Storm Arcanist - and trade attacks, guards, burn, buffs and energy plays on a jade tabletop. Each player starts at 30 HP, draws a five-card opening hand and one card per turn, and grows maximum energy from 1 to 10. A documented rock-paper-scissors class triangle grants a 1.15x damage bonus. Play a local hotseat match with a hidden-hand handoff screen, or face three AI tiers: random-legal, greedy-value and one-turn lookahead. Includes procedural card art, synthesized WebAudio, a shareable score and persistent win/loss records.",
+      "controls": "Mouse or touch: tap a card once to select it, tap it again (or tap Play) to play it; tap End Turn. Keyboard: 1-5 selects a card, Enter plays the selected card, E ends the turn, P pauses, M mutes, R restarts. In local two-player hotseat mode either side uses the same controls after the handoff overlay (Space resumes). Choose P1 and P2 classes on the title screen, then pick Easy, Medium, Hard or Local. Cards cost energy; maximum energy rises by 1 each of your turns up to 10. Use attacks, defensive armour, healing and spell buffs to reduce the opponent from 30 HP to zero. Class counters deal 1.15x damage: Blade beats Ranger, Ranger beats Mage, Mage beats Blade.",
+      "type": "local",
+      "path": "/games/card-duel-arena/index.html",
+      "thumbnail": "/games/card-duel-arena/thumbnail.jpg",
+      "tags": [
+        "card",
+        "turn-based",
+        "strategy",
+        "duel",
+        "local-multiplayer",
+        "ai",
+        "canvas",
+        "web-audio",
+        "procedural",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-26",
+      "image": "/games/card-duel-arena/thumbnail.jpg"
+    },
+    {
       "id": "cash-catch-rush",
       "title": "Cash Catch Rush",
       "category": "Arcade",
@@ -663,6 +696,36 @@
       "type": "local"
     },
     {
+      "id": "duel-tank-arena",
+      "title": "Duel Tank Arena 钢铁前线",
+      "category": [
+        "Action",
+        "Shooting",
+        "Local Multiplayer",
+        "Duel"
+      ],
+      "description": "A top-down 1v1 tank duel in a compact steel arena. Pick from five weapons (cannon, five-pellet spread, instant laser, homing missile and proximity mine), fight across three handcrafted cover maps and win a best-of-five match. Play local two-player on one keyboard or one screen with split touch pads, or challenge three AI tiers: a patrolling rookie, a predictive veteran, and an ace that leads its shots, dodges incoming shells and uses cover. Fully procedural Canvas art and synthesized WebAudio; all ammo, armor and balance numbers are tuned through a 200-game per-tier AI self-play bench.",
+      "controls": "Local two-player: P1 uses WASD to move, F to fire, 1-5 to pick a weapon, Q/E to cycle. P2 uses the arrow keys to move, J to fire, 6-0 to pick a weapon, U/O to cycle. On touch screens each player gets a separate direction pad, fire button and weapon button. In solo mode, choose Rookie, Veteran or Ace AI from the title screen. The turret auto-tracks the rival; use cover, strafing and weapon timing to win. First to three round wins takes the BO5. P pauses, M mutes, R restarts.",
+      "type": "local",
+      "path": "/games/duel-tank-arena/index.html",
+      "thumbnail": "/games/duel-tank-arena/thumbnail.jpg",
+      "image": "/games/duel-tank-arena/thumbnail.jpg",
+      "tags": [
+        "2d",
+        "tank",
+        "duel",
+        "local-multiplayer",
+        "ai",
+        "arena",
+        "bo5",
+        "canvas"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": true,
+      "date_added": "2026-11-26"
+    },
+    {
       "id": "echo-hour",
       "title": "Echo Hour 回声之时",
       "category": [
@@ -795,6 +858,39 @@
       "version": "1.0.0",
       "path": "/games/find-the-different-face/index.html",
       "type": "local"
+    },
+    {
+      "id": "five-in-row-master",
+      "title": "Five in Row Master 五子棋大师",
+      "category": [
+        "Duel",
+        "Board Game",
+        "Strategy",
+        "Turn-Based",
+        "Guizang"
+      ],
+      "description": "A 15x15 gomoku duel on a procedurally rendered wooden board. Connect five stones horizontally, vertically or diagonally while reading your opponent's threats. Play local two-player in alternating turns, or challenge a three-tier AI: a greedy heuristic newcomer, a depth-2 alpha-beta tactician, and a depth-4 attack-oriented expert. Human players take black and move first in AI mode. Optional simplified renju forbidden rules restrict black's overline, double-four and double-three moves. Undo, a scrollable move-history list with board review, last-move and winning-line markers, career wins for both sides and synthesized WebAudio are included. No external assets or requests.",
+      "controls": "Mouse or touch: tap an intersection to place a stone. Keyboard: WASD or arrow keys move the board cursor, Enter or Space places a stone. U or Backspace undoes, F toggles forbidden rules, R restarts, P pauses, M mutes, Esc returns to the title screen. Choose AI easy/medium/hard or local two-player from the title menu. In local two-player both sides share the device and alternate black/white turns; in AI mode you always play black and move first. Click any row in the move history to highlight and review that move on the board.",
+      "type": "local",
+      "path": "/games/five-in-row-master/index.html",
+      "thumbnail": "/games/five-in-row-master/thumbnail.jpg",
+      "tags": [
+        "gomoku",
+        "five-in-row",
+        "board-game",
+        "duel",
+        "strategy",
+        "turn-based",
+        "ai",
+        "local-multiplayer",
+        "canvas",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-26",
+      "image": "/games/five-in-row-master/thumbnail.jpg"
     },
     {
       "id": "fly-higher-challenge",
@@ -1586,6 +1682,40 @@
         "fortune"
       ],
       "thumbnail": "/games/pink-blue-love-match/cover.svg"
+    },
+    {
+      "id": "pong-duel-plus",
+      "title": "Pong Duel Plus 乒乓对决",
+      "category": [
+        "Sports",
+        "Arcade",
+        "Duel",
+        "Local Multiplayer",
+        "Guizang"
+      ],
+      "description": "A midnight paper-lantern pong duel for one or two players. The hit position on your paddle sets the outgoing angle, and your paddle's swing velocity at contact adds spin that visibly bends the ball. Three power-ups change the rally: a longer paddle, a slow ball, and phantom decoy balls that distract without ever changing the real deterministic ball. First to exactly 11 points wins. Face three AI tiers (slow follow / bounce prediction / edge-aiming spin control) or play local two-player on one keyboard (W/S vs arrow keys) with split-screen touch drag zones. Rally length and both sides' match wins persist locally. Fully procedural Canvas art and synthesized WebAudio - no external assets or requests.",
+      "controls": "P1: W / S to move the left paddle. P2 (local mode): Up / Down arrows. In single-player the arrows also move P1. Touch: drag vertically in the left/right split zones, or use the on-screen up/down pads. P pauses, M mutes, R restarts. Hit the ball with the paddle edge for sharper angles; swing your paddle as you hit to add curve. Collect extend (long paddle), slow (slow ball) or phantom (decoy ghosts) power-ups by touching them with the ball. First to exactly 11 points wins.",
+      "type": "local",
+      "path": "/games/pong-duel-plus/index.html",
+      "thumbnail": "/games/pong-duel-plus/thumbnail.jpg",
+      "tags": [
+        "pong",
+        "duel",
+        "1v1",
+        "arcade",
+        "physics",
+        "spin",
+        "powerups",
+        "ai",
+        "local-multiplayer",
+        "canvas",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-26",
+      "image": "/games/pong-duel-plus/thumbnail.jpg"
     },
     {
       "id": "pop-star-tap",
@@ -2454,6 +2584,38 @@
       ],
       "thumbnail": "/games/twins-match-up/logo.jpg",
       "image": "/games/twins-match-up/logo.jpg"
+    },
+    {
+      "id": "western-showdown-trio",
+      "title": "Western Showdown Trio 西部决斗三连",
+      "category": [
+        "Duel",
+        "Action",
+        "Reaction",
+        "Local Multiplayer",
+        "Guizang"
+      ],
+      "description": "A best-of-three western saloon showdown for one or two players on the same device. Three reaction minigames rotate: Quick Draw (wait for the lantern signal, press first, a false start loses instantly), Color Grab (read a target colour name and hit the matching ink among Stroop-style decoys, wrong presses cost points), and Memory Duel (flip western cards and race to claim matching pairs on one shared board). Play local two-player with split left/right controls, or challenge a three-tier AI record (slow / medium / fast). Mini-game wins decide the match, a tie triggers a sudden-death quick draw, and best score plus cumulative wins persist locally. Fully procedural saloon art and synthesized WebAudio; no external assets.",
+      "controls": "Local two-player: P1 uses A/S/D/F in the colour grid, F (or Space) to draw in Quick Draw, and A/D to choose + S to change row + F to flip in Memory. P2 uses J/K/L/; in the colour grid, J (or Up arrow) to draw, and arrow keys plus J to navigate and flip cards. On touch screens each player gets a split left/right pad; you can also tap colour buttons and cards on your half of the canvas. P pauses, M mutes, R restarts, Esc returns to the title. Three minigames decide the match; a tied series goes to a sudden-death quick draw.",
+      "type": "local",
+      "path": "/games/western-showdown-trio/index.html",
+      "thumbnail": "/games/western-showdown-trio/thumbnail.jpg",
+      "tags": [
+        "duel",
+        "reaction",
+        "minigames",
+        "western",
+        "local-multiplayer",
+        "ai",
+        "memory",
+        "canvas",
+        "guizang"
+      ],
+      "author": "LightGame",
+      "version": "1.0.0",
+      "featured": false,
+      "date_added": "2026-11-26",
+      "image": "/games/western-showdown-trio/thumbnail.jpg"
     },
     {
       "id": "whisper-heist",

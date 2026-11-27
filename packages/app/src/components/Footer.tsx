@@ -53,7 +53,15 @@ const Footer = () => {
             <p className="text-gray-500 text-sm mb-2">
               &copy; {currentYear} LightGame. All rights reserved.
             </p>
-            <div className="flex gap-4 text-xs">
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
+              <Link to="/duels" className="text-gray-500 hover:text-neon-green transition-colors">
+                Duel Arena
+              </Link>
+              <span className="text-gray-700">|</span>
+              <Link to="/duels/records" className="text-gray-500 hover:text-neon-green transition-colors">
+                Duel Records
+              </Link>
+              <span className="text-gray-700">|</span>
               <Link to="/achievements" className="text-gray-500 hover:text-neon-yellow transition-colors">
                 Achievements
               </Link>

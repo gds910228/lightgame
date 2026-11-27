@@ -1,0 +1,15 @@
+{
+  "id": "five-in-row-master",
+  "title": "Five in Row Master 五子棋大师",
+  "category": ["Duel", "Board Game", "Strategy", "Turn-Based", "Guizang"],
+  "description": "A 15x15 gomoku duel on a procedurally rendered wooden board. Connect five stones horizontally, vertically or diagonally while reading your opponent's threats. Play local two-player in alternating turns, or challenge a three-tier AI: a greedy heuristic newcomer, a depth-2 alpha-beta tactician, and a depth-4 attack-oriented expert. Human players take black and move first in AI mode. Optional simplified renju forbidden rules restrict black's overline, double-four and double-three moves. Undo, a scrollable move-history list with board review, last-move and winning-line markers, career wins for both sides and synthesized WebAudio are included. No external assets or requests.",
+  "controls": "Mouse or touch: tap an intersection to place a stone. Keyboard: WASD or arrow keys move the board cursor, Enter or Space places a stone. U or Backspace undoes, F toggles forbidden rules, R restarts, P pauses, M mutes, Esc returns to the title screen. Choose AI easy/medium/hard or local two-player from the title menu. In local two-player both sides share the device and alternate black/white turns; in AI mode you always play black and move first. Click any row in the move history to highlight and review that move on the board.",
+  "type": "local",
+  "path": "/games/five-in-row-master/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["gomoku", "five-in-row", "board-game", "duel", "strategy", "turn-based", "ai", "local-multiplayer", "canvas", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-26"
+}

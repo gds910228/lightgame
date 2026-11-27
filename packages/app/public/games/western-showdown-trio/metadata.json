@@ -1,0 +1,15 @@
+{
+  "id": "western-showdown-trio",
+  "title": "Western Showdown Trio 西部决斗三连",
+  "category": ["Duel", "Action", "Reaction", "Local Multiplayer", "Guizang"],
+  "description": "A best-of-three western saloon showdown for one or two players on the same device. Three reaction minigames rotate: Quick Draw (wait for the lantern signal, press first, a false start loses instantly), Color Grab (read a target colour name and hit the matching ink among Stroop-style decoys, wrong presses cost points), and Memory Duel (flip western cards and race to claim matching pairs on one shared board). Play local two-player with split left/right controls, or challenge a three-tier AI record (slow / medium / fast). Mini-game wins decide the match, a tie triggers a sudden-death quick draw, and best score plus cumulative wins persist locally. Fully procedural saloon art and synthesized WebAudio; no external assets.",
+  "controls": "Local two-player: P1 uses A/S/D/F in the colour grid, F (or Space) to draw in Quick Draw, and A/D to choose + S to change row + F to flip in Memory. P2 uses J/K/L/; in the colour grid, J (or Up arrow) to draw, and arrow keys plus J to navigate and flip cards. On touch screens each player gets a split left/right pad; you can also tap colour buttons and cards on your half of the canvas. P pauses, M mutes, R restarts, Esc returns to the title. Three minigames decide the match; a tied series goes to a sudden-death quick draw.",
+  "type": "local",
+  "path": "/games/western-showdown-trio/index.html",
+  "thumbnail": "./thumbnail.jpg",
+  "tags": ["duel", "reaction", "minigames", "western", "local-multiplayer", "ai", "memory", "canvas", "guizang"],
+  "author": "LightGame",
+  "version": "1.0.0",
+  "featured": false,
+  "date_added": "2026-11-26"
+}

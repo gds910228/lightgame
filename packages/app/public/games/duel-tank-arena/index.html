@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="description" content="钢铁前线：俯视 1v1 坦克对决，五种武器、三张掩体地图、BO5 赛点制。本地双人或三档 AI。">
+<link rel="icon" href="data:,">
+<title>Duel Tank Arena 钢铁前线</title>
+<style>
+  :root{
+    --ink:#070b10; --panel:#0d1620; --panel2:#122131;
+    --steel:#9db5c6; --muted:#72879a; --paper:#eaf2f5;
+    --amber:#ffb547; --amber2:#ffe0a3; --cyan:#62e7ef; --cyan2:#b8fbff;
+    --red:#ff5d5d; --red2:#ffb0a8; --green:#b7f36b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;overflow:hidden;background:#04070b;color:var(--paper);
+    font-family:"Microsoft YaHei","PingFang SC","Noto Sans SC",system-ui,sans-serif;
+    user-select:none;-webkit-user-select:none;touch-action:none}
+  #game{position:fixed;inset:0;width:100%;height:100%;display:block;background:#04070b}
+  button{font-family:inherit;color:inherit}
+  .hide{display:none!important}
+  #tr{position:fixed;right:12px;top:104px;z-index:40;display:flex;gap:8px}
+  #tr button{width:42px;height:42px;border-radius:12px;border:1px solid rgba(255,181,71,.35);
+    background:rgba(5,12,18,.82);color:var(--amber2);font-size:16px;font-weight:800;
+    cursor:pointer;backdrop-filter:blur(5px);transition:.15s}
+  #tr button:hover{background:rgba(30,44,58,.92);border-color:var(--amber)}
+  #tr button.on{color:#ffc9c3;border-color:rgba(255,93,93,.55);background:rgba(66,20,19,.8)}
+  #tr button:disabled{opacity:.32;cursor:default}
+  #toast{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);z-index:45;
+    padding:8px 18px;border-radius:20px;background:rgba(5,12,18,.92);
+    border:1px solid rgba(98,231,239,.3);color:#dffcff;font-size:13px;letter-spacing:1px;
+    opacity:0;pointer-events:none;transition:opacity .22s;white-space:nowrap}
+  #toast.show{opacity:1}
+
+  .overlay{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;
+    padding:18px;background:radial-gradient(900px 560px at 50% 34%,rgba(27,59,73,.44),rgba(3,7,11,.9) 68%,rgba(2,5,8,.97))}
+  .sheet{width:min(940px,96vw);max-height:96vh;overflow:auto;padding:clamp(18px,3vh,32px) clamp(16px,3vw,38px);
+    border:1px solid rgba(157,181,198,.22);border-radius:18px;
+    background:linear-gradient(145deg,rgba(16,31,43,.96),rgba(6,13,20,.98));
+    box-shadow:0 30px 100px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);
+    scrollbar-width:thin;scrollbar-color:#3a5265 transparent}
+  .kicker{font-size:11px;letter-spacing:3.2px;color:var(--amber);text-transform:uppercase;font-weight:700}
+  h1{font-size:clamp(34px,7vw,64px);line-height:1.02;margin:8px 0 2px;letter-spacing:4px;
+    color:#f4fbfd;text-shadow:0 0 32px rgba(255,181,71,.18)}
+  .en{font-size:clamp(12px,1.7vw,16px);letter-spacing:5px;color:var(--steel);font-weight:700}
+  .ruleline{height:1px;margin:16px 0;background:linear-gradient(90deg,var(--amber),rgba(255,181,71,0))}
+  #titlebest{font-size:13px;color:#a9bdca;letter-spacing:.7px;margin-bottom:18px}
+  .modegrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .modebtn{position:relative;text-align:left;padding:14px 14px 13px;border-radius:13px;
+    border:1px solid rgba(157,181,198,.2);background:linear-gradient(160deg,rgba(26,45,59,.82),rgba(10,20,29,.9));
+    cursor:pointer;transition:transform .12s,border-color .15s,background .15s;overflow:hidden}
+  .modebtn:before{content:"";position:absolute;left:0;top:0;width:3px;height:100%;background:var(--steel);opacity:.5}
+  .modebtn:hover{transform:translateY(-2px);border-color:rgba(255,181,71,.55);background:linear-gradient(160deg,rgba(38,62,77,.94),rgba(13,25,35,.96))}
+  .modebtn.rec:before{background:var(--amber);opacity:1}
+  .modebtn.local:before{background:var(--cyan);opacity:1}
+  .mb-top{display:block;font-size:10px;letter-spacing:1.8px;color:var(--muted);text-transform:uppercase}
+  .mb-name{display:block;margin-top:5px;font-size:20px;font-weight:900;letter-spacing:2px;color:#fff}
+  .mb-sub{display:block;margin-top:5px;font-size:11px;line-height:1.5;color:#91a6b6}
+  .intelgrid{display:grid;grid-template-columns:1.15fr 1fr;gap:12px;margin-top:16px}
+  .card{padding:13px 15px;border-radius:12px;border:1px solid rgba(157,181,198,.14);background:rgba(5,13,20,.52)}
+  .card h3{margin:0 0 8px;font-size:11px;letter-spacing:2.3px;color:var(--amber);font-weight:800}
+  .weapons{display:flex;flex-wrap:wrap;gap:6px}
+  .wchip{display:flex;align-items:center;gap:5px;padding:4px 7px;border-radius:7px;
+    border:1px solid rgba(157,181,198,.2);font-size:11px;color:#c7d8e2;background:rgba(20,37,48,.6);white-space:nowrap}
+  .wdot{width:6px;height:6px;border-radius:50%;box-shadow:0 0 7px currentColor}
+  .maplist{display:flex;gap:7px;flex-wrap:wrap;font-size:11px;color:#aec2cf}
+  .maplist span{padding:4px 8px;border-radius:6px;background:rgba(255,181,71,.08);border:1px solid rgba(255,181,71,.23)}
+  .howto{margin-top:12px;padding:11px 14px;border-radius:10px;border:1px dashed rgba(157,181,198,.22);
+    font-size:12px;line-height:1.7;color:#9fb3c1;background:rgba(0,0,0,.16)}
+  .howto b{color:var(--amber2)}
+  .keyrow{display:flex;gap:18px;flex-wrap:wrap;margin-top:6px;font-size:11px;color:#8ea3b2}
+  .p1c{color:var(--cyan)} .p2c{color:var(--amber)}
+  .imprint{margin-top:16px;text-align:center;font-size:10px;letter-spacing:2.2px;color:#566b7b}
+
+  #end .sheet{max-width:720px;text-align:center}
+  #end .en{margin-top:6px}
+  #endd{font-size:14px;line-height:1.9;color:#aec2cf;margin:14px auto 20px;max-width:540px}
+  #endd b{color:var(--amber2)}
+  .btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .btns button{padding:12px 26px;border-radius:10px;border:1px solid rgba(255,181,71,.55);
+    background:linear-gradient(180deg,#ffbe58,#d88928);color:#201405;font-weight:900;font-size:14px;
+    letter-spacing:1.6px;cursor:pointer;transition:.14s}
+  .btns button:hover{filter:brightness(1.08);transform:translateY(-1px)}
+  .btns button.ghost{background:rgba(19,34,46,.82);color:#c1d4df;border-color:rgba(157,181,198,.28)}
+  #pause .sheet{max-width:380px;text-align:center}
+  #pause h1{font-size:36px;letter-spacing:8px}
+  #pause .btns{margin-top:18px}
+
+  #touch{position:fixed;inset:0;z-index:20;pointer-events:none;display:none}
+  body.touch #touch{display:block}
+  .tpad{position:absolute;bottom:max(10px,env(safe-area-inset-bottom));width:46%;height:176px;pointer-events:none}
+  .tpad.left{left:9px} .tpad.right{right:9px}
+  .dpad{position:absolute;left:0;bottom:0;width:132px;height:132px;pointer-events:none}
+  .dpad button{position:absolute;width:42px;height:42px;border-radius:12px;border:1px solid rgba(157,181,198,.28);
+    background:rgba(8,18,27,.72);color:#d8e7ef;font-size:15px;font-weight:800;pointer-events:auto;
+    touch-action:none;backdrop-filter:blur(3px)}
+  .dpad button:active{background:rgba(59,94,112,.9);border-color:var(--amber)}
+  .dpad .up{left:45px;top:0}.dpad .left{left:0;top:45px}.dpad .down{left:45px;top:90px}.dpad .right{left:90px;top:45px}
+  .actions{position:absolute;bottom:6px;left:140px;display:flex;gap:9px;align-items:flex-end;pointer-events:auto}
+  .actions button{width:58px;height:58px;border-radius:50%;border:1px solid rgba(255,181,71,.46);
+    background:rgba(32,20,8,.7);color:var(--amber2);font-size:17px;font-weight:900;touch-action:none;backdrop-filter:blur(3px)}
+  .actions button.alt{width:42px;height:42px;background:rgba(9,23,31,.75);border-color:rgba(98,231,239,.4);color:var(--cyan2);font-size:12px}
+  .right .dpad{left:auto;right:0}
+  .right .actions{left:auto;right:140px;flex-direction:row-reverse}
+  .right .actions button{border-color:rgba(255,93,93,.5);background:rgba(38,10,10,.72);color:var(--red2)}
+  .right .actions button.alt{border-color:rgba(98,231,239,.4);color:var(--cyan2);background:rgba(9,23,31,.75)}
+  body.solo .tpad.right{display:none}
+  @media (max-width:760px){
+    .modegrid{grid-template-columns:repeat(2,1fr)}
+    .intelgrid{grid-template-columns:1fr}
+    .keyrow{gap:8px}
+    .tpad{height:154px;width:48%}
+    .actions button{width:52px;height:52px}
+    .actions{left:128px}
+    .right .actions{right:128px}
+  }
+  @media (max-height:520px){
+    .sheet{max-height:98vh;padding:10px 18px}
+    h1{font-size:clamp(26px,6vh,44px)}
+    .ruleline{margin:8px 0}
+    .modegrid{gap:7px}
+    .modebtn{padding:9px 10px}
+    .mb-name{font-size:16px;margin-top:2px}
+    .mb-sub{display:none}
+    .intelgrid{margin-top:9px}
+    .card{padding:8px 10px}
+    .howto{margin-top:7px;padding:7px 10px;font-size:11px;line-height:1.5}
+    .imprint{margin-top:7px}
+    .tpad{height:140px}
+  }
+
+  /* duel help overlay */
+  .help-open{position:fixed;left:12px;top:12px;z-index:60;display:block;margin:0;padding:8px 16px;border-radius:999px;border:1px solid var(--dh-accent,#ffb547);background:rgba(6,13,18,.92);color:var(--dh-accent,#ffb547);font:inherit;font-size:11px;letter-spacing:1.6px;cursor:pointer;transition:background .15s,transform .12s;backdrop-filter:blur(6px);box-shadow:0 4px 24px rgba(0,0,0,.45);white-space:nowrap}
+  .help-open:hover{background:rgba(32,50,54,.95);transform:translateY(-2px)}
+  .help-open:active{transform:translateY(0)}
+  #helpModal{position:fixed;inset:0;z-index:130;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(2,6,10,.84);backdrop-filter:blur(7px)}
+  #helpModal.hide{display:none!important}
+  .dh-sheet{width:min(790px,96vw);max-height:90vh;overflow:auto;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(150deg,#111b23,#070d12);box-shadow:0 28px 90px rgba(0,0,0,.7);padding:clamp(16px,3vw,26px);font-family:inherit;color:#dbe7ef;scrollbar-width:thin}
+  .dh-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:12px}
+  .dh-kicker{font-size:9px;letter-spacing:2.8px;color:var(--dh-accent,#ffb547);font-weight:800}
+  .dh-head h2{margin:3px 0 0;font-family:inherit;font-size:clamp(22px,4vw,30px);letter-spacing:3px;color:#f4fbff;text-shadow:none}
+  .dh-close{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);color:#cfdee8;font-size:16px;cursor:pointer}
+  .dh-close:hover{background:rgba(255,255,255,.14);color:#fff}
+  .dh-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .dh-col{border:1px solid rgba(255,255,255,.12);border-radius:12px;background:rgba(255,255,255,.035);padding:13px 14px}
+  .dh-col h3{margin:0 0 9px;font-family:inherit;font-size:15px;letter-spacing:1.5px;color:var(--dh-accent,#ffb547);display:flex;align-items:center;gap:7px}
+  .dh-col h3 span{font-size:9px;letter-spacing:1px;color:#7e96a6;border:1px solid rgba(255,255,255,.13);border-radius:999px;padding:1px 7px}
+  .dh-label{display:block;margin:8px 0 4px;font-size:9px;letter-spacing:1.8px;color:#7e96a6;font-weight:700}
+  .dh-col ul{margin:0;padding-left:16px;font-size:12px;line-height:1.75;color:#c3d4de}
+  .dh-col li{margin:2px 0}
+  .dh-col b{color:#fff3d0;font-weight:700}
+  .dh-col kbd{display:inline-block;padding:0 4px;border-radius:4px;border:1px solid rgba(255,255,255,.2);background:rgba(0,0,0,.25);font-family:inherit;font-size:10px;line-height:1.55;color:#fff}
+  .dh-foot{margin-top:12px;text-align:center;font-size:10px;letter-spacing:1.2px;color:#6e8493}
+  @media (max-width:640px){.dh-grid{grid-template-columns:1fr}.dh-sheet{max-height:92vh}.dh-col{padding:11px 12px}.dh-col ul{font-size:11.5px}}
+
+</style>
+</head>
+<body>
+<canvas id="game" aria-label="钢铁前线坦克对决画布"></canvas>
+
+<div id="tr">
+  <button id="mutebtn" title="静音 (M)" aria-label="静音">♪</button>
+  <button id="pausebtn" title="暂停 (P)" aria-label="暂停" disabled>❚❚</button>
+</div>
+<div id="toast"></div>
+
+<div id="title" class="overlay">
+  <div class="sheet">
+    <div class="kicker">LIGHTGAME · DUEL ARENA · FLAGSHIP 01</div>
+    <h1>钢 铁 前 线</h1>
+    <div class="en">DUEL TANK ARENA · 2D TOP-DOWN 1V1</div>
+    <div class="ruleline"></div>
+    <div id="titlebest">尚无战绩 · 打完一局 BO5 记下比分</div>
+
+    <div class="modegrid">
+      <button class="modebtn" data-mode="ai" data-diff="1">
+        <span class="mb-top">单人对 AI · 一</span>
+        <span class="mb-name">新兵</span>
+        <span class="mb-sub">巡逻为主<br>直线瞄准 · 偶尔开火</span>
+      </button>
+      <button class="modebtn rec" data-mode="ai" data-diff="2">
+        <span class="mb-top">单人对 AI · 二</span>
+        <span class="mb-name">老练</span>
+        <span class="mb-sub">截击走位<br>短前瞻 · 会避弹</span>
+      </button>
+      <button class="modebtn" data-mode="ai" data-diff="3">
+        <span class="mb-top">单人对 AI · 三</span>
+        <span class="mb-name">王牌</span>
+        <span class="mb-sub">全图预判<br>掩体博弈 · 武器克制</span>
+      </button>
+      <button class="modebtn local" data-mode="local" data-diff="2">
+        <span class="mb-top">同屏对战</span>
+        <span class="mb-name">本地双人</span>
+        <span class="mb-sub">P1 WASD · P2 方向键<br>BO5 五局三胜</span>
+      </button>
+    </div>
+
+    <div class="intelgrid">
+      <div class="card">
+        <h3>五种武器 · 一键换装</h3>
+        <div class="weapons">
+          <span class="wchip"><i class="wdot" style="color:#ffd166;background:#ffd166"></i>普通弹 1/6 · 无限</span>
+          <span class="wchip"><i class="wdot" style="color:#ff9f43;background:#ff9f43"></i>散射 2/7 · 五连</span>
+          <span class="wchip"><i class="wdot" style="color:#6ef3ff;background:#6ef3ff"></i>激光 3/8 · 瞬发</span>
+          <span class="wchip"><i class="wdot" style="color:#ff6b81;background:#ff6b81"></i>导弹 4/9 · 追踪</span>
+          <span class="wchip"><i class="wdot" style="color:#b8ff6e;background:#b8ff6e"></i>地雷 5/0 · 陷阱</span>
+        </div>
+        <div class="maplist" style="margin-top:9px"><span>熔炉工厂</span><span>沙丘遗迹</span><span>霓虹工厂</span><span>BO5 · 先取 3 胜</span></div>
+      </div>
+      <div class="card">
+        <h3>胜利条件</h3>
+        <div style="font-size:12px;line-height:1.75;color:#a9bdca">
+          把对手装甲打到 0，或 75 秒倒计时结束时剩余装甲更多。每局换图，五局三胜。<br>
+          <span style="color:#ffd166">掩体挡弹</span> · <span style="color:#6ef3ff">移动可闪避</span> · <span style="color:#b7f36b">地雷封路</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="howto">
+      开局 10 秒：<b>按住方向移动，按 F 开火</b>。炮塔自动追踪对手，试着绕掩体、换武器、抢地形。<br>
+      <div class="keyrow">
+        <span><b class="p1c">P1</b> WASD 移动 · F 开火 · 1-5 选武器 · Q/E 轮换</span>
+        <span><b class="p2c">P2</b> 方向键移动 · J 开火 · 6-0 选武器 · U/O 轮换</span>
+        <span>P 暂停 · M 静音 · R 重开</span>
+      </div>
+    </div>
+    <button type="button" class="help-open" id="helpOpen" aria-haspopup="dialog" aria-controls="helpModal">玩法说明 · 双人 / 人机</button>
+  <div class="imprint">STEEL FRONTIER ◆ DUEL ARENA ◆ BO5</div>
+  </div>
+</div>
+
+<div id="end" class="overlay hide">
+  <div class="sheet">
+    <div class="kicker" id="endkick">MATCH RESULT · 对决结束</div>
+    <h1 id="endh">胜 负 已 分</h1>
+    <div class="en" id="endscore">3 : 0</div>
+    <div id="endd"></div>
+    <div class="btns">
+      <button id="go">再战一局</button>
+      <button id="change" class="ghost">换难度</button>
+      <button id="home" class="ghost">回标题</button>
+      <button id="share" class="ghost">分享战绩</button>
+    </div>
+    <div class="imprint">STEEL FRONTIER · DUEL TANK ARENA</div>
+  </div>
+</div>
+
+<div id="pause" class="overlay hide">
+  <div class="sheet">
+    <div class="kicker">TACTICAL PAUSE</div>
+    <h1>暂 停</h1>
+    <div style="color:#9fb3c1;font-size:13px;line-height:1.8;margin-top:8px">炮火暂时停歇。<br>P 或下方按钮继续。</div>
+    <div class="btns">
+      <button id="resume">继续战斗</button>
+      <button id="quit" class="ghost">回标题</button>
+    </div>
+  </div>
+</div>
+
+<div id="touch" aria-label="触屏双人坦克控制">
+  <div class="tpad left">
+    <div class="dpad">
+      <button class="up" data-code="KeyW" aria-label="P1 上">▲</button>
+      <button class="left" data-code="KeyA" aria-label="P1 左">◀</button>
+      <button class="down" data-code="KeyS" aria-label="P1 下">▼</button>
+      <button class="right" data-code="KeyD" aria-label="P1 右">▶</button>
+    </div>
+    <div class="actions">
+      <button data-code="KeyF" aria-label="P1 开火">火</button>
+      <button class="alt" data-code="KeyE" aria-label="P1 换武器">换武</button>
+    </div>
+  </div>
+  <div class="tpad right">
+    <div class="dpad">
+      <button class="up" data-code="ArrowUp" aria-label="P2 上">▲</button>
+      <button class="left" data-code="ArrowLeft" aria-label="P2 左">◀</button>
+      <button class="down" data-code="ArrowDown" aria-label="P2 下">▼</button>
+      <button class="right" data-code="ArrowRight" aria-label="P2 右">▶</button>
+    </div>
+    <div class="actions">
+      <button data-code="KeyJ" aria-label="P2 开火">火</button>
+      <button class="alt" data-code="KeyO" aria-label="P2 换武器">换武</button>
+    </div>
+  </div>
+</div>
+
+<script>
+window.__BOOTERR = [];
+(function () {
+  function pushErr(msg) {
+    if (!msg) return;
+    msg = String(msg);
+    if (window.__BOOTERR.length < 30 && window.__BOOTERR.indexOf(msg) < 0) window.__BOOTERR.push(msg);
+    if (window.__G && window.__G.err && window.__G.err.indexOf(msg) < 0) window.__G.err.push(msg);
+  }
+  window.addEventListener('error', function (e) {
+    if (e && e.target && (e.target.src || e.target.href)) pushErr('resource error: ' + (e.target.src || e.target.href));
+    else pushErr(e && e.message ? e.message : 'script error');
+  }, true);
+  window.addEventListener('unhandledrejection', function (e) {
+    pushErr('unhandledrejection: ' + (e && e.reason ? e.reason : 'unknown'));
+  });
+})();
+</script>
+<div id="helpModal" class="hide" style="--dh-accent:#ffb547" role="dialog" aria-modal="true" aria-labelledby="helpTitle">
+  <div class="dh-sheet">
+    <div class="dh-head">
+      <div><div class="dh-kicker">HOW TO PLAY · DUEL ARENA</div><h2 id="helpTitle">玩 法 说 明</h2></div>
+      <button type="button" class="dh-close" id="helpClose" aria-label="关闭玩法说明">✕</button>
+    </div>
+    <div class="dh-grid">
+      <section class="dh-col" aria-label="双人对战说明">
+        <h3>双人对战 <span>本地同屏</span></h3>
+        <span class="dh-label">键位</span>
+        <ul><li><b class="p1c">P1</b> <kbd>WASD</kbd> 移动 · <kbd>F</kbd> 开火 · <kbd>1</kbd>–<kbd>5</kbd> 选武器 · <kbd>Q</kbd>/<kbd>E</kbd> 轮换</li><li><b class="p2c">P2</b> <kbd>方向键</kbd> 移动 · <kbd>J</kbd> 开火 · <kbd>6</kbd>–<kbd>0</kbd> 选武器 · <kbd>U</kbd>/<kbd>O</kbd> 轮换</li></ul>
+        <span class="dh-label">规则</span>
+        <ul><li>BO5 先取 3 回合；每回合 75 秒，击毁对手或时间到装甲更高者胜。</li><li>五武器：普通弹 / 散射 / 激光 / 导弹 / 地雷；掩体挡弹，弹药每回合重置。</li></ul>
+      </section>
+      <section class="dh-col" aria-label="人机对战说明">
+        <h3>人机对战 <span>三档 AI</span></h3>
+        <span class="dh-label">键位</span>
+        <ul><li>选择新兵 / 老练 / 王牌三档 AI 后开战。</li><li><b>P1</b> 键位与双人模式完全相同；触屏时使用左侧分区。</li></ul>
+        <span class="dh-label">规则</span>
+        <ul><li>AI 走巡逻 → 截击 → 交战状态机；高难会预判提前量、闪避炮弹并利用掩体。</li><li>规则同样为 BO5，AI 不享有隐藏伤害或额外资源。</li></ul>
+      </section>
+    </div>
+    <div class="dh-foot">P 暂停 · M 静音 · 右上角关闭 · 按 Esc 也可关闭</div>
+  </div>
+</div>
+
+<script src="static/play68.js"></script>
+<script src="static/play68bar.js"></script>
+<script type="module" src="js/game.js"></script>
+</body>
+</html>

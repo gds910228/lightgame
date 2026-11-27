@@ -5,7 +5,9 @@ import path from 'path'
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: './', // 使用相对路径，适应不同的部署环境
+  // 站点部署在域名根路径；绝对 base 保证 /duels、/game/:id 等深链刷新时
+  // 仍能从 /assets 正确加载 JS/CSS。
+  base: '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
